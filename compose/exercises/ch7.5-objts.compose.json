@@ -1,0 +1,339 @@
+{
+  "compose": 1,
+  "id": "ch7-objts",
+  "title": "Object Type-Shifting: RaiseO/S (§7.4.2)",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w bi st pi tm el sr mr x1 x2"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "X Y Z P Q R F G H",
+      "t": "p q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "loves",
+        "love"
+      ],
+      "denotation": "Ly.Lx.love(x,y)"
+    },
+    {
+      "words": [
+        "trusts",
+        "trust"
+      ],
+      "denotation": "Ly.Lx.trust(x,y)"
+    },
+    {
+      "words": [
+        "fears",
+        "fear"
+      ],
+      "denotation": "Ly.Lx.fear(x,y)"
+    },
+    {
+      "words": [
+        "councils",
+        "council"
+      ],
+      "denotation": "Ly.Lx.council(x,y)"
+    },
+    {
+      "words": [
+        "summons",
+        "summon"
+      ],
+      "denotation": "Ly.Lx.summon(x,y)"
+    },
+    {
+      "words": [
+        "travels",
+        "travel"
+      ],
+      "denotation": "Lx.travel(x)"
+    },
+    {
+      "words": [
+        "human"
+      ],
+      "denotation": "Lx.human(x)"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(x)"
+    },
+    {
+      "words": [
+        "dwarf"
+      ],
+      "denotation": "Lx.dwarf(x)"
+    },
+    {
+      "words": [
+        "creature"
+      ],
+      "denotation": "Lx.creature(x)"
+    },
+    {
+      "words": [
+        "brave"
+      ],
+      "denotation": "Lx.brave(x)"
+    },
+    {
+      "words": [
+        "wise"
+      ],
+      "denotation": "Lx.wise(x)"
+    },
+    {
+      "words": [
+        "good"
+      ],
+      "denotation": "Lx.good(x)"
+    },
+    {
+      "words": [
+        "evil"
+      ],
+      "denotation": "Lx.evil(x)"
+    },
+    {
+      "words": [
+        "doesnt",
+        "does-not"
+      ],
+      "denotation": "LP.Lx.~P(x)"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "no",
+        "No"
+      ],
+      "denotation": "LX.LY.~Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "who"
+      ],
+      "denotation": "LX.X"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": true,
+      "predicateAbstraction": true
+    },
+    "typeShifts": [
+      "raiseO",
+      "raiseS"
+    ]
+  },
+  "exercises": [
+    {
+      "title": "A. Simple object quantifiers via RaiseO",
+      "instructions": "Apply RaiseO to shift the transitive verb, allowing the object GQ to apply directly by FA.",
+      "items": [
+        {
+          "sentence": "Gandalf loves every hobbit.",
+          "tree": "[.S [.DP Gandalf ] [.VP [.V loves ] [.DP [.D every ] [.NP hobbit ] ] ] ]",
+          "targets": [
+            "∀x[hobbit(x) → love(g,x)]"
+          ],
+          "reading": {
+            "section": "7.4.2"
+          }
+        },
+        {
+          "sentence": "Elrond summons every good wise creature.",
+          "tree": "[.S [.DP Elrond ] [.VP [.V summons ] [.DP [.D every ] [.NP [.AP good ] [.NP [.AP wise ] [.NP creature ] ] ] ] ] ]",
+          "targets": [
+            "∀x[good(x) ∧ wise(x) ∧ creature(x) → summon(el,x)]"
+          ],
+          "reading": {
+            "section": "7.4.2"
+          }
+        },
+        {
+          "sentence": "Legolas doesn't trust some brave dwarf.",
+          "tree": "[.S [.DP Legolas ] [.VP [.Neg doesnt ] [.VP [.V trusts ] [.DP [.D some ] [.NP [.AP brave ] [.NP dwarf ] ] ] ] ] ]",
+          "targets": [
+            "∃x[brave(x) ∧ dwarf(x) ∧ ¬trust(l,x)]"
+          ],
+          "reading": {
+            "section": "7.4.2"
+          }
+        }
+      ]
+    },
+    {
+      "title": "B. Two quantifiers via RaiseO + RaiseS",
+      "instructions": "Apply RaiseO to the verb for the object GQ, then RaiseS to allow the subject GQ to take scope. Try both scope orders.",
+      "items": [
+        {
+          "sentence": "No elf trusts every human.",
+          "tree": "[.S [.DP [.D no ] [.NP elf ] ] [.VP [.V trusts ] [.DP [.D every ] [.NP human ] ] ] ]",
+          "targets": [
+            "every > some (linear): ∀x[elf(x) → ∃y[hobbit(y) ∧ trust(x,y)]]",
+            "some > every (inverse): ∃y[hobbit(y) ∧ ∀x[elf(x) → trust(x,y)]]",
+            "no > every: ¬∃x[elf(x) ∧ ∀y[human(y) → trust(x,y)]]",
+            "every > no: ∀y[human(y) → ¬∃x[elf(x) ∧ trust(x,y)]]"
+          ],
+          "reading": {
+            "section": "7.4.3"
+          }
+        },
+        {
+          "sentence": "Some elf councils every good wise creature.",
+          "tree": "[.S [.DP [.D some ] [.NP elf ] ] [.VP [.V councils ] [.DP [.D every ] [.NP [.AP good ] [.NP [.AP wise ] [.NP creature ] ] ] ] ] ]",
+          "targets": [
+            "some > every (linear): ∃x[elf(x) ∧ ∀y[good(y) ∧ wise(y) ∧ creature(y) → council(x,y)]]",
+            "every > some (inverse): ∀y[good(y) ∧ wise(y) ∧ creature(y) → ∃x[elf(x) ∧ council(x,y)]]"
+          ],
+          "reading": {
+            "section": "7.4.3"
+          }
+        },
+        {
+          "sentence": "Every hobbit who travels fears some evil creature.",
+          "tree": "[.S [.DP [.D every ] [.NP [.NP hobbit ] [.CP [.C who ] [.S [.DP t1 ] [.VP travels ] ] ] ] ] [.VP [.V fears ] [.DP [.D some ] [.NP [.AP evil ] [.NP creature ] ] ] ] ]",
+          "targets": [
+            "every > some (linear): ∀x[hobbit(x) ∧ travel(x) → ∃y[evil(y) ∧ creature(y) ∧ fear(x,y)]]",
+            "some > every (inverse): ∃y[evil(y) ∧ creature(y) ∧ ∀x[hobbit(x) ∧ travel(x) → fear(x,y)]]"
+          ],
+          "reading": {
+            "section": "7.4.3"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": {
+    "format": "lingdown",
+    "markdown": "# Chapter 7 · Object and Subject Type-Shifting\n\nAn alternative to Quantifier Raising handles object quantifiers without syntactic movement: two **type-shifting rules**, RaiseO and RaiseS, lift the transitive verb so it can combine directly with a generalized quantifier in its base position.\n\n## 7.4.2 RaiseO: object type-shifting\n\n**RaiseO** takes a transitive verb of type ⟨e,⟨e,t⟩⟩ and returns a function that expects a generalized quantifier as its object:\n\n$$\\text{RaiseO} = \\lambda H.\\lambda Q.\\lambda x.\\, Q(\\lambda y.\\, H(y)(x))$$\n\nRaiseO appears as an explicit node in the syntactic tree, sistering the verb. The shifted verb–phrase then takes the object GQ directly by FA, and the subject individual applies to the result.\n\n```ex {#raiseo-ex}\nGandalf loves every hobbit.\nElrond summons every good wise creature.\nLegolas doesn't trust some brave dwarf.\n```\n\n```deriv\n[[loves]]                  = lambda y.lambda x.love(x,y)                    : <e,<e,t>>\n[[RaiseO loves]]           = lambda Q.lambda x.Q(lambda y.love(x,y))        : <<<e,t>,t>,<e,t>>\n[[every hobbit]]           = lambda Y.forall x[hobbit(x) -> Y(x)]           : <<e,t>,t>\n[[RaiseO loves every hobbit]] = lambda x.forall y[hobbit(y) -> love(x,y)]   : <e,t>\n[[Gandalf loves every hobbit]] = forall y[hobbit(y) -> love(g,y)]            : t\n```\n\n```tree\n[S{forall y[hobbit(y) -> love(g,y)]}\n  [DP{g} Gandalf]\n  [VP{lambda x.forall y[hobbit(y) -> love(x,y)]}\n    [V'{lambda Q.lambda x.Q(lambda y.love(x,y))}\n      [V{RaiseO} RaiseO]\n      [V{lambda y.lambda x.love(x,y)} loves]]\n    [DP{lambda Y.forall x[hobbit(x) -> Y(x)]}\n      [D{lambda X.lambda Y.forall x[X(x) -> Y(x)]} every]\n      [NP{lambda x.hobbit(x)} hobbit]]]]\n```\n\n## 7.4.3 RaiseS: subject type-shifting\n\nWhen **both** subject and object are quantifiers, a second rule handles the subject. **RaiseS** shifts the transitive verb so it can absorb the *subject* GQ, with the object remaining as an individual argument:\n\n$$\\text{RaiseS} = \\lambda H.\\lambda Q.\\lambda y.\\, Q(\\lambda x.\\, H(y)(x))$$\n\nThe RaiseS-shifted verb takes the **subject GQ** as its first argument and the object individual as its second, yielding the *inverse scope* reading (object GQ takes wide scope; subject GQ is bound inside).\n\n```ex {#raises-ex}\nNo elf trusts every human.\nSome elf councils every good wise creature.\nEvery hobbit who travels fears some evil creature.\n```\n\n```deriv\n[[trusts]]                      = lambda y.lambda x.trust(x,y)                    : <e,<e,t>>\n[[RaiseO trusts]]               = lambda Q.lambda x.Q(lambda y.trust(x,y))        : <<<e,t>,t>,<e,t>>\n[[RaiseO trusts every human]]   = lambda x.forall y[human(y) -> trust(x,y)]       : <e,t>\n[[no elf]] applied to VP        = ~exists x[elf(x) /\\ forall y[human(y) -> trust(x,y)]] : t\n\n[[RaiseS trusts]]               = lambda Q.lambda y.Q(lambda x.trust(x,y))        : <<<e,t>,t>,<e,t>>\n[[RaiseS trusts no elf]]        = lambda y.~exists x[elf(x) /\\ trust(x,y)]        : <e,t>\n[[every human]] applied to VP   = forall y[human(y) -> ~exists x[elf(x) /\\ trust(x,y)]] : t\n```\n\nThe two trees yield logically equivalent results for *no*/*every*; the difference is vivid for *some*/*every* — the RaiseO tree gives ∃ > ∀ scope and the RaiseS tree gives ∀ > ∃ scope.[^raiseSvsO]\n\n[^raiseSvsO]: RaiseO and RaiseS have the same type ⟨⟨e,⟨e,t⟩⟩, ⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩⟩ but differ in *which* argument position the quantifier binds: RaiseO binds the y-position (the lexical object argument); RaiseS binds the x-position (the lexical subject argument).\n"
+  }
+}

@@ -1,0 +1,202 @@
+{
+  "compose": 1,
+  "id": "ch11-cont",
+  "title": "Event Quantifiers — the Continuation Approach (§11.4–11.6)",
+  "subtitle": "Champollion's verbs-as-event-quantifiers fragment: Quantifier Closure, in-situ quantifiers, conjunction & negation",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w bi st pi tm el sr mr"
+    },
+    "variables": {
+      "e": "x y z",
+      "v": "e",
+      "<v,t>": "k r",
+      "<<v,t>,t>": "V W",
+      "t": "p q"
+    }
+  },
+  "lexicon": [
+    { "words": ["Frodo"], "denotation": "f" },
+    { "words": ["Sam"], "denotation": "s" },
+    { "words": ["Gandalf"], "denotation": "g" },
+    { "words": ["Sauron"], "denotation": "n" },
+    { "words": ["Aragorn"], "denotation": "a" },
+    { "words": ["Boromir"], "denotation": "b" },
+    { "words": ["Legolas"], "denotation": "l" },
+    { "words": ["Gimli"], "denotation": "m" },
+    { "words": ["Galadriel"], "denotation": "w" },
+    { "words": ["Bilbo"], "denotation": "bi" },
+    { "words": ["Pippin"], "denotation": "pi" },
+    { "words": ["Elrond"], "denotation": "el" },
+    { "words": ["Saruman"], "denotation": "sr" },
+    { "words": ["Mordor"], "denotation": "o" },
+
+    { "words": ["runs", "run"], "denotation": "Lk.Ee[run(e) & k(e)]" },
+    { "words": ["sings", "sing"], "denotation": "Lk.Ee[sing(e) & k(e)]" },
+    { "words": ["sleeps", "sleep"], "denotation": "Lk.Ee[sleep(e) & k(e)]" },
+    { "words": ["smokes", "smoked", "smoke"], "denotation": "Lk.Ee[smoke(e) & k(e)]" },
+    { "words": ["drinks", "drank", "drink"], "denotation": "Lk.Ee[drink(e) & k(e)]" },
+    { "words": ["barks", "bark"], "denotation": "Lk.Ee[bark(e) & k(e)]" },
+    { "words": ["loves", "love"], "denotation": "Lk.Ee[love(e) & k(e)]" },
+    { "words": ["helps", "help"], "denotation": "Lk.Ee[help(e) & k(e)]" },
+    { "words": ["fears", "fear"], "denotation": "Lk.Ee[fear(e) & k(e)]" },
+    { "words": ["praises", "praise"], "denotation": "Lk.Ee[praise(e) & k(e)]" },
+
+    { "words": ["Agent"], "denotation": "Lx.LV.Lk.V(Le[agent(e,x) & k(e)])" },
+    { "words": ["Theme"], "denotation": "Lx.LV.Lk.V(Le[theme(e,x) & k(e)])" },
+
+    { "words": ["slowly"], "denotation": "LV.Lk.V(Le[slow(e) & k(e)])" },
+    { "words": ["quickly"], "denotation": "LV.Lk.V(Le[quick(e) & k(e)])" },
+    { "words": ["loudly"], "denotation": "LV.Lk.V(Le[loud(e) & k(e)])" },
+    { "words": ["in"], "denotation": "Ly.LV.Lk.V(Le[in(e,y) & k(e)])" },
+
+    { "words": ["did"], "denotation": "LV.Lk.V(k)" },
+    { "words": ["not"], "denotation": "LV.Lk.~V(k)" },
+    { "words": ["andVP", "and"], "denotation": "LW.LV.Lk.(V(k) & W(k))" },
+    { "words": ["orVP", "or"], "denotation": "LW.LV.Lk.(V(k) ∨ W(k))" },
+
+    { "words": ["every", "Every"], "denotation": "LX.LY.Ax[X(x) -> Y(x)]" },
+    { "words": ["some", "Some"], "denotation": "LX.LY.Ex[X(x) & Y(x)]" },
+    { "words": ["no", "No"], "denotation": "LX.LY.~Ex[X(x) & Y(x)]" },
+    { "words": ["dog"], "denotation": "Lx.dog(x)" },
+    { "words": ["hobbit"], "denotation": "Lx.hobbit(x)" },
+    { "words": ["elf"], "denotation": "Lx.elf(x)" },
+    { "words": ["dwarf"], "denotation": "Lx.dwarf(x)" },
+    { "words": ["orc"], "denotation": "Lx.orc(x)" },
+    { "words": ["brave"], "denotation": "Lx.brave(x)" }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": false,
+      "predicateAbstraction": false
+    },
+    "typeShifts": ["qc", "raiseTheta"],
+    "quantifierRaising": false
+  },
+  "exercises": [
+    {
+      "title": "A. Intransitives & Quantifier Closure",
+      "instructions": "On Champollion's approach a verb is not a predicate of events but a generalized quantifier over them: barks ↝ λk.∃e[bark(e) ∧ k(e)], type ⟨⟨v,t⟩,t⟩. The variable k is a CONTINUATION — it stands for the rest of the derivation. The Agent head threads its participant into k by Function Application (no Predicate Modification here). The root comes out at type ⟨⟨v,t⟩,t⟩; close it with the Quantifier Closure type-shift, which feeds it the trivial continuation λe.⊤ (the set of all events) and returns a truth value.",
+      "items": [
+        {
+          "sentence": "Frodo runs.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Frodo ] ] [.VP runs ] ]",
+          "targets": ["∃e[run(e) ∧ agent(e,f)]"]
+        },
+        {
+          "sentence": "Gandalf sings.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Gandalf ] ] [.VP sings ] ]",
+          "targets": ["∃e[sing(e) ∧ agent(e,g)]"]
+        },
+        {
+          "sentence": "Sam sleeps.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Sam ] ] [.VP sleeps ] ]",
+          "targets": ["∃e[sleep(e) ∧ agent(e,s)]"]
+        }
+      ]
+    },
+    {
+      "title": "B. Transitive verbs",
+      "instructions": "The object enters through the Theme head, which threads it into the same continuation k by Function Application. Verb, ThemeP and AgentP are all combined by FA — none of them changes the ⟨⟨v,t⟩,t⟩ type of the verbal projection. Quantifier Closure at the root binds the event.",
+      "items": [
+        {
+          "sentence": "Frodo loves Sam.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Frodo ] ] [.VP [.VP loves ] [.ThemeP [.Theme Theme ] [.DP Sam ] ] ] ]",
+          "targets": ["∃e[love(e) ∧ theme(e,s) ∧ agent(e,f)]"]
+        },
+        {
+          "sentence": "Aragorn helps Boromir.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Aragorn ] ] [.VP [.VP helps ] [.ThemeP [.Theme Theme ] [.DP Boromir ] ] ] ]",
+          "targets": ["∃e[help(e) ∧ theme(e,b) ∧ agent(e,a)]"]
+        },
+        {
+          "sentence": "Gimli fears Sauron.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Gimli ] ] [.VP [.VP fears ] [.ThemeP [.Theme Theme ] [.DP Sauron ] ] ] ]",
+          "targets": ["∃e[fear(e) ∧ theme(e,n) ∧ agent(e,m)]"]
+        }
+      ]
+    },
+    {
+      "title": "C. Adverbs & locatives as continuized modifiers",
+      "instructions": "An adjunct now has exactly the same type as the Agent and Theme heads: slowly ↝ λVλk.V(λe[slow(e) ∧ k(e)]), type ⟨⟨⟨v,t⟩,t⟩,⟨⟨v,t⟩,t⟩⟩. It combines with the VP by Function Application and adds one more conjunct under the event quantifier. A locative PP works the same way: in Mordor ↝ λVλk.V(λe[in(e,o) ∧ k(e)]).",
+      "items": [
+        {
+          "sentence": "Frodo runs slowly.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Frodo ] ] [.VP [.AdvP slowly ] [.VP runs ] ] ]",
+          "targets": ["∃e[run(e) ∧ slow(e) ∧ agent(e,f)]"]
+        },
+        {
+          "sentence": "Gandalf sings loudly.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Gandalf ] ] [.VP [.AdvP loudly ] [.VP sings ] ] ]",
+          "targets": ["∃e[sing(e) ∧ loud(e) ∧ agent(e,g)]"]
+        },
+        {
+          "sentence": "Frodo runs in Mordor.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Frodo ] ] [.VP [.VP runs ] [.PP [.P in ] [.DP Mordor ] ] ] ]",
+          "targets": ["∃e[run(e) ∧ in(e,o) ∧ agent(e,f)]"]
+        }
+      ]
+    },
+    {
+      "title": "D. Quantifiers in situ — RaiseO on the θ-head",
+      "instructions": "Because the event quantifier sits inside the verb, a quantificational DP already takes syntactic scope over it — so we do NOT need Quantifier Raising. Instead, raise the θ-head: the RaiseO (θ-head) type-shift turns Agent (or Theme) from ⟨e,…⟩ into ⟨⟨⟨e,t⟩,t⟩,…⟩, so a generalized quantifier can fill the participant slot directly. Apply the shift to the θ-head, combine with the quantifier DP by FA, finish the clause, then close with Quantifier Closure. Note the event quantifier stays trapped below the DP quantifier — the only available reading.",
+      "items": [
+        {
+          "sentence": "No dog barks.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP [.D no ] [.NP dog ] ] ] [.VP barks ] ]",
+          "targets": ["¬∃x[dog(x) ∧ ∃e[bark(e) ∧ agent(e,x)]]"]
+        },
+        {
+          "sentence": "Every hobbit sings.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP [.D every ] [.NP hobbit ] ] ] [.VP sings ] ]",
+          "targets": ["∀x[hobbit(x) → ∃e[sing(e) ∧ agent(e,x)]]"]
+        },
+        {
+          "sentence": "Frodo loves every elf.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Frodo ] ] [.VP [.VP loves ] [.ThemeP [.Theme Theme ] [.DP [.D every ] [.NP elf ] ] ] ] ]",
+          "targets": ["∀x[elf(x) → ∃e[love(e) ∧ theme(e,x) ∧ agent(e,f)]]"]
+        }
+      ]
+    },
+    {
+      "title": "E. Conjunction (§11.5)",
+      "instructions": "VP-and on the continuation approach is andVP ↝ λW.λV.λk.[V(k) ∧ W(k)]: each conjunct is handed its OWN copy of the continuation, so each gets its own event quantifier. This is exactly what we want — \"Frodo smoked and drank\" describes two events, not one, so the contradictory modifiers in the second item attach to different events and no contradiction arises (textbook Exercise 3).",
+      "items": [
+        {
+          "sentence": "Frodo smoked and drank.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Frodo ] ] [.VP [.VP smoked ] [.CoordP [.Coord andVP ] [.VP drank ] ] ] ]",
+          "targets": ["∃e[smoke(e) ∧ agent(e,f)] ∧ ∃e[drink(e) ∧ agent(e,f)]"]
+        },
+        {
+          "sentence": "Frodo smoked slowly and drank quickly.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Frodo ] ] [.VP [.VP [.AdvP slowly ] [.VP smoked ] ] [.CoordP [.Coord andVP ] [.VP [.AdvP quickly ] [.VP drank ] ] ] ] ]",
+          "targets": ["∃e[smoke(e) ∧ slow(e) ∧ agent(e,f)] ∧ ∃e[drink(e) ∧ quick(e) ∧ agent(e,f)]"]
+        }
+      ]
+    },
+    {
+      "title": "F. Negation (§11.6)",
+      "instructions": "Sentential negation is not ↝ λV.λk.¬V(k): it negates the whole event quantifier, so the existential stays trapped inside the negation and we get \"there is no such event\" — the only attested reading. (Aux did ↝ λV.λk.V(k) is the identity.) Contrast this with the event-predicate approach of §11.3, which can only produce the far-too-weak \"there is an event that isn't a barking.\"",
+      "items": [
+        {
+          "sentence": "Sam didn't sleep.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Sam ] ] [.VP [.Aux did ] [.VP [.Neg not ] [.VP sleeps ] ] ] ]",
+          "targets": ["¬∃e[sleep(e) ∧ agent(e,s)]"]
+        },
+        {
+          "sentence": "Frodo didn't love Sam.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Frodo ] ] [.VP [.Aux did ] [.VP [.Neg not ] [.VP [.VP loves ] [.ThemeP [.Theme Theme ] [.DP Sam ] ] ] ] ] ]",
+          "targets": ["¬∃e[love(e) ∧ theme(e,s) ∧ agent(e,f)]"]
+        },
+        {
+          "sentence": "Gandalf didn't sing loudly.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Gandalf ] ] [.VP [.Aux did ] [.VP [.Neg not ] [.VP [.AdvP loudly ] [.VP sings ] ] ] ] ]",
+          "targets": ["¬∃e[sing(e) ∧ loud(e) ∧ agent(e,g)]"]
+        }
+      ]
+    }
+  ]
+}

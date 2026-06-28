@@ -1,0 +1,189 @@
+{
+  "compose": 1,
+  "id": "hk12-intensions",
+  "title": "First Steps Towards an Intensional Semantics (§12.1–12.3)",
+  "subtitle": "Heim & Kratzer — opacity, intensions, and Intensional Functional Application",
+  "notation": "hk",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "m jn d",
+      "s": "w0"
+    },
+    "variables": {
+      "e": "x y z",
+      "s": "w' w''",
+      "st": "p q",
+      "et": "P Q X Y"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Mary"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Jan"
+      ],
+      "denotation": "jn"
+    },
+    {
+      "words": [
+        "Dick"
+      ],
+      "denotation": "d"
+    },
+    {
+      "words": [
+        "is"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "loyal"
+      ],
+      "denotation": "Lx.loyal(w0,x)"
+    },
+    {
+      "words": [
+        "deceitful"
+      ],
+      "denotation": "Lx.deceitful(w0,x)"
+    },
+    {
+      "words": [
+        "happy"
+      ],
+      "denotation": "Lx.happy(w0,x)"
+    },
+    {
+      "words": [
+        "believes",
+        "believe"
+      ],
+      "denotation": "Lp.Lx.Aw'[dox(w0,x,w') -> p(w')]",
+      "displayAs": "believes"
+    },
+    {
+      "words": [
+        "thinks",
+        "think"
+      ],
+      "denotation": "Lp.Lx.Aw'[think(w0,x,w') -> p(w')]",
+      "displayAs": "thinks"
+    },
+    {
+      "words": [
+        "hopes",
+        "hope"
+      ],
+      "denotation": "Lp.Lx.Aw'[hope(w0,x,w') -> p(w')]",
+      "displayAs": "hopes"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "intensionalFunctionApplication": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Extensional clauses (FA) — §12.1",
+      "instructions": "Each embedded sentence is, by itself, extensional: it denotes a truth value (type t) at the evaluation world w. Compose by Function Application. Predicates carry the world: ⟦loyal⟧^w = λx.loyal(w,x).",
+      "items": [
+        {
+          "sentence": "Jan is loyal.",
+          "tree": "[.S [.DP Jan ] [.VP [.V is ] [.AP loyal ] ] ]",
+          "targets": [
+            "loyal(w0,jn)"
+          ],
+          "reading": {
+            "section": "12.1"
+          }
+        },
+        {
+          "sentence": "Dick is deceitful.",
+          "tree": "[.S [.DP Dick ] [.VP [.V is ] [.AP deceitful ] ] ]",
+          "targets": [
+            "deceitful(w0,d)"
+          ],
+          "reading": {
+            "section": "12.1"
+          }
+        }
+      ]
+    },
+    {
+      "title": "B. Attitude reports via IFA — §12.3",
+      "instructions": "An attitude verb wants a PROPOSITION ⟨s,t⟩, but the embedded clause supplies only a truth value t — FA is stuck. Intensional Functional Application (IFA) feeds the verb the clause's INTENSION λw'.⟦clause⟧^w'. The embedded clause is then evaluated at the belief-worlds w'.",
+      "items": [
+        {
+          "sentence": "Mary believes Jan is loyal.",
+          "tree": "[.S [.DP Mary ] [.VP [.V believes ] [.S [.DP Jan ] [.VP [.V is ] [.AP loyal ] ] ] ] ]",
+          "targets": [
+            "∀w'[dox(w0,m,w') → loyal(w',jn)]"
+          ],
+          "reading": {
+            "section": "12.3"
+          }
+        },
+        {
+          "sentence": "Mary believes Dick is deceitful.",
+          "tree": "[.S [.DP Mary ] [.VP [.V believes ] [.S [.DP Dick ] [.VP [.V is ] [.AP deceitful ] ] ] ] ]",
+          "targets": [
+            "∀w'[dox(w0,m,w') → deceitful(w',d)]"
+          ],
+          "reading": {
+            "section": "12.3"
+          }
+        },
+        {
+          "sentence": "Mary thinks Jan is happy.",
+          "tree": "[.S [.DP Mary ] [.VP [.V thinks ] [.S [.DP Jan ] [.VP [.V is ] [.AP happy ] ] ] ] ]",
+          "targets": [
+            "∀w'[think(w0,m,w') → happy(w',jn)]"
+          ],
+          "reading": {
+            "section": "12.3"
+          }
+        }
+      ]
+    },
+    {
+      "title": "C. Other attitude verbs — §12.3",
+      "instructions": "The same IFA mechanism handles every attitude verb; only the accessibility relation changes (belief, thought, hope). Each quantifies over the worlds compatible with the subject's attitude in w.",
+      "items": [
+        {
+          "sentence": "Mary hopes Jan is happy.",
+          "tree": "[.S [.DP Mary ] [.VP [.V hopes ] [.S [.DP Jan ] [.VP [.V is ] [.AP happy ] ] ] ] ]",
+          "targets": [
+            "∀w'[hope(w0,m,w') → happy(w',jn)]"
+          ],
+          "reading": {
+            "section": "12.3"
+          }
+        },
+        {
+          "sentence": "Dick believes Mary is happy.",
+          "tree": "[.S [.DP Dick ] [.VP [.V believes ] [.S [.DP Mary ] [.VP [.V is ] [.AP happy ] ] ] ] ]",
+          "targets": [
+            "∀w'[dox(w0,d,w') → happy(w',m)]"
+          ],
+          "reading": {
+            "section": "12.3"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": {
+    "format": "lingdown",
+    "markdown": "# Chapter 12 · First Steps Towards an Intensional Semantics\n\nEverything so far has been **extensional**: a node's denotation is its extension —\nan individual, a truth value, a set. This chapter shows where that breaks down, and\ntakes the first step into **intensions**, relativising interpretation to a possible\nworld `w`. We write `⟦α⟧^w` for the extension of `α` **at `w`**.\n\n## 12.1 Where the extensional semantics breaks down\n\nA core assumption has been that the denotation of a complex node depends only on the\n**extensions** of its parts — so two parts with the same extension are\ninterchangeable. That assumption fails inside *believe*. Take H&K's pair (@break):\n\n```ex {#break}\nMary believes Jan is loyal.\nMary believes Dick is deceitful.\n```\n\nSuppose in the actual world Jan is loyal and Dick is deceitful, so `⟦Jan is\nloyal⟧^w = ⟦Dick is deceitful⟧^w = 1` — the two embedded sentences have the **same\nextension**. Extensional FA would then predict the two belief reports have the same\ntruth value. But Mary can believe one without the other: *believe* creates a\n**non-extensional** (opaque) context. What the verb cares about is not the embedded\nclause's truth value but **which worlds it is true in** — its *intension*.\n\n## 12.2 Intensions\n\nThe **intension** of `α` is the function from worlds to its extension at each\nworld: `λw . ⟦α⟧^w`. For a sentence, that is a **proposition** — type `⟨s,t⟩`, a\nfunction from worlds (type `s`) to truth values. The extension stays world-relative,\nso every predicate now carries the evaluation world; in our metalanguage we write it\nas an argument, `loyal(w,x)`, the formalisation of `⟦loyal⟧^w = λx . x is loyal in w`.\n\n```deriv\n[[Jan is loyal]]^w   = loyal(w,jn)=1            : t\n(its intension)      = λw' . loyal(w',jn)=1     : <s,t>\n```\n\n## 12.3 An intensional semantics\n\n**Attitude verbs** denote functions on propositions. Following Hintikka, *believe*\nquantifies over the worlds **compatible with what the subject believes** in `w`\n(the subject's *doxastic alternatives*, `Dox`):\n\n```deriv\n[[believes]]^w = λp . λx . ∀w'[ x's belief-worlds in w include w' → p(w')=1 ]   : <<s,t>,<e,t>>\n```\n\nwritten `λp . λx . ∀w'[Dox(w)(x)(w') → p(w')=1]`. The verb wants a **proposition**\n`⟨s,t⟩`, but the embedded clause supplies only a truth value `⟨t⟩` — so FA is stuck.\nH&K add **one** composition rule to bridge the gap:\n\n**Intensional Functional Application (IFA).** If α is a branching node with daughters\nβ and γ, and `⟦β⟧^w` is a function whose domain contains `λw' . ⟦γ⟧^w'`, then\n`⟦α⟧^w = ⟦β⟧^w(λw' . ⟦γ⟧^w')`.\n\nIFA feeds the verb the **intension** of its complement — formed on the spot by\nabstracting the embedded clause over the world `w'`. Note that this is a *composition\nrule*, not an operator in the tree: H&K deliberately avoid Montague's `^`/`˅` and\nbuild intension-formation into the rule itself. Applying it to *Mary believes Jan is\nloyal* (@break):\n\n```deriv\n[[believes [Jan is loyal]]]^w  = [[believes]]^w(λw' . loyal(w',jn)=1)            (IFA)\n[[Mary believes Jan is loyal]]^w = ∀w'[Dox(w)(m)(w') → loyal(w',jn)=1]           : t\n```\n\nThe report is true at `w` iff Jan is loyal in **every** world compatible with what\nMary believes in `w`. Because the embedded clause is now evaluated at the belief\nworlds `w'`, swapping in *Dick is deceitful* — true at the actual `w` but not\nnecessarily at Mary's belief worlds — gives a **different** result. The opacity is\ncaptured.\n\n```deriv\n[[Mary believes Dick is deceitful]]^w = ∀w'[Dox(w)(m)(w') → deceitful(w',d)=1]   : t\n```\n\n> **Notation note.** H&K write the world as a **superscript on the bracket**,\n> `⟦α⟧^w`, and keep the metalanguage extensional. COMPOSE threads the same world as\n> an explicit parameter `w` inside predicates (`loyal(w,x)` for `⟦loyal⟧^w(x)`), and\n> composes intensions with IFA — H&K's actual rule, *not* Montague's `^`/`˅`\n> operators. The matrix world prints as `w`, shifted worlds as `w'`.\n\n> **Beyond these first steps (§12.4).** A full intensional semantics also relativises\n> to **times** and handles intensional transitives (*seek*), de re/de dicto, and more;\n> H&K take only the first step here, and so do we.\n"
+  }
+}

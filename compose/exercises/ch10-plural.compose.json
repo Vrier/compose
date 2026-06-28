@@ -1,0 +1,512 @@
+{
+  "compose": 1,
+  "id": "ch10-plural",
+  "title": "10.3 Plurals & the Star Operator",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w bi st pi tm el sr mr",
+      "<e,t>": "hobbit elf dwarf orc ring sword map singer"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "P Q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "rides",
+        "ride"
+      ],
+      "denotation": "Lx.ride(x)"
+    },
+    {
+      "words": [
+        "sings",
+        "sing"
+      ],
+      "denotation": "Lx.sing(x)"
+    },
+    {
+      "words": [
+        "rests",
+        "rest"
+      ],
+      "denotation": "Lx.rest(x)"
+    },
+    {
+      "words": [
+        "meets",
+        "meet"
+      ],
+      "denotation": "Lx.meet(x)"
+    },
+    {
+      "words": [
+        "carries",
+        "carry"
+      ],
+      "denotation": "Ly.Lx.carry(x,y)"
+    },
+    {
+      "words": [
+        "guards",
+        "guard"
+      ],
+      "denotation": "Ly.Lx.guard(x,y)"
+    },
+    {
+      "words": [
+        "reads",
+        "read"
+      ],
+      "denotation": "Ly.Lx.read(x,y)"
+    },
+    {
+      "words": [
+        "finds",
+        "find"
+      ],
+      "denotation": "Ly.Lx.find(x,y)"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "hobbit"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "elf"
+    },
+    {
+      "words": [
+        "dwarf"
+      ],
+      "denotation": "dwarf"
+    },
+    {
+      "words": [
+        "ring"
+      ],
+      "denotation": "ring"
+    },
+    {
+      "words": [
+        "sword"
+      ],
+      "denotation": "sword"
+    },
+    {
+      "words": [
+        "map"
+      ],
+      "denotation": "map"
+    },
+    {
+      "words": [
+        "hobbits"
+      ],
+      "denotation": "*hobbit"
+    },
+    {
+      "words": [
+        "elves"
+      ],
+      "denotation": "*elf"
+    },
+    {
+      "words": [
+        "dwarves"
+      ],
+      "denotation": "*dwarf"
+    },
+    {
+      "words": [
+        "rings"
+      ],
+      "denotation": "*ring"
+    },
+    {
+      "words": [
+        "swords"
+      ],
+      "denotation": "*sword"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "LX.Ix.X(x)"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "a"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "theSUPR"
+      ],
+      "denotation": "LX.Ix.[X(x) & Ay[X(y) -> y≤x]]"
+    },
+    {
+      "words": [
+        "andS"
+      ],
+      "denotation": "Lq.Lp.[p & q]"
+    },
+    {
+      "words": [
+        "orS"
+      ],
+      "denotation": "Lq.Lp.[p ∨ q]"
+    },
+    {
+      "words": [
+        "andVP"
+      ],
+      "denotation": "LQ.LP.Lx.[P(x) & Q(x)]"
+    },
+    {
+      "words": [
+        "orVP"
+      ],
+      "denotation": "LQ.LP.Lx.[P(x) ∨ Q(x)]"
+    },
+    {
+      "words": [
+        "andV"
+      ],
+      "denotation": "LR.LS.Ly.Lx.[S(y)(x) & R(y)(x)]"
+    },
+    {
+      "words": [
+        "andDP"
+      ],
+      "denotation": "LT.LU.LP.[U(P) & T(P)]"
+    },
+    {
+      "words": [
+        "orDP"
+      ],
+      "denotation": "LT.LU.LP.[U(P) ∨ T(P)]"
+    },
+    {
+      "words": [
+        "andE"
+      ],
+      "denotation": "Ly.Lz.z⊕y"
+    },
+    {
+      "words": [
+        "part"
+      ],
+      "denotation": "Ly.Lx.x≤y"
+    },
+    {
+      "words": [
+        "carry_coll"
+      ],
+      "denotation": "Ly.Lx.carry_coll(x,y)"
+    },
+    {
+      "words": [
+        "singer"
+      ],
+      "denotation": "singer"
+    },
+    {
+      "words": [
+        "-s",
+        "PL"
+      ],
+      "denotation": "LP.*P"
+    },
+    {
+      "words": [
+        "are",
+        "is",
+        "be"
+      ],
+      "denotation": "LP.P"
+    },
+    {
+      "words": [
+        "two"
+      ],
+      "denotation": "Lx.card(x)=2"
+    },
+    {
+      "words": [
+        "theSUM"
+      ],
+      "denotation": "LP.⊕P"
+    },
+    {
+      "words": [
+        "∅D",
+        "emptyD"
+      ],
+      "denotation": "LP.LP'.Ex[P(x) & P'(x)]"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": true,
+      "predicateAbstraction": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Plural predicate (∗P)",
+      "instructions": "The plural noun \"hobbits\" denotes ∗hobbit of type ⟨e,t⟩. It is true of any individual that is either a hobbit or a sum of hobbits. Build the NP and check its type — it should be ⟨e,t⟩, same as the singular \"hobbit\".",
+      "items": [
+        {
+          "sentence": "hobbits (∗hobbit)",
+          "tree": "[.NP [.N hobbit ] [.Pl -s ] ]",
+          "targets": [
+            "∗hobbit"
+          ]
+        },
+        {
+          "sentence": "elves (∗elf)",
+          "tree": "[.NP [.N elf ] [.Pl -s ] ]",
+          "targets": [
+            "∗elf"
+          ]
+        },
+        {
+          "sentence": "dwarves (∗dwarf)",
+          "tree": "[.NP [.N dwarf ] [.Pl -s ] ]",
+          "targets": [
+            "∗dwarf"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "B. Plural definite (theSUPR)",
+      "instructions": "The plural definite \"the hobbits\" uses the supremum iota: ιx.[∗hobbit(x) ∧ ∀y[∗hobbit(y)→y≤x]] — the maximal sum of all hobbits. theSUPR ↝ λX.ιx.[X(x) ∧ ∀y[X(y)→y≤x]] takes the plural predicate (∗hobbit) and returns its supremum — an individual of type e.",
+      "items": [
+        {
+          "sentence": "the hobbits",
+          "tree": "[.DP [.D theSUPR ] [.NP hobbits ] ]",
+          "targets": [
+            "ιx.[∗hobbit(x) ∧ ∀y[∗hobbit(y) → y≤x]]"
+          ]
+        },
+        {
+          "sentence": "the elves",
+          "tree": "[.DP [.D theSUPR ] [.NP elves ] ]",
+          "targets": [
+            "ιx.[∗elf(x) ∧ ∀y[∗elf(y) → y≤x]]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "C. Plural definite as subject",
+      "instructions": "A plural definite description is a type-e individual (the maximal sum). Apply it as a subject to a VP by FA — the VP predicate holds of the entire sum, expressing a collective or distributive claim depending on the predicate.",
+      "items": [
+        {
+          "sentence": "The hobbits ride.",
+          "tree": "[.S [.DP [.D theSUPR ] [.NP hobbits ] ] [.VP rides ] ]",
+          "targets": [
+            "ride(ιx.[∗hobbit(x) ∧ ∀y[∗hobbit(y) → y≤x]])"
+          ]
+        },
+        {
+          "sentence": "The elves sing.",
+          "tree": "[.S [.DP [.D theSUPR ] [.NP elves ] ] [.VP sings ] ]",
+          "targets": [
+            "sing(ιx.[∗elf(x) ∧ ∀y[∗elf(y) → y≤x]])"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "D. The plural morpheme -s (Exercise 8)",
+      "instructions": "Instead of treating \"singers\" as an unanalyzed starred predicate, derive it compositionally. The plural morpheme is -s ⇝ λP.∗P (entry 30): it takes a singular noun and returns its algebraic closure. Build the noun by composing [.N singer ] with [.Pl -s ] via Function Application. For coordinated proper names, use andE (λyλz.z⊕y) to form the sum, and treat \"are\"/\"is\" as the identity function λP.P. These reproduce the book's (31) and (32b).",
+      "items": [
+        {
+          "sentence": "singers ( [singer -s] = ∗singer )",
+          "tree": "[.NP [.N singer ] [.Pl -s ] ]",
+          "targets": [
+            "∗singer"
+          ]
+        },
+        {
+          "sentence": "Frodo and Sam are singers. (32b)",
+          "tree": "[.S [.DP [.DP Frodo ] [.Coord' [.Coord andE ] [.DP Sam ] ] ] [.VP [.V are ] [.NP [.N singer ] [.Pl -s ] ] ] ]",
+          "targets": [
+            "∗singer(f⊕s)"
+          ]
+        },
+        {
+          "sentence": "Some singers met. (31b)",
+          "tree": "[.S [.DP [.D some ] [.NP [.N singer ] [.Pl -s ] ] ] [.VP meet ] ]",
+          "targets": [
+            "∃x[∗singer(x) ∧ meet(x)]"
+          ]
+        },
+        {
+          "sentence": "Frodo, Sam and Pippin met. (31a)",
+          "tree": "[.S [.DP [.DP Frodo ] [.Coord' [.Coord andE ] [.DP [.DP Sam ] [.Coord' [.Coord andE ] [.DP Pippin ] ] ] ] ] [.VP meet ] ]",
+          "targets": [
+            "meet(f⊕(s⊕pi))"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "E. theSUM — the sum analysis of plural the (Exercise 10)",
+      "instructions": "Before the supremum analysis, the book first tries treating plural the as the generalized sum: theSUM ⇝ λP.⊕P (entry 33), where ⊕P is the sum of all the P's (type e). For \"the singers\" this gives the right answer — the maximal singer-sum. But notice the second item: with \"two singers\", theSUM sums up ALL the two-singer pluralities, collapsing them back to the total sum — so \"theSUM two singers\" wrongly denotes the sum of all singers, not a pair. This is exactly why the book replaces theSUM with theSUPR. (Here two ⇝ λx.card(x)=2 combines with singers by Predicate Modification.)",
+      "items": [
+        {
+          "sentence": "theSUM singers met.",
+          "tree": "[.S [.DP [.D theSUM ] [.NP [.N singer ] [.Pl -s ] ] ] [.VP meet ] ]",
+          "targets": [
+            "meet(⊕∗singer)"
+          ]
+        },
+        {
+          "sentence": "theSUM two singers met. (the over-summing problem)",
+          "tree": "[.S [.DP [.D theSUM ] [.NP [.Card two ] [.NP [.N singer ] [.Pl -s ] ] ] ] [.VP meet ] ]",
+          "targets": [
+            "meet(⊕(λx.[card(x)=2 ∧ ∗singer(x)]))"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "F. The silent determiner ∅D (Exercise 9)",
+      "instructions": "Bare plurals like \"Two singers met\" have no overt determiner, but combine with the VP like a quantifier. The book posits a silent determiner with existential-quantifier semantics: ∅D ⇝ λPλP'.∃x[P(x) ∧ P'(x)] (Exercise 9). Include the ∅D node explicitly in the tree. \"two singers\" is formed by Predicate Modification, then ∅D binds it existentially.",
+      "items": [
+        {
+          "sentence": "Two singers met.",
+          "tree": "[.S [.DP [.D ∅D ] [.NP [.Card two ] [.NP [.N singer ] [.Pl -s ] ] ] ] [.VP meet ] ]",
+          "targets": [
+            "∃x[[card(x)=2 ∧ ∗singer(x)] ∧ meet(x)]"
+          ]
+        }
+      ]
+    }
+  ]
+}

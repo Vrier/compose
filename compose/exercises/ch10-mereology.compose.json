@@ -1,0 +1,457 @@
+{
+  "compose": 1,
+  "id": "ch10-mereology",
+  "title": "10.2 Mereology — Sums and Parthood",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "P Q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "rides",
+        "ride"
+      ],
+      "denotation": "Lx.ride(x)"
+    },
+    {
+      "words": [
+        "sings",
+        "sing"
+      ],
+      "denotation": "Lx.sing(x)"
+    },
+    {
+      "words": [
+        "rests",
+        "rest"
+      ],
+      "denotation": "Lx.rest(x)"
+    },
+    {
+      "words": [
+        "meets",
+        "meet"
+      ],
+      "denotation": "Lx.meet(x)"
+    },
+    {
+      "words": [
+        "carries",
+        "carry"
+      ],
+      "denotation": "Ly.Lx.carry(x,y)"
+    },
+    {
+      "words": [
+        "guards",
+        "guard"
+      ],
+      "denotation": "Ly.Lx.guard(x,y)"
+    },
+    {
+      "words": [
+        "reads",
+        "read"
+      ],
+      "denotation": "Ly.Lx.read(x,y)"
+    },
+    {
+      "words": [
+        "finds",
+        "find"
+      ],
+      "denotation": "Ly.Lx.find(x,y)"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(x)"
+    },
+    {
+      "words": [
+        "dwarf"
+      ],
+      "denotation": "Lx.dwarf(x)"
+    },
+    {
+      "words": [
+        "ring"
+      ],
+      "denotation": "Lx.ring(x)"
+    },
+    {
+      "words": [
+        "sword"
+      ],
+      "denotation": "Lx.sword(x)"
+    },
+    {
+      "words": [
+        "map"
+      ],
+      "denotation": "Lx.map(x)"
+    },
+    {
+      "words": [
+        "hobbits"
+      ],
+      "denotation": "*Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "elves"
+      ],
+      "denotation": "*Lx.elf(x)"
+    },
+    {
+      "words": [
+        "dwarves"
+      ],
+      "denotation": "*Lx.dwarf(x)"
+    },
+    {
+      "words": [
+        "rings"
+      ],
+      "denotation": "*Lx.ring(x)"
+    },
+    {
+      "words": [
+        "swords"
+      ],
+      "denotation": "*Lx.sword(x)"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "LX.Ix.X(x)"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "a"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "theSUPR"
+      ],
+      "denotation": "LX.Ix.[X(x) & Ay[X(y) -> y≤x]]"
+    },
+    {
+      "words": [
+        "andS"
+      ],
+      "denotation": "Lq.Lp.[p & q]"
+    },
+    {
+      "words": [
+        "orS"
+      ],
+      "denotation": "Lq.Lp.[p ∨ q]"
+    },
+    {
+      "words": [
+        "andVP"
+      ],
+      "denotation": "LQ.LP.Lx.[P(x) & Q(x)]"
+    },
+    {
+      "words": [
+        "orVP"
+      ],
+      "denotation": "LQ.LP.Lx.[P(x) ∨ Q(x)]"
+    },
+    {
+      "words": [
+        "andV"
+      ],
+      "denotation": "LR.LS.Ly.Lx.[S(y)(x) & R(y)(x)]"
+    },
+    {
+      "words": [
+        "andDP"
+      ],
+      "denotation": "LT.LU.LP.[U(P) & T(P)]"
+    },
+    {
+      "words": [
+        "orDP"
+      ],
+      "denotation": "LT.LU.LP.[U(P) ∨ T(P)]"
+    },
+    {
+      "words": [
+        "andE"
+      ],
+      "denotation": "Ly.Lz.z⊕y"
+    },
+    {
+      "words": [
+        "part"
+      ],
+      "denotation": "Ly.Lx.x≤y"
+    },
+    {
+      "words": [
+        "carry_coll"
+      ],
+      "denotation": "Ly.Lx.carry_coll(x,y)"
+    },
+    {
+      "words": [
+        "are",
+        "is"
+      ],
+      "denotation": "LP.P"
+    },
+    {
+      "words": [
+        "two_"
+      ],
+      "displayAs": "two",
+      "denotation": "Lx.|x|=2"
+    },
+    {
+      "words": [
+        "three_"
+      ],
+      "displayAs": "three",
+      "denotation": "Lx.|x|=3"
+    },
+    {
+      "words": [
+        "two"
+      ],
+      "denotation": "LP.LQ.Ex[P(x) & |x|=2 & Q(x)]"
+    },
+    {
+      "words": [
+        "three"
+      ],
+      "denotation": "LP.LQ.Ex[P(x) & |x|=3 & Q(x)]"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": true,
+      "predicateAbstraction": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Sum-formation (andE — name coordination)",
+      "instructions": "andE ↝ λy.λz.z⊕y (type ⟨e,⟨e,e⟩⟩) takes the right name first, then FA with the left, forming a sum of type e. The result is a new individual — the mereological sum of the two names — that can serve as subject or object of a predicate.",
+      "items": [
+        {
+          "sentence": "Frodo and Sam (the sum f⊕s).",
+          "tree": "[.DP [.DP Frodo ] [.ConjP [.Conj andE ] [.DP Sam ] ] ]",
+          "targets": [
+            "f⊕s"
+          ]
+        },
+        {
+          "sentence": "Frodo, Sam and Aragorn (the sum f⊕s⊕a).",
+          "tree": "[.DP [.DP [.DP Frodo ] [.ConjP [.Conj andE ] [.DP Sam ] ] ] [.ConjP [.Conj andE ] [.DP Aragorn ] ] ]",
+          "targets": [
+            "f⊕s⊕a"
+          ]
+        },
+        {
+          "sentence": "Gandalf and Aragorn carry the ring (collective subject).",
+          "tree": "[.S [.DP [.DP Gandalf ] [.ConjP [.Conj andE ] [.DP Aragorn ] ] ] [.VP [.V carry_coll ] [.DP [.D the ] [.NP ring ] ] ] ]",
+          "targets": [
+            "carry_coll(g⊕a,ιz[ring(z)])"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "B. Parthood (≤)",
+      "instructions": "The parthood relation ≤ holds between an individual and a sum that contains it: f≤f⊕s. In a sentence \"Frodo is part of Frodo and Sam\", derive the sum first via andE, then apply the parthood predicate. The truth conditions contain ≤ directly.",
+      "items": [
+        {
+          "sentence": "Frodo is part of Frodo and Sam. (f ≤ f⊕s)",
+          "tree": "[.S [.DP Frodo ] [.VP [.V part ] [.DP [.DP Frodo ] [.ConjP [.Conj andE ] [.DP Sam ] ] ] ] ]",
+          "targets": [
+            "f≤f⊕s"
+          ]
+        },
+        {
+          "sentence": "Sam and Gandalf carry the sword together; Frodo is part of their sum.",
+          "tree": "[.S [.DP Frodo ] [.VP [.V part ] [.DP [.DP Sam ] [.ConjP [.Conj andE ] [.DP Gandalf ] ] ] ] ]",
+          "targets": [
+            "f≤s⊕g"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "C. Cardinality of sums (|·|)",
+      "instructions": "The cardinality operator |x| counts the atomic parts of an individual: |f⊕s| = 2. The copula \"are\" (λP.P) passes the numeral predicate to the plural subject, which then applies to the sum. Because ⊕ is commutative, associative and idempotent, the parts may be summed in any order — |s⊕f| = 2 is accepted just as readily.",
+      "items": [
+        {
+          "sentence": "Frodo and Sam are two. (|f⊕s| = 2)",
+          "tree": "[.S [.DP [.DP Frodo ] [.ConjP [.Conj andE ] [.DP Sam ] ] ] [.VP [.V are ] [.NumP two_ ] ] ]",
+          "targets": [
+            "|f⊕s|=2"
+          ]
+        },
+        {
+          "sentence": "Frodo, Sam and Gandalf are three. (|f⊕s⊕g| = 3)",
+          "tree": "[.S [.DP [.DP [.DP Frodo ] [.ConjP [.Conj andE ] [.DP Sam ] ] ] [.ConjP [.Conj andE ] [.DP Gandalf ] ] ] [.VP [.V are ] [.NumP three_ ] ] ]",
+          "targets": [
+            "|f⊕s⊕g|=3"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "D. Cardinal numerals as quantifiers",
+      "instructions": "A numeral determiner \"two\" ⇝ λP.λQ.∃x[P(x) ∧ |x|=2 ∧ Q(x)] existentially quantifies over a sum of two atoms that satisfies the pluralized noun (∗) and the predicate. It is type ⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩, a generalized quantifier, and combines with the VP by Function Application.",
+      "items": [
+        {
+          "sentence": "Two hobbits ride.",
+          "tree": "[.S [.DP [.D two ] [.NP hobbits ] ] [.VP ride ] ]",
+          "targets": [
+            "Ex[*hobbit(x) & |x|=2 & ride(x)]"
+          ]
+        },
+        {
+          "sentence": "Three elves sing.",
+          "tree": "[.S [.DP [.D three ] [.NP elves ] ] [.VP sing ] ]",
+          "targets": [
+            "Ex[*elf(x) & |x|=3 & sing(x)]"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,588 @@
+{
+  "compose": 1,
+  "id": "ch8-defn",
+  "title": "Definite Descriptions (§8.1–8.2)",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w bi st pi tm el sr mr x1 x2"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "X Y Z P Q R F G H",
+      "t": "p q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "is",
+        "are"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "a",
+        "an"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "not"
+      ],
+      "denotation": "LP.Lx.~P(x)"
+    },
+    {
+      "words": [
+        "doesnt",
+        "does-not"
+      ],
+      "denotation": "LP.Lx.~P(x)"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "wizard"
+      ],
+      "denotation": "Lx.wizard(x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(x)"
+    },
+    {
+      "words": [
+        "ranger"
+      ],
+      "denotation": "Lx.ranger(x)"
+    },
+    {
+      "words": [
+        "human"
+      ],
+      "denotation": "Lx.human(x)"
+    },
+    {
+      "words": [
+        "king"
+      ],
+      "denotation": "Lx.king(x)"
+    },
+    {
+      "words": [
+        "creature"
+      ],
+      "denotation": "Lx.creature(x)"
+    },
+    {
+      "words": [
+        "Gondorian"
+      ],
+      "denotation": "Lx.gondorian(x)"
+    },
+    {
+      "words": [
+        "rightful"
+      ],
+      "denotation": "LF.Lx.rightful(F)(x)"
+    },
+    {
+      "words": [
+        "wise"
+      ],
+      "denotation": "Lx.wise(x)"
+    },
+    {
+      "words": [
+        "brave"
+      ],
+      "denotation": "Lx.brave(x)"
+    },
+    {
+      "words": [
+        "carries",
+        "carry"
+      ],
+      "denotation": "Ly.Lx.carry(x,y)"
+    },
+    {
+      "words": [
+        "loves",
+        "love"
+      ],
+      "denotation": "Ly.Lx.love(x,y)"
+    },
+    {
+      "words": [
+        "trusts",
+        "trust"
+      ],
+      "denotation": "Ly.Lx.trust(x,y)"
+    },
+    {
+      "words": [
+        "fears",
+        "fear"
+      ],
+      "denotation": "Ly.Lx.fear(x,y)"
+    },
+    {
+      "words": [
+        "flees",
+        "flee"
+      ],
+      "denotation": "Ly.Lx.flee(x,y)"
+    },
+    {
+      "words": [
+        "flees-to",
+        "flee-to"
+      ],
+      "denotation": "Ly.Lx.flee(x,y)"
+    },
+    {
+      "words": [
+        "slays",
+        "slay"
+      ],
+      "denotation": "Ly.Lx.slay(x,y)"
+    },
+    {
+      "words": [
+        "admires",
+        "admire"
+      ],
+      "denotation": "Ly.Lx.admire(x,y)"
+    },
+    {
+      "words": [
+        "kills",
+        "kill"
+      ],
+      "denotation": "Ly.Lx.kill(x,y)"
+    },
+    {
+      "words": [
+        "hunts",
+        "hunt"
+      ],
+      "denotation": "Ly.Lx.hunt(x,y)"
+    },
+    {
+      "words": [
+        "summons",
+        "summon"
+      ],
+      "denotation": "Ly.Lx.summon(x,y)"
+    },
+    {
+      "words": [
+        "pass",
+        "passes"
+      ],
+      "denotation": "Lx.pass(x)"
+    },
+    {
+      "words": [
+        "with"
+      ],
+      "denotation": "Ly.Lx.with(x,y)"
+    },
+    {
+      "words": [
+        "in"
+      ],
+      "denotation": "Ly.Lx.in(x,y)"
+    },
+    {
+      "words": [
+        "ring"
+      ],
+      "denotation": "Lx.ring(x)"
+    },
+    {
+      "words": [
+        "Balrog"
+      ],
+      "denotation": "Lx.balrog(x)"
+    },
+    {
+      "words": [
+        "fellowship"
+      ],
+      "denotation": "Lx.fellowship(x)"
+    },
+    {
+      "words": [
+        "kingdom"
+      ],
+      "denotation": "Lx.kingdom(x)"
+    },
+    {
+      "words": [
+        "sword"
+      ],
+      "denotation": "Lx.sword(x)"
+    },
+    {
+      "words": [
+        "bow"
+      ],
+      "denotation": "Lx.bow(x)"
+    },
+    {
+      "words": [
+        "axe"
+      ],
+      "denotation": "Lx.axe(x)"
+    },
+    {
+      "words": [
+        "hair"
+      ],
+      "denotation": "Lx.hair(x)"
+    },
+    {
+      "words": [
+        "uruk-hai",
+        "uruk"
+      ],
+      "denotation": "Lx.uruk(x)"
+    },
+    {
+      "words": [
+        "the",
+        "The"
+      ],
+      "denotation": "LX.Ix.X(x)"
+    },
+    {
+      "words": [
+        "shall"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "'s"
+      ],
+      "denotation": "LP.Lx.Iy.poss(x,y) & P(y)"
+    },
+    {
+      "words": [
+        "he1",
+        "him1",
+        "his1",
+        "she1",
+        "her1"
+      ],
+      "denotation": "x1"
+    },
+    {
+      "words": [
+        "my1",
+        "our1"
+      ],
+      "denotation": "x1"
+    },
+    {
+      "words": [
+        "him-B",
+        "he-B"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "him-K",
+        "he-K"
+      ],
+      "denotation": "Iy.poss(b,y) & king(y)"
+    },
+    {
+      "words": [
+        "boromirs-king"
+      ],
+      "denotation": "Iy.poss(b,y) & king(y)"
+    },
+    {
+      "words": [
+        "will"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "dies",
+        "die"
+      ],
+      "denotation": "Lx.die(x)"
+    },
+    {
+      "words": [
+        "until"
+      ],
+      "denotation": "Lq.Lp.p & until(q)"
+    },
+    {
+      "words": [
+        "who"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Definite descriptions",
+      "instructions": "\"The\" is the iota operator λP.ιx.P(x), picking out the unique satisfier of P. Items 2 and 3 fold in non-intersective adjectives and a relative clause.",
+      "items": [
+        {
+          "sentence": "Frodo carries the ring.",
+          "tree": "[.S [.DP Frodo ] [.VP [.V carries ] [.DP [.D the ] [.NP ring ] ] ] ]",
+          "reading": {
+            "section": "8.1"
+          }
+        },
+        {
+          "sentence": "Legolas trusts the rightful king.",
+          "tree": "[.S [.DP Legolas ] [.VP [.V trusts ] [.DP [.D the ] [.NP [.AP rightful ] [.NP king ] ] ] ] ]",
+          "reading": {
+            "section": "8.1"
+          }
+        },
+        {
+          "sentence": "The elf who trusts Gimli is in Moria.",
+          "tree": "[.S [.DP [.D the ] [.NP [.NP elf ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.V trusts ] [.DP Gimli ] ] ] ] ] ] ] [.VP [.V is ] [.PP [.P in ] [.DP Moria ] ] ] ]",
+          "reading": {
+            "section": "8.1"
+          }
+        }
+      ]
+    },
+    {
+      "title": "B. Possessives",
+      "instructions": "A possessive \"X's\" is λP.λx.ιy.poss(x,y) ∧ P(y): Strider's sword picks out the unique object in the possession relation. Items 2 and 3 use pronouns as possessors.",
+      "items": [
+        {
+          "sentence": "Boromir's sword.",
+          "tree": "[.NP [.DP Boromir ] [.NP [.Poss 's ] [.NP sword ] ] ]",
+          "reading": {
+            "section": "8.2"
+          }
+        },
+        {
+          "sentence": "his bow.",
+          "tree": "[.NP [.DP he1 ] [.NP [.Poss 's ] [.NP bow ] ] ]",
+          "reading": {
+            "section": "8.2"
+          }
+        },
+        {
+          "sentence": "my axe.",
+          "tree": "[.NP [.DP my1 ] [.NP [.Poss 's ] [.NP axe ] ] ]",
+          "reading": {
+            "section": "8.2"
+          }
+        }
+      ]
+    },
+    {
+      "title": "C. Definites in context",
+      "instructions": "The definite article interacts with other tools: \"shall\" is the identity function here (tense/aspect come in §12). The last item folds in a possessive definite DP.",
+      "items": [
+        {
+          "sentence": "The Balrog shall not pass.",
+          "tree": "[.S [.DP [.D the ] [.NP Balrog ] ] [.VP [.V shall ] [.VP [.Neg not ] [.VP pass ] ] ] ]",
+          "reading": {
+            "section": "8.2"
+          }
+        },
+        {
+          "sentence": "The Balrog slays our wise wizard.",
+          "tree": "[.S [.DP [.D the ] [.NP Balrog ] ] [.VP [.V slays ] [.DP [.D the ] [.NP [.AP wise ] [.NP wizard ] ] ] ] ]",
+          "reading": {
+            "section": "8.2"
+          }
+        },
+        {
+          "sentence": "The fellowship flees to Galadriel's kingdom.",
+          "tree": "[.S [.DP [.D the ] [.NP fellowship ] ] [.VP [.V flees-to ] [.DP [.DP Galadriel ] [.NP [.Poss 's ] [.NP kingdom ] ] ] ] ]",
+          "reading": {
+            "section": "8.2"
+          }
+        }
+      ]
+    },
+    {
+      "title": "D. Bound vs. free readings",
+      "instructions": "A possessive pronoun can be free (context-supplied) or bound (raised and abstracted). Derive both readings where applicable.",
+      "items": [
+        {
+          "sentence": "Galadriel admires her hair.",
+          "tree": "[.S [.DP Galadriel ] [.VP [.V admires ] [.DP [.DP he1 ] [.NP [.Poss 's ] [.NP hair ] ] ] ] ]",
+          "targets": [
+            "free: admire(w, ιy.poss(x1,y) ∧ hair(y))",
+            "bound: ∀x[noble(x) → admire(x, ιy.poss(x,y) ∧ hair(y))]"
+          ],
+          "reading": {
+            "section": "8.2.1"
+          }
+        },
+        {
+          "sentence": "Boromir's sword kills every Uruk-hai who hunts him.",
+          "tree": "[.S [.DP [.DP Boromir ] [.NP [.Poss 's ] [.NP sword ] ] ] [.VP [.V kills ] [.DP [.D every ] [.NP [.NP uruk-hai ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.V hunts ] [.DP him1 ] ] ] ] ] ] ] ] ]",
+          "targets": [
+            "Boromir kills every Uruk who hunts him (free): ∀x[uruk(x) ∧ hunt(x,b) → kill(b,x)]",
+            "Boromir kills every Uruk who hunts himself (bound): ∀x[uruk(x) ∧ hunt(x,x) → kill(b,x)]"
+          ],
+          "reading": {
+            "section": "8.2.1"
+          }
+        },
+        {
+          "sentence": "Boromir's king will love him until he dies.",
+          "tree": "[.S [.S [.DP [.DP Boromir ] [.NP [.Poss 's ] [.NP king ] ] ] [.VP [.V will ] [.VP [.V loves ] [.DP him-B ] ] ] ] [.PP [.P until ] [.S [.DP he-B ] [.VP dies ] ] ] ]",
+          "targets": [
+            "him = Boromir, he = Boromir: love(ιy.poss(b,y) ∧ king(y), b) ∧ until(die(b))",
+            "him = Boromir, he = the king: love(ιy.poss(b,y) ∧ king(y), b) ∧ until(die(ιy.poss(b,y) ∧ king(y)))",
+            "him = the king, he = Boromir: love(ιy.poss(b,y) ∧ king(y), ιy.poss(b,y) ∧ king(y)) ∧ until(die(b))",
+            "him = the king, he = the king: love(ιy.poss(b,y) ∧ king(y), ιy.poss(b,y) ∧ king(y)) ∧ until(die(ιy.poss(b,y) ∧ king(y)))"
+          ],
+          "reading": {
+            "section": "8.2.1"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": {
+    "format": "lingdown",
+    "markdown": "# Chapter 8 · Definite Descriptions\n\nChapter 7 showed how to build complex predicates. Chapter 8 introduces a new kind of DP: the **definite description**, built with the **iota operator** ι, which picks out a unique individual satisfying a predicate.\n\n## 8.1 The iota operator\n\n**The definite article.** `[[the]]` = λX.ιx.X(x) : ⟨⟨e,t⟩,e⟩. It takes a predicate and returns the unique individual satisfying it; the result is type e, just like a proper name.\n\nThe uniqueness condition is a **presupposition**: *the ring* is only defined if exactly one thing is a ring in the context.\n\n```ex {#defn-ex}\nFrodo carries the ring.\nLegolas trusts the rightful king.\nThe elf who trusts Gimli is in Moria.\n```\n\n```deriv\n[[the]]              = lambda X.iota x.X(x)                          : <<e,t>,e>\n[[ring]]             = lambda x.ring(x)                              : <e,t>\n[[the ring]]         = iota x.ring(x)                                : e\n[[carries]]          = lambda y.lambda x.carry(x,y)                  : <e,<e,t>>\n[[carries the ring]] = lambda x.carry(x,iota y.ring(y))              : <e,t>\n[[Frodo carries the ring]] = carry(f,iota y.ring(y))                 : t\n```\n\n```tree\n[S{carry(f,iota y.ring(y))}\n  [DP{f} Frodo]\n  [VP{lambda x.carry(x,iota y.ring(y))}\n    [V{lambda y.lambda x.carry(x,y)} carries]\n    [DP{iota x.ring(x)}\n      [D{lambda X.iota x.X(x)} the]\n      [NP{lambda x.ring(x)} ring]]]]\n```\n\nA non-intersective adjective like *rightful* combines with the noun by FA before iota applies (@defn-ex):\n\n```deriv\n[[rightful]]              = lambda F.lambda x.rightful(F)(x)               : <<e,t>,<e,t>>\n[[king]]                  = lambda x.king(x)                               : <e,t>\n[[rightful king]]         = lambda x.rightful(king)(x)                     : <e,t>\n[[the rightful king]]     = iota x.rightful(king)(x)                       : e\n[[trusts the rightful king]] = lambda x.trust(x,iota y.rightful(king)(y))  : <e,t>\n[[Legolas trusts the rightful king]] = trust(l,iota y.rightful(king)(y))   : t\n```\n\nA definite DP can embed a relative clause. The NP assembles its full predicate (by PM + PA) before *the* applies (@defn-ex):\n\n```deriv\n[[trusts Gimli]]                  = lambda x.trust(x,m)                    : <e,t>\n[[elf who trusts Gimli]]          = lambda x.elf(x) /\\ trust(x,m)          : <e,t>\n[[the elf who trusts Gimli]]      = iota x.(elf(x) /\\ trust(x,m))          : e\n[[in Moria]]                      = lambda x.in(x,mr)                      : <e,t>\n[[The elf who trusts Gimli is in Moria]] = in(iota x.(elf(x) /\\ trust(x,m)),mr) : t\n```\n\n## 8.2 Possessives\n\nThe clitic **'s** builds a definite description relative to a possessor: `[['s]]` = λP.λx.ιy.[poss(x,y) ∧ P(y)] : ⟨⟨e,t⟩,⟨e,e⟩⟩. It takes the possessed noun and the possessor individual and returns the unique object standing in the possession relation to that possessor.\n\n```ex {#poss-ex}\nBoromir's sword.\nhis₁ bow.\nmy₁ axe.\n```\n\n```deriv\n[['s]]                    = lambda P.lambda x.iota y.poss(x,y) /\\ P(y)    : <<e,t>,<e,e>>\n[[sword]]                 = lambda x.sword(x)                              : <e,t>\n[['s sword]]              = lambda x.iota y.poss(x,y) /\\ sword(y)         : <e,e>\n[[Boromir's sword]]       = iota y.poss(b,y) /\\ sword(y)                  : e\n\n[[his_1]]                 = x_1                                            : e\n[['s bow]]                = lambda x.iota y.poss(x,y) /\\ bow(y)           : <e,e>\n[[his_1 bow]]             = iota y.poss(x_1,y) /\\ bow(y)                  : e\n\n[[my_1 axe]]              = iota y.poss(x_1,y) /\\ axe(y)                  : e\n```\n\nThe possessor `x_1` in *his/my* is supplied by context — a free variable assigned to whoever is the contextually salient referent. This parallels the free reading of a pronoun.\n\nIn more complex DPs, 'the' need not appear: a possessive NP already delivers type e, so *Galadriel's kingdom* is directly an individual without a separate definite article (@poss-ex).\n\n## 8.2.1 Free and bound readings\n\nA pronoun inside a possessive can be **free** (its index is assigned by context) or **bound** (its index is abstracted over by a higher quantifier). The two readings differ in their truth conditions.\n\n```ex {#bound-ex}\nGaladriel admires her₁ hair.\nBoromir's sword kills every Uruk-hai who hunts him-B.\nBoromir's king will love him until he dies.\n```\n\n**Free reading** — the possessor index is set by context (@bound-ex):\n\n```deriv\n[['s hair]]                         = lambda x.iota y.poss(x,y) /\\ hair(y)      : <e,e>\n[[her_1 hair]]                      = iota y.poss(x_1,y) /\\ hair(y)             : e\n[[admires her_1 hair]]              = lambda x.admire(x,iota y.poss(x_1,y) /\\ hair(y)) : <e,t>\n[[Galadriel admires her_1 hair]]    = admire(w,iota y.poss(x_1,y) /\\ hair(y))   : t\n```\n\nWhen x₁ is assigned to Galadriel (w), this gives the reflexive reading: Galadriel admires her own hair. When x₁ is assigned to another contextually prominent individual, it is a non-reflexive free reading.\n\n**Definite-pronoun reading** — *him-K* abbreviates the complex definite ιy.[poss(b,y) ∧ king(y)] (Boromir's king), giving the anaphoric referent as a definite description rather than a free variable:\n\n```deriv\n[[boromirs-king]]     = iota y.poss(b,y) /\\ king(y)                      : e\n[[him-B]]             = b                                                  : e\n[[him-K]]             = iota y.poss(b,y) /\\ king(y)                      : e\n[[will]]              = lambda X.X                                         : <<e,t>,<e,t>>\n[[until]]             = lambda q.lambda p.p /\\ until(q)                   : <t,<t,t>>\n[[dies]]              = lambda x.die(x)                                   : <e,t>\n[[he-B dies]]         = die(b)                                             : t\n[[until he-B dies]]   = lambda p.p /\\ until(die(b))                       : <t,t>\n[[love him-B]]        = lambda x.love(x,b)                                : <e,t>\n[[will love him-B until he-B dies]] = lambda x.love(x,b) /\\ until(die(b)) : <e,t>\n[[Boromir's king will love him-B until he-B dies]] = love(iota y.poss(b,y) /\\ king(y),b) /\\ until(die(b)) : t\n```\n\nThe *him-K* variant replaces the object `b` with `ιy.[poss(b,y) ∧ king(y)]`, making the pronoun co-refer with the subject definite description — a **bridging** inference made explicit in the denotation.[^bridge]\n\n[^bridge]: *will* and *shall* are both identity functions here — tense and modality are analysed properly in Chapters 12–13. The *until* operator introduces a second conjunct that the temporal connective holds.\n"
+  }
+}

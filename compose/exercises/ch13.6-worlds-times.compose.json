@@ -1,0 +1,307 @@
+{
+  "compose": 1,
+  "id": "ch13-worlds-times",
+  "title": "Worlds & Times Combined (§12–13)",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b",
+      "i": "now dawn dusk"
+    },
+    "variables": {
+      "e": "x y z",
+      "i": "t t' t'' t1 t2",
+      "s": "w0 w w' w''",
+      "st": "p q",
+      "it": "H J",
+      "et": "P Q",
+      "set": "R"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "now"
+      ],
+      "denotation": "now"
+    },
+    {
+      "words": [
+        "dawn"
+      ],
+      "denotation": "dawn"
+    },
+    {
+      "words": [
+        "dusk"
+      ],
+      "denotation": "dusk"
+    },
+    {
+      "words": [
+        "rides",
+        "ride"
+      ],
+      "denotation": "Lx.Lt.ride(w0,t,x)"
+    },
+    {
+      "words": [
+        "sings",
+        "sing"
+      ],
+      "denotation": "Lx.Lt.sing(w0,t,x)"
+    },
+    {
+      "words": [
+        "reads",
+        "read"
+      ],
+      "denotation": "Ly.Lx.Lt.read(w0,t,x,y)"
+    },
+    {
+      "words": [
+        "ring"
+      ],
+      "denotation": "Lx.ring(w0,x)"
+    },
+    {
+      "words": [
+        "map"
+      ],
+      "denotation": "Lx.map(w0,x)"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "LX.Ix.X(x)"
+    },
+    {
+      "words": [
+        "PFV"
+      ],
+      "denotation": "LH.Lt.Et'[t'⊆t & H(t')]"
+    },
+    {
+      "words": [
+        "PROG"
+      ],
+      "denotation": "LH.Lt.Et'[t⊆t' & H(t')]"
+    },
+    {
+      "words": [
+        "PAST"
+      ],
+      "denotation": "LH.Lt.[t=t1 & ∂(t1<now) & H(t1)]"
+    },
+    {
+      "words": [
+        "PRES"
+      ],
+      "denotation": "LH.Lt.[t=now & H(t)]"
+    },
+    {
+      "words": [
+        "PERFECT"
+      ],
+      "denotation": "LH.Lt.Et'[t'<t & H(t')]"
+    },
+    {
+      "words": [
+        "at"
+      ],
+      "denotation": "Lt.t"
+    },
+    {
+      "words": [
+        "necessarily"
+      ],
+      "denotation": "Lp.Aw'[acc(w0)(w') -> p(w')]"
+    },
+    {
+      "words": [
+        "possibly"
+      ],
+      "denotation": "Lp.Ew'[acc(w0)(w') & p(w')]"
+    },
+    {
+      "words": [
+        "believes",
+        "believe"
+      ],
+      "denotation": "Lp.Lx.Aw'[dox(w0)(x,w') -> p(w')]"
+    },
+    {
+      "words": [
+        "wants",
+        "want"
+      ],
+      "denotation": "Lp.Lx.Aw'[boul(w0)(x,w') -> p(w')]"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateAbstraction": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Tense with world-indexed predicates",
+      "instructions": "With doubly-indexed predicates, the tense and aspect machinery from Ch. 12 applies without change — the world variable w0 is simply free throughout. Build the TenseP using a temporal modifier to saturate the time slot directly (no EC needed). The result is type t with w0 free: a claim about what happens at a particular time in the evaluation world.",
+      "items": [
+        {
+          "sentence": "At dawn, Frodo rode.",
+          "tree": "[.TenseP [.TenseP [.Tense PAST ] [.AspP [.Asp PFV ] [.vP [.DP Frodo ] [.VP rides ] ] ] ] [.PP [.P at ] [.DP dawn ] ] ]",
+          "targets": [
+            "dawn=t1 ∧ ∂(t1<now) ∧ ∃t'[t'⊆t1 ∧ ride(w0,t',f)]"
+          ]
+        },
+        {
+          "sentence": "At dusk, Gandalf read the map.",
+          "tree": "[.TenseP [.TenseP [.Tense PAST ] [.AspP [.Asp PFV ] [.vP [.DP Gandalf ] [.VP [.V reads ] [.DP [.D the ] [.NP map ] ] ] ] ] ] [.PP [.P at ] [.DP dusk ] ] ]",
+          "targets": [
+            "dusk=t1 ∧ ∂(t1<now) ∧ ∃t'[t'⊆t1 ∧ read(w0,t',g,ιz[map(w0,z)])]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "B. Necessity over a tensed clause",
+      "instructions": "A TenseP with a temporal modifier has type t with w0 free. Applying IFA with necessarily wraps this as λw0.φ — the temporal structure (dawn, t1, t′) stays intact inside the bound world. The truth conditions assert that across all accessible worlds, the temporal claim holds — but the time constants (dawn, t1) are rigid: the same time in every world.",
+      "items": [
+        {
+          "sentence": "Necessarily, at dawn, Frodo rode.",
+          "tree": "[.NecP [.Adv necessarily ] [.TenseP [.TenseP [.Tense PAST ] [.AspP [.Asp PFV ] [.vP [.DP Frodo ] [.VP rides ] ] ] ] [.PP [.P at ] [.DP dawn ] ] ] ]",
+          "targets": [
+            "∀w'[acc(w0)(w') → dawn=t1 ∧ ∂(t1<now) ∧ ∃t'[t'⊆t1 ∧ ride(w',t',f)]]"
+          ]
+        },
+        {
+          "sentence": "Possibly, at dusk, Gandalf read the map.",
+          "tree": "[.PossP [.Adv possibly ] [.TenseP [.TenseP [.Tense PAST ] [.AspP [.Asp PFV ] [.vP [.DP Gandalf ] [.VP [.V reads ] [.DP [.D the ] [.NP map ] ] ] ] ] ] [.PP [.P at ] [.DP dusk ] ] ] ]",
+          "targets": [
+            "∃w'[acc(w0)(w') ∧ dusk=t1 ∧ ∂(t1<now) ∧ ∃t'[t'⊆t1 ∧ read(w',t',g,ιz[map(w',z)])]]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "C. Attitudes over tensed clauses",
+      "instructions": "Attitude verbs interact with tense: \"Gandalf believes Frodo rode at dawn\" — the embedded TenseP has type t (after modifier saturation), w0 free. IFA with believes wraps it as λw0.φ and applies to the accessibility relation: in all of Gandalf's belief worlds, the temporal claim holds. The time constants and the tense variable t1 are the same across belief worlds.",
+      "items": [
+        {
+          "sentence": "Gandalf believes Frodo rode at dawn.",
+          "tree": "[.S [.DP Gandalf ] [.VP [.V believes ] [.CP [.TenseP [.TenseP [.Tense PAST ] [.AspP [.Asp PFV ] [.vP [.DP Frodo ] [.VP rides ] ] ] ] [.PP [.P at ] [.DP dawn ] ] ] ] ] ]",
+          "targets": [
+            "∀w'[dox(w0)(g,w') → dawn=t1 ∧ ∂(t1<now) ∧ ∃t'[t'⊆t1 ∧ ride(w',t',f)]]"
+          ]
+        },
+        {
+          "sentence": "Frodo wants to ride at dawn.",
+          "tree": "[.S [.DP Frodo ] [.VP [.V wants ] [.CP [.TenseP [.TenseP [.Tense PAST ] [.AspP [.Asp PFV ] [.vP [.DP Frodo ] [.VP rides ] ] ] ] [.PP [.P at ] [.DP dawn ] ] ] ] ] ]",
+          "targets": [
+            "∀w'[boul(w0)(f,w') → dawn=t1 ∧ ∂(t1<now) ∧ ∃t'[t'⊆t1 ∧ ride(w',t',f)]]"
+          ]
+        }
+      ]
+    }
+  ]
+}

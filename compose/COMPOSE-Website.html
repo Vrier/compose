@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>COMPOSE — Compositional Meaning Practice &amp; Online Semantics Engine</title>
+<meta name="description" content="COMPOSE is an interactive engine and problem-set builder for teaching compositional formal semantics — build syntactic trees, assign lexical denotations, and let students derive truth conditions step by step. Preloaded for Coppock & Champollion's Invitation to Formal Semantics." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="web.css" />
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap bar">
+    <a class="brand" href="#top">
+      <span class="lam">λ</span>
+      <b>COMPOSE</b>
+      <span class="tag">Semantics Engine</span>
+    </a>
+    <nav class="main" id="nav">
+      <a href="#about">About</a>
+      <a href="#quickstart">Quick Start</a>
+      <a href="#composition">Composition</a>
+      <a href="#builds">Builds</a>
+      <a href="#library">Library</a>
+      <a href="#docs">Docs</a>
+      <a href="#credits">Credits</a>
+      <a class="nav-launch" href="teacher-coppock-champollion.html" target="_blank" rel="noopener">Launch ↗</a>
+    </nav>
+    <button class="navtoggle" id="navtoggle" aria-label="Toggle navigation">Menu</button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============================ HERO — specimen ============================ -->
+  <section class="hero" id="hero">
+    <div class="wrap">
+      <div class="hero-inner">
+        <div class="hero-toprow">
+          <div class="tr-left">
+            <p class="hero-eyebrow">Compositional Meaning Practice · Online Semantics Engine</p>
+            <h1 class="hero-word">COMPOSE</h1>
+          </div>
+          <div class="tr-right">
+            <p class="hero-lede">An engine and problem-set builder for teaching <em>compositional semantics</em> — from Function Application to intensional type-shifting.</p>
+            <div class="hero-stats">
+              <div class="hstat"><b>32</b><span>Problem sets</span></div>
+              <div class="hstat"><b>14</b><span>Type-shifters</span></div>
+              <div class="hstat"><b>4</b><span>Builds</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="demo-wrap">
+          <div class="demo-frame">
+            <iframe src="COMPOSE-Demo.html" title="COMPOSE — live derivation" loading="lazy"></iframe>
+          </div>
+          <div class="demo-cap">
+            <span class="live">Live derivation — "Every wizard sleeps."</span>
+            <span class="hero-cta">
+              <a class="btn" href="teacher-coppock-champollion.html" target="_blank" rel="noopener">Launch the engine <span class="ar">↗</span></a>
+              <a class="btn ghost" href="#builds">Get the builds ↓</a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ 01 ABOUT ============================ -->
+  <section id="about">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-num">01</span>
+        <h2 class="sec-title">About<span class="sub">An engine for the principle of compositionality</span></h2>
+      </div>
+      <p class="lede">COMPOSE turns the chalkboard derivation into something students <em>do</em>. Every exercise is a syntactic tree; the task is to compose its meaning from the bottom up, choosing the right rule at each node until the root yields a truth condition. Inspired by the <a href="http://lambdacalculator.com/" target="_blank" rel="noopener" style="color:var(--accent-ink);">Lambda Calculator</a> (Champollion, Tauberer &amp; Romero), rebuilt as a browser-native engine with an authoring toolkit.</p>
+      <ul class="point-list">
+        <li>
+          <span class="pi">01</span>
+          <div>
+            <h3>Trees, not multiple choice</h3>
+            <p>Each item is a bracketed syntax tree. Click a node, pick a composition rule, and the engine performs the β-reduction and checks the type. Wrong rule, wrong type — it won't combine.</p>
+          </div>
+        </li>
+        <li>
+          <span class="pi">02</span>
+          <div>
+            <h3>A real λ-calculus engine</h3>
+            <p>Denotations are genuine typed λ-terms. COMPOSE infers types, applies functions, reduces, and recognises α-equivalent answers — so it grades meaning, not surface string.</p>
+          </div>
+        </li>
+        <li>
+          <span class="pi">03</span>
+          <div>
+            <h3>Author your own</h3>
+            <p>A built-in editor lets you set a domain, write a lexicon, lay out trees, and toggle which rules are in play. Export to <code>.compose.json</code> or a self-contained assignment.</p>
+          </div>
+        </li>
+        <li>
+          <span class="pi">04</span>
+          <div>
+            <h3>Teacher &amp; student modes</h3>
+            <p>Teacher mode unlocks every rule, the editor, and answer reveals. Student builds hand out a fixed assignment with progress tracking and per-exercise rule sheets.</p>
+          </div>
+        </li>
+        <li>
+          <span class="pi">05</span>
+          <div>
+            <h3>Notes built in</h3>
+            <p>Sets can carry <span class="ic">notes</span> — a faithful, exercise-locked companion to the chapter — shown in a side panel beside the tree.</p>
+          </div>
+        </li>
+        <li>
+          <span class="pi">06</span>
+          <div>
+            <h3>Runs anywhere</h3>
+            <p>A single HTML file in the browser. No install, no account, no server. Works offline once loaded, and on phones with a dedicated mobile layout.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================ 02 QUICK START ============================ -->
+  <section id="quickstart">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-num">02</span>
+        <h2 class="sec-title">Quick start<span class="sub">Up and running in four steps</span></h2>
+      </div>
+      <p class="lede">COMPOSE is a single HTML file. There is nothing to install — open it in any modern browser and the engine is live. Here is the fastest path from first open to distributing an assignment.</p>
+      <div class="qs-steps">
+        <div class="qs-step">
+          <div class="qs-n">01</div>
+          <h3>Open the Teacher build</h3>
+          <p>Launch <em>Teacher · Coppock &amp; Champollion</em> from the Builds section below. All 32 sets load immediately — no login, no install, no server needed.</p>
+          <span class="qs-arrow">→</span>
+        </div>
+        <div class="qs-step">
+          <div class="qs-n">02</div>
+          <h3>Pick a set or author one</h3>
+          <p>Browse the built-in library by chapter, or open the <strong>Editor</strong> to write your own domain, lexicon and trees. Toggle which rules are active per set.</p>
+          <span class="qs-arrow">→</span>
+        </div>
+        <div class="qs-step">
+          <div class="qs-n">03</div>
+          <h3>Export an assignment</h3>
+          <p>Click <strong>Export</strong> to save a <code>.compose.json</code> file, or export as a self-contained HTML that students can open directly.</p>
+          <span class="qs-arrow">→</span>
+        </div>
+        <div class="qs-step">
+          <div class="qs-n">04</div>
+          <h3>Share with students</h3>
+          <p>Post the file to a course page or email it. Students open it in the <em>Student</em> build — or directly in any browser if you exported as HTML.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ 03 COMPOSITION ============================ -->
+  <section id="composition">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-num">03</span>
+        <h2 class="sec-title">The rules of composition<span class="sub">Every mechanism, switchable per exercise</span></h2>
+      </div>
+      <p class="lede">COMPOSE offers the standard inventory of composition operations. An author decides which are active for a given set — so a §6 exercise sees only Function Application, while a §13 set adds intensional variants.</p>
+      <div class="rules-ledger">
+        <div class="rule-group first"><span class="rg">Basic</span><span class="rg-note">core · always in reach</span><span class="rg-line"></span></div>
+        <div class="rule-row">
+          <span class="ab">FA</span>
+          <div><h4>Function Application</h4><div class="rk">core · default on</div></div>
+          <p>Apply a function of type <span class="lx">⟨A,B⟩</span> to a sister argument of type <span class="lx">A</span>, yielding <span class="lx">B</span>.</p>
+        </div>
+        <div class="rule-row">
+          <span class="ab">PM</span>
+          <div><h4>Predicate Modification</h4><div class="rk">core</div></div>
+          <p>Conjoin two <span class="lx">⟨e,t⟩</span> sisters pointwise: <span class="lx">λx.[ A(x) ∧ B(x) ]</span>.</p>
+        </div>
+        <div class="rule-row">
+          <span class="ab">NN</span>
+          <div><h4>Non-branching Node</h4><div class="rk">core · default on</div></div>
+          <p>A node with a single child inherits its child's meaning unchanged.</p>
+        </div>
+        <div class="rule-group"><span class="rg">Advanced</span><span class="rg-note">movement &amp; intensions</span><span class="rg-line"></span></div>
+        <div class="rule-row">
+          <span class="ab">PA</span>
+          <div><h4>Predicate Abstraction</h4><div class="rk">movement</div></div>
+          <p>λ-abstract over the index of a trace to build a derived predicate — the semantics of movement.</p>
+        </div>
+        <div class="rule-row">
+          <span class="ab">QR</span>
+          <div><h4>Quantifier Raising</h4><div class="rk">movement · drag-and-drop</div></div>
+          <p>Raise a generalized-quantifier DP above S, leaving a coindexed trace and an abstraction binder.</p>
+        </div>
+        <div class="rule-row">
+          <span class="ab">IFA</span>
+          <div><h4>Intensional Function Application</h4><div class="rk">§13 · intensional</div></div>
+          <p>Pass the evaluation world as an argument so a function can see a sister's <em>intension</em>, not just its extension.</p>
+        </div>
+      </div>
+
+      <div class="shift-band">
+        <h4>Type-shifting</h4>
+        <p>When a constituent has the wrong type for its sister, a type-shifter rescues the composition. COMPOSE ships fourteen, each enableable independently — sorted here from the classic Partee triangle to the event- and intension-aware closures.</p>
+        <div class="shift-sub">Basic <span class="sn">— the Partee triangle</span></div>
+        <div class="shift-chips">
+          <span class="sc"><b>lift</b><span>e → ⟨et,t⟩</span></span>
+          <span class="sc"><b>lower</b><span>⟨et,t⟩ → e</span></span>
+          <span class="sc"><b>ident</b><span>e → ⟨e,t⟩</span></span>
+          <span class="sc"><b>iota</b><span>⟨e,t⟩ → e</span></span>
+          <span class="sc"><b>A</b><span>argument op</span></span>
+          <span class="sc"><b>BE</b><span>⟨et,t⟩ → ⟨e,t⟩</span></span>
+        </div>
+        <div class="shift-sub">Advanced <span class="sn">— modification, raising &amp; closures</span></div>
+        <div class="shift-chips">
+          <span class="sc"><b>MOD</b><span>predicate modifier</span></span>
+          <span class="sc"><b>raiseO</b><span>object raising</span></span>
+          <span class="sc"><b>raiseS</b><span>subject raising</span></span>
+          <span class="sc"><b>EC</b><span>existential closure</span></span>
+          <span class="sc"><b>EC-v</b><span>over events</span></span>
+          <span class="sc"><b>EC-i</b><span>over times</span></span>
+        </div>
+      </div>
+
+      <div class="spotlights">
+        <div class="spot">
+          <div class="spot-tag">Capability · §10</div>
+          <h3>Mereology &amp; plurals</h3>
+          <p>The domain can be a join semilattice: individuals close under sum <span class="lx">⊕</span>, ordered by a parthood relation <span class="lx">≤</span>, with the pluralizing star operator <span class="lx">*P</span>.</p>
+          <p>That makes the whole §10 fragment derivable end to end — distributive and collective predication, and the §10.5 “full fragment” where every verb is starred so it holds of sums. Cumulative readings fall out of the relational star <span class="lx">**R</span>.</p>
+          <div class="spot-meta">Sums · parthood · ★ operator · cumulativity</div>
+        </div>
+        <div class="spot">
+          <div class="spot-tag">Capability · drag-and-drop</div>
+          <h3>Quantifier Raising</h3>
+          <p>A generalized-quantifier DP that can't compose in situ is raised by dragging it above its scope node. COMPOSE leaves a coindexed trace <span class="lx">t₁</span> and inserts an <span class="lx">LP</span> binder for Predicate Abstraction to λ-bind.</p>
+          <p>That covers object quantifiers (§7.4) and inverse-scope ambiguities — give an item two target denotations to require <em>both</em> readings.</p>
+          <div class="spot-meta">Traces · Predicate Abstraction · scope ambiguity</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ 04 BUILDS ============================ -->
+  <section id="builds">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-num">04</span>
+        <h2 class="sec-title">Four builds<span class="sub">Pick a role, with or without the library</span></h2>
+      </div>
+      <p class="lede">COMPOSE ships in four flavours that differ only in who they are for and what comes preloaded. Each is one HTML file — open it to run, or download to host yourself.</p>
+      <div class="build-grid">
+
+        <a class="build" href="teacher-coppock-champollion.html" target="_blank" rel="noopener">
+          <div class="btag"><span class="role teacher">Teacher</span><span class="preload">+ Coppock &amp; Champollion</span></div>
+          <h3>Teacher · Full library</h3>
+          <p>Every authoring tool plus the complete set of derivations for <a href="https://eecoppock.info/bootcamp/semantics-boot-camp.pdf" target="_blank" rel="noopener" class="bk"><em>Invitation to Formal Semantics</em></a>, §6 through §13. The recommended starting point for instructors.</p>
+          <div class="dlrow">
+            <span class="lbl">Open <span class="arrow">↗</span></span>
+            <span class="sz">32 sets · ~290 exercises</span>
+          </div>
+        </a>
+
+        <a class="build" href="student-coppock-champollion.html" target="_blank" rel="noopener">
+          <div class="btag"><span class="role student">Student</span><span class="preload">+ Coppock &amp; Champollion</span></div>
+          <h3>Student · Full library</h3>
+          <p>The same library in a focused student view — exercises, texts, rule sheets and progress tracking, with the editor and answer reveals hidden.</p>
+          <div class="dlrow">
+            <span class="lbl">Open <span class="arrow">↗</span></span>
+            <span class="sz">32 sets · self-paced</span>
+          </div>
+        </a>
+
+        <a class="build" href="teacher.html" target="_blank" rel="noopener">
+          <div class="btag"><span class="role teacher">Teacher</span><span class="preload">empty</span></div>
+          <h3>Teacher · Author</h3>
+          <p>A clean engine with the full toolkit and no preloaded content. Write your own lexica and trees, then export assignments for your students.</p>
+          <div class="dlrow">
+            <span class="lbl">Open <span class="arrow">↗</span></span>
+            <span class="sz">Bring your own sets</span>
+          </div>
+        </a>
+
+        <a class="build" href="student.html" target="_blank" rel="noopener">
+          <div class="btag"><span class="role student">Student</span><span class="preload">empty</span></div>
+          <h3>Student · Loader</h3>
+          <p>A minimal student shell that opens whatever assignment you share — a <span class="ic">.compose.json</span>, an exported HTML, or a textbook bundle.</p>
+          <div class="dlrow">
+            <span class="lbl">Open <span class="arrow">↗</span></span>
+            <span class="sz">Loads shared sets</span>
+          </div>
+        </a>
+
+      </div>
+      <p class="dl-note">To download instead of opening, right-click any card → <em>Save link as…</em>. Builds load the COMPOSE engine files (<code>engine.js</code>, <code>app.jsx</code>, …) from alongside them, so host the whole folder together. A single-file offline export is on the roadmap.</p>
+    </div>
+  </section>
+
+  <!-- ============================ 05 LIBRARY ============================ -->
+  <section id="library">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-num">05</span>
+        <h2 class="sec-title">Exercise library<span class="sub">Coppock &amp; Champollion, chapter by chapter</span></h2>
+      </div>
+      <p class="lede">The full library tracks <a href="https://eecoppock.info/bootcamp/semantics-boot-camp.pdf" target="_blank" rel="noopener" class="bk"><em>Invitation to Formal Semantics</em></a> from first composition through intensional semantics, with two classic capstones. Filter by chapter, or scan the lot.</p>
+      <div class="lib-toolbar" id="libToolbar"></div>
+      <div id="library-root"></div>
+      <div class="lib-foot" id="libFoot"></div>
+    </div>
+  </section>
+
+  <!-- ============================ 06 DOCS ============================ -->
+  <section id="docs">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-num">06</span>
+        <h2 class="sec-title">The file format<span class="sub">Author by hand or by export</span></h2>
+      </div>
+      <div class="docs-grid">
+        <div class="docs-prose">
+          <p>A COMPOSE set is a plain <strong>JSON</strong> file, <code>.compose.json</code>. There is no "exercise type" to choose — every item is a tree to compose. You can write one in any text editor, or build it in the in-app editor and click <strong>Export</strong>.</p>
+          <p>A <strong>domain</strong> declares the constants and variables of each type; a <strong>lexicon</strong> maps surface words to λ-term denotations; <strong>rules</strong> switch composition operations and type-shifters on or off; and <strong>exercises</strong> list the trees, in bracket notation, with optional target denotations.</p>
+          <ul class="docs-points">
+            <li><span class="k">ascii λ</span><span>Write <span class="ic">L</span> for λ, <span class="ic">A</span> for ∀, <span class="ic">E</span> for ∃, <span class="ic">i</span> for ι — they convert as you type.</span></li>
+            <li><span class="k">[.X … ]</span><span>Trees use Lambda-Calculator bracket notation; a leaf is a lexicon word, <span class="ic">t_1</span> a trace, a bare number an index.</span></li>
+            <li><span class="k">targets</span><span>Give two goal denotations for a scope-ambiguous item to require both readings.</span></li>
+            <li><span class="k">bundles</span><span>Group sets under another textbook in a <span class="ic">.compose-bundle.json</span>.</span></li>
+            <li><span class="k">notes</span><span>Attach companion notes, kept α-equivalent and same-typed to the set's lexicon.</span></li>
+          </ul>
+        </div>
+        <div class="code-card" aria-hidden="true">
+          <div class="cc-bar">
+            <span class="dot" style="background:oklch(0.62 0.16 25)"></span>
+            <span class="dot" style="background:oklch(0.78 0.12 80)"></span>
+            <span class="dot" style="background:oklch(0.7 0.12 150)"></span>
+            <span class="fn">frodo-runs.compose.json</span>
+          </div>
+<pre><span class="t-pun">{</span>
+  <span class="t-key">"compose"</span><span class="t-pun">:</span> <span class="t-num">1</span><span class="t-pun">,</span>
+  <span class="t-key">"title"</span><span class="t-pun">:</span> <span class="t-str">"Function Application"</span><span class="t-pun">,</span>
+
+  <span class="t-key">"domain"</span><span class="t-pun">:</span> <span class="t-pun">{</span>
+    <span class="t-key">"constants"</span><span class="t-pun">:</span> <span class="t-pun">{</span> <span class="t-key">"e"</span><span class="t-pun">:</span> <span class="t-str">"f s b"</span> <span class="t-pun">},</span>
+    <span class="t-key">"variables"</span><span class="t-pun">:</span> <span class="t-pun">{</span> <span class="t-key">"e"</span><span class="t-pun">:</span> <span class="t-str">"x y z"</span> <span class="t-pun">}</span>
+  <span class="t-pun">},</span>
+
+  <span class="t-key">"lexicon"</span><span class="t-pun">:</span> <span class="t-pun">[</span>
+    <span class="t-pun">{</span> <span class="t-key">"words"</span><span class="t-pun">:</span> <span class="t-pun">[</span><span class="t-str">"Frodo"</span><span class="t-pun">],</span> <span class="t-key">"denotation"</span><span class="t-pun">:</span> <span class="t-str">"f"</span> <span class="t-pun">},</span>
+    <span class="t-pun">{</span> <span class="t-key">"words"</span><span class="t-pun">:</span> <span class="t-pun">[</span><span class="t-str">"runs"</span><span class="t-pun">],</span> <span class="t-key">"denotation"</span><span class="t-pun">:</span> <span class="t-str">"Lx.run(x)"</span> <span class="t-pun">}</span>
+  <span class="t-pun">],</span>
+
+  <span class="t-key">"rules"</span><span class="t-pun">:</span> <span class="t-pun">{</span>
+    <span class="t-key">"composition"</span><span class="t-pun">:</span> <span class="t-pun">{</span> <span class="t-key">"functionApplication"</span><span class="t-pun">:</span> <span class="t-num">true</span> <span class="t-pun">}</span>
+  <span class="t-pun">},</span>
+
+  <span class="t-key">"exercises"</span><span class="t-pun">:</span> <span class="t-pun">[{</span>
+    <span class="t-key">"title"</span><span class="t-pun">:</span> <span class="t-str">"A. Intransitives"</span><span class="t-pun">,</span>
+    <span class="t-key">"items"</span><span class="t-pun">:</span> <span class="t-pun">[{</span>
+      <span class="t-key">"sentence"</span><span class="t-pun">:</span> <span class="t-str">"Frodo runs."</span><span class="t-pun">,</span>
+      <span class="t-key">"tree"</span><span class="t-pun">:</span> <span class="t-str">"[.S [.DP Frodo ] [.VP runs ] ]"</span><span class="t-pun">,</span>
+      <span class="t-key">"targets"</span><span class="t-pun">:</span> <span class="t-pun">[</span><span class="t-str">"run(f)"</span><span class="t-pun">]</span>
+    <span class="t-pun">}]</span>
+  <span class="t-pun">}]</span>
+<span class="t-pun">}</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ 07 CREDITS ============================ -->
+  <section id="credits">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-num">07</span>
+        <h2 class="sec-title">Credits<span class="sub">Author &amp; provenance</span></h2>
+      </div>
+      <div class="credit-grid">
+        <div class="credit-prose">
+          <p>COMPOSE — the <strong>Compositional Meaning Practice and Online Semantics Engine</strong> — is built and maintained by <strong>Dr Thomas Stephen</strong>, Fellow in Linguistics at Trinity College Dublin, as part of a wider set of tools for teaching formal semantics.</p>
+          <p>It owes its design to the <a href="http://lambdacalculator.com/" target="_blank" rel="noopener">Lambda Calculator</a> of Lucas Champollion, Joshua Tauberer and Maribel Romero, and its preloaded library to Elizabeth Coppock and Lucas Champollion's open-access textbook, <a href="https://eecoppock.info/bootcamp/semantics-boot-camp.pdf" target="_blank" rel="noopener"><em>Invitation to Formal Semantics</em></a>.</p>
+          <p>The engine is free to use for teaching and learning. If it is useful in your course, a note of where it travelled is always welcome.</p>
+        </div>
+        <div class="credit-links">
+          <a href="teacher-coppock-champollion.html" target="_blank" rel="noopener">Launch COMPOSE <span class="ext">↗</span></a>
+          <a href="https://tom-stephen.com" target="_blank" rel="noopener">Thomas Stephen <span class="ext">tom-stephen.com ↗</span></a>
+          <a href="http://lambdacalculator.com/" target="_blank" rel="noopener">Lambda Calculator <span class="ext">↗</span></a>
+          <a href="https://eecoppock.info/bootcamp/semantics-boot-camp.pdf" target="_blank" rel="noopener">Invitation to Formal Semantics <span class="ext">PDF ↗</span></a>
+        </div>
+      </div>
+
+      <div class="cite-block">
+        <div class="cb-head"><span>BibTeX</span><button class="copy-btn" id="copyBib">Copy</button></div>
+<pre id="bibtext"><span class="t-key">@software</span>{stephen2026compose,
+  <span class="t-key">author</span>    = {<span class="t-str">Stephen, Thomas</span>},
+  <span class="t-key">title</span>     = {{<span class="t-str">COMPOSE</span>}: <span class="t-str">Compositional Meaning Practice
+              and Online Semantics Engine</span>},
+  <span class="t-key">year</span>      = {<span class="t-str">2026</span>},
+  <span class="t-key">url</span>       = {<span class="t-str">https://tom-stephen.com</span>},
+}</pre>
+      </div>
+      <p class="cite-plain">Stephen, T. (2026). <em>COMPOSE: Compositional Meaning Practice and Online Semantics Engine</em>. Retrieved from https://tom-stephen.com</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© <span id="yr"></span> Thomas Stephen · COMPOSE</span>
+    <span>Compositional Meaning Practice &amp; Online Semantics Engine</span>
+  </div>
+</footer>
+
+<script src="web.js"></script>
+</body>
+</html>

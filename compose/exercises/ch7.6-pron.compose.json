@@ -1,0 +1,357 @@
+{
+  "compose": 1,
+  "id": "ch7-pron",
+  "title": "Pronouns & Binding (§7.5)",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w bi st pi tm el sr mr x1 x2"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "X Y Z P Q R F G H",
+      "t": "p q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "is",
+        "are"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "a",
+        "an"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "doesnt",
+        "does-not"
+      ],
+      "denotation": "LP.Lx.~P(x)"
+    },
+    {
+      "words": [
+        "not"
+      ],
+      "denotation": "LP.Lx.~P(x)"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "wizard"
+      ],
+      "denotation": "Lx.wizard(x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(x)"
+    },
+    {
+      "words": [
+        "ranger"
+      ],
+      "denotation": "Lx.ranger(x)"
+    },
+    {
+      "words": [
+        "king"
+      ],
+      "denotation": "Lx.king(x)"
+    },
+    {
+      "words": [
+        "creature"
+      ],
+      "denotation": "Lx.creature(x)"
+    },
+    {
+      "words": [
+        "dwarf"
+      ],
+      "denotation": "Lx.dwarf(x)"
+    },
+    {
+      "words": [
+        "brave"
+      ],
+      "denotation": "Lx.brave(x)"
+    },
+    {
+      "words": [
+        "wise"
+      ],
+      "denotation": "Lx.wise(x)"
+    },
+    {
+      "words": [
+        "evil"
+      ],
+      "denotation": "Lx.evil(x)"
+    },
+    {
+      "words": [
+        "fears",
+        "fear"
+      ],
+      "denotation": "Ly.Lx.fear(x,y)"
+    },
+    {
+      "words": [
+        "loves",
+        "love"
+      ],
+      "denotation": "Ly.Lx.love(x,y)"
+    },
+    {
+      "words": [
+        "trusts",
+        "trust"
+      ],
+      "denotation": "Ly.Lx.trust(x,y)"
+    },
+    {
+      "words": [
+        "he1",
+        "him1",
+        "his1",
+        "she1",
+        "her1",
+        "they1",
+        "them1",
+        "himself1",
+        "herself1",
+        "themselves1"
+      ],
+      "denotation": "x1"
+    },
+    {
+      "words": [
+        "he2",
+        "him2",
+        "his2",
+        "she2",
+        "her2",
+        "they2",
+        "them2",
+        "himself2",
+        "herself2",
+        "themselves2"
+      ],
+      "denotation": "x2"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "no",
+        "No"
+      ],
+      "denotation": "LX.LY.~Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "who"
+      ],
+      "denotation": "LX.X"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": true,
+      "predicateAbstraction": true
+    },
+    "quantifierRaising": true
+  },
+  "exercises": [
+    {
+      "title": "A. Free pronouns",
+      "instructions": "A free pronoun denotes a contextually-supplied individual (type e). Its value is given by the assignment function. Derive the proposition.",
+      "items": [
+        {
+          "sentence": "He is a king.",
+          "tree": "[.S [.DP he1 ] [.VP [.V is ] [.NP [.D a ] [.NP king ] ] ] ]",
+          "reading": {
+            "section": "7.5"
+          }
+        },
+        {
+          "sentence": "He loves Arwen.",
+          "tree": "[.S [.DP he1 ] [.VP [.V loves ] [.DP Aragorn ] ] ]",
+          "reading": {
+            "section": "7.5"
+          }
+        },
+        {
+          "sentence": "He fears no evil creature.",
+          "tree": "[.S [.DP he1 ] [.VP [.V fears ] [.DP [.D no ] [.NP [.AP evil ] [.NP creature ] ] ] ] ]",
+          "reading": {
+            "section": "7.5"
+          }
+        }
+      ]
+    },
+    {
+      "title": "B. Reflexive Pronouns",
+      "instructions": "Reflexive pronouns are bound by the subject via Quantifier Raising + Predicate Abstraction. Raise the subject DP (or the pronoun's antecedent) and abstract over the co-indexed trace.",
+      "items": [
+        {
+          "sentence": "Every dwarf trusts themself.",
+          "tree": "[.S [.DP [.D every ] [.NP dwarf ] ] [.VP [.V trusts ] [.DP themselves1 ] ] ]",
+          "targets": [
+            "∀x[dwarf(x) → trust(x,x)]"
+          ],
+          "reading": {
+            "section": "7.5.1"
+          }
+        },
+        {
+          "sentence": "Strider is a ranger who doesn't trust himself.",
+          "tree": "[.S [.DP Strider ] [.VP [.V is ] [.NP [.D a ] [.NP [.NP ranger ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.Neg doesnt ] [.VP [.V trusts ] [.DP himself1 ] ] ] ] ] ] ] ] ] ]",
+          "targets": [
+            "ranger(st) ∧ ¬trust(st,st)"
+          ],
+          "reading": {
+            "section": "7.5.1"
+          }
+        },
+        {
+          "sentence": "Some wizard who loves Frodo fears himself.",
+          "tree": "[.S [.DP [.D some ] [.NP [.NP wizard ] [.CP [.C who ] [.S [.DP t1 ] [.VP [.V loves ] [.DP Frodo ] ] ] ] ] ] [.VP [.V fears ] [.DP himself1 ] ] ]",
+          "targets": [
+            "∃x[wizard(x) ∧ love(x,f) ∧ fear(x,x)]"
+          ],
+          "reading": {
+            "section": "7.5.1"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": {
+    "format": "lingdown",
+    "markdown": "# Chapter 7 · Pronouns and Binding\n\nA pronoun can get its value in two ways: *freely*, from the context of utterance, or *bound*, via a quantifier antecedent. Both are handled compositionally once pronouns are treated as **indexed** expressions.\n\n## 7.5 Free pronouns\n\nA **free pronoun** denotes a contextually supplied individual of type e. Its denotation is given directly by the assignment: *he₁* denotes x₁, the value assigned to index 1. Free pronouns are ordinary type-e terms; they compose by Function Application just like proper names.\n\n```ex {#free-pron}\nHe is a king.\nHe loves Arwen.\nHe fears no evil creature.\n```\n\n```deriv\n[[he_1]]              = x_1                            : e\n[[king]]              = lambda x.king(x)               : <e,t>\n[[is a king]]         = lambda x.king(x)               : <e,t>\n[[He_1 is a king]]    = king(x_1)                      : t\n```\n\nThe proposition *king(x₁)* is true or false depending on who x₁ is assigned to — the pronoun is a free variable whose value is fixed by context, not by the grammar.\n\nTwo pronouns with different indices are always disjoint in interpretation. *He₁* and *he₂* can never corefer within a single assignment.\n\n## 7.5.1 Bound pronouns\n\nA **bound pronoun** is co-indexed with a quantifier. The binding is established by **Predicate Abstraction** over the shared index: the quantifier raises (or is interpreted as raising) via QR, and the LP node at its landing site abstracts over the index that the pronoun also carries.\n\n```ex {#bound-pron}\nEvery dwarf trusts themself.\nStrider is a ranger who doesn't trust himself.\nSome wizard who loves Frodo fears himself.\n```\n\nFor *Every dwarf trusts themself*, the subject QP and the reflexive *themselves₁* both carry index 1. QR raises the subject, leaving a trace t₁; the reflexive in object position is also x₁. PA over index 1 binds both simultaneously:\n\n```deriv\n[[trusts themselves_1]]     = lambda x.trust(x,x_1)         : <e,t>\n[[t_1 trusts themselves_1]] = trust(x_1,x_1)                : t\n[[LP 1 [S t_1 trusts themselves_1]]] = lambda x.trust(x,x)  : <e,t>   (PA)\n[[every dwarf]]             = lambda Y.forall x[dwarf(x) -> Y(x)] : <<e,t>,t>\n[[every dwarf trusts themself]] = forall x[dwarf(x) -> trust(x,x)] : t\n```\n\nAfter PA, the pronoun index is **bound**: every individual that falls in the restrictor is related to itself. The reflexive reading follows without any extra axiom — it is just co-indexation made compositional.\n\n```tree\n[S{forall x[dwarf(x) -> trust(x,x)]}\n  [DP{lambda Y.forall x[dwarf(x) -> Y(x)]}\n    [D{lambda X.lambda Y.forall x[X(x) -> Y(x)]} every]\n    [NP{lambda x.dwarf(x)} dwarf]]\n  [LP{lambda x.trust(x,x)} 1\n    [S{trust(x_1,x_1)}\n      [DP{x_1} t_1]\n      [VP{lambda x.trust(x,x_1)}\n        [V{lambda y.lambda x.trust(x,y)} trusts]\n        [DP{x_1} themselves_1]]]]]\n```\n\nBound pronouns in relative clauses work the same way. *A ranger who doesn't trust himself* embeds a relative clause whose object gap and reflexive share an index; PA inside the relative CP produces λx.¬trust(x,x).[^refl]\n\n[^refl]: In this system *himself₁* and trace t₁ are both x₁ — the same individual constant abstracted over by LP. The PA rule therefore captures coreference and binding in a single step.\n"
+  }
+}

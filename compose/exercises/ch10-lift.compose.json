@@ -1,0 +1,387 @@
+{
+  "compose": 1,
+  "id": "ch10-lift",
+  "title": "10.1 DP Coordination & Montague Lift",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "P Q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "rides",
+        "ride"
+      ],
+      "denotation": "Lx.ride(x)"
+    },
+    {
+      "words": [
+        "sings",
+        "sing"
+      ],
+      "denotation": "Lx.sing(x)"
+    },
+    {
+      "words": [
+        "rests",
+        "rest"
+      ],
+      "denotation": "Lx.rest(x)"
+    },
+    {
+      "words": [
+        "meets",
+        "meet"
+      ],
+      "denotation": "Lx.meet(x)"
+    },
+    {
+      "words": [
+        "carries",
+        "carry"
+      ],
+      "denotation": "Ly.Lx.carry(x,y)"
+    },
+    {
+      "words": [
+        "guards",
+        "guard"
+      ],
+      "denotation": "Ly.Lx.guard(x,y)"
+    },
+    {
+      "words": [
+        "reads",
+        "read"
+      ],
+      "denotation": "Ly.Lx.read(x,y)"
+    },
+    {
+      "words": [
+        "finds",
+        "find"
+      ],
+      "denotation": "Ly.Lx.find(x,y)"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(x)"
+    },
+    {
+      "words": [
+        "dwarf"
+      ],
+      "denotation": "Lx.dwarf(x)"
+    },
+    {
+      "words": [
+        "ring"
+      ],
+      "denotation": "Lx.ring(x)"
+    },
+    {
+      "words": [
+        "sword"
+      ],
+      "denotation": "Lx.sword(x)"
+    },
+    {
+      "words": [
+        "map"
+      ],
+      "denotation": "Lx.map(x)"
+    },
+    {
+      "words": [
+        "hobbits"
+      ],
+      "denotation": "*Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "elves"
+      ],
+      "denotation": "*Lx.elf(x)"
+    },
+    {
+      "words": [
+        "dwarves"
+      ],
+      "denotation": "*Lx.dwarf(x)"
+    },
+    {
+      "words": [
+        "rings"
+      ],
+      "denotation": "*Lx.ring(x)"
+    },
+    {
+      "words": [
+        "swords"
+      ],
+      "denotation": "*Lx.sword(x)"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "LX.Ix.X(x)"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "a"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "theSUPR"
+      ],
+      "denotation": "LX.Ix.[X(x) & Ay[X(y) -> y≤x]]"
+    },
+    {
+      "words": [
+        "andS"
+      ],
+      "denotation": "Lq.Lp.[p & q]"
+    },
+    {
+      "words": [
+        "orS"
+      ],
+      "denotation": "Lq.Lp.[p ∨ q]"
+    },
+    {
+      "words": [
+        "andVP"
+      ],
+      "denotation": "LQ.LP.Lx.[P(x) & Q(x)]"
+    },
+    {
+      "words": [
+        "orVP"
+      ],
+      "denotation": "LQ.LP.Lx.[P(x) ∨ Q(x)]"
+    },
+    {
+      "words": [
+        "andV"
+      ],
+      "denotation": "LR.LS.Ly.Lx.[S(y)(x) & R(y)(x)]"
+    },
+    {
+      "words": [
+        "andDP"
+      ],
+      "denotation": "LT.LU.LP.[U(P) & T(P)]"
+    },
+    {
+      "words": [
+        "orDP"
+      ],
+      "denotation": "LT.LU.LP.[U(P) ∨ T(P)]"
+    },
+    {
+      "words": [
+        "andE"
+      ],
+      "denotation": "Ly.Lz.z⊕y"
+    },
+    {
+      "words": [
+        "part"
+      ],
+      "denotation": "Ly.Lx.x≤y"
+    },
+    {
+      "words": [
+        "carry_coll"
+      ],
+      "denotation": "Ly.Lx.carry_coll(x,y)"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": true,
+      "predicateAbstraction": true
+    },
+    "typeShifts": [
+      "lift"
+    ]
+  },
+  "exercises": [
+    {
+      "title": "A. DP coordination (two quantified DPs)",
+      "instructions": "andDP ↝ λT.λU.λX.[T(λz.X(z)) ∧ U(λz.X(z))] takes two GQs (type ⟨⟨e,t⟩,t⟩) and returns a GQ. Place it in a ConjP with the right DP; FA with the left DP gives the coordinated GQ. The result distributes the VP over both DP denotations.",
+      "items": [
+        {
+          "sentence": "Every hobbit and some elf ride.",
+          "tree": "[.S [.DP [.DP [.D every ] [.NP hobbit ] ] [.ConjP [.Conj andDP ] [.DP [.D some ] [.NP elf ] ] ] ] [.VP rides ] ]",
+          "targets": [
+            "∀x[hobbit(x) → ride(x)] ∧ ∃x[elf(x) ∧ ride(x)]"
+          ]
+        },
+        {
+          "sentence": "Some dwarf or every elf sings.",
+          "tree": "[.S [.DP [.DP [.D some ] [.NP dwarf ] ] [.ConjP [.Conj orDP ] [.DP [.D every ] [.NP elf ] ] ] ] [.VP sings ] ]",
+          "targets": [
+            "∃x[dwarf(x) ∧ sing(x)] ∨ ∀x[elf(x) → sing(x)]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "B. Mixed coordination — name + quantifier (Lift required)",
+      "instructions": "A proper name (type e) cannot directly coordinate with a generalized quantifier. First apply the Montague Lift type-shift to the name's DP node, turning e.g. Frodo (type e) into λP.P(f) of type ⟨⟨e,t⟩,t⟩. Then andDP combines the two quantifiers in a ConjP, and the coordinated GQ applies to the VP. Lift the name yourself — there is no pre-lifted entry.",
+      "items": [
+        {
+          "sentence": "Frodo and every hobbit ride.",
+          "tree": "[.S [.DP [.DP Frodo ] [.ConjP [.Conj andDP ] [.DP [.D every ] [.NP hobbit ] ] ] ] [.VP rides ] ]",
+          "targets": [
+            "ride(f) ∧ ∀x[hobbit(x) → ride(x)]"
+          ]
+        },
+        {
+          "sentence": "Sam and some elf guard the ring.",
+          "tree": "[.S [.DP [.DP Sam ] [.ConjP [.Conj andDP ] [.DP [.D some ] [.NP elf ] ] ] ] [.VP [.V guards ] [.DP [.D the ] [.NP ring ] ] ] ]",
+          "targets": [
+            "guard(s,ιz[ring(z)]) ∧ ∃x[elf(x) ∧ guard(x,ιz[ring(z)])]"
+          ]
+        },
+        {
+          "sentence": "Gandalf or every dwarf sings.",
+          "tree": "[.S [.DP [.DP Gandalf ] [.ConjP [.Conj orDP ] [.DP [.D every ] [.NP dwarf ] ] ] ] [.VP sings ] ]",
+          "targets": [
+            "sing(g) ∨ ∀x[dwarf(x) → sing(x)]"
+          ]
+        }
+      ]
+    }
+  ]
+}

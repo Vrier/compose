@@ -1,0 +1,119 @@
+/* ===========================================================================
+   lingdown.css — typesetting for the lingdown engine. Themable via --ld-*
+   custom properties; defaults tuned to the COMPOSE parchment palette.
+   =========================================================================== */
+.ld-doc {
+  --ld-ink:    var(--ink, oklch(0.285 0.022 52));
+  --ld-soft:   var(--ink-soft, oklch(0.42 0.02 55));
+  --ld-muted:  var(--muted, oklch(0.56 0.018 58));
+  --ld-faint:  var(--faint, oklch(0.69 0.014 62));
+  --ld-line:   var(--line, oklch(0.875 0.016 72));
+  --ld-line-soft: var(--line-soft, oklch(0.915 0.012 74));
+  --ld-panel:  var(--panel, oklch(0.985 0.008 82));
+  --ld-panel2: var(--panel-2, oklch(0.972 0.011 80));
+  --ld-accent: var(--accent, oklch(0.585 0.13 44));
+  --ld-accent-ink: var(--accent-ink, oklch(0.46 0.13 42));
+  --ld-good:   var(--good, oklch(0.55 0.1 150));
+  --ld-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  color: var(--ld-ink);
+  font-family: 'Spectral', Georgia, serif;
+}
+.ld-doc * { box-sizing: border-box; }
+
+/* ---- prose ------------------------------------------------------------- */
+.ld-h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; margin: 22px 0 8px; }
+.ld-h2 { font-size: 15px; font-weight: 600; color: var(--ld-accent-ink); margin: 20px 0 7px; }
+.ld-h3 { font-size: 13px; font-weight: 600; color: var(--ld-soft); margin: 16px 0 6px; }
+.ld-doc > .ld-h1:first-child, .ld-doc > .ld-h2:first-child { margin-top: 0; }
+.ld-p { font-size: 14.5px; line-height: 1.62; color: var(--ld-soft); margin: 0 0 11px; }
+.ld-ul { margin: 0 0 12px; padding-left: 20px; }
+.ld-ul li { font-size: 14px; line-height: 1.55; color: var(--ld-soft); margin-bottom: 4px; }
+.ld-doc code { font-family: var(--ld-mono); font-size: 0.86em; background: var(--ld-panel2); border: 1px solid var(--ld-line-soft); border-radius: 4px; padding: 0 4px; color: var(--ld-ink); }
+.ld-doc strong { color: var(--ld-ink); font-weight: 600; }
+.ld-doc em { color: var(--ld-ink); }
+.ld-math { font-family: var(--ld-mono); font-size: 0.92em; color: var(--ld-ink); white-space: nowrap; }
+.ld-math sub, .ld-math sup, .ld-den sub, .ld-deriv sub { font-size: 0.72em; }
+.ld-code { font-family: var(--ld-mono); font-size: 12px; background: var(--ld-panel2); border: 1px solid var(--ld-line-soft); border-radius: 8px; padding: 10px 12px; overflow: auto; }
+
+/* ======================== TREE ========================================= */
+.ld-tree { overflow: auto; padding: 4px 0 6px; margin: 6px 0 14px; }
+.ld-forest { position: relative; display: inline-block; min-width: 100%; padding: 8px 14px 12px; }
+.ld-edges { position: absolute; top: 0; left: 0; pointer-events: none; overflow: visible; }
+.ld-edges line { stroke: var(--ld-line); stroke-width: 1.4; }
+.ld-edges .ld-roof { fill: none; stroke: var(--ld-line); stroke-width: 1.4; stroke-linejoin: round; }
+.ld-node { display: flex; flex-direction: column; align-items: center; position: relative; }
+.ld-children { display: flex; flex-direction: row; align-items: flex-start; gap: 24px; margin-top: 30px; }
+.ld-box {
+  position: relative; z-index: 1; white-space: nowrap;
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  padding: 3px 9px; border-radius: 7px;
+}
+.ld-cat { font-family: 'Spectral', serif; font-style: italic; font-size: 14px; color: var(--ld-soft); font-weight: 500; }
+.ld-den { font-family: var(--ld-mono); font-size: 11px; color: var(--ld-accent-ink); background: color-mix(in oklab, var(--ld-accent) 11%, transparent); border-radius: 5px; padding: 1px 6px; margin-top: 1px; }
+.ld-box.ld-word {
+  font-family: 'Spectral', serif; font-size: 14.5px; font-weight: 500; color: var(--ld-ink);
+  background: var(--ld-panel); border: 1px solid var(--ld-line); box-shadow: 0 1px 2px oklch(0.4 0.03 60 / 0.07);
+}
+
+/* ======================== EXAMPLES ===================================== */
+.ld-ex { margin: 10px 0 16px; }
+.ld-ex-row { display: grid; grid-template-columns: 38px 20px 1fr; align-items: baseline; column-gap: 4px; padding: 2px 0; }
+.ld-ex-row.sub { grid-template-columns: 38px 20px 1fr; padding-left: 28px; }
+.ld-ex-num { font-family: var(--ld-mono); font-size: 12.5px; color: var(--ld-muted); }
+.ld-ex-judge { font-family: var(--ld-mono); font-size: 13px; color: var(--ld-accent); font-weight: 600; text-align: center; }
+.ld-ex-txt { font-size: 14.5px; line-height: 1.5; color: var(--ld-ink); }
+.ld-ex-row { scroll-margin-top: 12px; border-radius: 6px; }
+
+/* cross-references */
+.ld-xref { color: var(--ld-accent-ink); font-weight: 600; cursor: pointer; border-bottom: 1px dotted color-mix(in oklab, var(--ld-accent) 55%, transparent); white-space: nowrap; }
+.ld-xref:hover { background: color-mix(in oklab, var(--ld-accent) 12%, transparent); border-radius: 3px; }
+/* flash when a ref target is jumped to */
+@keyframes ld-flash-kf { 0% { background: color-mix(in oklab, var(--ld-accent) 26%, transparent); } 100% { background: transparent; } }
+.ld-flash { animation: ld-flash-kf 1.3s ease-out; box-shadow: -8px 0 0 color-mix(in oklab, var(--ld-accent) 26%, transparent); }
+
+/* ======================== GLOSS ======================================== */
+.ld-gloss { margin: 10px 0 16px; }
+.ld-gloss-grid { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.ld-gloss-col { display: flex; flex-direction: column; gap: 2px; }
+.ld-gloss-s { font-size: 14px; color: var(--ld-ink); font-style: italic; }
+.ld-gloss-g { font-family: var(--ld-mono); font-size: 11.5px; color: var(--ld-soft); }
+.ld-sc { font-variant: all-small-caps; letter-spacing: 0.02em; }
+.ld-gloss-known { border-bottom: 1px dotted var(--ld-faint); cursor: help; }
+.ld-gloss-t { font-size: 14px; color: var(--ld-soft); margin-top: 7px; }
+
+/* ======================== DERIVATION =================================== */
+.ld-deriv { font-family: var(--ld-mono); margin: 10px 0 16px; border-left: 2px solid var(--ld-line); padding-left: 14px; overflow-x: auto; }
+.ld-deriv-row { display: grid; grid-template-columns: minmax(0, 1fr) max-content; align-items: baseline; column-gap: 24px; padding: 3px 0; font-size: 13px; }
+.ld-deriv-e { color: var(--ld-ink); white-space: nowrap; }
+.ld-deriv-t { color: var(--ld-muted); font-size: 12px; flex: 0 0 auto; }
+.ld-deriv-t::before { content: ': '; color: var(--ld-faint); }
+.ld-deriv-gap { height: 7px; }
+
+/* ======================== FOOTNOTES ==================================== */
+.ld-fn-ref { font-size: 0.7em; line-height: 0; }
+.ld-fn-ref a { color: var(--ld-accent-ink); font-family: var(--ld-mono); font-weight: 600; cursor: pointer; padding: 0 1px; }
+.ld-fn-ref a:hover { text-decoration: underline; }
+.ld-footnotes { margin: 22px 0 4px; }
+.ld-fn-rule { width: 38%; max-width: 160px; height: 1px; background: var(--ld-line); margin: 0 0 12px; }
+.ld-fn { display: grid; grid-template-columns: 20px 1fr; gap: 8px; align-items: baseline; margin-bottom: 7px; scroll-margin-top: 12px; }
+.ld-fn-n { font-family: var(--ld-mono); font-size: 11px; color: var(--ld-accent-ink); font-weight: 600; text-align: right; }
+.ld-fn-b { font-size: 12.5px; line-height: 1.5; color: var(--ld-soft); }
+.ld-fn-back { color: var(--ld-faint); text-decoration: none; cursor: pointer; margin-left: 3px; }
+.ld-fn-back:hover { color: var(--ld-accent-ink); }
+
+/* ======================== AVM ========================================== */
+.ld-avm-wrap { margin: 10px 0 16px; }
+.ld-avm {
+  display: inline-flex; flex-direction: column; gap: 3px; position: relative;
+  padding: 7px 12px; margin: 1px 0;
+}
+.ld-avm::before, .ld-avm::after {
+  content: ''; position: absolute; top: 0; bottom: 0; width: 6px;
+  border: 1.4px solid var(--ld-soft);
+}
+.ld-avm::before { left: 0; border-right: 0; }
+.ld-avm::after { right: 0; border-left: 0; }
+.ld-avm-row { display: grid; grid-template-columns: max-content 1fr; align-items: baseline; gap: 16px; }
+.ld-avm-attr { font-family: var(--ld-mono); font-size: 11.5px; letter-spacing: 0.03em; color: var(--ld-accent-ink); font-variant: all-small-caps; }
+.ld-avm-val { font-family: var(--ld-mono); font-size: 12.5px; color: var(--ld-ink); }
+.ld-avm-val .ld-avm { padding-top: 2px; padding-bottom: 2px; }

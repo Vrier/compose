@@ -1,0 +1,422 @@
+{
+  "compose": 1,
+  "id": "ch6-quant",
+  "title": "Quantifiers (§6.4)",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w bi st pi tm el sr mr x1 x2"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "X Y Z P Q R F G H",
+      "t": "p q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "runs",
+        "run"
+      ],
+      "denotation": "Lx.run(x)"
+    },
+    {
+      "words": [
+        "sings",
+        "sing"
+      ],
+      "denotation": "Lx.sing(x)"
+    },
+    {
+      "words": [
+        "sleeps",
+        "sleep"
+      ],
+      "denotation": "Lx.sleep(x)"
+    },
+    {
+      "words": [
+        "loves",
+        "love"
+      ],
+      "denotation": "Ly.Lx.love(x,y)"
+    },
+    {
+      "words": [
+        "fears",
+        "fear"
+      ],
+      "denotation": "Ly.Lx.fear(x,y)"
+    },
+    {
+      "words": [
+        "trusts",
+        "trust"
+      ],
+      "denotation": "Ly.Lx.trust(x,y)"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(x)"
+    },
+    {
+      "words": [
+        "dwarf"
+      ],
+      "denotation": "Lx.dwarf(x)"
+    },
+    {
+      "words": [
+        "orc"
+      ],
+      "denotation": "Lx.orc(x)"
+    },
+    {
+      "words": [
+        "ranger"
+      ],
+      "denotation": "Lx.ranger(x)"
+    },
+    {
+      "words": [
+        "magical"
+      ],
+      "denotation": "Lx.magical(x)"
+    },
+    {
+      "words": [
+        "beautiful"
+      ],
+      "denotation": "Lx.beautiful(x)"
+    },
+    {
+      "words": [
+        "late"
+      ],
+      "denotation": "Lx.late(x)"
+    },
+    {
+      "words": [
+        "drinks",
+        "drink"
+      ],
+      "denotation": "Lx.drink(x)"
+    },
+    {
+      "words": [
+        "is",
+        "are"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "a",
+        "an"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "doesnt",
+        "does-not"
+      ],
+      "denotation": "LP.Lx.~P(x)"
+    },
+    {
+      "words": [
+        "not"
+      ],
+      "denotation": "LP.Lx.~P(x)"
+    },
+    {
+      "words": [
+        "everything",
+        "everyone"
+      ],
+      "denotation": "LP.Ax[P(x)]"
+    },
+    {
+      "words": [
+        "something",
+        "someone"
+      ],
+      "denotation": "LP.Ex[P(x)]"
+    },
+    {
+      "words": [
+        "nothing",
+        "no-one"
+      ],
+      "denotation": "LP.~Ex[P(x)]"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "no",
+        "No"
+      ],
+      "denotation": "LX.LY.~Ex[X(x) & Y(x)]"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Simple quantifiers",
+      "instructions": "\"Everything\", \"something\" and \"nothing\" are complete generalized quantifiers of type ⟨⟨e,t⟩,t⟩. They apply directly to the predicate — the first uses a copular predicate, the second a transitive verb, the third adds negation.",
+      "items": [
+        {
+          "sentence": "Everything is beautiful.",
+          "tree": "[.S [.DP everything ] [.VP [.V is ] [.AP beautiful ] ] ]",
+          "reading": {
+            "section": "6.4"
+          }
+        },
+        {
+          "sentence": "Nothing loves Sauron.",
+          "tree": "[.S [.DP nothing ] [.VP [.V loves ] [.DP Sauron ] ] ]",
+          "reading": {
+            "section": "6.4"
+          }
+        },
+        {
+          "sentence": "Something is not beautiful.",
+          "tree": "[.S [.DP something ] [.VP [.Neg not ] [.VP [.V is ] [.AP beautiful ] ] ] ]",
+          "reading": {
+            "section": "6.4"
+          }
+        }
+      ]
+    },
+    {
+      "title": "B. Generalized quantifiers",
+      "instructions": "A determiner combines with a noun to form a generalized quantifier ⟨⟨e,t⟩,t⟩, which takes the VP as its argument. The third example layers in VP negation.",
+      "items": [
+        {
+          "sentence": "Every hobbit drinks.",
+          "tree": "[.S [.DP [.D every ] [.NP hobbit ] ] [.VP drinks ] ]",
+          "reading": {
+            "section": "6.4.2"
+          }
+        },
+        {
+          "sentence": "No elf fears Sauron.",
+          "tree": "[.S [.DP [.D no ] [.NP elf ] ] [.VP [.V fears ] [.DP Sauron ] ] ]",
+          "reading": {
+            "section": "6.4.2"
+          }
+        },
+        {
+          "sentence": "Some elf doesn't drink.",
+          "tree": "[.S [.DP [.D some ] [.NP elf ] ] [.VP [.Neg doesnt ] [.VP drinks ] ] ]",
+          "reading": {
+            "section": "6.4.2"
+          }
+        }
+      ]
+    },
+    {
+      "title": "C. Quantifiers with transitive verbs",
+      "instructions": "A subject quantifier scopes over the clause. The later items fold in tools from earlier sections: VP negation, and a copular predicate nominal.",
+      "items": [
+        {
+          "sentence": "Every dwarf trusts Aragorn.",
+          "tree": "[.S [.DP [.D every ] [.NP dwarf ] ] [.VP [.V trusts ] [.DP Aragorn ] ] ]",
+          "reading": {
+            "section": "6.4.2"
+          }
+        },
+        {
+          "sentence": "Some elf doesn't fear Sauron.",
+          "tree": "[.S [.DP [.D some ] [.NP elf ] ] [.VP [.Neg doesnt ] [.VP [.V fears ] [.DP Sauron ] ] ] ]",
+          "reading": {
+            "section": "6.4.2"
+          }
+        },
+        {
+          "sentence": "No orc is a ranger.",
+          "tree": "[.S [.DP [.D no ] [.NP orc ] ] [.VP [.V is ] [.NP [.D a ] [.NP ranger ] ] ] ]",
+          "reading": {
+            "section": "6.4.2"
+          }
+        }
+      ]
+    },
+    {
+      "title": "D. Scope ambiguity",
+      "instructions": "Negation and a universal quantifier can interact in two ways. Sentential (wide-scope) negation ¬∀ says the universal statement is false; VP (narrow-scope) negation ∀¬ says every individual fails. Derive the reading shown.",
+      "items": [
+        {
+          "sentence": "Not every hobbit loves Gandalf.",
+          "instructions": "Surface-scope reading only: negation takes wide scope.\n∀x[hobbit(x) → love(x,g)]",
+          "tree": "[.S [.NegP [.Neg not ] [.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.V loves ] [.DP Gandalf ] ] ] ] ]",
+          "targets": [
+            "wide scope: ¬∀x[hobbit(x) → love(x, g)]"
+          ],
+          "reading": {
+            "section": "6.6"
+          }
+        },
+        {
+          "sentence": "Every hobbit doesn't love Gandalf.",
+          "instructions": "Two scope readings are possible. Derive each using the tree provided for that reading.",
+          "tree": "[.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.Neg doesnt ] [.VP [.V love ] [.DP Gandalf ] ] ] ]",
+          "targets": [
+            "surface scope (∀ > ¬): ∀x[hobbit(x) → ¬love(x, g)]",
+            "inverse scope (¬ > ∀): ¬∀x[hobbit(x) → love(x, g)]"
+          ],
+          "scopeTrees": {
+            "0": "[.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.Neg doesnt ] [.VP [.V love ] [.DP Gandalf ] ] ] ]",
+            "1": "[.S [.NegP [.Neg not ] [.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.V loves ] [.DP Gandalf ] ] ] ] ]"
+          },
+          "reading": {
+            "section": "6.6"
+          }
+        },
+        {
+          "sentence": "Some elf doesn't trust Sauron.",
+          "instructions": "Two scope readings are possible.",
+          "tree": "[.S [.DP [.D some ] [.NP elf ] ] [.VP [.Neg doesnt ] [.VP [.V trust ] [.DP Sauron ] ] ] ]",
+          "targets": [
+            "surface scope (∃ > ¬): ∃x[elf(x) ∧ ¬trust(x, n)]",
+            "inverse scope (¬ > ∃): ¬∃x[elf(x) ∧ trust(x, n)]"
+          ],
+          "scopeTrees": {
+            "0": "[.S [.DP [.D some ] [.NP elf ] ] [.VP [.Neg doesnt ] [.VP [.V trust ] [.DP Sauron ] ] ] ]",
+            "1": "[.S [.NegP [.Neg not ] [.S [.DP [.D some ] [.NP elf ] ] [.VP [.V trusts ] [.DP Sauron ] ] ] ] ]"
+          },
+          "reading": {
+            "section": "6.6"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": {
+    "format": "lingdown",
+    "markdown": "# Chapter 6 · Quantifiers\n\nA name denotes an individual — type $e$. But *everyone* does not pick out any single individual: no one person *is* everyone. Quantifiers therefore live one type up, as functions over predicates.\n\n## 6.4 Generalized quantifiers\n\nA quantifier is a **property of properties**: type $<<e,t>,t>$. It takes a verb-phrase meaning of type $<e,t>$ and returns a truth value.\n\n```deriv\n[[everything]] = lambda P.forall x[P(x)]  : <<e,t>,t>\n[[something]]  = lambda P.exists x[P(x)]  : <<e,t>,t>\n[[nothing]]    = lambda P.~exists x[P(x)] : <<e,t>,t>\n```\n\nBecause it is already a complete quantifier, it applies **directly** to the predicate by Function Application:\n\n```tree\n[S{forall x[beautiful(x)]}\n  [DP{lambda P.forall x[P(x)]} everything]\n  [VP{lambda x.beautiful(x)} is beautiful]]\n```\n\nSo the sentences in (@simple) come out as $forall x[beautiful(x)]$ and $~exists x[love(x,n)]$ respectively — exactly the truth conditions we want.\n\n```ex {#simple}\nEverything is beautiful.\nNothing loves Sauron.\nSomething is not beautiful.\n```\n\n## 6.4.2 Quantificational determiners\n\nA determiner like *every*, *some*, or *no* builds a quantifier out of a noun. It is type $<<e,t>,<<e,t>,t>>$: it takes the **restrictor** noun first, then the **scope** verb phrase.\n\n```deriv\n[[every]] = lambda X.lambda Y.forall x[X(x) -> Y(x)] : <<e,t>,<<e,t>,t>>\n[[some]]  = lambda X.lambda Y.exists x[X(x) & Y(x)]  : <<e,t>,<<e,t>,t>>\n[[no]]    = lambda X.lambda Y.~exists x[X(x) & Y(x)] : <<e,t>,<<e,t>,t>>\n```\n\nNote the connective: *every* joins restrictor and scope with the conditional $->$, while *some* and *no* use conjunction $&$.[^donkey] The determiner first combines with the noun to form a generalized quantifier of type $<<e,t>,t>$, which then takes the VP:\n\n```tree\n[S{forall x[hobbit(x) -> drink(x)]}\n  [DP{lambda Y.forall x[hobbit(x) -> Y(x)]}\n    [D{lambda X.lambda Y.forall x[X(x) -> Y(x)]} every]\n    [NP{lambda x.hobbit(x)} hobbit]]\n  [VP{lambda x.drink(x)} drinks]]\n```\n\nThe same recipe scales to transitive verbs and to predicate nominals, as in (@det) — only the VP that the quantifier consumes changes.\n\n```ex {#det}\nEvery hobbit drinks.\nNo elf fears Sauron.\nNo orc is a ranger.\n```\n\n[^donkey]: This restrictor–scope split is the heart of *generalized quantifier theory*: a determiner is a relation between two sets, the noun's denotation and the VP's.\n\n## 6.6 Negation and scope ambiguity\n\nWhen negation meets a quantifier, two readings can arise, depending on which element scopes over the other.[^scope] *Every hobbit doesn't love Gandalf* can mean either of (@scope):\n\n```ex {#scope}\nSurface, $forall > ~$ : $forall x[hobbit(x) -> ~love(x,g)]$ — every hobbit fails to love him.\nInverse, $~ > forall$ : $~forall x[hobbit(x) -> love(x,g)]$ — not all hobbits do.\n```\n\nSentential negation sits **above** the clause — $not [S ...]$ — giving the wide-scope $~forall$ reading; VP negation sits **inside** the clause, giving $forall~$. COMPOSE supplies a separate tree for each reading, so derive the one named in the exercise.\n\n[^scope]: A *scope ambiguity* is one string with two distinct logical forms. The surface tree fixes one reading; the other requires negation to take scope it does not have on the surface.\n"
+  }
+}

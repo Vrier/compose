@@ -1,0 +1,454 @@
+{
+  "compose": 1,
+  "id": "ch10-coord",
+  "title": "10.1 Coordination",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w"
+    },
+    "variables": {
+      "e": "x y z Z",
+      "et": "P Q X Y"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "rides",
+        "ride"
+      ],
+      "denotation": "Lx.ride(x)"
+    },
+    {
+      "words": [
+        "sings",
+        "sing"
+      ],
+      "denotation": "Lx.sing(x)"
+    },
+    {
+      "words": [
+        "rests",
+        "rest"
+      ],
+      "denotation": "Lx.rest(x)"
+    },
+    {
+      "words": [
+        "meets",
+        "meet"
+      ],
+      "denotation": "Lx.meet(x)"
+    },
+    {
+      "words": [
+        "carries",
+        "carry"
+      ],
+      "denotation": "Ly.Lx.carry(x,y)"
+    },
+    {
+      "words": [
+        "guards",
+        "guard"
+      ],
+      "denotation": "Ly.Lx.guard(x,y)"
+    },
+    {
+      "words": [
+        "reads",
+        "read"
+      ],
+      "denotation": "Ly.Lx.read(x,y)"
+    },
+    {
+      "words": [
+        "finds",
+        "find"
+      ],
+      "denotation": "Ly.Lx.find(x,y)"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(x)"
+    },
+    {
+      "words": [
+        "dwarf"
+      ],
+      "denotation": "Lx.dwarf(x)"
+    },
+    {
+      "words": [
+        "ring"
+      ],
+      "denotation": "Lx.ring(x)"
+    },
+    {
+      "words": [
+        "sword"
+      ],
+      "denotation": "Lx.sword(x)"
+    },
+    {
+      "words": [
+        "map"
+      ],
+      "denotation": "Lx.map(x)"
+    },
+    {
+      "words": [
+        "hobbits"
+      ],
+      "denotation": "*Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "elves"
+      ],
+      "denotation": "*Lx.elf(x)"
+    },
+    {
+      "words": [
+        "dwarves"
+      ],
+      "denotation": "*Lx.dwarf(x)"
+    },
+    {
+      "words": [
+        "rings"
+      ],
+      "denotation": "*Lx.ring(x)"
+    },
+    {
+      "words": [
+        "swords"
+      ],
+      "denotation": "*Lx.sword(x)"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "LX.Ix.X(x)"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "a"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "theSUPR"
+      ],
+      "denotation": "LX.Ix.[X(x) & Ay[X(y) -> y≤x]]"
+    },
+    {
+      "words": [
+        "andS"
+      ],
+      "denotation": "Lq.Lp.[p & q]"
+    },
+    {
+      "words": [
+        "orS"
+      ],
+      "denotation": "Lq.Lp.[p ∨ q]"
+    },
+    {
+      "words": [
+        "andVP"
+      ],
+      "denotation": "LQ.LP.Lx.[P(x) & Q(x)]"
+    },
+    {
+      "words": [
+        "orVP"
+      ],
+      "denotation": "LQ.LP.Lx.[P(x) ∨ Q(x)]"
+    },
+    {
+      "words": [
+        "andV"
+      ],
+      "denotation": "LR.LS.Ly.Lx.[S(y)(x) & R(y)(x)]"
+    },
+    {
+      "words": [
+        "andDP"
+      ],
+      "denotation": "LT.LU.LP.[U(P) & T(P)]"
+    },
+    {
+      "words": [
+        "orDP"
+      ],
+      "denotation": "LT.LU.LP.[U(P) ∨ T(P)]"
+    },
+    {
+      "words": [
+        "andE"
+      ],
+      "denotation": "Ly.Lz.z⊕y"
+    },
+    {
+      "words": [
+        "part"
+      ],
+      "denotation": "Ly.Lx.x≤y"
+    },
+    {
+      "words": [
+        "carry_coll"
+      ],
+      "denotation": "Ly.Lx.carry_coll(x,y)"
+    },
+    {
+      "words": [
+        "smokes",
+        "smoke"
+      ],
+      "denotation": "Lx.smoke(x)"
+    },
+    {
+      "words": [
+        "drinks",
+        "drink"
+      ],
+      "denotation": "Lx.drink(x)"
+    },
+    {
+      "words": [
+        "genAnd"
+      ],
+      "denotation": "LX.LY.LZ.(Lq.Lp.[p & q])(X(Z))(Y(Z))"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": true,
+      "predicateAbstraction": true
+    },
+    "typeShifts": [
+      "lift"
+    ]
+  },
+  "exercises": [
+    {
+      "title": "A. Sentential coordination (andS / orS)",
+      "instructions": "andS ↝ λq.λp.[p ∧ q] has type ⟨t,⟨t,t⟩⟩. Place and in a ConjP with the right-hand sentence; the result is a ⟨t,t⟩ function that applies to the left sentence by FA. Compare andS and orS — the derivation is identical, only the connective changes.",
+      "items": [
+        {
+          "sentence": "Frodo sings and Gandalf rides.",
+          "tree": "[.S [.S [.DP Frodo ] [.VP sings ] ] [.ConjP [.Conj andS ] [.S [.DP Gandalf ] [.VP rides ] ] ] ]",
+          "targets": [
+            "sing(f) ∧ ride(g)"
+          ]
+        },
+        {
+          "sentence": "Frodo rests or Gandalf sings.",
+          "tree": "[.S [.S [.DP Frodo ] [.VP rests ] ] [.ConjP [.Conj orS ] [.S [.DP Gandalf ] [.VP sings ] ] ] ]",
+          "targets": [
+            "rest(f) ∨ sing(g)"
+          ]
+        },
+        {
+          "sentence": "Aragorn guards the ring and Sam reads the map.",
+          "tree": "[.S [.S [.DP Aragorn ] [.VP [.V guards ] [.DP [.D the ] [.NP ring ] ] ] ] [.ConjP [.Conj andS ] [.S [.DP Sam ] [.VP [.V reads ] [.DP [.D the ] [.NP map ] ] ] ] ] ]",
+          "targets": [
+            "guard(a,ιz[ring(z)]) ∧ read(s,ιz[map(z)])"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "B. VP coordination (andVP / orVP)",
+      "instructions": "andVP ↝ λQ.λP.λx.[P(x) ∧ Q(x)] has type ⟨⟨e,t⟩,⟨⟨e,t⟩,⟨e,t⟩⟩⟩. The coordinator takes the right VP first, then the left VP, and distributes the subject. VP-coordination gives the same truth conditions as sentential coordination but is more economical: the subject is mentioned once.",
+      "items": [
+        {
+          "sentence": "Frodo rides and sings.",
+          "tree": "[.S [.DP Frodo ] [.VP [.ConjP [.Conj andVP ] [.VP rides ] ] [.VP sings ] ] ]",
+          "targets": [
+            "ride(f) ∧ sing(f)"
+          ]
+        },
+        {
+          "sentence": "Gandalf sings or rests.",
+          "tree": "[.S [.DP Gandalf ] [.VP [.ConjP [.Conj orVP ] [.VP sings ] ] [.VP rests ] ] ]",
+          "targets": [
+            "sing(g) ∨ rest(g)"
+          ]
+        },
+        {
+          "sentence": "Sam rides and guards the ring.",
+          "tree": "[.S [.DP Sam ] [.VP [.ConjP [.Conj andVP ] [.VP rides ] ] [.VP [.V guards ] [.DP [.D the ] [.NP ring ] ] ] ] ]",
+          "targets": [
+            "ride(s) ∧ guard(s,ιz[ring(z)])"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "C. Transitive-verb coordination (andV)",
+      "instructions": "andV ↝ λR.λS.λy.λx.[S(y)(x) ∧ R(y)(x)] has type ⟨⟨e,⟨e,t⟩⟩,⟨⟨e,⟨e,t⟩⟩,⟨e,⟨e,t⟩⟩⟩⟩. It coordinates two transitive verbs, sharing BOTH subject and object. The ConjP takes the right V first, then FA with the left V, giving a ⟨e,⟨e,t⟩⟩ that takes its object normally.",
+      "items": [
+        {
+          "sentence": "Frodo carries and guards the ring.",
+          "tree": "[.S [.DP Frodo ] [.VP [.V [.ConjP [.Conj andV ] [.V carries ] ] [.V guards ] ] [.DP [.D the ] [.NP ring ] ] ] ]",
+          "targets": [
+            "carry(f,ιz[ring(z)]) ∧ guard(f,ιz[ring(z)])"
+          ]
+        },
+        {
+          "sentence": "Sam finds and reads the map.",
+          "tree": "[.S [.DP Sam ] [.VP [.V [.ConjP [.Conj andV ] [.V finds ] ] [.V reads ] ] [.DP [.D the ] [.NP map ] ] ] ]",
+          "targets": [
+            "find(s,ιz[map(z)]) ∧ read(s,ιz[map(z)])"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "D. Mixed-type coordination & the ⊓ schema (Exercises 5–6)",
+      "instructions": "All the entries above share a pattern: each has ∧ (or ∨) at its core, and each operates on a type ending in t. The book generalizes them with a single recursive operator ⊓ (and ⊔ for or), defined in (16): ⊓⟨τ,⟨τ,τ⟩⟩ = λqλp.p∧q if τ=t, else λXλYλZ.⊓(X(Z))(Y(Z)). — ITEM 1 (Ex 5): coordinate two type-e names with andDP. Each name must first be raised to a quantifier ⟨⟨e,t⟩,t⟩ with the Montague Lift type-shifter (apply it once on each conjunct), so Frodo ⇝ λP.P(f). — ITEM 2 (Ex 6): genAnd is ⊓ specialized to the VP type ⟨e,t⟩: plugging τ=⟨e,t⟩ into (16) gives λXλYλZ.⊓⟨t,⟨t,t⟩⟩(X(Z))(Y(Z)), and the base case ⊓⟨t,⟨t,t⟩⟩ = λqλp.p∧q. Compose genAnd with two VPs and REDUCE — it collapses to exactly the andVP entry from group B.",
+      "items": [
+        {
+          "sentence": "Frodo and Sam smoke. (Ex 5 — lift each conjunct)",
+          "tree": "[.S [.DP [.DP Frodo ] [.Coord' [.Coord andDP ] [.DP Sam ] ] ] [.VP smoke ] ]",
+          "targets": [
+            "smoke(f) ∧ smoke(s)"
+          ]
+        },
+        {
+          "sentence": "Frodo rides and sings. (Ex 6 — schema reduces to andVP)",
+          "tree": "[.S [.DP Frodo ] [.VP [.ConjP [.Conj genAnd ] [.VP rides ] ] [.VP sings ] ] ]",
+          "targets": [
+            "ride(f) ∧ sing(f)"
+          ]
+        }
+      ]
+    }
+  ]
+}

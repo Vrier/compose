@@ -1,0 +1,116 @@
+{
+  "compose": 1,
+  "id": "ch12-future",
+  "title": "The Future: WOLL, will & would (§12.2.2.4)",
+  "subtitle": "The future is not a tense — will = PRES + WOLL, would = PAST + WOLL",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w",
+      "i": "now dawn dusk noon"
+    },
+    "variables": {
+      "e": "x y z",
+      "i": "t t' t'' t1 t2 t3",
+      "it": "P Q R",
+      "et": "X Y Z",
+      "t": "p q"
+    }
+  },
+  "lexicon": [
+    { "words": ["Frodo"], "denotation": "f" },
+    { "words": ["Sam"], "denotation": "s" },
+    { "words": ["Gandalf"], "denotation": "g" },
+    { "words": ["Sauron"], "denotation": "n" },
+    { "words": ["Aragorn"], "denotation": "a" },
+    { "words": ["Boromir"], "denotation": "b" },
+    { "words": ["Legolas"], "denotation": "l" },
+    { "words": ["Gimli"], "denotation": "m" },
+    { "words": ["Galadriel"], "denotation": "w" },
+    { "words": ["now"], "denotation": "now" },
+    { "words": ["dawn"], "denotation": "dawn" },
+    { "words": ["dusk"], "denotation": "dusk" },
+    { "words": ["noon"], "denotation": "noon" },
+    { "words": ["rides", "ride"], "denotation": "Lx.Lt.ride(t,x)" },
+    { "words": ["sings", "sing"], "denotation": "Lx.Lt.sing(t,x)" },
+    { "words": ["rests", "rest"], "denotation": "Lx.Lt.rest(t,x)" },
+    { "words": ["forges", "forge"], "denotation": "Ly.Lx.Lt.forge(t,x,y)" },
+    { "words": ["reads", "read"], "denotation": "Ly.Lx.Lt.read(t,x,y)" },
+    { "words": ["guards", "guard"], "denotation": "Ly.Lx.Lt.guard(t,x,y)" },
+    { "words": ["sword"], "denotation": "Lx.sword(x)" },
+    { "words": ["map"], "denotation": "Lx.map(x)" },
+    { "words": ["gate"], "denotation": "Lx.gate(x)" },
+    { "words": ["ring"], "denotation": "Lx.ring(x)" },
+    { "words": ["the"], "denotation": "LX.Ix.X(x)" },
+    { "words": ["PFV"], "denotation": "LP.Lt.Et'[t'⊆t & P(t')]" },
+    { "words": ["PROG"], "denotation": "LP.Lt.Et'[t⊆t' & P(t')]" },
+    { "words": ["PAST"], "denotation": "LP.Lt.[t=t1 & ∂(t1<now) & P(t1)]" },
+    { "words": ["PRES", "PRESENT"], "denotation": "LP.Lt.[t=now & P(t)]" },
+    { "words": ["WOLL"], "denotation": "LP.Lt.Et'[t<t' & P(t')]" },
+    { "words": ["at"], "denotation": "Lt.t" }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": true,
+      "predicateAbstraction": true
+    },
+    "typeShifts": ["ec-i"]
+  },
+  "exercises": [
+    {
+      "title": "A. WOLL — the future as an aspectual operator",
+      "instructions": "Following Abusch (1997), the English future is not a tense. There is an underlying modal-like head WOLL ↝ λP⟨i,t⟩λt.∃t′[t<t′ ∧ P(t′)], which sits in a Mod(al) projection between Tense and Asp: it takes an event-time predicate and shifts the event after the reference time t. Compose vP → ModP (WOLL) → TenseP, then close the open reference time with EC. Here we ignore aspect (no Asp layer), matching the book's Figure 12.2.",
+      "items": [
+        {
+          "sentence": "Frodo will forge the sword. (ignoring aspect)",
+          "tree": "[.TenseP [.Tense PRESENT ] [.ModP [.Mod WOLL ] [.vP [.DP Frodo ] [.VP [.V forges ] [.DP [.D the ] [.NP sword ] ] ] ] ] ]",
+          "targets": [
+            "∃t[t=now ∧ ∃t'[t<t' ∧ forge(t',f,ιz[sword(z)])]]"
+          ]
+        },
+        {
+          "sentence": "Gandalf will read the map. (ignoring aspect)",
+          "tree": "[.TenseP [.Tense PRESENT ] [.ModP [.Mod WOLL ] [.vP [.DP Gandalf ] [.VP [.V reads ] [.DP [.D the ] [.NP map ] ] ] ] ] ]",
+          "targets": [
+            "∃t[t=now ∧ ∃t'[t<t' ∧ read(t',g,ιz[map(z)])]]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "B. will = PRES + WOLL, with perfective aspect",
+      "instructions": "will is the PRESENT-tense form of WOLL. Stack Tense > Mod > Asp > vP, so the future composes with viewpoint aspect. PFV puts the event time inside the shifted time t′. This is the book's Exercise 7: I will mail the letter with perfective aspect.",
+      "items": [
+        {
+          "sentence": "Frodo will forge the sword. (perfective)",
+          "tree": "[.TenseP [.Tense PRESENT ] [.ModP [.Mod WOLL ] [.AspP [.Asp PFV ] [.vP [.DP Frodo ] [.VP [.V forges ] [.DP [.D the ] [.NP sword ] ] ] ] ] ] ]",
+          "targets": [
+            "∃t[t=now ∧ ∃t'[t<t' ∧ ∃t''[t''⊆t' ∧ forge(t'',f,ιz[sword(z)])]]]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "C. would = PAST + WOLL",
+      "instructions": "would is the PAST-tense form of the very same WOLL head — this is the key evidence that the future is not a tense but a modal that combines with either present or past morphology. With PAST, the reference time t1 is presupposed past (∂(t1<now)), and WOLL still shifts the event after it. \"At dawn\" fixes t1, so the result is type t (no EC). This is the book's Exercise 8: At 5pm, I would mail the letter.",
+      "items": [
+        {
+          "sentence": "At dawn, Frodo would forge the sword.",
+          "tree": "[.TenseP [.TenseP [.Tense PAST ] [.ModP [.Mod WOLL ] [.AspP [.Asp PFV ] [.vP [.DP Frodo ] [.VP [.V forges ] [.DP [.D the ] [.NP sword ] ] ] ] ] ] ] [.PP [.P at ] [.DP dawn ] ] ]",
+          "targets": [
+            "dawn=t1 ∧ ∂(t1<now) ∧ ∃t'[t1<t' ∧ ∃t''[t''⊆t' ∧ forge(t'',f,ιz[sword(z)])]]"
+          ]
+        },
+        {
+          "sentence": "At dusk, Gandalf would read the map.",
+          "tree": "[.TenseP [.TenseP [.Tense PAST ] [.ModP [.Mod WOLL ] [.AspP [.Asp PFV ] [.vP [.DP Gandalf ] [.VP [.V reads ] [.DP [.D the ] [.NP map ] ] ] ] ] ] ] [.PP [.P at ] [.DP dusk ] ] ]",
+          "targets": [
+            "dusk=t1 ∧ ∂(t1<now) ∧ ∃t'[t1<t' ∧ ∃t''[t''⊆t' ∧ read(t'',g,ιz[map(z)])]]"
+          ]
+        }
+      ]
+    }
+  ]
+}

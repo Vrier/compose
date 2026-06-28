@@ -1,0 +1,387 @@
+{
+  "compose": 1,
+  "id": "ch13-dere",
+  "title": "De dicto vs. De re (§13.6)",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w"
+    },
+    "variables": {
+      "e": "x y z",
+      "s": "w0 w w' w''",
+      "st": "p q",
+      "et": "P Q",
+      "set": "R S"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "rides",
+        "ride"
+      ],
+      "denotation": "Lx.ride(w0,x)"
+    },
+    {
+      "words": [
+        "sings",
+        "sing"
+      ],
+      "denotation": "Lx.sing(w0,x)"
+    },
+    {
+      "words": [
+        "rests",
+        "rest"
+      ],
+      "denotation": "Lx.rest(w0,x)"
+    },
+    {
+      "words": [
+        "reads",
+        "read"
+      ],
+      "denotation": "Ly.Lx.read(w0,x,y)"
+    },
+    {
+      "words": [
+        "finds",
+        "find"
+      ],
+      "denotation": "Ly.Lx.find(w0,x,y)"
+    },
+    {
+      "words": [
+        "sees",
+        "see"
+      ],
+      "denotation": "Ly.Lx.see(w0,x,y)"
+    },
+    {
+      "words": [
+        "guards",
+        "guard"
+      ],
+      "denotation": "Ly.Lx.guard(w0,x,y)"
+    },
+    {
+      "words": [
+        "ring"
+      ],
+      "denotation": "Lx.ring(w0,x)"
+    },
+    {
+      "words": [
+        "map"
+      ],
+      "denotation": "Lx.map(w0,x)"
+    },
+    {
+      "words": [
+        "gate"
+      ],
+      "denotation": "Lx.gate(w0,x)"
+    },
+    {
+      "words": [
+        "dragon"
+      ],
+      "denotation": "Lx.dragon(w0,x)"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "Lx.hobbit(w0,x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(w0,x)"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "LX.Ix.X(x)"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "a"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "necessarily"
+      ],
+      "denotation": "Lp.Aw'[acc(w0)(w') -> p(w')]"
+    },
+    {
+      "words": [
+        "possibly"
+      ],
+      "denotation": "Lp.Ew'[acc(w0)(w') & p(w')]"
+    },
+    {
+      "words": [
+        "necessarily_deon"
+      ],
+      "denotation": "Lp.Aw'[deon_acc(w0)(w') -> p(w')]"
+    },
+    {
+      "words": [
+        "possibly_deon"
+      ],
+      "denotation": "Lp.Ew'[deon_acc(w0)(w') & p(w')]"
+    },
+    {
+      "words": [
+        "necessarily_meta"
+      ],
+      "denotation": "Lp.Aw'[meta_acc(w0)(w') -> p(w')]"
+    },
+    {
+      "words": [
+        "possibly_epist"
+      ],
+      "denotation": "Lp.Ew'[epist_acc(w0)(w') & p(w')]"
+    },
+    {
+      "words": [
+        "possibly_meta"
+      ],
+      "denotation": "Lp.Ew'[meta_acc(w0)(w') & p(w')]"
+    },
+    {
+      "words": [
+        "necessarily_epist"
+      ],
+      "denotation": "Lp.Aw'[epist_acc(w0)(w') -> p(w')]"
+    },
+    {
+      "words": [
+        "seeks",
+        "seek"
+      ],
+      "denotation": "LR.Lx.seek(w0,x,R)"
+    },
+    {
+      "words": [
+        "believes",
+        "believe"
+      ],
+      "denotation": "Lp.Lx.Aw'[dox(w0)(x,w') -> p(w')]"
+    },
+    {
+      "words": [
+        "wants",
+        "want"
+      ],
+      "denotation": "Lp.Lx.Aw'[boul(w0)(x,w') -> p(w')]"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": true,
+      "predicateAbstraction": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. De dicto readings (IFA without QR across attitude verb)",
+      "instructions": "For the DE DICTO reading, apply IFA directly to combine the attitude verb with the embedded clause. Any quantifier inside the embedded clause is interpreted inside the belief/desire worlds. There is no commitment to the existence of the object in the actual world w0.",
+      "items": [
+        {
+          "sentence": "Gandalf believes a dragon rides. (de dicto — no particular dragon)",
+          "tree": "[.S [.DP Gandalf ] [.VP [.V believes ] [.CP [.S [.DP [.D a ] [.NP dragon ] ] [.VP rides ] ] ] ] ]",
+          "targets": [
+            "∀w'[dox(w0)(g,w') → ∃x[dragon(w',x) ∧ ride(w',x)]]"
+          ]
+        },
+        {
+          "sentence": "Frodo wants some elf to sing. (de dicto — any elf in desire worlds)",
+          "tree": "[.S [.DP Frodo ] [.VP [.V wants ] [.CP [.S [.DP [.D some ] [.NP elf ] ] [.VP sings ] ] ] ] ]",
+          "targets": [
+            "∀w'[boul(w0)(f,w') → ∃x[elf(w',x) ∧ sing(w',x)]]"
+          ]
+        },
+        {
+          "sentence": "Sam believes every hobbit finds the ring. (de dicto)",
+          "tree": "[.S [.DP Sam ] [.VP [.V believes ] [.CP [.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.V finds ] [.DP [.D the ] [.NP ring ] ] ] ] ] ] ]",
+          "targets": [
+            "∀w'[dox(w0)(s,w') → ∀x[hobbit(w',x) → find(w',x,ιz[ring(w',z)])]]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "B. De re readings (QR above attitude verb, then IFA)",
+      "instructions": "For the DE RE reading, QR the object DP to sentence level — ABOVE the attitude verb — before applying IFA. The raised DP is interpreted in the evaluation world w0; the trace inside the embedded clause is a rigid individual that the attitude is about. Existential quantification over w0-individuals appears in the OUTERMOST position, outside the attitude.",
+      "items": [
+        {
+          "sentence": "Gandalf believes a dragon rides. (de re — a particular actual dragon)",
+          "tree": "[.S [.DP Gandalf ] [.VP [.V believes ] [.CP [.S [.DP [.D a ] [.NP dragon ] ] [.VP rides ] ] ] ] ]",
+          "targets": [
+            "∃x[dragon(w0,x) ∧ ∀w'[dox(w0)(g,w') → ride(w',x)]]"
+          ]
+        },
+        {
+          "sentence": "Frodo wants some elf to sing. (de re — a particular actual elf)",
+          "tree": "[.S [.DP Frodo ] [.VP [.V wants ] [.CP [.S [.DP [.D some ] [.NP elf ] ] [.VP sings ] ] ] ] ]",
+          "targets": [
+            "∃x[elf(w0,x) ∧ ∀w'[boul(w0)(f,w') → sing(w',x)]]"
+          ]
+        },
+        {
+          "sentence": "Sam believes a hobbit finds the ring. (de re — a particular actual hobbit)",
+          "tree": "[.S [.DP Sam ] [.VP [.V believes ] [.CP [.S [.DP [.D a ] [.NP hobbit ] ] [.VP [.V finds ] [.DP [.D the ] [.NP ring ] ] ] ] ] ] ]",
+          "targets": [
+            "∃x[hobbit(w0,x) ∧ ∀w'[dox(w0)(s,w') → find(w',x,ιz[ring(w',z)])]]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "C. Comparing the readings",
+      "instructions": "Two derivations of the same sentence, two different truth conditions. Compare the de dicto target (object exists in attitude worlds) with the de re target (object exists in actual world w0). A sentence is de re ambiguous when QR of a DP can land either inside or outside the intensional operator's scope.",
+      "items": [
+        {
+          "sentence": "Necessarily, Frodo rides. — apply IFA directly (de dicto / wide scope necessity)",
+          "tree": "[.IP [.Adv necessarily ] [.S [.DP Frodo ] [.VP rides ] ] ]",
+          "targets": [
+            "∀w'[acc(w0)(w') → ride(w',f)]"
+          ]
+        },
+        {
+          "sentence": "Necessarily some hobbit finds the ring. (de dicto — QR inside necessity scope)",
+          "tree": "[.IP [.Adv necessarily ] [.S [.DP [.D some ] [.NP hobbit ] ] [.VP [.V finds ] [.DP [.D the ] [.NP ring ] ] ] ] ]",
+          "targets": [
+            "∀w'[acc(w0)(w') → ∃x[hobbit(w',x) ∧ find(w',x,ιz[ring(w',z)])]]"
+          ]
+        },
+        {
+          "sentence": "Necessarily some hobbit finds the ring. (de re — QR above necessity scope)",
+          "tree": "[.IP [.Adv necessarily ] [.S [.DP [.D some ] [.NP hobbit ] ] [.VP [.V finds ] [.DP [.D the ] [.NP ring ] ] ] ] ]",
+          "targets": [
+            "∃x[hobbit(w0,x) ∧ ∀w'[acc(w0)(w') → find(w',x,ιz[ring(w',z)])]]"
+          ]
+        }
+      ]
+    }
+  ]
+}

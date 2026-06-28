@@ -1,0 +1,19 @@
+{
+  "name": "compose",
+  "version": "0.1.0",
+  "private": true,
+  "description": "COMPOSE — an engine and problem-set builder for teaching compositional semantics.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node test/regression.mjs",
+    "test:update": "node test/regression.mjs --update"
+  },
+  "devDependencies": {
+    "esbuild": "0.23.0",
+    "html-to-image": "1.11.11",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  }
+}

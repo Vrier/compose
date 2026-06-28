@@ -1,0 +1,306 @@
+{
+  "compose": 1,
+  "id": "montague-ptq",
+  "title": "Montague's PTQ (Extensional Fragment)",
+  "subtitle": "Montague 1973 — quantifier NPs, raised verbs, quantifying-in",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "j m b"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "P Q X Y Z",
+      "<<e,t>,t>": "T U"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "John"
+      ],
+      "denotation": "j"
+    },
+    {
+      "words": [
+        "Mary"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Bill"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "man"
+      ],
+      "denotation": "Lx.man(x)"
+    },
+    {
+      "words": [
+        "woman"
+      ],
+      "denotation": "Lx.woman(x)"
+    },
+    {
+      "words": [
+        "unicorn"
+      ],
+      "denotation": "Lx.unicorn(x)"
+    },
+    {
+      "words": [
+        "fish"
+      ],
+      "denotation": "Lx.fish(x)"
+    },
+    {
+      "words": [
+        "park"
+      ],
+      "denotation": "Lx.park(x)"
+    },
+    {
+      "words": [
+        "walks",
+        "walk"
+      ],
+      "denotation": "Lx.walk(x)"
+    },
+    {
+      "words": [
+        "talks",
+        "talk"
+      ],
+      "denotation": "Lx.talk(x)"
+    },
+    {
+      "words": [
+        "runs",
+        "run"
+      ],
+      "denotation": "Lx.run(x)"
+    },
+    {
+      "words": [
+        "rises",
+        "rise"
+      ],
+      "denotation": "Lx.rise(x)"
+    },
+    {
+      "words": [
+        "loves",
+        "love"
+      ],
+      "denotation": "LT.Lx.T(Ly.love(x,y))"
+    },
+    {
+      "words": [
+        "finds",
+        "find"
+      ],
+      "denotation": "LT.Lx.T(Ly.find(x,y))"
+    },
+    {
+      "words": [
+        "seeks",
+        "seek"
+      ],
+      "denotation": "LT.Lx.T(Ly.seek(x,y))"
+    },
+    {
+      "words": [
+        "eats",
+        "eat"
+      ],
+      "denotation": "LT.Lx.T(Ly.eat(x,y))"
+    },
+    {
+      "words": [
+        "is",
+        "are",
+        "be"
+      ],
+      "denotation": "LT.Lx.T(Ly.(x=y))"
+    },
+    {
+      "words": [
+        "every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "a",
+        "an"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "no"
+      ],
+      "denotation": "LX.LY.~Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Ay[X(y) -> y=x] & Y(x)]"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "predicateModification": false,
+      "nonBranchingNodes": true,
+      "predicateAbstraction": true
+    },
+    "typeShifts": [
+      "lift",
+      "lower"
+    ],
+    "quantifierRaising": true
+  },
+  "exercises": [
+    {
+      "title": "A. Every noun phrase is a quantifier",
+      "instructions": "A determiner + noun is a quantifier ⟨⟨e,t⟩,t⟩ that takes the VP as its argument by FA. A name may either combine directly (e + ⟨e,t⟩) or, in Montague's uniform style, lift to a quantifier first — either way the result is the same.",
+      "items": [
+        {
+          "sentence": "John walks.",
+          "tree": "[.S [.DP John ] [.VP walks ] ]",
+          "targets": [
+            "walk(j)"
+          ],
+          "reading": {
+            "section": "1"
+          }
+        },
+        {
+          "sentence": "Every man walks.",
+          "tree": "[.S [.DP [.D every ] [.NP man ] ] [.VP walks ] ]",
+          "targets": [
+            "Ax[man(x) -> walk(x)]"
+          ],
+          "reading": {
+            "section": "1"
+          }
+        }
+      ]
+    },
+    {
+      "title": "B. Transitive verbs take quantifier objects",
+      "instructions": "A PTQ transitive verb is type ⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩ — it combines with a quantifier object. A name object must lift first; a determiner object is already a quantifier and takes narrow scope in situ.",
+      "items": [
+        {
+          "sentence": "John loves Mary.",
+          "tree": "[.S [.DP John ] [.VP [.V loves ] [.DP Mary ] ] ]",
+          "targets": [
+            "love(j,m)"
+          ],
+          "reading": {
+            "section": "2"
+          }
+        },
+        {
+          "sentence": "John loves every woman.",
+          "tree": "[.S [.DP John ] [.VP [.V loves ] [.DP [.D every ] [.NP woman ] ] ] ]",
+          "targets": [
+            "Ay[woman(y) -> love(j,y)]"
+          ],
+          "reading": {
+            "section": "2"
+          }
+        },
+        {
+          "sentence": "John finds a unicorn.",
+          "tree": "[.S [.DP John ] [.VP [.V finds ] [.DP [.D a ] [.NP unicorn ] ] ] ]",
+          "targets": [
+            "Ey[unicorn(y) & find(j,y)]"
+          ],
+          "reading": {
+            "section": "2"
+          }
+        }
+      ]
+    },
+    {
+      "title": "C. The verb be — identity and predication",
+      "instructions": "One entry, be = λT.λx.T(λy.x=y), takes a quantifier object. With a (lifted) name it gives identity; with an indefinite it reduces, by the one-point law, to a predication.",
+      "items": [
+        {
+          "sentence": "John is Bill.",
+          "tree": "[.S [.DP John ] [.VP [.V is ] [.DP Bill ] ] ]",
+          "targets": [
+            "j = b"
+          ],
+          "reading": {
+            "section": "3"
+          }
+        },
+        {
+          "sentence": "John is a man.",
+          "tree": "[.S [.DP John ] [.VP [.V is ] [.DP [.D a ] [.NP man ] ] ] ]",
+          "targets": [
+            "man(j)"
+          ],
+          "reading": {
+            "section": "3"
+          }
+        }
+      ]
+    },
+    {
+      "title": "D. The (Russellian)",
+      "instructions": "Montague's the carries existence and uniqueness: the man = λY.∃x[man(x) ∧ ∀y[man(y)→y=x] ∧ Y(x)].",
+      "items": [
+        {
+          "sentence": "The man walks.",
+          "tree": "[.S [.DP [.D the ] [.NP man ] ] [.VP walks ] ]",
+          "targets": [
+            "Ex[man(x) & Ay[man(y) -> y=x] & walk(x)]"
+          ],
+          "reading": {
+            "section": "4"
+          }
+        }
+      ]
+    },
+    {
+      "title": "E. Quantifying-in and scope",
+      "instructions": "An in-situ object quantifier takes narrow scope. For the inverse reading, raise the object quantifier over the clause (QR) and bind the trace — Montague's quantifying-in. \"Every man loves a woman\" is scope-ambiguous: derive both readings.",
+      "items": [
+        {
+          "sentence": "Every man loves a woman.",
+          "tree": "[.S [.DP [.D every ] [.NP man ] ] [.VP [.V loves ] [.DP [.D a ] [.NP woman ] ] ] ]",
+          "targets": [
+            "Ax[man(x) -> Ey[woman(y) & love(x,y)]]",
+            "Ey[woman(y) & Ax[man(x) -> love(x,y)]]"
+          ],
+          "reading": {
+            "section": "5"
+          }
+        },
+        {
+          "sentence": "John seeks a unicorn. (de re)",
+          "tree": "[.S [.DP John ] [.VP [.V seeks ] [.DP [.D a ] [.NP unicorn ] ] ] ]",
+          "targets": [
+            "Ey[unicorn(y) & seek(j,y)]"
+          ],
+          "reading": {
+            "section": "5"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": {
+    "format": "lingdown",
+    "markdown": "# Montague 1973 · The Proper Treatment of Quantification (Extensional PTQ)\n\nMontague's guiding idea is **uniformity**: every noun phrase — a name, a quantifier\nphrase, even a pronoun — denotes one and the same kind of thing, a *generalized\nquantifier* of type ⟨⟨e,t⟩,t⟩, a set of properties. A name is folded into this type\nby `lift`; determiners build quantifiers directly; and a transitive verb is given a\ntype that lets it take a quantifier as its object. Scope ambiguities then come from\none extra rule, *quantifying-in*.\n\nThis reading develops the **extensional skeleton** of PTQ. The intensional half —\nthe de dicto reading of *seek*, the rising-temperature puzzle — needs functions\nfrom possible worlds and is noted in §6 but not derived here.\n\n## 1 Every noun phrase is a quantifier\n\nA name lifts to the set of its properties (a *principal ultrafilter*); a determiner\ncombines with a noun to give a quantifier:\n\n```deriv\nlift([[John]])    = lambda P.P(j)                       : <<e,t>,t>\n[[every]]         = lambda X.lambda Y.forall x[X(x) -> Y(x)] : <<e,t>,<<e,t>,t>>\n[[every man]]     = lambda Y.forall x[man(x) -> Y(x)]   : <<e,t>,t>\n```\n\nA quantifier subject takes the VP as *its* argument (@npq):\n\n```tree\n[S{forall x[man(x) -> walk(x)]}\n  [DP{lambda Y.forall x[man(x) -> Y(x)]}\n    [D{lambda X.lambda Y.forall x[X(x) -> Y(x)]} every]\n    [NP{lambda x.man(x)} man]]\n  [VP{lambda x.walk(x)} walks]]\n```\n\n```ex {#npq}\nJohn walks.\nEvery man walks.\n```\n\n## 2 Transitive verbs take quantifier objects\n\nIn PTQ a transitive verb does not combine with an individual but with a *quantifier*.\nIts denotation feeds the object quantifier the relation's second slot:\n\n```deriv\n[[loves]]            = lambda T.lambda x.T(lambda y.love(x,y)) : <<<e,t>,t>,<e,t>>\n[[loves every woman]] = lambda x.forall y[woman(y) -> love(x,y)] : <e,t>\n```\n\nSo an in-situ object quantifier automatically takes **narrow scope** (@tv). A name\nobject lifts first, and the truth conditions reduce to the simple relation:\n\n```deriv\n[[loves Mary]]      = lambda x.love(x,m)     : <e,t>\n[[John loves Mary]] = love(j,m)              : t\n```\n\n```tree\n[S{forall y[woman(y) -> love(j,y)]}\n  [DP{j} John]\n  [VP{lambda x.forall y[woman(y) -> love(x,y)]}\n    [V{lambda T.lambda x.T(lambda y.love(x,y))} loves]\n    [DP{lambda Y.forall y[woman(y) -> Y(y)]} every woman]]]\n```\n\n```ex {#tv}\nJohn loves Mary.\nJohn loves every woman.\nJohn finds a unicorn.\n```\n\n## 3 The verb *be*\n\nOne entry covers both identity and predication. `be` takes a quantifier object and\nasks whether it holds of the property *being identical to the subject*:\n\n```deriv\n[[is]]          = lambda T.lambda x.T(lambda y.x=y)   : <<<e,t>,t>,<e,t>>\n[[is Bill]]     = lambda x.(x=b)                       : <e,t>     (Bill lifted)\n[[is a man]]    = lambda x.exists z[man(z) & x=z] = lambda x.man(x) : <e,t>\n```\n\n*John is Bill* is the identity `j=b`; *John is a man* reduces — by the one-point\nlaw — to the predication `man(j)` (@beids).\n\n```ex {#beids}\nJohn is Bill.\nJohn is a man.\n```\n\n## 4 The (Russellian)\n\nMontague's *the* carries Russell's existence-and-uniqueness:\n\n```deriv\n[[the]]      = lambda X.lambda Y.exists x[X(x) & forall y[X(y) -> y=x] & Y(x)] : <<e,t>,<<e,t>,t>>\n[[the man walks]] = exists x[man(x) & forall y[man(y) -> y=x] & walk(x)]       : t\n```\n\nThere is a man, he is the only man, and he walks (@theman).\n\n```ex {#theman}\nThe man walks.\n```\n\n## 5 Quantifying-in and scope\n\nSurface scope falls out in situ (§2). The **inverse** reading, and de re readings\ngenerally, come from *quantifying-in*: build an open sentence with a pronoun —\nitself a lifted variable `λP.P(xₙ)` — then let a quantifier bind it. In COMPOSE this\nis Quantifier Raising: move the object to the front, leaving a trace.\n\n```deriv\n[[every man loves a woman]]\n  surface (∀ > ∃) : forall x[man(x) -> exists y[woman(y) & love(x,y)]]\n  inverse (∃ > ∀) : exists y[woman(y) & forall x[man(x) -> love(x,y)]]\n```\n\nThe inverse is derived by raising *a woman* over the clause and binding the trace\n(@scope):\n\n```deriv\n[[every man loves t1]] = forall x[man(x) -> love(x,x1)]            : t\nlambda-bind x1         = lambda x1.forall x[man(x) -> love(x,x1)]  : <e,t>\n[[a woman]](...)       = exists y[woman(y) & forall x[man(x) -> love(x,y)]] : t\n```\n\n```ex {#scope}\nEvery man loves a woman.\nJohn seeks a unicorn.\n```\n\n## 6 A note on intensionality\n\nPTQ's signature is *intensional*. *John seeks a unicorn* has a **de dicto** reading\non which John's search can succeed with no unicorn in the world at all — *seek*\nrelates John to the **intension** of *a unicorn*, a function from worlds to\nquantifiers. The same machinery of individual concepts resolves *the temperature is\nninety and the temperature rises* without inferring that ninety rises.\n\nModelling this needs the type of worlds and Montague's `^`/`˅` operators — the\nintensional fragment (cf. the worlds chapters). The extensional set here derives\nonly the **de re** reading of *seek*: `exists y[unicorn(y) & seek(j,y)]`.\n"
+  }
+}

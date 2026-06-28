@@ -1,0 +1,403 @@
+{
+  "compose": 1,
+  "id": "ch11-dav",
+  "title": "Davidsonian Event Semantics (§11.1–11.2)",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w bi st pi tm el sr mr x1 x2"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "X Y Z P Q R F G H",
+      "t": "p q",
+      "v": "e"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "runs",
+        "run"
+      ],
+      "denotation": "Lx.Le.run(e,x)"
+    },
+    {
+      "words": [
+        "sings",
+        "sing"
+      ],
+      "denotation": "Lx.Le.sing(e,x)"
+    },
+    {
+      "words": [
+        "sleeps",
+        "sleep"
+      ],
+      "denotation": "Lx.Le.sleep(e,x)"
+    },
+    {
+      "words": [
+        "loves",
+        "love"
+      ],
+      "denotation": "Ly.Lx.Le.love(e,x,y)"
+    },
+    {
+      "words": [
+        "fears",
+        "fear"
+      ],
+      "denotation": "Ly.Lx.Le.fear(e,x,y)"
+    },
+    {
+      "words": [
+        "helps",
+        "help"
+      ],
+      "denotation": "Ly.Lx.Le.help(e,x,y)"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(x)"
+    },
+    {
+      "words": [
+        "dwarf"
+      ],
+      "denotation": "Lx.dwarf(x)"
+    },
+    {
+      "words": [
+        "orc"
+      ],
+      "denotation": "Lx.orc(x)"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "no",
+        "No"
+      ],
+      "denotation": "LX.LY.~Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "horse"
+      ],
+      "denotation": "Lx.horse(x)"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "LP.ιx.P(x)"
+    },
+    {
+      "words": [
+        "'s",
+        "POSS"
+      ],
+      "denotation": "LP.Lx.ιy[poss(x,y) & P(y)]"
+    },
+    {
+      "words": [
+        "who",
+        "that"
+      ],
+      "denotation": "LP.P"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": true,
+      "predicateAbstraction": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Intransitive verbs",
+      "instructions": "The subject saturates the individual argument, leaving an event predicate ⟨v,t⟩. Apply EC at the root to existentially bind the event and reach type t.",
+      "items": [
+        {
+          "sentence": "Frodo runs.",
+          "tree": "[.S [.DP Frodo ] [.VP runs ] ]",
+          "targets": [
+            "∃e[run(e,f)]"
+          ]
+        },
+        {
+          "sentence": "Gandalf sings.",
+          "tree": "[.S [.DP Gandalf ] [.VP sings ] ]",
+          "targets": [
+            "∃e[sing(e,g)]"
+          ]
+        },
+        {
+          "sentence": "Sam sleeps.",
+          "tree": "[.S [.DP Sam ] [.VP sleeps ] ]",
+          "targets": [
+            "∃e[sleep(e,s)]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "B. Transitive verbs",
+      "instructions": "A Davidsonian transitive verb is ⟨e,⟨e,⟨v,t⟩⟩⟩. After both participants apply, EC binds the event.",
+      "items": [
+        {
+          "sentence": "Frodo loves Sam.",
+          "tree": "[.S [.DP Frodo ] [.VP [.V loves ] [.DP Sam ] ] ]",
+          "targets": [
+            "∃e[love(e,f,s)]"
+          ]
+        },
+        {
+          "sentence": "Aragorn helps Boromir.",
+          "tree": "[.S [.DP Aragorn ] [.VP [.V helps ] [.DP Boromir ] ] ]",
+          "targets": [
+            "∃e[help(e,a,b)]"
+          ]
+        },
+        {
+          "sentence": "Gimli fears Sauron.",
+          "tree": "[.S [.DP Gimli ] [.VP [.V fears ] [.DP Sauron ] ] ]",
+          "targets": [
+            "∃e[fear(e,m,n)]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "C. Quantified subjects",
+      "instructions": "A quantified subject can't fill the verb's ⟨e,…⟩ slot directly. Quantifier-raise the subject DP, leaving a type-e trace; the trace saturates the verb, then apply EC LOW (at the ⟨v,t⟩ node) so the event closes below the quantifier. Predicate Abstraction over the trace gives an ⟨e,t⟩ predicate the quantifier binds — yielding the narrow-event reading where each individual has its own event.",
+      "items": [
+        {
+          "sentence": "Every hobbit runs.",
+          "tree": "[.S [.DP [.D every ] [.NP hobbit ] ] [.VP runs ] ]",
+          "targets": [
+            "∀x[hobbit(x) → ∃e[run(e,x)]]"
+          ]
+        },
+        {
+          "sentence": "Some elf fears Sauron.",
+          "tree": "[.S [.DP [.D some ] [.NP elf ] ] [.VP [.V fears ] [.DP Sauron ] ] ]",
+          "targets": [
+            "∃x[elf(x) ∧ ∃e[fear(e,x,n)]]"
+          ]
+        },
+        {
+          "sentence": "No dwarf helps Frodo.",
+          "tree": "[.S [.DP [.D no ] [.NP dwarf ] ] [.VP [.V helps ] [.DP Frodo ] ] ]",
+          "targets": [
+            "¬∃x[dwarf(x) ∧ ∃e[help(e,x,f)]]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "D. Quantified objects",
+      "instructions": "A quantified object can't fill the verb's object slot directly either. Quantifier-raise the object DP, leaving a type-e trace; the subject and trace saturate the verb, apply EC LOW at the ⟨v,t⟩ node, then Predicate Abstraction lets the object quantifier bind.",
+      "items": [
+        {
+          "sentence": "Frodo loves every elf.",
+          "tree": "[.S [.DP Frodo ] [.VP [.V loves ] [.DP [.D every ] [.NP elf ] ] ] ]",
+          "targets": [
+            "∀x[elf(x) → ∃e[love(e,f,x)]]"
+          ]
+        },
+        {
+          "sentence": "Aragorn helps some dwarf.",
+          "tree": "[.S [.DP Aragorn ] [.VP [.V helps ] [.DP [.D some ] [.NP dwarf ] ] ] ]",
+          "targets": [
+            "∃x[dwarf(x) ∧ ∃e[help(e,a,x)]]"
+          ]
+        },
+        {
+          "sentence": "Gandalf fears no orc.",
+          "tree": "[.S [.DP Gandalf ] [.VP [.V fears ] [.DP [.D no ] [.NP orc ] ] ] ]",
+          "targets": [
+            "¬∃x[orc(x) ∧ ∃e[fear(e,g,x)]]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "E. Two quantifiers",
+      "instructions": "With quantifiers in both positions, raise both DPs. The order of raising fixes the scope; EC stays lowest, so the event always closes under both quantifiers. Derive each target reading.",
+      "items": [
+        {
+          "sentence": "Every hobbit loves some elf.",
+          "tree": "[.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.V loves ] [.DP [.D some ] [.NP elf ] ] ] ]",
+          "targets": [
+            "every > some (linear): ∀x[hobbit(x) → ∃y[elf(y) ∧ ∃e[love(e,x,y)]]]",
+            "some > every (inverse): ∃y[elf(y) ∧ ∀x[hobbit(x) → ∃e[love(e,x,y)]]]"
+          ]
+        },
+        {
+          "sentence": "Some dwarf helps every hobbit.",
+          "tree": "[.S [.DP [.D some ] [.NP dwarf ] ] [.VP [.V helps ] [.DP [.D every ] [.NP hobbit ] ] ] ]",
+          "targets": [
+            "some > every (linear): ∃x[dwarf(x) ∧ ∀y[hobbit(y) → ∃e[help(e,x,y)]]]",
+            "every > some (inverse): ∀y[hobbit(y) → ∃x[dwarf(x) ∧ ∃e[help(e,x,y)]]]"
+          ]
+        },
+        {
+          "sentence": "Every dwarf fears some orc.",
+          "tree": "[.S [.DP [.D every ] [.NP dwarf ] ] [.VP [.V fears ] [.DP [.D some ] [.NP orc ] ] ] ]",
+          "targets": [
+            "every > some (linear): ∀x[dwarf(x) → ∃y[orc(y) ∧ ∃e[fear(e,x,y)]]]",
+            "some > every (inverse): ∃y[orc(y) ∧ ∀x[dwarf(x) → ∃e[fear(e,x,y)]]]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "F. Complex arguments",
+      "instructions": "A definite, possessive or relative-clause DP is type e, so it slots straight into the verb's individual argument. \"the orc\" = ιx[orc(x)]; \"Sam's horse\" = ιy[poss(s,y) ∧ horse(y)]; in the relative clause the trace's event closes by EC and Predicate Abstraction feeds the ι operator. The matrix event closes last.",
+      "items": [
+        {
+          "sentence": "Aragorn fears the orc.",
+          "tree": "[.S [.DP Aragorn ] [.VP [.V fears ] [.DP [.D the ] [.NP orc ] ] ] ]",
+          "targets": [
+            "∃e[fear(e,a,ιx[orc(x)])]"
+          ]
+        },
+        {
+          "sentence": "Frodo loves Sam's horse.",
+          "tree": "[.S [.DP Frodo ] [.VP [.V loves ] [.DP [.DP Sam ] [.D1 [.D 's ] [.NP horse ] ] ] ] ]",
+          "targets": [
+            "∃e[love(e,f,ιy[poss(s,y) ∧ horse(y)])]"
+          ]
+        },
+        {
+          "sentence": "Gandalf helps the hobbit who sleeps.",
+          "tree": "[.S [.DP Gandalf ] [.VP [.V helps ] [.DP [.D the ] [.NP [.NP hobbit ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP sleeps ] ] ] ] ] ] ] ]",
+          "targets": [
+            "∃e[help(e,g,ιx[hobbit(x) ∧ ∃e'[sleep(e',x)]])]"
+          ]
+        }
+      ]
+    }
+  ]
+}

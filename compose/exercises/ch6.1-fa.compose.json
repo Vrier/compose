@@ -1,0 +1,431 @@
+{
+  "compose": 1,
+  "id": "ch6-fa",
+  "title": "Function Application (§6.1–6.3)",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w bi st pi tm el sr mr x1 x2 r"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "X Y Z P Q R F G H",
+      "t": "p q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "runs",
+        "run"
+      ],
+      "denotation": "Lx.run(x)"
+    },
+    {
+      "words": [
+        "sings",
+        "sing"
+      ],
+      "denotation": "Lx.sing(x)"
+    },
+    {
+      "words": [
+        "sleeps",
+        "sleep"
+      ],
+      "denotation": "Lx.sleep(x)"
+    },
+    {
+      "words": [
+        "hikes",
+        "hike"
+      ],
+      "denotation": "Lx.hike(x)"
+    },
+    {
+      "words": [
+        "gardens",
+        "garden"
+      ],
+      "denotation": "Lx.garden(x)"
+    },
+    {
+      "words": [
+        "fights",
+        "fight"
+      ],
+      "denotation": "Lx.fight(x)"
+    },
+    {
+      "words": [
+        "laughs",
+        "laugh"
+      ],
+      "denotation": "Lx.laugh(x)"
+    },
+    {
+      "words": [
+        "loves",
+        "love"
+      ],
+      "denotation": "Ly.Lx.love(x,y)"
+    },
+    {
+      "words": [
+        "trusts",
+        "trust"
+      ],
+      "denotation": "Ly.Lx.trust(x,y)"
+    },
+    {
+      "words": [
+        "fears",
+        "fear"
+      ],
+      "denotation": "Ly.Lx.fear(x,y)"
+    },
+    {
+      "words": [
+        "gives",
+        "give"
+      ],
+      "denotation": "Lz.Ly.Lx.give(x,y,z)"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "wizard"
+      ],
+      "denotation": "Lx.wizard(x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(x)"
+    },
+    {
+      "words": [
+        "brave"
+      ],
+      "denotation": "Lx.brave(x)"
+    },
+    {
+      "words": [
+        "is",
+        "are"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "a",
+        "an"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "the-ring"
+      ],
+      "denotation": "r"
+    },
+    {
+      "words": [
+        "with"
+      ],
+      "denotation": "Ly.Lx.with(x,y)"
+    },
+    {
+      "words": [
+        "in"
+      ],
+      "denotation": "Ly.Lx.in(x,y)"
+    },
+    {
+      "words": [
+        "to"
+      ],
+      "denotation": "Ly.Lx.to(x,y)"
+    },
+    {
+      "words": [
+        "near"
+      ],
+      "denotation": "Ly.Lx.near(x,y)"
+    },
+    {
+      "words": [
+        "Mordor"
+      ],
+      "denotation": "o"
+    },
+    {
+      "words": [
+        "Rivendell"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "doesnt",
+        "does-not"
+      ],
+      "denotation": "LP.Lx.~P(x)"
+    },
+    {
+      "words": [
+        "not"
+      ],
+      "denotation": "LP.Lx.~P(x)"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Intransitive verbs",
+      "instructions": "A subject of type e combines with an intransitive verb of type ⟨e,t⟩ by Function Application, yielding a proposition of type t.",
+      "items": [
+        {
+          "sentence": "Frodo runs.",
+          "tree": "[.S [.DP Frodo ] [.VP runs ] ]",
+          "reading": {
+            "section": "6.1"
+          }
+        },
+        {
+          "sentence": "Strider hikes.",
+          "tree": "[.S [.DP Strider ] [.VP hikes ] ]",
+          "reading": {
+            "section": "6.1"
+          }
+        },
+        {
+          "sentence": "Sam gardens.",
+          "tree": "[.S [.DP Sam ] [.VP gardens ] ]",
+          "reading": {
+            "section": "6.1"
+          }
+        }
+      ]
+    },
+    {
+      "title": "B. Transitive and ditransitive verbs",
+      "instructions": "A transitive verb ⟨e,⟨e,t⟩⟩ takes its object first, then its subject. A ditransitive verb takes three arguments in turn; here \"the ring\" is treated as a single individual of type e (definite descriptions come in §8).",
+      "items": [
+        {
+          "sentence": "Bilbo loves Frodo.",
+          "tree": "[.S [.DP Bilbo ] [.VP [.V loves ] [.DP Frodo ] ] ]",
+          "reading": {
+            "section": "6.2"
+          }
+        },
+        {
+          "sentence": "Frodo trusts Sam.",
+          "tree": "[.S [.DP Frodo ] [.VP [.V trusts ] [.DP Sam ] ] ]",
+          "reading": {
+            "section": "6.2"
+          }
+        },
+        {
+          "sentence": "Gandalf gives Frodo Sam.",
+          "tree": "[.S [.DP Gandalf ] [.VP [.V [.V gives ] [.DP Frodo ] ] [.DP Sam ] ] ]",
+          "reading": {
+            "section": "6.2"
+          }
+        }
+      ]
+    },
+    {
+      "title": "C. The copula",
+      "instructions": "The copula \"is\" and the article \"a\" are the identity function λX.X. They pass the predicate up unchanged, and the predicate applies to the subject.",
+      "items": [
+        {
+          "sentence": "Frodo is a hobbit.",
+          "tree": "[.S [.DP Frodo ] [.VP [.V is ] [.NP [.D a ] [.NP hobbit ] ] ] ]",
+          "reading": {
+            "section": "6.2.2"
+          }
+        },
+        {
+          "sentence": "Gandalf is a wizard.",
+          "tree": "[.S [.DP Gandalf ] [.VP [.V is ] [.NP [.D a ] [.NP wizard ] ] ] ]",
+          "reading": {
+            "section": "6.2.2"
+          }
+        },
+        {
+          "sentence": "Sam is brave.",
+          "tree": "[.S [.DP Sam ] [.VP [.V is ] [.AP brave ] ] ]",
+          "reading": {
+            "section": "6.2.2"
+          }
+        }
+      ]
+    },
+    {
+      "title": "D. Prepositions",
+      "instructions": "A preposition is a relation of type ⟨e,⟨e,t⟩⟩, like a transitive verb. It combines with its complement to form a predicate ⟨e,t⟩, which the copula passes up to the subject.",
+      "items": [
+        {
+          "sentence": "Sam is with Frodo.",
+          "tree": "[.S [.DP Sam ] [.VP [.V is ] [.PP [.P with ] [.DP Frodo ] ] ] ]",
+          "reading": {
+            "section": "6.2.3"
+          }
+        },
+        {
+          "sentence": "Sauron is in Mordor.",
+          "tree": "[.S [.DP Sauron ] [.VP [.V is ] [.PP [.P in ] [.DP Mordor ] ] ] ]",
+          "reading": {
+            "section": "6.2.3"
+          }
+        },
+        {
+          "sentence": "Gandalf is near Rivendell.",
+          "tree": "[.S [.DP Gandalf ] [.VP [.V is ] [.PP [.P near ] [.DP Rivendell ] ] ] ]",
+          "reading": {
+            "section": "6.2.3"
+          }
+        }
+      ]
+    },
+    {
+      "title": "E. Negation",
+      "instructions": "Negation is type ⟨⟨e,t⟩,⟨e,t⟩⟩: it takes a predicate and returns its complement. \"doesn't\" negates a verb phrase; \"not\" after the copula negates the predicate nominal.",
+      "items": [
+        {
+          "sentence": "Frodo doesn't fight.",
+          "tree": "[.S [.DP Frodo ] [.VP [.Neg doesnt ] [.VP fights ] ] ]",
+          "reading": {
+            "section": "6.3"
+          }
+        },
+        {
+          "sentence": "Sauron is not a hobbit.",
+          "tree": "[.S [.DP Sauron ] [.VP [.V is ] [.NegP [.Neg not ] [.NP [.D a ] [.NP hobbit ] ] ] ] ]",
+          "reading": {
+            "section": "6.3"
+          }
+        },
+        {
+          "sentence": "Sauron is not in Rivendell.",
+          "tree": "[.S [.DP Sauron ] [.VP [.V is ] [.NegP [.Neg not ] [.PP [.P in ] [.DP Rivendell ] ] ] ] ]",
+          "reading": {
+            "section": "6.3"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": {
+    "format": "lingdown",
+    "markdown": "# Chapter 6 · Function Application\n\nFrege's insight is that a verb phrase is *unsaturated*: `loves Frodo` is a meaning with a hole in it, waiting for a subject. The guiding hypothesis of this chapter is that meanings combine in essentially **one** way — a function meets its argument and fills the hole.\n\nWe translate each English word into the typed lambda calculus, give every node in the tree a semantic **type**, and let two composition rules do all the work.\n\n## 6.1 Function Application\n\nThere are two basic types: $e$ for individuals and $t$ for truth values. A one-place predicate is a function from individuals to truth values, written $<e,t>$.\n\n**Function Application (FA).** If a branching node has two daughters — one of type $<s,t>$ and the other of type $s$ — the mother denotes the result of applying the first to the second, and has type $t$.[^order]\n\n**Non-branching Nodes (NN).** A node with a single daughter simply inherits that daughter's denotation.\n\nAn intransitive verb is type $<e,t>$ and a subject name is type $e$, so the two meet directly by FA:\n\n```deriv\n[[runs]]       = lambda x.run(x)  : <e,t>\n[[Frodo]]      = f                : e\n[[Frodo runs]] = run(f)           : t\n```\n\n```tree\n[S{run(f)}\n  [DP{f} Frodo]\n  [VP{lambda x.run(x)} runs]]\n```\n\nSo *Frodo runs* is true exactly when $f$ belongs to the set of runners. Every sentence in (@intrans) has this same shape.\n\n```ex {#intrans}\nFrodo runs.\nStrider hikes.\n* Runs Frodo.\n```\n\n[^order]: $s$ and $t$ here are *any* types, not just the truth-value type — they range over whatever the two daughters happen to be. FA only cares that one daughter's input type matches the other daughter's type.\n\n## 6.2 Transitive and ditransitive verbs\n\nA transitive verb wants two arguments, so it is type $<e,<e,t>>$ — a function that takes the **object** first and returns a one-place predicate:\n\n```deriv\n[[loves]]              = lambda y.lambda x.love(x,y) : <e,<e,t>>\n[[loves Frodo]]        = lambda x.love(x,f)          : <e,t>\n[[Bilbo loves Frodo]]  = love(bi,f)                  : t\n```\n\n```tree\n[S{love(bi,f)}\n  [DP{bi} Bilbo]\n  [VP{lambda x.love(x,f)}\n    [V{lambda y.lambda x.love(x,y)} loves]\n    [DP{f} Frodo]]]\n```\n\nThe object saturates the inner $lambda y$; the subject saturates the outer $lambda x$ at the top node. A ditransitive verb such as *gives* is type $<e,<e,<e,t>>>$ and peels off three arguments in turn, innermost first.\n\n## 6.2.2 The copula and predication\n\nWords like *is* and the article *a* carry no content of their own: each is the identity function $lambda X.X$, of type $<<e,t>,<e,t>>$. They pass a predicate up the tree untouched, so the predicate ends up applying to the subject:\n\n```deriv\n[[is]] = [[a]]         = lambda X.X         : <<e,t>,<e,t>>\n[[hobbit]]             = lambda x.hobbit(x) : <e,t>\n[[Frodo is a hobbit]]  = hobbit(f)          : t\n```\n\nA predicate adjective behaves the same way: *Sam is brave* reduces all the way to $brave(s)$.\n\n## 6.2.3 Prepositions\n\nA preposition is a relation between two individuals, type $<e,<e,t>>$ — structurally just like a transitive verb. It combines with its complement to form a predicate, which the copula then relays to the subject:\n\n```deriv\n[[with]]               = lambda y.lambda x.with(x,y) : <e,<e,t>>\n[[with Frodo]]         = lambda x.with(x,f)          : <e,t>\n[[Sam is with Frodo]]  = with(s,f)                   : t\n```\n\n## 6.3 Negation\n\nPredicate negation is type $<<e,t>,<e,t>>$: it takes a predicate and returns its **complement** — the set of everything the predicate is false of.\n\n```deriv\n[[doesnt]] = [[not]]      = lambda P.lambda x.~P(x) : <<e,t>,<e,t>>\n[[doesnt fight]]          = lambda x.~fight(x)      : <e,t>\n[[Frodo doesnt fight]]    = ~fight(f)               : t\n```\n\n*doesn't* negates a verb phrase; *not* after the copula negates a predicate nominal or PP, as in (@neg). Either way the result is the complement of the predicate it applies to.\n\n```ex {#neg}\nFrodo doesn't fight.\nSauron is not a hobbit.\nSauron is not in Rivendell.\n```\n"
+  }
+}

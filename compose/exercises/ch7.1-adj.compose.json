@@ -1,0 +1,353 @@
+{
+  "compose": 1,
+  "id": "ch7-adj",
+  "title": "Adjectives & Predicate Modification (§7.2)",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w bi st pi tm el sr mr x1 x2"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "X Y Z P Q R F G H",
+      "t": "p q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "is",
+        "are"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "a",
+        "an"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "not"
+      ],
+      "denotation": "LP.Lx.~P(x)"
+    },
+    {
+      "words": [
+        "doesnt",
+        "does-not"
+      ],
+      "denotation": "LP.Lx.~P(x)"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "wizard"
+      ],
+      "denotation": "Lx.wizard(x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(x)"
+    },
+    {
+      "words": [
+        "creature"
+      ],
+      "denotation": "Lx.creature(x)"
+    },
+    {
+      "words": [
+        "ranger"
+      ],
+      "denotation": "Lx.ranger(x)"
+    },
+    {
+      "words": [
+        "human"
+      ],
+      "denotation": "Lx.human(x)"
+    },
+    {
+      "words": [
+        "king"
+      ],
+      "denotation": "Lx.king(x)"
+    },
+    {
+      "words": [
+        "brave"
+      ],
+      "denotation": "Lx.brave(x)"
+    },
+    {
+      "words": [
+        "mischievous"
+      ],
+      "denotation": "Lx.mischievous(x)"
+    },
+    {
+      "words": [
+        "mundane"
+      ],
+      "denotation": "Lx.mundane(x)"
+    },
+    {
+      "words": [
+        "magical"
+      ],
+      "denotation": "Lx.magical(x)"
+    },
+    {
+      "words": [
+        "traveling"
+      ],
+      "denotation": "Lx.traveling(x)"
+    },
+    {
+      "words": [
+        "wise"
+      ],
+      "denotation": "Lx.wise(x)"
+    },
+    {
+      "words": [
+        "former"
+      ],
+      "denotation": "LF.Lx.former(F)(x)"
+    },
+    {
+      "words": [
+        "alleged"
+      ],
+      "denotation": "LF.Lx.alleged(F)(x)"
+    },
+    {
+      "words": [
+        "sees",
+        "see"
+      ],
+      "denotation": "Ly.Lx.see(x,y)"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "no",
+        "No"
+      ],
+      "denotation": "LX.LY.~Ex[X(x) & Y(x)]"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Intersective adjectives with copula",
+      "instructions": "An intersective adjective is a predicate ⟨e,t⟩. Two predicates sisters in NP combine by Predicate Modification: λx.[F(x) ∧ G(x)]. The copula passes the result up unchanged. The third adds a quantifier as complication.",
+      "items": [
+        {
+          "sentence": "Pippin is a mischievous hobbit.",
+          "tree": "[.S [.DP Pippin ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP mischievous ] [.NP hobbit ] ] ] ] ]",
+          "reading": {
+            "section": "7.2"
+          }
+        },
+        {
+          "sentence": "Tom is not a mundane creature.",
+          "tree": "[.S [.DP Tom ] [.VP [.Neg not ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP mundane ] [.NP creature ] ] ] ] ] ]",
+          "reading": {
+            "section": "7.2"
+          }
+        },
+        {
+          "sentence": "Every traveling hobbit is a brave creature.",
+          "tree": "[.S [.DP [.D every ] [.NP [.AP traveling ] [.NP hobbit ] ] ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP brave ] [.NP creature ] ] ] ] ]",
+          "reading": {
+            "section": "7.2"
+          }
+        }
+      ]
+    },
+    {
+      "title": "B. Stacked adjectives",
+      "instructions": "Multiple intersective adjectives stack by repeated Predicate Modification. Each AP adds its predicate conjunctively. The third example adds sentential negation.",
+      "items": [
+        {
+          "sentence": "Tom is a mischievous magical creature.",
+          "tree": "[.S [.DP Tom ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP mischievous ] [.NP [.AP magical ] [.NP creature ] ] ] ] ] ]",
+          "reading": {
+            "section": "7.2"
+          }
+        },
+        {
+          "sentence": "Strider is not a human ranger.",
+          "tree": "[.S [.DP Strider ] [.VP [.Neg not ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP human ] [.NP ranger ] ] ] ] ] ]",
+          "reading": {
+            "section": "7.2"
+          }
+        },
+        {
+          "sentence": "No traveling hobbit is a mischievous brave creature.",
+          "tree": "[.S [.DP [.D no ] [.NP [.AP traveling ] [.NP hobbit ] ] ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP mischievous ] [.NP [.AP brave ] [.NP creature ] ] ] ] ] ]",
+          "reading": {
+            "section": "7.2"
+          }
+        }
+      ]
+    },
+    {
+      "title": "C. Non-intersective adjectives",
+      "instructions": "Non-intersective adjectives like \"alleged\" and \"former\" are predicate modifiers ⟨⟨e,t⟩,⟨e,t⟩⟩ — they take a property and return a property, without entailing the base noun. They combine by Function Application, not PM.",
+      "items": [
+        {
+          "sentence": "Strider is an alleged king.",
+          "tree": "[.S [.DP Strider ] [.VP [.V is ] [.NP [.D an ] [.NP [.AP alleged ] [.NP king ] ] ] ] ]",
+          "reading": {
+            "section": "7.2.1"
+          }
+        },
+        {
+          "sentence": "Bilbo is a former traveling hobbit.",
+          "tree": "[.S [.DP Bilbo ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP former ] [.NP [.AP traveling ] [.NP hobbit ] ] ] ] ] ]",
+          "reading": {
+            "section": "7.2.1"
+          }
+        },
+        {
+          "sentence": "Some alleged wise wizard sees Sauron.",
+          "tree": "[.S [.DP [.D some ] [.NP [.AP alleged ] [.NP [.AP wise ] [.NP wizard ] ] ] ] [.VP [.V sees ] [.DP Sauron ] ] ]",
+          "reading": {
+            "section": "7.2.1"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": {
+    "format": "lingdown",
+    "markdown": "# Chapter 7 · Predicate Modification\n\nChapter 6 established **Function Application** as the core composition rule. Chapter 7 adds a second rule — **Predicate Modification** — for adjective–noun combinations, and widens the type inventory to include predicate modifiers ⟨⟨e,t⟩,⟨e,t⟩⟩.\n\n## 7.2 Predicate Modification\n\n**Predicate Modification (PM).** If two sisters α and β are both type ⟨e,t⟩, their mother denotes λx.[α(x) ∧ β(x)].\n\nAn *intersective* adjective is a plain one-place predicate. It shares type ⟨e,t⟩ with the noun, so the two sisters combine by PM. The determiner *a/an* and copula *is/are* are identity functions that pass their sister's denotation straight up.\n\n```ex {#pm-ex}\nPippin is a mischievous hobbit.\nTom is not a mundane creature.\nEvery traveling hobbit is a brave creature.\n```\n\n```deriv\n[[mischievous]]                     = lambda x.mischievous(x)                      : <e,t>\n[[hobbit]]                          = lambda x.hobbit(x)                           : <e,t>\n[[mischievous hobbit]]              = lambda x.mischievous(x) /\\ hobbit(x)         : <e,t>\n[[a]]                               = lambda X.X                                   : <<e,t>,<e,t>>\n[[a mischievous hobbit]]            = lambda x.mischievous(x) /\\ hobbit(x)         : <e,t>\n[[is]]                              = lambda X.X                                   : <<e,t>,<e,t>>\n[[is a mischievous hobbit]]         = lambda x.mischievous(x) /\\ hobbit(x)         : <e,t>\n[[Pippin is a mischievous hobbit]]  = mischievous(pi) /\\ hobbit(pi)                : t\n```\n\n```tree\n[S{mischievous(pi) /\\ hobbit(pi)}\n  [DP{pi} Pippin]\n  [VP{lambda x.mischievous(x) /\\ hobbit(x)}\n    [V{lambda X.X} is]\n    [NP{lambda x.mischievous(x) /\\ hobbit(x)}\n      [D{lambda X.X} a]\n      [NP{lambda x.mischievous(x) /\\ hobbit(x)}\n        [AP{lambda x.mischievous(x)} mischievous]\n        [NP{lambda x.hobbit(x)} hobbit]]]]]\n```\n\nNegation applies after the VP is assembled: `[[not]]` = λP.λx.¬P(x), so *is not a mundane creature* = λx.¬[mundane(x) ∧ creature(x)].\n\nMultiple intersective adjectives stack by repeated PM. Each AP sister adds one conjunct (@stack):\n\n```ex {#stack}\nTom is a mischievous magical creature.\nStrider is not a human ranger.\nNo traveling hobbit is a mischievous brave creature.\n```\n\n```deriv\n[[mischievous magical creature]] = lambda x.mischievous(x) /\\ magical(x) /\\ creature(x) : <e,t>\n```\n\nWhen the subject is a quantifier, PM assembles the predicate first; then the determiner applies by FA:\n\n```deriv\n[[every]]                               = lambda X.lambda Y.forall x[X(x) -> Y(x)]              : <<e,t>,<<e,t>,t>>\n[[traveling hobbit]]                    = lambda x.traveling(x) /\\ hobbit(x)                    : <e,t>\n[[every traveling hobbit]]              = lambda Y.forall x[(traveling(x) /\\ hobbit(x)) -> Y(x)] : <<e,t>,t>\n[[brave creature]]                      = lambda x.brave(x) /\\ creature(x)                      : <e,t>\n[[Every traveling hobbit is a brave creature]] = forall x[(traveling(x) /\\ hobbit(x)) -> (brave(x) /\\ creature(x))] : t\n```\n\n## 7.2.1 Non-intersective adjectives\n\n*Alleged* and *former* are not intersective: an alleged king need not be a king; a former hobbit is no longer one. These adjectives are **predicate modifiers** of type ⟨⟨e,t⟩,⟨e,t⟩⟩ — they take a property and return a (possibly weaker) property. Because one daughter is ⟨⟨e,t⟩,⟨e,t⟩⟩ and the other ⟨e,t⟩, they combine by **FA** — PM would fail since the daughters are not the same type.\n\n```ex {#nonintersect}\nStrider is an alleged king.\nBilbo is a former traveling hobbit.\nSome alleged wise wizard sees Sauron.\n```\n\n```deriv\n[[alleged]]                    = lambda F.lambda x.alleged(F)(x)    : <<e,t>,<e,t>>\n[[king]]                       = lambda x.king(x)                   : <e,t>\n[[alleged king]]               = lambda x.alleged(king)(x)          : <e,t>\n[[Strider is an alleged king]] = alleged(king)(st)                  : t\n\n[[former]]                           = lambda F.lambda x.former(F)(x)               : <<e,t>,<e,t>>\n[[traveling hobbit]]                 = lambda x.traveling(x) /\\ hobbit(x)           : <e,t>\n[[former traveling hobbit]]          = lambda x.former(lambda x.traveling(x) /\\ hobbit(x))(x) : <e,t>\n[[Bilbo is a former traveling hobbit]] = former(lambda x.traveling(x) /\\ hobbit(x))(bi) : t\n```\n\nThe notation `alleged(king)(x)` treats *alleged* as mapping the property `king` to a new property, then applying to an individual. No entailment that the individual satisfies `king` is triggered.[^nonintersect]\n\n[^nonintersect]: *Former* works the same way but adds a temporal flavour: `former(P)(x)` means x once had property P but no longer does. Both predicates are opaque to their nominal argument.\n"
+  }
+}

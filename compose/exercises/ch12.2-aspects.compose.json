@@ -1,0 +1,324 @@
+{
+  "compose": 1,
+  "id": "ch12-perfect",
+  "title": "The Perfect (§12.2.2.5)",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w",
+      "i": "now dawn dusk noon"
+    },
+    "variables": {
+      "e": "x y z",
+      "i": "t t' t'' t1 t2 t3",
+      "it": "P Q R",
+      "et": "X Y Z",
+      "t": "p q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "now"
+      ],
+      "denotation": "now"
+    },
+    {
+      "words": [
+        "dawn"
+      ],
+      "denotation": "dawn"
+    },
+    {
+      "words": [
+        "dusk"
+      ],
+      "denotation": "dusk"
+    },
+    {
+      "words": [
+        "noon"
+      ],
+      "denotation": "noon"
+    },
+    {
+      "words": [
+        "rides",
+        "ride"
+      ],
+      "denotation": "Lx.Lt.ride(t,x)"
+    },
+    {
+      "words": [
+        "sings",
+        "sing"
+      ],
+      "denotation": "Lx.Lt.sing(t,x)"
+    },
+    {
+      "words": [
+        "rests",
+        "rest"
+      ],
+      "denotation": "Lx.Lt.rest(t,x)"
+    },
+    {
+      "words": [
+        "forges",
+        "forge"
+      ],
+      "denotation": "Ly.Lx.Lt.forge(t,x,y)"
+    },
+    {
+      "words": [
+        "reads",
+        "read"
+      ],
+      "denotation": "Ly.Lx.Lt.read(t,x,y)"
+    },
+    {
+      "words": [
+        "guards",
+        "guard"
+      ],
+      "denotation": "Ly.Lx.Lt.guard(t,x,y)"
+    },
+    {
+      "words": [
+        "sword"
+      ],
+      "denotation": "Lx.sword(x)"
+    },
+    {
+      "words": [
+        "map"
+      ],
+      "denotation": "Lx.map(x)"
+    },
+    {
+      "words": [
+        "gate"
+      ],
+      "denotation": "Lx.gate(x)"
+    },
+    {
+      "words": [
+        "ring"
+      ],
+      "denotation": "Lx.ring(x)"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(x)"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "LX.Ix.X(x)"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "PFV"
+      ],
+      "denotation": "LP.Lt.Et'[t'⊆t & P(t')]"
+    },
+    {
+      "words": [
+        "PROG"
+      ],
+      "denotation": "LP.Lt.Et'[t⊆t' & P(t')]"
+    },
+    {
+      "words": [
+        "PAST"
+      ],
+      "denotation": "LP.Lt.[t=t1 & ∂(t1<now) & P(t1)]"
+    },
+    {
+      "words": [
+        "PRES"
+      ],
+      "denotation": "LP.Lt.[t=now & P(t)]"
+    },
+    {
+      "words": [
+        "PERFECT"
+      ],
+      "denotation": "LP.Lt.Et'[t'<t & P(t')]"
+    },
+    {
+      "words": [
+        "at"
+      ],
+      "denotation": "Lt.t"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": true,
+      "predicateAbstraction": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Past perfect",
+      "instructions": "Stack Tense > Perfect > Asp > vP. PFV builds the event time, PERFECT shifts it before the reference time t1, and PAST fixes t1 before now. \"At dawn\" anchors t1, so the result is type t — no EC. Read it as: before dawn, the sword-forging was already complete.",
+      "items": [
+        {
+          "sentence": "At dawn, Frodo had forged the sword.",
+          "tree": "[.TenseP [.TenseP [.Tense PAST ] [.PerfP [.Perf PERFECT ] [.AspP [.Asp PFV ] [.vP [.DP Frodo ] [.VP [.V forges ] [.DP [.D the ] [.NP sword ] ] ] ] ] ] ] [.PP [.P at ] [.DP dawn ] ] ]",
+          "targets": [
+            "dawn=t1 ∧ ∂(t1<now) ∧ ∃t'[t'<t1 ∧ ∃t''[t''⊆t' ∧ forge(t'',f,ιz[sword(z)])]]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "B. Present perfect",
+      "instructions": "Present perfect anchors the reference time to now: the event lies before the moment of speech, but is viewed from now. Close the open time with EC.",
+      "items": [
+        {
+          "sentence": "Frodo has forged the sword.",
+          "tree": "[.TenseP [.Tense PRES ] [.PerfP [.Perf PERFECT ] [.AspP [.Asp PFV ] [.vP [.DP Frodo ] [.VP [.V forges ] [.DP [.D the ] [.NP sword ] ] ] ] ] ] ]",
+          "targets": [
+            "∃t[t=now ∧ ∃t'[t'<t ∧ ∃t''[t''⊆t' ∧ forge(t'',f,ιz[sword(z)])]]]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "C. Perfect progressive",
+      "instructions": "The perfect can stack over the progressive: \"has been reading\". PROG makes the event time properly include its reference time t′, PERFECT puts t′ before now, and PRES anchors to now. Close with EC.",
+      "items": [
+        {
+          "sentence": "Gandalf has been reading the map.",
+          "tree": "[.TenseP [.Tense PRES ] [.PerfP [.Perf PERFECT ] [.AspP [.Asp PROG ] [.vP [.DP Gandalf ] [.VP [.V reads ] [.DP [.D the ] [.NP map ] ] ] ] ] ] ]",
+          "targets": [
+            "∃t[t=now ∧ ∃t'[t'<t ∧ ∃t''[t'⊆t'' ∧ read(t'',g,ιz[map(z)])]]]"
+          ]
+        }
+      ]
+    }
+  ]
+}

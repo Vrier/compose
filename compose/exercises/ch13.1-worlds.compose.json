@@ -1,0 +1,387 @@
+{
+  "compose": 1,
+  "id": "ch13-worlds",
+  "title": "World-Indexed Predicates (§13.4)",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w"
+    },
+    "variables": {
+      "e": "x y z",
+      "s": "w0 w w' w''",
+      "st": "p q",
+      "et": "P Q",
+      "set": "R S"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "rides",
+        "ride"
+      ],
+      "denotation": "Lx.ride(w0,x)"
+    },
+    {
+      "words": [
+        "sings",
+        "sing"
+      ],
+      "denotation": "Lx.sing(w0,x)"
+    },
+    {
+      "words": [
+        "rests",
+        "rest"
+      ],
+      "denotation": "Lx.rest(w0,x)"
+    },
+    {
+      "words": [
+        "reads",
+        "read"
+      ],
+      "denotation": "Ly.Lx.read(w0,x,y)"
+    },
+    {
+      "words": [
+        "finds",
+        "find"
+      ],
+      "denotation": "Ly.Lx.find(w0,x,y)"
+    },
+    {
+      "words": [
+        "sees",
+        "see"
+      ],
+      "denotation": "Ly.Lx.see(w0,x,y)"
+    },
+    {
+      "words": [
+        "guards",
+        "guard"
+      ],
+      "denotation": "Ly.Lx.guard(w0,x,y)"
+    },
+    {
+      "words": [
+        "ring"
+      ],
+      "denotation": "Lx.ring(w0,x)"
+    },
+    {
+      "words": [
+        "map"
+      ],
+      "denotation": "Lx.map(w0,x)"
+    },
+    {
+      "words": [
+        "gate"
+      ],
+      "denotation": "Lx.gate(w0,x)"
+    },
+    {
+      "words": [
+        "dragon"
+      ],
+      "denotation": "Lx.dragon(w0,x)"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "Lx.hobbit(w0,x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(w0,x)"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "LX.Ix.X(x)"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "a"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "necessarily"
+      ],
+      "denotation": "Lp.Aw'[acc(w0)(w') -> p(w')]"
+    },
+    {
+      "words": [
+        "possibly"
+      ],
+      "denotation": "Lp.Ew'[acc(w0)(w') & p(w')]"
+    },
+    {
+      "words": [
+        "necessarily_deon"
+      ],
+      "denotation": "Lp.Aw'[deon_acc(w0)(w') -> p(w')]"
+    },
+    {
+      "words": [
+        "possibly_deon"
+      ],
+      "denotation": "Lp.Ew'[deon_acc(w0)(w') & p(w')]"
+    },
+    {
+      "words": [
+        "necessarily_meta"
+      ],
+      "denotation": "Lp.Aw'[meta_acc(w0)(w') -> p(w')]"
+    },
+    {
+      "words": [
+        "possibly_epist"
+      ],
+      "denotation": "Lp.Ew'[epist_acc(w0)(w') & p(w')]"
+    },
+    {
+      "words": [
+        "possibly_meta"
+      ],
+      "denotation": "Lp.Ew'[meta_acc(w0)(w') & p(w')]"
+    },
+    {
+      "words": [
+        "necessarily_epist"
+      ],
+      "denotation": "Lp.Aw'[epist_acc(w0)(w') -> p(w')]"
+    },
+    {
+      "words": [
+        "seeks",
+        "seek"
+      ],
+      "denotation": "LR.Lx.seek(w0,x,R)"
+    },
+    {
+      "words": [
+        "believes",
+        "believe"
+      ],
+      "denotation": "Lp.Lx.Aw'[dox(w0)(x,w') -> p(w')]"
+    },
+    {
+      "words": [
+        "wants",
+        "want"
+      ],
+      "denotation": "Lp.Lx.Aw'[boul(w0)(x,w') -> p(w')]"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": true,
+      "predicateAbstraction": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Intransitive predicates",
+      "instructions": "All predicates now carry the evaluation world w0 as a free parameter. An intransitive sentence \"Frodo rides\" yields ride(w0,f): true in the current world just if Frodo rides in it. Compose by the familiar Function Application.",
+      "items": [
+        {
+          "sentence": "Frodo rides.",
+          "tree": "[.S [.DP Frodo ] [.VP rides ] ]",
+          "targets": [
+            "ride(w0,f)"
+          ]
+        },
+        {
+          "sentence": "Gandalf sings.",
+          "tree": "[.S [.DP Gandalf ] [.VP sings ] ]",
+          "targets": [
+            "sing(w0,g)"
+          ]
+        },
+        {
+          "sentence": "Aragorn rests.",
+          "tree": "[.S [.DP Aragorn ] [.VP rests ] ]",
+          "targets": [
+            "rest(w0,a)"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "B. Transitive predicates",
+      "instructions": "A two-place verb takes the world w0 as first argument. The object is a definite description \"the ring\" = ιz[ring(w0,z)] — its referent is computed relative to the evaluation world. Compose by FA.",
+      "items": [
+        {
+          "sentence": "Frodo finds the ring.",
+          "tree": "[.S [.DP Frodo ] [.VP [.V finds ] [.DP [.D the ] [.NP ring ] ] ] ]",
+          "targets": [
+            "find(w0,f,ιz[ring(w0,z)])"
+          ]
+        },
+        {
+          "sentence": "Gandalf reads the map.",
+          "tree": "[.S [.DP Gandalf ] [.VP [.V reads ] [.DP [.D the ] [.NP map ] ] ] ]",
+          "targets": [
+            "read(w0,g,ιz[map(w0,z)])"
+          ]
+        },
+        {
+          "sentence": "Sam sees the gate.",
+          "tree": "[.S [.DP Sam ] [.VP [.V sees ] [.DP [.D the ] [.NP gate ] ] ] ]",
+          "targets": [
+            "see(w0,s,ιz[gate(w0,z)])"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "C. Quantified subjects",
+      "instructions": "A quantified DP cannot fill the e-type subject slot directly. Raise it to S level (QR), leaving a type-e trace; apply Predicate Abstraction; then FA with the quantifier. The resulting truth conditions universally/existentially quantify over individuals in the evaluation world w0.",
+      "items": [
+        {
+          "sentence": "Every hobbit rides.",
+          "tree": "[.S [.DP [.D every ] [.NP hobbit ] ] [.VP rides ] ]",
+          "targets": [
+            "∀x[hobbit(w0,x) → ride(w0,x)]"
+          ]
+        },
+        {
+          "sentence": "Some elf sings.",
+          "tree": "[.S [.DP [.D some ] [.NP elf ] ] [.VP sings ] ]",
+          "targets": [
+            "∃x[elf(w0,x) ∧ sing(w0,x)]"
+          ]
+        },
+        {
+          "sentence": "Gandalf finds some ring.",
+          "tree": "[.S [.DP Gandalf ] [.VP [.V finds ] [.DP [.D some ] [.NP ring ] ] ] ]",
+          "targets": [
+            "∃x[ring(w0,x) ∧ find(w0,g,x)]"
+          ]
+        }
+      ]
+    }
+  ]
+}

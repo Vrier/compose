@@ -1,0 +1,405 @@
+{
+  "compose": 1,
+  "id": "ch10-cumulative",
+  "title": "10.4 Cumulative Readings",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w",
+      "<e,<e,t>>": "carry guard read find"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "P Q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "rides",
+        "ride"
+      ],
+      "denotation": "Lx.ride(x)"
+    },
+    {
+      "words": [
+        "sings",
+        "sing"
+      ],
+      "denotation": "Lx.sing(x)"
+    },
+    {
+      "words": [
+        "rests",
+        "rest"
+      ],
+      "denotation": "Lx.rest(x)"
+    },
+    {
+      "words": [
+        "meets",
+        "meet"
+      ],
+      "denotation": "Lx.meet(x)"
+    },
+    {
+      "words": [
+        "carries",
+        "carry"
+      ],
+      "denotation": "Ly.Lx.carry(x,y)"
+    },
+    {
+      "words": [
+        "guards",
+        "guard"
+      ],
+      "denotation": "Ly.Lx.guard(x,y)"
+    },
+    {
+      "words": [
+        "reads",
+        "read"
+      ],
+      "denotation": "Ly.Lx.read(x,y)"
+    },
+    {
+      "words": [
+        "finds",
+        "find"
+      ],
+      "denotation": "Ly.Lx.find(x,y)"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(x)"
+    },
+    {
+      "words": [
+        "dwarf"
+      ],
+      "denotation": "Lx.dwarf(x)"
+    },
+    {
+      "words": [
+        "ring"
+      ],
+      "denotation": "Lx.ring(x)"
+    },
+    {
+      "words": [
+        "sword"
+      ],
+      "denotation": "Lx.sword(x)"
+    },
+    {
+      "words": [
+        "map"
+      ],
+      "denotation": "Lx.map(x)"
+    },
+    {
+      "words": [
+        "hobbits"
+      ],
+      "denotation": "*Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "elves"
+      ],
+      "denotation": "*Lx.elf(x)"
+    },
+    {
+      "words": [
+        "dwarves"
+      ],
+      "denotation": "*Lx.dwarf(x)"
+    },
+    {
+      "words": [
+        "rings"
+      ],
+      "denotation": "*Lx.ring(x)"
+    },
+    {
+      "words": [
+        "swords"
+      ],
+      "denotation": "*Lx.sword(x)"
+    },
+    {
+      "words": [
+        "maps"
+      ],
+      "denotation": "*Lx.map(x)"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "LX.Ix.X(x)"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "a"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "theSUPR"
+      ],
+      "denotation": "LX.Ix.[X(x) & Ay[X(y) -> y≤x]]"
+    },
+    {
+      "words": [
+        "andS"
+      ],
+      "denotation": "Lq.Lp.[p & q]"
+    },
+    {
+      "words": [
+        "orS"
+      ],
+      "denotation": "Lq.Lp.[p ∨ q]"
+    },
+    {
+      "words": [
+        "andVP"
+      ],
+      "denotation": "LQ.LP.Lx.[P(x) & Q(x)]"
+    },
+    {
+      "words": [
+        "orVP"
+      ],
+      "denotation": "LQ.LP.Lx.[P(x) ∨ Q(x)]"
+    },
+    {
+      "words": [
+        "andV"
+      ],
+      "denotation": "LR.LS.Ly.Lx.[S(y)(x) & R(y)(x)]"
+    },
+    {
+      "words": [
+        "andDP"
+      ],
+      "denotation": "LT.LU.LP.[U(P) & T(P)]"
+    },
+    {
+      "words": [
+        "orDP"
+      ],
+      "denotation": "LT.LU.LP.[U(P) ∨ T(P)]"
+    },
+    {
+      "words": [
+        "andE"
+      ],
+      "denotation": "Ly.Lz.z⊕y"
+    },
+    {
+      "words": [
+        "part"
+      ],
+      "denotation": "Ly.Lx.x≤y"
+    },
+    {
+      "words": [
+        "carry_coll"
+      ],
+      "denotation": "Ly.Lx.carry_coll(x,y)"
+    },
+    {
+      "words": [
+        "cum_carry"
+      ],
+      "denotation": "Ly.Lx.*carry(x,y)"
+    },
+    {
+      "words": [
+        "cum_read"
+      ],
+      "denotation": "Ly.Lx.*read(x,y)"
+    },
+    {
+      "words": [
+        "cum_guard"
+      ],
+      "denotation": "Ly.Lx.*guard(x,y)"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": true,
+      "predicateAbstraction": true
+    },
+    "typeShifts": [
+      "raiseO"
+    ]
+  },
+  "exercises": [
+    {
+      "title": "A. Cumulative predicate applied to plural sums",
+      "instructions": "The cumulative verb is the relational star ∗carry — the cumulative closure of the carry relation. ∗carry(X,Y) holds of two sums X and Y when X and Y can be divided into parts that pair up under carry, so every part of X carries some part of Y and vice versa. The verb is λy.λx.∗carry(x,y); the star operator now applies to a two-place relation ⟨e,⟨e,t⟩⟩, just as it applies to a one-place predicate ⟨e,t⟩ in the plural nouns. Build the sentence with theSUPR-formed plural definites as subject and object.",
+      "items": [
+        {
+          "sentence": "The hobbits carried the rings. (cumulative)",
+          "tree": "[.S [.DP [.D theSUPR ] [.NP hobbits ] ] [.VP [.V cum_carry ] [.DP [.D theSUPR ] [.NP rings ] ] ] ]",
+          "targets": [
+            "∗carry(ιx.[∗(λz.hobbit(z))(x) ∧ ∀y[∗(λz.hobbit(z))(y) → y≤x]], ιx.[∗(λz.ring(z))(x) ∧ ∀y[∗(λz.ring(z))(y) → y≤x]])"
+          ]
+        },
+        {
+          "sentence": "The elves read the maps. (cumulative)",
+          "tree": "[.S [.DP [.D theSUPR ] [.NP elves ] ] [.VP [.V cum_read ] [.DP [.D theSUPR ] [.NP maps ] ] ] ]",
+          "targets": [
+            "∗read(ιx.[∗(λz.elf(z))(x) ∧ ∀y[∗(λz.elf(z))(y) → y≤x]], ιx.[∗(λz.map(z))(x) ∧ ∀y[∗(λz.map(z))(y) → y≤x]])"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "B. Distributive vs. cumulative contrast",
+      "instructions": "\"Every hobbit carried every ring\" (distributive — every individual to every individual) vs. \"The hobbits carried the rings\" (cumulative — sums to sums). Build both and compare. The distributive reading uses every+every and gives ∀x∀y[…carry(x,y)]; the cumulative reading uses theSUPR+theSUPR and the relational star ∗carry over the two plural sums.",
+      "items": [
+        {
+          "sentence": "Every hobbit carried every ring. (distributive)",
+          "tree": "[.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.V carries ] [.DP [.D every ] [.NP ring ] ] ] ]",
+          "targets": [
+            "∀x[hobbit(x) → ∀y[ring(y) → carry(x,y)]]"
+          ]
+        },
+        {
+          "sentence": "The hobbits carried the rings. (cumulative — theSUPR + cum_carry)",
+          "tree": "[.S [.DP [.D theSUPR ] [.NP hobbits ] ] [.VP [.V cum_carry ] [.DP [.D theSUPR ] [.NP rings ] ] ] ]",
+          "targets": [
+            "∗carry(ιx.[∗(λz.hobbit(z))(x) ∧ ∀y[∗(λz.hobbit(z))(y) → y≤x]], ιx.[∗(λz.ring(z))(x) ∧ ∀y[∗(λz.ring(z))(y) → y≤x]])"
+          ]
+        }
+      ]
+    }
+  ]
+}

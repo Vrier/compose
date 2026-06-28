@@ -1,0 +1,373 @@
+{
+  "compose": 1,
+  "id": "ch13-attitudes",
+  "title": "Propositional Attitudes (§13.5.2)",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w"
+    },
+    "variables": {
+      "e": "x y z",
+      "s": "w0 w w' w''",
+      "st": "p q",
+      "et": "P Q",
+      "set": "R S"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "rides",
+        "ride"
+      ],
+      "denotation": "Lx.ride(w0,x)"
+    },
+    {
+      "words": [
+        "sings",
+        "sing"
+      ],
+      "denotation": "Lx.sing(w0,x)"
+    },
+    {
+      "words": [
+        "rests",
+        "rest"
+      ],
+      "denotation": "Lx.rest(w0,x)"
+    },
+    {
+      "words": [
+        "reads",
+        "read"
+      ],
+      "denotation": "Ly.Lx.read(w0,x,y)"
+    },
+    {
+      "words": [
+        "finds",
+        "find"
+      ],
+      "denotation": "Ly.Lx.find(w0,x,y)"
+    },
+    {
+      "words": [
+        "sees",
+        "see"
+      ],
+      "denotation": "Ly.Lx.see(w0,x,y)"
+    },
+    {
+      "words": [
+        "guards",
+        "guard"
+      ],
+      "denotation": "Ly.Lx.guard(w0,x,y)"
+    },
+    {
+      "words": [
+        "ring"
+      ],
+      "denotation": "Lx.ring(w0,x)"
+    },
+    {
+      "words": [
+        "map"
+      ],
+      "denotation": "Lx.map(w0,x)"
+    },
+    {
+      "words": [
+        "gate"
+      ],
+      "denotation": "Lx.gate(w0,x)"
+    },
+    {
+      "words": [
+        "dragon"
+      ],
+      "denotation": "Lx.dragon(w0,x)"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "Lx.hobbit(w0,x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(w0,x)"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "LX.Ix.X(x)"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "a"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "necessarily"
+      ],
+      "denotation": "Lp.Aw'[acc(w0)(w') -> p(w')]"
+    },
+    {
+      "words": [
+        "possibly"
+      ],
+      "denotation": "Lp.Ew'[acc(w0)(w') & p(w')]"
+    },
+    {
+      "words": [
+        "necessarily_deon"
+      ],
+      "denotation": "Lp.Aw'[deon_acc(w0)(w') -> p(w')]"
+    },
+    {
+      "words": [
+        "possibly_deon"
+      ],
+      "denotation": "Lp.Ew'[deon_acc(w0)(w') & p(w')]"
+    },
+    {
+      "words": [
+        "necessarily_meta"
+      ],
+      "denotation": "Lp.Aw'[meta_acc(w0)(w') -> p(w')]"
+    },
+    {
+      "words": [
+        "possibly_epist"
+      ],
+      "denotation": "Lp.Ew'[epist_acc(w0)(w') & p(w')]"
+    },
+    {
+      "words": [
+        "possibly_meta"
+      ],
+      "denotation": "Lp.Ew'[meta_acc(w0)(w') & p(w')]"
+    },
+    {
+      "words": [
+        "necessarily_epist"
+      ],
+      "denotation": "Lp.Aw'[epist_acc(w0)(w') -> p(w')]"
+    },
+    {
+      "words": [
+        "seeks",
+        "seek"
+      ],
+      "denotation": "LR.Lx.seek(w0,x,R)"
+    },
+    {
+      "words": [
+        "believes",
+        "believe"
+      ],
+      "denotation": "Lp.Lx.Aw'[dox(w0)(x,w') -> p(w')]"
+    },
+    {
+      "words": [
+        "wants",
+        "want"
+      ],
+      "denotation": "Lp.Lx.Aw'[boul(w0)(x,w') -> p(w')]"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": true,
+      "predicateAbstraction": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Believes (IFA)",
+      "instructions": "believes ↝ λp⟨s,t⟩.λx.∀w′[dox(w0)(x,w′) → p(w′)] type ⟨⟨s,t⟩,⟨e,t⟩⟩. The embedded clause has type t (with w0 free); IFA wraps it as λw0.φ to form the ⟨s,t⟩ proposition argument, then FA with the subject. The truth conditions say that the proposition holds across all of the subject's belief worlds.",
+      "items": [
+        {
+          "sentence": "Gandalf believes Frodo rides.",
+          "tree": "[.S [.DP Gandalf ] [.VP [.V believes ] [.CP [.S [.DP Frodo ] [.VP rides ] ] ] ] ]",
+          "targets": [
+            "∀w'[dox(w0)(g,w') → ride(w',f)]"
+          ]
+        },
+        {
+          "sentence": "Frodo believes Sam sings.",
+          "tree": "[.S [.DP Frodo ] [.VP [.V believes ] [.CP [.S [.DP Sam ] [.VP sings ] ] ] ] ]",
+          "targets": [
+            "∀w'[dox(w0)(f,w') → sing(w',s)]"
+          ]
+        },
+        {
+          "sentence": "Sam believes Gandalf reads the map.",
+          "tree": "[.S [.DP Sam ] [.VP [.V believes ] [.CP [.S [.DP Gandalf ] [.VP [.V reads ] [.DP [.D the ] [.NP map ] ] ] ] ] ] ]",
+          "targets": [
+            "∀w'[dox(w0)(s,w') → read(w',g,ιz[map(w',z)])]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "B. Wants (IFA)",
+      "instructions": "wants ↝ λp⟨s,t⟩.λx.∀w′[boul(w0)(x,w′) → p(w′)]. The derivation is identical to believes; only the accessibility relation changes (boul for bouletic/desire instead of dox for doxastic/belief). The proposition holds in all worlds where the agent's desires are fulfilled.",
+      "items": [
+        {
+          "sentence": "Frodo wants Sam to sing.",
+          "tree": "[.S [.DP Frodo ] [.VP [.V wants ] [.CP [.S [.DP Sam ] [.VP sings ] ] ] ] ]",
+          "targets": [
+            "∀w'[boul(w0)(f,w') → sing(w',s)]"
+          ]
+        },
+        {
+          "sentence": "Gandalf wants Frodo to find the ring.",
+          "tree": "[.S [.DP Gandalf ] [.VP [.V wants ] [.CP [.S [.DP Frodo ] [.VP [.V finds ] [.DP [.D the ] [.NP ring ] ] ] ] ] ] ]",
+          "targets": [
+            "∀w'[boul(w0)(g,w') → find(w',f,ιz[ring(w',z)])]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "C. Stacked intensional operators",
+      "instructions": "Modal adverbs and attitude verbs can nest. \"Necessarily Gandalf believes φ\" applies IFA twice — once for necessarily and once for believes — with the embedded clause's world variable successively abstracted. Notice how the final formula contains two distinct accessible-world quantifiers.",
+      "items": [
+        {
+          "sentence": "Necessarily, Gandalf believes Frodo rides.",
+          "tree": "[.IP [.Adv necessarily ] [.S [.DP Gandalf ] [.VP [.V believes ] [.CP [.S [.DP Frodo ] [.VP rides ] ] ] ] ] ]",
+          "targets": [
+            "∀w'[acc(w0)(w') → ∀w''[dox(w')(g,w'') → ride(w'',f)]]"
+          ]
+        },
+        {
+          "sentence": "Gandalf believes Sam necessarily sings.",
+          "tree": "[.S [.DP Gandalf ] [.VP [.V believes ] [.CP [.IP [.Adv necessarily ] [.S [.DP Sam ] [.VP sings ] ] ] ] ] ]",
+          "targets": [
+            "∀w'[dox(w0)(g,w') → ∀w''[acc(w')(w'') → sing(w'',s)]]"
+          ]
+        }
+      ]
+    }
+  ]
+}

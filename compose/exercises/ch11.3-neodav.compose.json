@@ -1,0 +1,453 @@
+{
+  "compose": 1,
+  "id": "ch11-neodav",
+  "title": "Neo-Davidsonian Event Semantics (§11.3)",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w bi st pi tm el sr mr x1 x2"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "X Y Z P Q R F G H",
+      "t": "p q",
+      "v": "e"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "runE"
+      ],
+      "denotation": "Le.run(e)"
+    },
+    {
+      "words": [
+        "singE"
+      ],
+      "denotation": "Le.sing(e)"
+    },
+    {
+      "words": [
+        "sleepE"
+      ],
+      "denotation": "Le.sleep(e)"
+    },
+    {
+      "words": [
+        "loveE"
+      ],
+      "denotation": "Le.love(e)"
+    },
+    {
+      "words": [
+        "helpE"
+      ],
+      "denotation": "Le.help(e)"
+    },
+    {
+      "words": [
+        "fearE"
+      ],
+      "denotation": "Le.fear(e)"
+    },
+    {
+      "words": [
+        "Agent"
+      ],
+      "denotation": "Lx.Le.agent(e,x)"
+    },
+    {
+      "words": [
+        "Theme"
+      ],
+      "denotation": "Lx.Le.theme(e,x)"
+    },
+    {
+      "words": [
+        "slowly"
+      ],
+      "denotation": "Le.slow(e)"
+    },
+    {
+      "words": [
+        "quickly"
+      ],
+      "denotation": "Le.quick(e)"
+    },
+    {
+      "words": [
+        "in"
+      ],
+      "denotation": "Ly.Le.in(e,y)"
+    },
+    {
+      "words": [
+        "Mordor"
+      ],
+      "denotation": "o"
+    },
+    {
+      "words": [
+        "horse"
+      ],
+      "denotation": "Lx.horse(x)"
+    },
+    {
+      "words": [
+        "'s",
+        "POSS"
+      ],
+      "denotation": "LP.Lx.ιy[poss(x,y) & P(y)]"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(x)"
+    },
+    {
+      "words": [
+        "dwarf"
+      ],
+      "denotation": "Lx.dwarf(x)"
+    },
+    {
+      "words": [
+        "orc"
+      ],
+      "denotation": "Lx.orc(x)"
+    },
+    {
+      "words": [
+        "brave"
+      ],
+      "denotation": "Lx.brave(x)"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "no",
+        "No"
+      ],
+      "denotation": "LX.LY.~Ex[X(x) & Y(x)]"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": true,
+      "predicateAbstraction": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Intransitive verbs",
+      "instructions": "The Agent head combines with the subject to give λe.agent(e,f). Predicate Modification conjoins it with the verb's event predicate; EC binds the event.",
+      "items": [
+        {
+          "sentence": "Frodo runs.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Frodo ] ] [.VP runE ] ]",
+          "targets": [
+            "∃e[agent(e,f) ∧ run(e)]"
+          ]
+        },
+        {
+          "sentence": "Gandalf sings.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Gandalf ] ] [.VP singE ] ]",
+          "targets": [
+            "∃e[agent(e,g) ∧ sing(e)]"
+          ]
+        },
+        {
+          "sentence": "Sam sleeps.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Sam ] ] [.VP sleepE ] ]",
+          "targets": [
+            "∃e[agent(e,s) ∧ sleep(e)]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "B. Transitive verbs",
+      "instructions": "The Theme head introduces the object as λe.theme(e,x). The verb, its Theme phrase and the Agent phrase are all event predicates combined by Predicate Modification, then closed by EC.",
+      "items": [
+        {
+          "sentence": "Frodo loves Sam.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Frodo ] ] [.VP [.VP loveE ] [.ThemeP [.Theme Theme ] [.DP Sam ] ] ] ]",
+          "targets": [
+            "∃e[agent(e,f) ∧ love(e) ∧ theme(e,s)]"
+          ]
+        },
+        {
+          "sentence": "Aragorn helps Boromir.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Aragorn ] ] [.VP [.VP helpE ] [.ThemeP [.Theme Theme ] [.DP Boromir ] ] ] ]",
+          "targets": [
+            "∃e[agent(e,a) ∧ help(e) ∧ theme(e,b)]"
+          ]
+        },
+        {
+          "sentence": "Gimli fears Sauron.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Gimli ] ] [.VP [.VP fearE ] [.ThemeP [.Theme Theme ] [.DP Sauron ] ] ] ]",
+          "targets": [
+            "∃e[agent(e,m) ∧ fear(e) ∧ theme(e,n)]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "C. Adverbial modification",
+      "instructions": "A manner adverb is one more event predicate ⟨v,t⟩. It joins the others by Predicate Modification before Existential Closure.",
+      "items": [
+        {
+          "sentence": "Frodo runs quickly.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Frodo ] ] [.VP [.Adv quickly ] [.VP runE ] ] ]",
+          "targets": [
+            "∃e[agent(e,f) ∧ run(e) ∧ quick(e)]"
+          ]
+        },
+        {
+          "sentence": "Gandalf sings slowly.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Gandalf ] ] [.VP [.Adv slowly ] [.VP singE ] ] ]",
+          "targets": [
+            "∃e[agent(e,g) ∧ sing(e) ∧ slow(e)]"
+          ]
+        },
+        {
+          "sentence": "Frodo loves Sam slowly.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Frodo ] ] [.VP [.Adv slowly ] [.VP [.VP loveE ] [.ThemeP [.Theme Theme ] [.DP Sam ] ] ] ] ]",
+          "targets": [
+            "∃e[agent(e,f) ∧ love(e) ∧ theme(e,s) ∧ slow(e)]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "D. Quantified subjects",
+      "instructions": "The Agent head needs a type-e subject, so a quantified subject must raise. Quantifier-raise the subject DP, leaving a trace; build the full event predicate by Predicate Modification, then apply EC LOW (at the ⟨v,t⟩ node) so the event closes below the quantifier. Predicate Abstraction over the trace gives an ⟨e,t⟩ predicate the quantifier binds.",
+      "items": [
+        {
+          "sentence": "Every hobbit runs.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP [.D every ] [.NP hobbit ] ] ] [.VP runE ] ]",
+          "targets": [
+            "∀x[hobbit(x) → ∃e[agent(e,x) ∧ run(e)]]"
+          ]
+        },
+        {
+          "sentence": "Some elf helps Frodo.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP [.D some ] [.NP elf ] ] ] [.VP [.VP helpE ] [.ThemeP [.Theme Theme ] [.DP Frodo ] ] ] ]",
+          "targets": [
+            "∃x[elf(x) ∧ ∃e[agent(e,x) ∧ help(e) ∧ theme(e,f)]]"
+          ]
+        },
+        {
+          "sentence": "No brave dwarf runs.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP [.D no ] [.NP [.AP brave ] [.NP dwarf ] ] ] ] [.VP runE ] ]",
+          "targets": [
+            "¬∃x[brave(x) ∧ dwarf(x) ∧ ∃e[agent(e,x) ∧ run(e)]]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "E. Quantified objects",
+      "instructions": "A quantified object enters via the Theme head, which needs a type-e argument. Quantifier-raise the object DP, leaving a trace; build the event predicate by Predicate Modification, apply EC LOW, then Predicate Abstraction lets the object quantifier bind.",
+      "items": [
+        {
+          "sentence": "Frodo loves every elf.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Frodo ] ] [.VP [.VP loveE ] [.ThemeP [.Theme Theme ] [.DP [.D every ] [.NP elf ] ] ] ] ]",
+          "targets": [
+            "∀x[elf(x) → ∃e[agent(e,f) ∧ love(e) ∧ theme(e,x)]]"
+          ]
+        },
+        {
+          "sentence": "Aragorn helps some brave dwarf.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Aragorn ] ] [.VP [.VP helpE ] [.ThemeP [.Theme Theme ] [.DP [.D some ] [.NP [.AP brave ] [.NP dwarf ] ] ] ] ] ]",
+          "targets": [
+            "∃x[brave(x) ∧ dwarf(x) ∧ ∃e[agent(e,a) ∧ help(e) ∧ theme(e,x)]]"
+          ]
+        },
+        {
+          "sentence": "Frodo helps no brave orc.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Frodo ] ] [.VP [.VP helpE ] [.ThemeP [.Theme Theme ] [.DP [.D no ] [.NP [.AP brave ] [.NP orc ] ] ] ] ] ]",
+          "targets": [
+            "¬∃x[brave(x) ∧ orc(x) ∧ ∃e[agent(e,f) ∧ help(e) ∧ theme(e,x)]]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "F. Two quantifiers",
+      "instructions": "With quantifiers in both positions, raise both DPs. The order of raising fixes the scope; EC stays lowest, so the event closes under both quantifiers. Derive each target reading.",
+      "items": [
+        {
+          "sentence": "Every hobbit loves some elf.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP [.D every ] [.NP hobbit ] ] ] [.VP [.VP loveE ] [.ThemeP [.Theme Theme ] [.DP [.D some ] [.NP elf ] ] ] ] ]",
+          "targets": [
+            "every > some (linear): ∀x[hobbit(x) → ∃y[elf(y) ∧ ∃e[agent(e,x) ∧ love(e) ∧ theme(e,y)]]]",
+            "some > every (inverse): ∃y[elf(y) ∧ ∀x[hobbit(x) → ∃e[agent(e,x) ∧ love(e) ∧ theme(e,y)]]]"
+          ]
+        },
+        {
+          "sentence": "Some dwarf helps every hobbit.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP [.D some ] [.NP dwarf ] ] ] [.VP [.VP helpE ] [.ThemeP [.Theme Theme ] [.DP [.D every ] [.NP hobbit ] ] ] ] ]",
+          "targets": [
+            "some > every (linear): ∃x[dwarf(x) ∧ ∀y[hobbit(y) → ∃e[agent(e,x) ∧ help(e) ∧ theme(e,y)]]]",
+            "every > some (inverse): ∀y[hobbit(y) → ∃x[dwarf(x) ∧ ∃e[agent(e,x) ∧ help(e) ∧ theme(e,y)]]]"
+          ]
+        },
+        {
+          "sentence": "Every brave hobbit loves some elf.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP [.D every ] [.NP [.AP brave ] [.NP hobbit ] ] ] ] [.VP [.VP loveE ] [.ThemeP [.Theme Theme ] [.DP [.D some ] [.NP elf ] ] ] ] ]",
+          "targets": [
+            "every > some (linear): ∀x[brave(x) ∧ hobbit(x) → ∃y[elf(y) ∧ ∃e[agent(e,x) ∧ love(e) ∧ theme(e,y)]]]",
+            "some > every (inverse): ∃y[elf(y) ∧ ∀x[brave(x) ∧ hobbit(x) → ∃e[agent(e,x) ∧ love(e) ∧ theme(e,y)]]]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "G. Locative modifiers & complex arguments",
+      "instructions": "A locative PP is just one more event predicate ⟨v,t⟩: \"in Mordor\" = λe.in(e,o), conjoined by Predicate Modification. A possessive object (type e) enters through the Theme head. EC closes the event last.",
+      "items": [
+        {
+          "sentence": "Frodo runs in Mordor.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Frodo ] ] [.VP [.VP runE ] [.PP [.P in ] [.DP Mordor ] ] ] ]",
+          "targets": [
+            "∃e[agent(e,f) ∧ run(e) ∧ in(e,o)]"
+          ]
+        },
+        {
+          "sentence": "Aragorn loves Sam's horse.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Aragorn ] ] [.VP [.VP loveE ] [.ThemeP [.Theme Theme ] [.DP [.DP Sam ] [.D1 [.D 's ] [.NP horse ] ] ] ] ] ]",
+          "targets": [
+            "∃e[agent(e,a) ∧ love(e) ∧ theme(e,ιy[poss(s,y) ∧ horse(y)])]"
+          ]
+        },
+        {
+          "sentence": "Frodo loves Sam in Mordor.",
+          "tree": "[.S [.AgentP [.Agent Agent ] [.DP Frodo ] ] [.VP [.VP [.VP loveE ] [.ThemeP [.Theme Theme ] [.DP Sam ] ] ] [.PP [.P in ] [.DP Mordor ] ] ] ]",
+          "targets": [
+            "∃e[agent(e,f) ∧ love(e) ∧ theme(e,s) ∧ in(e,o)]"
+          ]
+        }
+      ]
+    }
+  ]
+}

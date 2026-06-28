@@ -1,0 +1,220 @@
+{
+  "compose": 1,
+  "id": "ch8-definedness",
+  "title": "Definedness Conditions: the ∂ operator (§8.4)",
+  "subtitle": "Presuppositional determiners — neither and every — with Beaver & Krahmer's partial operator",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n",
+      "<<e,t>,t>": "card2"
+    },
+    "variables": {
+      "e": "x y z",
+      "<e,t>": "X Y Z P Q",
+      "<<e,t>,t>": "Q",
+      "t": "p q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "tower"
+      ],
+      "denotation": "Lx.tower(x)"
+    },
+    {
+      "words": [
+        "tree"
+      ],
+      "denotation": "Lx.tree(x)"
+    },
+    {
+      "words": [
+        "ring"
+      ],
+      "denotation": "Lx.ring(x)"
+    },
+    {
+      "words": [
+        "wizard"
+      ],
+      "denotation": "Lx.wizard(x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(x)"
+    },
+    {
+      "words": [
+        "white"
+      ],
+      "denotation": "Lx.white(x)"
+    },
+    {
+      "words": [
+        "dark"
+      ],
+      "denotation": "Lx.dark(x)"
+    },
+    {
+      "words": [
+        "golden"
+      ],
+      "denotation": "Lx.golden(x)"
+    },
+    {
+      "words": [
+        "wise"
+      ],
+      "denotation": "Lx.wise(x)"
+    },
+    {
+      "words": [
+        "new"
+      ],
+      "denotation": "Lx.new(x)"
+    },
+    {
+      "words": [
+        "is",
+        "are"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "neither",
+        "Neither"
+      ],
+      "denotation": "LX.LY.[∂(card2(X)) & ~Ex[X(x) & Y(x)]]"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.[∂(Ex.X(x)) & Ax[X(x) -> Y(x)]]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "no",
+        "No"
+      ],
+      "denotation": "LX.LY.~Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "not",
+        "Not"
+      ],
+      "denotation": "LQ.LP.~Q(P)"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": false
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Presuppositional neither (a cardinality presupposition)",
+      "instructions": "neither is basically a synonym of no, but it carries an extra PRESUPPOSITION: that its restrictor has exactly two satisfiers. We mark the presupposed part with the ∂ ('presupposing that') operator, which is of type ⟨t,t⟩ — it returns its argument when true and 'undefined' otherwise. neither ↝ λXλY.[∂(card2(X)) ∧ ¬∃x[X(x) ∧ Y(x)]], where card2(X) abbreviates the book's |X|=2, 'X has exactly two satisfiers' (footnote 4 expands it to ∃x∃y[¬(x=y) ∧ X(x) ∧ X(y) ∧ ¬∃z[¬(z=x) ∧ ¬(z=y) ∧ X(z)]]). The subject DP is a generalized quantifier that applies to the VP predicate by Function Application.",
+      "items": [
+        {
+          "sentence": "Neither tower is white.",
+          "tree": "[.S [.DP [.D neither ] [.NP tower ] ] [.VP [.V is ] [.AP white ] ] ]",
+          "targets": [
+            "∂(card2(λx.tower(x))) ∧ ¬∃x[tower(x) ∧ white(x)]"
+          ],
+          "reading": {
+            "section": "8.4"
+          }
+        },
+        {
+          "sentence": "Neither tree is dark.",
+          "tree": "[.S [.DP [.D neither ] [.NP tree ] ] [.VP [.V is ] [.AP dark ] ] ]",
+          "targets": [
+            "∂(card2(λx.tree(x))) ∧ ¬∃x[tree(x) ∧ dark(x)]"
+          ],
+          "reading": {
+            "section": "8.4"
+          }
+        }
+      ]
+    },
+    {
+      "title": "B. Presuppositional every (an existence presupposition)",
+      "instructions": "The quantifier every can also be given an existence presupposition with ∂: every ↝ λXλY.[∂(∃x.X(x)) ∧ ∀x[X(x) → Y(x)]]. This predicts that 'Every dubstep album by Frege is brilliant' is neither true nor false when Frege made no dubstep albums — capturing the intuition that the sentence presupposes there are such albums.",
+      "items": [
+        {
+          "sentence": "Every ring is golden.",
+          "tree": "[.S [.DP [.D every ] [.NP ring ] ] [.VP [.V is ] [.AP golden ] ] ]",
+          "targets": [
+            "∂(∃x.ring(x)) ∧ ∀x[ring(x) → golden(x)]"
+          ],
+          "reading": {
+            "section": "8.4.1"
+          }
+        },
+        {
+          "sentence": "Every wizard is wise.",
+          "tree": "[.S [.DP [.D every ] [.NP wizard ] ] [.VP [.V is ] [.AP wise ] ] ]",
+          "targets": [
+            "∂(∃x.wizard(x)) ∧ ∀x[wizard(x) → wise(x)]"
+          ],
+          "reading": {
+            "section": "8.4.1"
+          }
+        }
+      ]
+    },
+    {
+      "title": "C. Projection through negation",
+      "instructions": "Presuppositions PROJECT out of entailment-cancelling environments. With not ↝ λQ⟨⟨e,t⟩,t⟩λP⟨e,t⟩.¬Q(P), the negation scopes over the whole quantifier — but the ∂ presupposition rides along inside it, so 'Not every ring is golden' still presupposes that there are rings. Notice the ∂ ends up under the ¬: in three-valued logic, the negation of an undefined formula is still undefined, so the existence presupposition survives.",
+      "items": [
+        {
+          "sentence": "Not every ring is golden.",
+          "tree": "[.S [.DP [.Neg not ] [.DP [.D every ] [.NP ring ] ] ] [.VP [.V is ] [.AP golden ] ] ]",
+          "targets": [
+            "¬[∂(∃x.ring(x)) ∧ ∀x[ring(x) → golden(x)]]"
+          ],
+          "reading": {
+            "section": "8.4.2"
+          }
+        }
+      ]
+    },
+    {
+      "title": "D. Contrast: some asserts, it does not presuppose",
+      "instructions": "Unlike every, the determiner some makes no use of ∂ — it simply ASSERTS existence: some ↝ λXλY.∃x[X(x) ∧ Y(x)]. Compare the result here (no ∂) with Group B (a ∂ conjunct). This is the difference between presupposing that there are rings and asserting it.",
+      "items": [
+        {
+          "sentence": "Some ring is golden.",
+          "tree": "[.S [.DP [.D some ] [.NP ring ] ] [.VP [.V is ] [.AP golden ] ] ]",
+          "targets": [
+            "∃x[ring(x) ∧ golden(x)]"
+          ],
+          "reading": {
+            "section": "8.4.3"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": {
+    "format": "lingdown",
+    "markdown": "# Chapter 8 · Definedness Conditions\n\nQuantifiers like *every* and *neither* do more than assert: they **presuppose** something about their domain. Chapter 8 formalises this with the **∂ operator**, which marks a condition as presupposed rather than asserted.\n\n## 8.4 The ∂ operator and *neither*\n\n**∂(φ)** (read: *presupposing φ*) marks its propositional argument as a **presupposition** — a condition that must be true for the sentence to be felicitous. Unlike an assertion, a presupposition projects out of negation and other entailment-cancelling contexts: if the presupposition fails, the sentence is neither true nor false.\n\n**Neither.** `[[neither]]` = λX.λY.[∂(card₂(X)) ∧ ¬∃x[X(x) ∧ Y(x)]] : ⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩.\n\n*Neither* asserts what *no* asserts — the restrictor and scope-predicate have empty intersection — but additionally **presupposes** that the restrictor has exactly two satisfiers (`card₂(X)`). If the restrictor doesn't contain exactly two individuals, the sentence is infelicitous.[^neither]\n\n```ex {#neither-ex}\nNeither tower is white.\nNeither tree is dark.\n```\n\n```deriv\n[[neither]]              = lambda X.lambda Y.[∂(card2(X)) /\\ ~Ex[X(x) /\\ Y(x)]]   : <<e,t>,<<e,t>,t>>\n[[tower]]                = lambda x.tower(x)                                        : <e,t>\n[[neither tower]]        = lambda Y.[∂(card2(lambda x.tower(x))) /\\ ~Ex[tower(x) /\\ Y(x)]] : <<e,t>,t>\n[[white]]                = lambda x.white(x)                                        : <e,t>\n[[Neither tower is white]] = ∂(card2(lambda x.tower(x))) /\\ ~Ex[tower(x) /\\ white(x)]  : t\n```\n\nThe presupposed component `∂(card₂(λx.tower(x)))` fires first: a speaker who utters *Neither tower is white* is committed to there being exactly two towers in the domain (@neither-ex).\n\n## 8.4.1 Presuppositional *every*\n\n**Every.** `[[every]]` = λX.λY.[∂(∃x.X(x)) ∧ ∀x[X(x) → Y(x)]] : ⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩.\n\nThe bare assertion of *every* is universal quantification. The ∂ conjunct adds an **existence presupposition**: the sentence is only felicitous if the restrictor is non-empty. *Every Balrog is benevolent* is neither true nor false if there are no Balrogs — the presupposition that at least one Balrog exists has failed.\n\n```ex {#every-ex}\nEvery ring is golden.\nEvery wizard is wise.\n```\n\n```deriv\n[[every]]               = lambda X.lambda Y.[∂(Ex.X(x)) /\\ Ax[X(x) -> Y(x)]]     : <<e,t>,<<e,t>,t>>\n[[ring]]                = lambda x.ring(x)                                          : <e,t>\n[[every ring]]          = lambda Y.[∂(Ex.ring(x)) /\\ Ax[ring(x) -> Y(x)]]         : <<e,t>,t>\n[[golden]]              = lambda x.golden(x)                                        : <e,t>\n[[Every ring is golden]] = ∂(Ex.ring(x)) /\\ Ax[ring(x) -> golden(x)]              : t\n```\n\n```tree\n[S{∂(Ex.ring(x)) /\\ Ax[ring(x) -> golden(x)]}\n  [DP{lambda Y.[∂(Ex.ring(x)) /\\ Ax[ring(x) -> Y(x)]]}\n    [D{lambda X.lambda Y.[∂(Ex.X(x)) /\\ Ax[X(x) -> Y(x)]]} every]\n    [NP{lambda x.ring(x)} ring]]\n  [VP{lambda x.golden(x)}\n    [V{lambda X.X} is]\n    [AP{lambda x.golden(x)} golden]]]\n```\n\n## 8.4.2 Projection through negation\n\nPresuppositions **project** out of the scope of negation: negating a sentence does not cancel its presuppositions.\n\n`[[not]]` = λQ⟨⟨e,t⟩,t⟩.λP⟨e,t⟩.¬Q(P). This *not* takes a GQ and a predicate and negates the whole quantificational claim — but the ∂ inside the GQ is not negated.\n\n```ex {#proj-ex}\nNot every ring is golden.\n```\n\n```deriv\n[[not]]                           = lambda Q.lambda P.~Q(P)                              : <<<e,t>,t>,<<e,t>,t>>\n[[every ring]]                    = lambda Y.[∂(Ex.ring(x)) /\\ Ax[ring(x) -> Y(x)]]     : <<e,t>,t>\n[[not [every ring]]]              = lambda P.~[∂(Ex.ring(x)) /\\ Ax[ring(x) -> P(x)]]   : <<e,t>,t>\n[[golden]]                        = lambda x.golden(x)                                   : <e,t>\n[[Not every ring is golden]]      = ~[∂(Ex.ring(x)) /\\ Ax[ring(x) -> golden(x)]]        : t\n```\n\nThe result asserts the negation of the ∀-claim, but the existence presupposition ∂(∃x.ring(x)) remains — even *Not every ring is golden* presupposes that there is at least one ring. This is the projection behaviour that ∂ is designed to capture.[^proj]\n\n## 8.4.3 *some* — assertion without presupposition\n\nBy contrast, *some* makes no use of ∂: `[[some]]` = λX.λY.∃x[X(x) ∧ Y(x)] : ⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩. It simply asserts that the restrictor and nuclear scope have a common satisfier.\n\n```ex {#some-ex}\nSome ring is golden.\n```\n\n```deriv\n[[some]]                = lambda X.lambda Y.Ex[X(x) /\\ Y(x)]                       : <<e,t>,<<e,t>,t>>\n[[ring]]                = lambda x.ring(x)                                          : <e,t>\n[[some ring]]           = lambda Y.Ex[ring(x) /\\ Y(x)]                             : <<e,t>,t>\n[[golden]]              = lambda x.golden(x)                                        : <e,t>\n[[Some ring is golden]] = Ex[ring(x) /\\ golden(x)]                                 : t\n```\n\nNo ∂ conjunct appears. *Some ring is golden* is straightforwardly **false** (not infelicitous) if there are no rings — because it merely asserts existence. The contrast between *every* (presupposes existence, ∂) and *some* (asserts existence, no ∂) captures the classic observation that existential bare plurals feel more informative than universal claims about empty sets.[^contrast]\n\n[^neither]: *card₂(X)* is a two-place cardinality predicate that holds of X when exactly two individuals satisfy X. *Neither* is thus the two-element counterpart of *no* — semantically equivalent to *no* but felicitous only over a two-member domain.\n[^proj]: The projection here is technically not about the ∂ escaping negation — it is inside the QP which is itself not negated. *not* combines with the QP externally, so the ∂ inside the QP's denotation never falls within the negation's scope.\n[^contrast]: *Every F is G* is odd when the speaker knows there are no Fs (the vacuous truth problem); *Some F is G* is simply false in that case. ∂ formalises this asymmetry: existential import is a presupposition for *every*, an assertion for *some*.\n"
+  }
+}

@@ -1,0 +1,1789 @@
+{
+  "compose_bundle": 1,
+  "title": "Heim & Kratzer — Semantics in Generative Grammar",
+  "authors": "Irene Heim & Angelika Kratzer (1998)",
+  "chapters": [
+    {
+      "prefix": "hk1",
+      "label": "§1",
+      "title": "Conventions & the Fregean Program"
+    },
+    {
+      "prefix": "hk2",
+      "label": "§2",
+      "title": "Function Application & Semantic Types"
+    },
+    {
+      "prefix": "hk4",
+      "label": "§4",
+      "title": "Predicates, Modifiers & the Definite Article"
+    },
+    {
+      "prefix": "hk5",
+      "label": "§5",
+      "title": "Relative Clauses & Predicate Abstraction"
+    },
+    {
+      "prefix": "hk6",
+      "label": "§6",
+      "title": "Quantifiers: Their Semantic Type"
+    },
+    {
+      "prefix": "hk7",
+      "label": "§7",
+      "title": "Quantification & Grammar"
+    },
+    {
+      "prefix": "hk9",
+      "label": "§9",
+      "title": "Bound & Referential Pronouns"
+    },
+    {
+      "prefix": "hk12",
+      "label": "§12",
+      "title": "First Steps Towards an Intensional Semantics"
+    }
+  ],
+  "exercises": [
+    {
+      "key": "hk1-conventions",
+      "title": "Conventions: Types, ⟦·⟧, and =1 (§1)",
+      "content": {
+        "compose": 1,
+        "id": "hk1-conventions",
+        "title": "Conventions: Types, ⟦·⟧, and =1 (§1)",
+        "subtitle": "Heim & Kratzer — the notation key for the whole bundle (reading-focused)",
+        "notation": "hk",
+        "domain": {
+          "multiLetterNames": true,
+          "constants": {
+            "e": "a jn"
+          },
+          "variables": {
+            "e": "x y z",
+            "et": "f g P Q",
+            "t": "p q"
+          }
+        },
+        "lexicon": [
+          {
+            "words": [
+              "Ann"
+            ],
+            "denotation": "a"
+          },
+          {
+            "words": [
+              "Jan"
+            ],
+            "denotation": "jn"
+          },
+          {
+            "words": [
+              "cat"
+            ],
+            "denotation": "Lx.cat(x)"
+          },
+          {
+            "words": [
+              "smokes",
+              "smoke"
+            ],
+            "denotation": "Lx.smoke(x)"
+          }
+        ],
+        "rules": {
+          "composition": {
+            "functionApplication": true,
+            "nonBranchingNodes": true
+          }
+        },
+        "exercises": [
+          {
+            "title": "A. Warm-up: individuals and characteristic functions",
+            "instructions": "Before any composition rules: a name denotes an individual (type e); a predicate denotes a characteristic function (type ⟨e,t⟩), written with =1. These two leaf denotations are the atoms everything else is built from. (See the reading for the full notation key.)",
+            "items": [
+              {
+                "sentence": "Ann",
+                "tree": "[.DP [.N Ann ] ]",
+                "targets": [
+                  "a"
+                ],
+                "reading": {
+                  "section": "1"
+                }
+              },
+              {
+                "sentence": "cat",
+                "tree": "[.NP [.N cat ] ]",
+                "targets": [
+                  "λx.cat(x)"
+                ],
+                "reading": {
+                  "section": "1"
+                }
+              },
+              {
+                "sentence": "Ann smokes.",
+                "tree": "[.S [.DP [.N Ann ] ] [.VP [.V smokes ] ] ]",
+                "targets": [
+                  "smoke(a)"
+                ],
+                "reading": {
+                  "section": "1"
+                }
+              }
+            ]
+          }
+        ],
+        "reading": {
+          "format": "lingdown",
+          "markdown": "# Chapter 1 · Truth-Conditional Semantics and the Fregean Program\n\n*This chapter sets the conventions every later H&K set uses. There are no trees to\ncompose yet — read it as the notation key for the bundle.*\n\nTo know the meaning of a sentence is, in large part, to know its **truth\nconditions** — the circumstances under which it is true. A semantic theory pairs\neach sentence with its truth conditions and shows how they are **composed** from the\nmeanings of the parts (Frege's Principle of Compositionality).\n\n## Sets and characteristic functions\n\nA set `A` can be given by listing (`{a, b, c}`) or by **abstraction** — a condition\nits members satisfy: `{x : x is a cat}`, \"the set of all `x` such that `x` is a cat.\"\n\nEvery set has a **characteristic function**: the function mapping an object to `1`\nif it is in the set, and to `0` otherwise. Sets and their characteristic functions\nare interchangeable, and **we use functions throughout**. So the meaning of *cat* is\nthe function\n\n```deriv\n[[cat]] = λx . cat(x)=1\n```\n\n— *the function mapping each `x` to `1` if `x` is a cat, and to `0` otherwise.* This\nis why, in every H&K set, a one-place predicate is written with the **`=1`**\nconvention: the value is a truth value, and `cat(x)=1` says that value is `1`.\n\n## Notation key for the bundle\n\n- **`⟦α⟧`** — the denotation (extension) of expression `α`. Later, `⟦α⟧^g` adds a\n  variable assignment (Ch 5, 9) and `⟦α⟧^w` a world (Ch 12).\n- **Semantic types.** `e` is the type of **individuals**; `t` the type of **truth\n  values** (`{0,1}`). If `σ` and `τ` are types, `⟨σ,τ⟩` is the type of functions from\n  `σ` to `τ`. So `⟨e,t⟩` is a one-place predicate, `⟨e,⟨e,t⟩⟩` a transitive verb,\n  `⟨⟨e,t⟩,t⟩` a generalized quantifier.\n- **`D_σ`** — the **domain** of type `σ`: `D_e` the individuals, `D_t = {0,1}`,\n  `D_{⟨e,t⟩}` the one-place predicates, and so on.\n- **`=1`** — predicates are characteristic functions, so conditions are written\n  `P(x)=1`, `∀x[P(x)=1 → Q(x)=1]`, etc. (This is the bundle-wide convention; the\n  engine treats `P(x)=1` and `P(x)` as the same proposition.)\n- **λ-notation** — `λx . φ` names *the function mapping each `x` to `φ`*. A partial\n  function adds a **definedness condition** after a colon, `λx : ψ . φ` — defined\n  only when `ψ` holds (Frege's *the*, Ch 4; *both*/*neither*, Ch 6).\n\n## The plan\n\nThe chapters build one fragment incrementally: **Function Application** and the\nbasic types (Ch 2), **Predicate Modification** and the partial definite article\n(Ch 4), **Predicate Abstraction** and relative clauses (Ch 5), **generalized\nquantifiers** (Ch 6), **quantifier movement** and scope (Ch 7), **pronouns and\nbinding** (Ch 9). Each adds the smallest machinery needed for the next range of\ndata — the methodology is as much the point as the results.\n"
+        }
+      }
+    },
+    {
+      "key": "hk2-fa",
+      "title": "Function Application & Semantic Types (§2.1–2.4)",
+      "content": {
+        "compose": 1,
+        "id": "hk2-fa",
+        "title": "Function Application & Semantic Types (§2.1–2.4)",
+        "subtitle": "Heim & Kratzer — the first Fregean fragment: FA, types e/t, transitive verbs, connectives",
+        "notation": "hk",
+        "domain": {
+          "multiLetterNames": true,
+          "constants": {
+            "e": "a jn mr"
+          },
+          "variables": {
+            "e": "x y z",
+            "et": "f g P Q X Y",
+            "t": "p q"
+          }
+        },
+        "lexicon": [
+          {
+            "words": [
+              "Ann"
+            ],
+            "denotation": "a"
+          },
+          {
+            "words": [
+              "Jan"
+            ],
+            "denotation": "jn"
+          },
+          {
+            "words": [
+              "Maria"
+            ],
+            "denotation": "mr"
+          },
+          {
+            "words": [
+              "smokes",
+              "smoke"
+            ],
+            "denotation": "Lx.smoke(x)"
+          },
+          {
+            "words": [
+              "works",
+              "work"
+            ],
+            "denotation": "Lx.work(x)"
+          },
+          {
+            "words": [
+              "is"
+            ],
+            "denotation": "LX.X"
+          },
+          {
+            "words": [
+              "boring"
+            ],
+            "denotation": "Lx.boring(x)"
+          },
+          {
+            "words": [
+              "likes",
+              "like"
+            ],
+            "denotation": "Ly.Lx.like(x,y)"
+          },
+          {
+            "words": [
+              "knows",
+              "know"
+            ],
+            "denotation": "Ly.Lx.know(x,y)"
+          },
+          {
+            "words": [
+              "and"
+            ],
+            "denotation": "Lp.Lq.q ∧ p",
+            "displayAs": "and"
+          },
+          {
+            "words": [
+              "itisnotthecasethat",
+              "not"
+            ],
+            "denotation": "Lp.~p",
+            "displayAs": "it is not the case that"
+          }
+        ],
+        "rules": {
+          "composition": {
+            "functionApplication": true,
+            "nonBranchingNodes": true
+          }
+        },
+        "exercises": [
+          {
+            "title": "A. Intransitive verbs: FA, types e and ⟨e,t⟩ (§2.1)",
+            "instructions": "A name denotes an individual (type e); an intransitive verb denotes a characteristic function (type ⟨e,t⟩). Functional Application feeds the subject to the verb. The copula is is vacuous (λX.X).",
+            "items": [
+              {
+                "sentence": "Ann smokes.",
+                "tree": "[.S [.NP [.N Ann ] ] [.VP [.V smokes ] ] ]",
+                "targets": [
+                  "smoke(a)"
+                ],
+                "reading": {
+                  "section": "2.1"
+                }
+              },
+              {
+                "sentence": "Maria works.",
+                "tree": "[.S [.NP [.N Maria ] ] [.VP [.V works ] ] ]",
+                "targets": [
+                  "work(mr)"
+                ],
+                "reading": {
+                  "section": "2.1"
+                }
+              },
+              {
+                "sentence": "Ann is boring.",
+                "tree": "[.S [.NP [.N Ann ] ] [.VP [.V is ] [.AP boring ] ] ]",
+                "targets": [
+                  "boring(a)"
+                ],
+                "reading": {
+                  "section": "2.1"
+                }
+              }
+            ]
+          },
+          {
+            "title": "B. Transitive verbs: Schönfinkelization (§2.3)",
+            "instructions": "A transitive verb is a Schönfinkeled (curried) function of type ⟨e,⟨e,t⟩⟩ that takes its OBJECT first, then its subject. FA applies twice: verb + object, then VP + subject.",
+            "items": [
+              {
+                "sentence": "Ann likes Jan.",
+                "tree": "[.S [.NP Ann ] [.VP [.V likes ] [.NP Jan ] ] ]",
+                "targets": [
+                  "like(a,jn)"
+                ],
+                "reading": {
+                  "section": "2.3"
+                }
+              },
+              {
+                "sentence": "Jan knows Maria.",
+                "tree": "[.S [.NP Jan ] [.VP [.V knows ] [.NP Maria ] ] ]",
+                "targets": [
+                  "know(jn,mr)"
+                ],
+                "reading": {
+                  "section": "2.3"
+                }
+              },
+              {
+                "sentence": "Maria likes Ann.",
+                "tree": "[.S [.NP Maria ] [.VP [.V likes ] [.NP Ann ] ] ]",
+                "targets": [
+                  "like(mr,a)"
+                ],
+                "reading": {
+                  "section": "2.3"
+                }
+              }
+            ]
+          },
+          {
+            "title": "C. Sentential connectives (§2.4)",
+            "instructions": "Negation (it is not the case that) is type ⟨t,t⟩; sentential and is type ⟨t,⟨t,t⟩⟩. They take whole sentences (type t) as arguments.",
+            "items": [
+              {
+                "sentence": "It is not the case that Jan smokes.",
+                "tree": "[.S [.Neg not ] [.S [.NP Jan ] [.VP smokes ] ] ]",
+                "targets": [
+                  "¬smoke(jn)"
+                ],
+                "reading": {
+                  "section": "2.4"
+                }
+              },
+              {
+                "sentence": "Jan works, and it is not the case that Jan smokes.",
+                "tree": "[.S [.S [.NP Jan ] [.VP works ] ] [.Cnj [.Con and ] [.S [.Neg not ] [.S [.NP Jan ] [.VP smokes ] ] ] ] ]",
+                "targets": [
+                  "work(jn) ∧ ¬smoke(jn)"
+                ],
+                "reading": {
+                  "section": "2.4"
+                }
+              },
+              {
+                "sentence": "Ann smokes, and Maria works.",
+                "tree": "[.S [.S [.NP Ann ] [.VP smokes ] ] [.Cnj [.Con and ] [.S [.NP Maria ] [.VP works ] ] ] ]",
+                "targets": [
+                  "smoke(a) ∧ work(mr)"
+                ],
+                "reading": {
+                  "section": "2.4"
+                }
+              }
+            ]
+          }
+        ],
+        "reading": {
+          "format": "lingdown",
+          "markdown": "# Chapter 2 · Executing the Fregean Program\n\nThis chapter builds the first working fragment. Every node in a syntax tree gets a\n**denotation** (its extension), and the denotation of a branching node is computed\nfrom the denotations of its daughters. We need just two things: a **lexicon** giving\nthe denotation of each word, and **composition rules** that combine them.\n\n## 2.1 Denotations and semantic types\n\nA proper name like *Ann* denotes an **individual** — H&K's type `e` (for *entity*).\nA sentence denotes a **truth value**, `1` or `0` — type `t`. An intransitive verb\nlike *smokes* is *unsaturated*: it denotes the **characteristic function** of the set\nof smokers, a function from individuals to truth values, type `⟨e,t⟩`:\n\n```deriv\n[[Ann]]      = a                       : e\n[[smokes]]   = λx . x smokes  =  λx . smoke(x)=1    : <e,t>\n```\n\nWe abbreviate *the function mapping each x to 1 iff x smokes* as `λx . smoke(x)=1`.\n\n**Functional Application (FA).** If α is a branching node with daughters β and γ,\nand `⟦β⟧` is a function whose domain contains `⟦γ⟧`, then `⟦α⟧ = ⟦β⟧(⟦γ⟧)`.\n\nPlus a rule for the vacuous N/V/VP layers:\n\n**Non-branching Nodes (NN).** If α has a single daughter β, then `⟦α⟧ = ⟦β⟧`.\n\nSo *Ann smokes* (@smokes) composes by feeding the subject to the verb's\ncharacteristic function — the sentence is `1` iff Ann smokes.\n\n```deriv\n[[Ann smokes]]  = [[smokes]]([[Ann]])  =  smoke(a)=1    : t\n```\n\n```ex {#smokes}\nAnn smokes.\nAnn is boring.\n```\n\n## 2.3 Transitive verbs and Schönfinkelization\n\nA transitive verb like *likes* relates two individuals. Rather than a function of a\npair, H&K use a **Schönfinkeled** (curried) function — one that takes its arguments\none at a time. `⟦likes⟧` takes the **object** first, returning a `⟨e,t⟩` function\nthat still wants the subject:\n\n```deriv\n[[likes]]      = λy . λx . x likes y           : <e,<e,t>>\n[[likes Jan]]  = λx . x likes Jan  =  λx . like(x,jn)=1    : <e,t>   (FA)\n```\n\nSo in *Ann likes Jan* (@likes), FA applies twice: *likes* combines with the object\n*Jan*, and the resulting VP combines with the subject *Ann*.\n\n```deriv\n[[Ann likes Jan]]  = like(a,jn)=1    : t\n```\n\n```ex {#likes}\nAnn likes Jan.\n```\n\n## 2.4 Sentential connectives\n\nNegation and conjunction operate on truth values. *It is not the case that* is a\nfunction of type `⟨t,t⟩`, and sentential *and* is of type `⟨t,⟨t,t⟩⟩`:\n\n```deriv\n[[it is not the case that]]  = λp . p = 0   =  λp . ¬p    : <t,t>\n[[and]]                      = λp . λq . q = 1 and p = 1  =  λp . λq . q ∧ p    : <t,<t,t>>\n```\n\nThese compose with whole sentences, so *Jan works, and it is not the case that Jan\nsmokes* (@conj) is true iff Jan works and Jan does not smoke.\n\n```deriv\n[[it is not the case that Jan smokes]]  = ¬smoke(jn)=1    : t\n[[Jan works and ... Jan smokes]]        = work(jn)=1 and ¬smoke(jn)=1    : t\n```\n\n```ex {#conj}\nJan works, and it is not the case that Jan smokes.\n```\n\n---\n\n### A note on Chapter 3: type-driven interpretation\n\nChapter 3 reframes what we just did. Notice we never had to *stipulate* which rule\napplies where — FA fires precisely when one sister is a function defined on the\nother. Interpretation is **type-driven**: the types decide the composition. A\ncorollary is that a tree can be **uninterpretable** purely on type grounds — if no\nrule's input condition is met at some node, the tree simply has no denotation. (This\nis different from a *presupposition failure*, Chapter 4, which depends on the actual\ndenotations, not just the types.) H&K also impose the **θ-Criterion** — each\nargument position filled exactly once — but in a type-driven system much of its work\nis already done by the requirement that every node compose.\n"
+        }
+      }
+    },
+    {
+      "key": "hk4-definites",
+      "title": "Predicates, Modifiers & the Definite Article (§4.3–4.5)",
+      "content": {
+        "compose": 1,
+        "id": "hk4-definites",
+        "title": "Predicates, Modifiers & the Definite Article (§4.3–4.5)",
+        "subtitle": "Heim & Kratzer — Predicate Modification and Frege's partial 'the'",
+        "notation": "hk",
+        "domain": {
+          "multiLetterNames": true,
+          "constants": {
+            "e": "k j o tx a jn"
+          },
+          "variables": {
+            "e": "x y z",
+            "et": "f g P Q X Y",
+            "t": "p q"
+          }
+        },
+        "lexicon": [
+          {
+            "words": [
+              "Kaline"
+            ],
+            "denotation": "k"
+          },
+          {
+            "words": [
+              "Julius"
+            ],
+            "denotation": "j"
+          },
+          {
+            "words": [
+              "Joe"
+            ],
+            "denotation": "o"
+          },
+          {
+            "words": [
+              "Texas"
+            ],
+            "denotation": "tx"
+          },
+          {
+            "words": [
+              "Ann"
+            ],
+            "denotation": "a"
+          },
+          {
+            "words": [
+              "Jan"
+            ],
+            "denotation": "jn"
+          },
+          {
+            "words": [
+              "is",
+              "are"
+            ],
+            "denotation": "LX.X"
+          },
+          {
+            "words": [
+              "a",
+              "an"
+            ],
+            "denotation": "LX.X"
+          },
+          {
+            "words": [
+              "of"
+            ],
+            "denotation": "Lx.x"
+          },
+          {
+            "words": [
+              "cat"
+            ],
+            "denotation": "Lx.cat(x)"
+          },
+          {
+            "words": [
+              "house"
+            ],
+            "denotation": "Lx.house(x)"
+          },
+          {
+            "words": [
+              "book"
+            ],
+            "denotation": "Lx.book(x)"
+          },
+          {
+            "words": [
+              "gray"
+            ],
+            "denotation": "Lx.gray(x)"
+          },
+          {
+            "words": [
+              "empty"
+            ],
+            "denotation": "Lx.empty(x)"
+          },
+          {
+            "words": [
+              "fond"
+            ],
+            "denotation": "Ly.Lx.fond(x,y)"
+          },
+          {
+            "words": [
+              "in"
+            ],
+            "denotation": "Ly.Lx.in(x,y)"
+          },
+          {
+            "words": [
+              "the"
+            ],
+            "denotation": "Lf : Ex[f(x) ∧ Ay[f(y) -> y=x]] . Ix.f(x)",
+            "displayAs": "the"
+          }
+        ],
+        "rules": {
+          "composition": {
+            "functionApplication": true,
+            "predicateModification": true,
+            "nonBranchingNodes": true
+          }
+        },
+        "exercises": [
+          {
+            "title": "A. Predicate Modification (§4.3)",
+            "instructions": "Two ⟨e,t⟩ sisters cannot combine by Functional Application. Predicate Modification (PM) conjoins them: ⟦gray cat⟧ = λx. gray(x)=1 ∧ cat(x)=1. The copula is and the article a are vacuous (λX.X).",
+            "items": [
+              {
+                "sentence": "gray cat",
+                "tree": "[.NP [.AP gray ] [.NP cat ] ]",
+                "reading": {
+                  "section": "4.3"
+                }
+              },
+              {
+                "sentence": "Julius is a gray cat.",
+                "tree": "[.S [.DP Julius ] [.VP [.V is ] [.DP [.D a ] [.NP [.AP gray ] [.NP cat ] ] ] ] ]",
+                "targets": [
+                  "gray(j) ∧ cat(j)"
+                ],
+                "reading": {
+                  "section": "4.3"
+                }
+              },
+              {
+                "sentence": "Kaline is a cat in Texas.",
+                "tree": "[.S [.DP Kaline ] [.VP [.V is ] [.DP [.D a ] [.NP [.NP cat ] [.PP [.P in ] [.DP Texas ] ] ] ] ] ]",
+                "targets": [
+                  "cat(k) ∧ in(k,tx)"
+                ],
+                "reading": {
+                  "section": "4.3"
+                }
+              }
+            ]
+          },
+          {
+            "title": "B. The definite article (§4.4)",
+            "instructions": "Following Frege, the is a PARTIAL function: ⟦the⟧ = λf : ∃!x[f(x)=1] . ιx[f(x)=1]. The condition before the colon is presupposed (a unique satisfier); the value after is the unique individual. In a sentence, the presupposition projects to the top.",
+            "items": [
+              {
+                "sentence": "the cat",
+                "tree": "[.DP [.D the ] [.NP cat ] ]",
+                "targets": [
+                  "∃x[cat(x) ∧ ∀y[cat(y) → y=x]] : ιx.cat(x)"
+                ],
+                "reading": {
+                  "section": "4.4"
+                }
+              },
+              {
+                "sentence": "The cat is gray.",
+                "tree": "[.S [.DP [.D the ] [.NP cat ] ] [.VP [.V is ] [.AP gray ] ] ]",
+                "targets": [
+                  "∃x[cat(x) ∧ ∀y[cat(y) → y=x]] : gray(ιx.cat(x))"
+                ],
+                "reading": {
+                  "section": "4.4"
+                }
+              }
+            ]
+          },
+          {
+            "title": "C. Modifiers in definite descriptions (§4.5)",
+            "instructions": "PM builds the modified predicate first; then the takes it as argument, so the uniqueness presupposition is about gray cats. Embedding the description as an argument projects the presupposition through the predicate.",
+            "items": [
+              {
+                "sentence": "the gray cat",
+                "tree": "[.DP [.D the ] [.NP [.AP gray ] [.NP cat ] ] ]",
+                "targets": [
+                  "∃x[gray(x) ∧ cat(x) ∧ ∀y[gray(y) ∧ cat(y) → y=x]] : ιx.gray(x) ∧ cat(x)"
+                ],
+                "reading": {
+                  "section": "4.5"
+                }
+              },
+              {
+                "sentence": "The gray cat is fond of Joe.",
+                "tree": "[.S [.DP [.D the ] [.NP [.AP gray ] [.NP cat ] ] ] [.VP [.V is ] [.AP [.A fond ] [.PP [.P of ] [.DP Joe ] ] ] ] ]",
+                "targets": [
+                  "∃x[gray(x) ∧ cat(x) ∧ ∀y[gray(y) ∧ cat(y) → y=x]] : fond(ιx.gray(x) ∧ cat(x), o)"
+                ],
+                "reading": {
+                  "section": "4.5"
+                }
+              }
+            ]
+          }
+        ],
+        "reading": {
+          "format": "lingdown",
+          "markdown": "# Chapter 4 · Nonverbal Predicates, Modifiers, and the Definite Article\n\nA sentence denotes a **truth value** (type `t`, either `1` or `0`); a one-place\npredicate denotes its **characteristic function**, so `⟦cat⟧ = λx . cat(x)=1` — the\nfunction mapping an individual to `1` just in case it is a cat. We write the value\nout as `=1` throughout. Two little words carry no content of their own: the copula\n*is* and the indefinite *a* are both the identity `λX . X`, so the work of a\nnonverbal predicate like *is a cat* is done entirely by its complement.\n\n## 4.3 Predicate Modification\n\n*Gray cat* is a noun modified by an adjective. Both *gray* and *cat* are of type\n`⟨e,t⟩`, so neither can take the other as an argument — Functional Application\ncannot apply. H&K add a second composition rule:\n\n**Predicate Modification (PM).** If α is a branching node whose daughters β and γ\nare both of type `⟨e,t⟩`, then `⟦α⟧ = λx . ⟦β⟧(x)=1 and ⟦γ⟧(x)=1`.\n\n```deriv\n[[gray]]      = λx . gray(x)=1                : <e,t>\n[[cat]]       = λx . cat(x)=1                 : <e,t>\n[[gray cat]]  = λx . gray(x)=1 and cat(x)=1   : <e,t>   (PM)\n```\n\nSo *Julius is a gray cat* (@gc) is true iff Julius is both gray and a cat — *is*\nand *a* drop out, and PM conjoins the two predicates before Functional Application\nfeeds the subject in.\n\n```tree\n[S{gray(j)=1 and cat(j)=1}\n  [DP{j} Julius]\n  [VP{λx . gray(x)=1 and cat(x)=1}\n    [V{λX.X} is]\n    [DP{λx . gray(x)=1 and cat(x)=1}\n      [D{λX.X} a]\n      [NP{λx . gray(x)=1 and cat(x)=1}\n        [AP{λx . gray(x)=1} gray]\n        [NP{λx . cat(x)=1} cat]]]]]\n```\n\nA prepositional modifier works the same way: *in* is `λy . λx . in(x,y)=1`, so\n*in Texas* is the property `λx . in(x,tx)=1`, which combines with *cat* by PM.\n\n```ex {#gc}\nJulius is a gray cat.\nKaline is a cat in Texas.\n```\n\n## 4.4 The definite article\n\nFollowing Frege, *the* denotes a **partial function** of type `⟨⟨e,t⟩,e⟩`. It is\ndefined only for a predicate satisfied by **exactly one** individual, and then\nreturns that individual. The definedness condition is written after the colon:\n\n```deriv\n[[the]] = λf : ∃!x[f(x)=1] . ιx[f(x)=1]   : <<e,t>,e>\n```\n\nwhere `∃!x[f(x)=1]` abbreviates *there is exactly one x such that f(x)=1* and\n`ιx[f(x)=1]` the *unique such x*. Applying it to *cat* gives a value only if there\nis exactly one cat (@thecat):\n\n```deriv\n[[the cat]] = ∃!x[cat(x)=1] : ιx[cat(x)=1]   : e\n```\n\nThe part **before** the colon is **presupposed**, the part after is **asserted**.\nThis is the distinction H&K draw in §4.4.2: when the presupposition fails — no cat,\nor several — the description simply has no value, and any sentence containing it is\nneither true nor false but a **presupposition failure**. In *The cat is gray*, the\ncopula is vacuous, so the uniqueness condition rides up to the whole sentence: it is\ndefined iff there is a unique cat, and where defined it is `1` iff that cat is gray.\n\n```deriv\n[[The cat is gray]] = ∃!x[cat(x)=1] : gray(ιx[cat(x)=1])=1   : t\n```\n\nH&K (§4.4.4) stress that this is **not** the same as uninterpretability: a type\nmismatch makes a tree uninterpretable from its types alone, whereas a presupposition\nfailure is detectable only once we know the *denotations* of the parts.\n\n```ex {#thecat}\nthe cat\nThe cat is gray.\n```\n\n## 4.5 Modifiers in definite descriptions\n\nModification and definiteness compose freely. *The gray cat* first builds the\nmodified predicate by PM, then feeds it to *the* (@tgc); the uniqueness\npresupposition is now about *gray cats*.\n\n```deriv\n[[gray cat]]      = λx . gray(x)=1 and cat(x)=1                        : <e,t>\n[[the gray cat]]  = ∃!x[gray(x)=1 and cat(x)=1] : ιx[gray(x)=1 and cat(x)=1]  : e\n```\n\nEmbedding the description as an argument lets the presupposition project through a\npredicate: *The gray cat is fond of Joe* is defined iff there is a unique gray cat,\nand asserts that it is fond of Joe.\n\n```deriv\n[[the gray cat is fond of Joe]]\n   = ∃!x[gray(x)=1 and cat(x)=1] : fond(ιx[gray(x)=1 and cat(x)=1], o)=1   : t\n```\n\nH&K also build descriptions over **relative clauses** — *the house which is empty*\nis defined iff there is exactly one empty house. The relative clause must denote a\nproperty `⟨e,t⟩` so it can combine with *house* by PM; how a clause containing a gap\ncomes to denote a property is the business of Predicate Abstraction in Chapter 5.\n\n```ex {#tgc}\nthe gray cat\nThe gray cat is fond of Joe.\nthe house which is empty\n```\n"
+        }
+      }
+    },
+    {
+      "key": "hk5-relatives",
+      "title": "Relative Clauses & Predicate Abstraction (§5.1–5.3)",
+      "content": {
+        "compose": 1,
+        "id": "hk5-relatives",
+        "title": "Relative Clauses & Predicate Abstraction (§5.1–5.3)",
+        "subtitle": "Heim & Kratzer — traces, variable binding, and the third composition rule",
+        "notation": "hk",
+        "domain": {
+          "multiLetterNames": true,
+          "constants": {
+            "e": "j m o b"
+          },
+          "variables": {
+            "e": "x y z",
+            "et": "f g P Q X Y",
+            "t": "p q"
+          }
+        },
+        "lexicon": [
+          {
+            "words": [
+              "John"
+            ],
+            "denotation": "j"
+          },
+          {
+            "words": [
+              "Mary"
+            ],
+            "denotation": "m"
+          },
+          {
+            "words": [
+              "Joe"
+            ],
+            "denotation": "o"
+          },
+          {
+            "words": [
+              "Bill"
+            ],
+            "denotation": "b"
+          },
+          {
+            "words": [
+              "is",
+              "are"
+            ],
+            "denotation": "LX.X"
+          },
+          {
+            "words": [
+              "a",
+              "an"
+            ],
+            "denotation": "LX.X"
+          },
+          {
+            "words": [
+              "who",
+              "which",
+              "that"
+            ],
+            "denotation": "LX.X"
+          },
+          {
+            "words": [
+              "house"
+            ],
+            "denotation": "Lx.house(x)"
+          },
+          {
+            "words": [
+              "picture"
+            ],
+            "denotation": "Lx.picture(x)"
+          },
+          {
+            "words": [
+              "movie"
+            ],
+            "denotation": "Lx.movie(x)"
+          },
+          {
+            "words": [
+              "man"
+            ],
+            "denotation": "Lx.man(x)"
+          },
+          {
+            "words": [
+              "empty"
+            ],
+            "denotation": "Lx.empty(x)"
+          },
+          {
+            "words": [
+              "available"
+            ],
+            "denotation": "Lx.available(x)"
+          },
+          {
+            "words": [
+              "expensive"
+            ],
+            "denotation": "Lx.expensive(x)"
+          },
+          {
+            "words": [
+              "abandoned"
+            ],
+            "denotation": "Ly.Lx.abandon(x,y)"
+          },
+          {
+            "words": [
+              "saw"
+            ],
+            "denotation": "Ly.Lx.see(x,y)"
+          },
+          {
+            "words": [
+              "likes"
+            ],
+            "denotation": "Ly.Lx.like(x,y)"
+          },
+          {
+            "words": [
+              "bought"
+            ],
+            "denotation": "Ly.Lx.buy(x,y)"
+          },
+          {
+            "words": [
+              "the"
+            ],
+            "denotation": "Lf : Ex[f(x) ∧ Ay[f(y) -> y=x]] . Ix.f(x)",
+            "displayAs": "the"
+          },
+          {
+            "words": [
+              "every",
+              "Every"
+            ],
+            "denotation": "Lf.Lg.Ax[f(x) -> g(x)]"
+          },
+          {
+            "words": [
+              "no",
+              "No"
+            ],
+            "denotation": "Lf.Lg.~Ex[f(x) ∧ g(x)]"
+          }
+        ],
+        "rules": {
+          "composition": {
+            "functionApplication": true,
+            "predicateModification": true,
+            "nonBranchingNodes": true,
+            "predicateAbstraction": true
+          }
+        },
+        "exercises": [
+          {
+            "title": "A. Subject-gap relatives (§5.1–5.2)",
+            "instructions": "A relative clause is an intersective modifier of type ⟨e,t⟩, combining with the head noun by Predicate Modification. The trace t₁ denotes a variable; Predicate Abstraction over its index turns the clause into a property. The relative pronoun is vacuous (λX.X).",
+            "items": [
+              {
+                "sentence": "which is empty",
+                "tree": "[.CP [.C which ] [.LP 1 [.S [.DP t1 ] [.VP [.V is ] [.AP empty ] ] ] ] ]",
+                "targets": [
+                  "λx.empty(x)"
+                ],
+                "reading": {
+                  "section": "5.2"
+                }
+              },
+              {
+                "sentence": "house which is empty",
+                "tree": "[.NP [.NP house ] [.CP [.C which ] [.LP 1 [.S [.DP t1 ] [.VP [.V is ] [.AP empty ] ] ] ] ] ]",
+                "targets": [
+                  "λx.house(x) ∧ empty(x)"
+                ],
+                "reading": {
+                  "section": "5.2"
+                }
+              },
+              {
+                "sentence": "man who is available",
+                "tree": "[.NP [.NP man ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.V is ] [.AP available ] ] ] ] ] ]",
+                "targets": [
+                  "λx.man(x) ∧ available(x)"
+                ],
+                "reading": {
+                  "section": "5.2"
+                }
+              }
+            ]
+          },
+          {
+            "title": "B. Object-gap relatives & Predicate Abstraction (§5.2.3)",
+            "instructions": "When the trace is in OBJECT position, the desired value λx. John abandoned x is not the value of any subtree — Predicate Abstraction is essential. PA abstracts over the trace index after the subject and verb have composed around the trace.",
+            "items": [
+              {
+                "sentence": "which John abandoned t",
+                "tree": "[.CP [.C which ] [.LP 1 [.S [.DP John ] [.VP [.V abandoned ] [.DP t1 ] ] ] ] ]",
+                "targets": [
+                  "λx.abandon(j,x)"
+                ],
+                "reading": {
+                  "section": "5.2.3"
+                }
+              },
+              {
+                "sentence": "picture which John abandoned t",
+                "tree": "[.NP [.NP picture ] [.CP [.C which ] [.LP 1 [.S [.DP John ] [.VP [.V abandoned ] [.DP t1 ] ] ] ] ] ]",
+                "targets": [
+                  "λx.picture(x) ∧ abandon(j,x)"
+                ],
+                "reading": {
+                  "section": "5.2.3"
+                }
+              },
+              {
+                "sentence": "movie which Mary saw t",
+                "tree": "[.NP [.NP movie ] [.CP [.C which ] [.LP 1 [.S [.DP Mary ] [.VP [.V saw ] [.DP t1 ] ] ] ] ] ]",
+                "targets": [
+                  "λx.movie(x) ∧ see(m,x)"
+                ],
+                "reading": {
+                  "section": "5.2.3"
+                }
+              }
+            ]
+          },
+          {
+            "title": "C. Relatives in full DPs (§5.1, §5.3)",
+            "instructions": "The modified noun feeds a determiner. With the (Chapter 4's partial function), the uniqueness presupposition is now about the relative-clause-restricted set. With a quantifier, the relative clause restricts the quantifier's domain.",
+            "items": [
+              {
+                "sentence": "The house which is empty is available.",
+                "tree": "[.S [.DP [.D the ] [.NP [.NP house ] [.CP [.C which ] [.LP 1 [.S [.DP t1 ] [.VP [.V is ] [.AP empty ] ] ] ] ] ] ] [.VP [.V is ] [.AP available ] ] ]",
+                "targets": [
+                  "∃x[house(x) ∧ empty(x) ∧ ∀y[house(y) ∧ empty(y) → y=x]] : available(ιx.house(x) ∧ empty(x))"
+                ],
+                "reading": {
+                  "section": "5.1"
+                }
+              },
+              {
+                "sentence": "Every picture which John abandoned is expensive.",
+                "tree": "[.S [.DP [.D every ] [.NP [.NP picture ] [.CP [.C which ] [.LP 1 [.S [.DP John ] [.VP [.V abandoned ] [.DP t1 ] ] ] ] ] ] ] [.VP [.V is ] [.AP expensive ] ] ]",
+                "targets": [
+                  "∀x[picture(x) ∧ abandon(j,x) → expensive(x)]"
+                ],
+                "reading": {
+                  "section": "5.3"
+                }
+              },
+              {
+                "sentence": "No movie which Mary saw is expensive.",
+                "tree": "[.S [.DP [.D no ] [.NP [.NP movie ] [.CP [.C which ] [.LP 1 [.S [.DP Mary ] [.VP [.V saw ] [.DP t1 ] ] ] ] ] ] ] [.VP [.V is ] [.AP expensive ] ] ]",
+                "targets": [
+                  "¬∃x[movie(x) ∧ see(m,x) ∧ expensive(x)]"
+                ],
+                "reading": {
+                  "section": "5.3"
+                }
+              }
+            ]
+          }
+        ],
+        "reading": {
+          "format": "lingdown",
+          "markdown": "# Chapter 5 · Relative Clauses, Variables, and Variable Binding\n\nA restrictive relative clause is **just another intersective modifier**. Following\nQuine, *which is empty* denotes the very same property as the adjective *empty* — a\ncharacteristic function of type `⟨e,t⟩` — and so combines with the head noun by\n**Predicate Modification**, exactly as a PP or AP does. The whole point of this\nchapter is to show how a clause *containing a gap* comes to denote such a property.\n\n## 5.1 Relative clauses as predicates\n\nTake H&K's opening example (@empty). The DP *the house which is empty* has a head\nnoun *house*, a relative clause *which is empty*, and the determiner *the*. If\n*which is empty* denotes `λx . empty(x)=1`, then PM gives *house which is empty* the\nvalue `λx . house(x)=1 and empty(x)=1`, and Functional Application feeds that to the\npartial *the* from Chapter 4. So *the house which is empty* is defined iff there is\nexactly one empty house, and denotes it; the whole sentence is then true iff that\nhouse is available.\n\n```ex {#empty}\nThe house which is empty is available.\n```\n\nThis already distinguishes restrictives from non-restrictives: *The house, which is\nempty, is available* presupposes a **unique house** (the *the* applies to *house*\nalone), whereas the restrictive only requires a unique empty house. We set\nnon-restrictives aside.\n\n## 5.2 Inside the relative clause: traces and variables\n\nA relative clause has a relative pronoun at the top and a **trace** in the gap.\nA subject-gap clause *which `t` is empty* is easy; the hard case, already noted by\nQuine, is an **object** gap (@abandon), where the desired value is `λx . John\nabandoned x` — and that is **not** the value of any subtree.\n\n```ex {#abandon}\nthe picture which John abandoned t\nthe movie which Mary saw t\n```\n\nThe trace cannot simply pick up a referent (§5.2.1): there is no smaller\nindividual-denoting constituent for it to inherit from, and trying to use the whole\ncontaining DP is viciously circular. The resolution (§5.2.2) is the **variable**.\n\n**Traces and Pronouns.** A trace `t_i` (and likewise a pronoun) denotes, relative to\nan assignment `g`, the individual `g(i)`. So `⟦t_1⟧^g = g(1)`, an individual of type\n`e` — a fine argument for the verb.\n\nWith this, the clause body has a value *relative to an assignment*: writing `x` for\n`g(1)`, *John abandoned `t_1`* denotes `abandon(j,x)=1`.\n\n## 5.2.3 Predicate Abstraction\n\nTo turn that open clause into a property, H&K add a third composition rule. The\nmoved relative pronoun (and its index) is **syncategorematic** — it has no value of\nits own but triggers abstraction over the indexed variable.\n\n**Predicate Abstraction (PA).** If α is a branching node whose daughters are a\nrelative pronoun (or index) `i` and a node β, then `⟦α⟧^g = λx . ⟦β⟧^{g[i→x]}` — the\nfunction mapping each `x` to the value β has when `i` is assigned `x`.\n\nSo PA over the object-gap clause gives `λx . abandon(j,x)=1`, type `⟨e,t⟩`, just what\nPM needs (@abandon-deriv). The relative pronoun *which* / *who* is then semantically\nvacuous, passing the abstract up unchanged.\n\n```deriv {#abandon-deriv}\n[[John abandoned t1]]              = abandon(j,x)=1            : t\n[[1 [John abandoned t1]]]          = λx . abandon(j,x)=1       : <e,t>   (PA)\n[[which John abandoned t1]]        = λx . abandon(j,x)=1       : <e,t>\n[[picture]]                        = λx . picture(x)=1         : <e,t>\n[[picture which John abandoned]]   = λx . picture(x)=1 and abandon(j,x)=1   : <e,t>   (PM)\n```\n\nA subject gap works the same way; PA simply abstracts over a trace that happens to\nsit in subject position (@subj-deriv).\n\n```deriv {#subj-deriv}\n[[t1 is empty]]                = empty(x)=1            : t\n[[1 [t1 is empty]]]            = λx . empty(x)=1       : <e,t>   (PA)\n[[which is empty]]             = λx . empty(x)=1       : <e,t>\n[[house which is empty]]       = λx . house(x)=1 and empty(x)=1   : <e,t>   (PM)\n```\n\n## 5.3 Multiple variables and such-that relatives\n\nThe same rule scales to **multiple variables** and to *such that* relatives, where\n*such* (like the relative pronoun) is a vacuous binder of the clause-internal index.\nOnce indices, not particular words, drive PA, the rule generalizes to every variable\nbinder in the grammar — the engine that Chapter 7 will reuse for quantifier raising.\n\n```ex {#such}\nthe picture such that Mary saw it\n```\n"
+        }
+      }
+    },
+    {
+      "key": "hk6-quantifiers",
+      "title": "Quantifiers: Their Semantic Type (§6.3–6.7)",
+      "content": {
+        "compose": 1,
+        "id": "hk6-quantifiers",
+        "title": "Quantifiers: Their Semantic Type (§6.3–6.7)",
+        "subtitle": "Heim & Kratzer — generalized quantifiers, quantifying determiners, and presuppositional both/neither",
+        "notation": "hk",
+        "domain": {
+          "multiLetterNames": true,
+          "constants": {
+            "e": "a jn"
+          },
+          "variables": {
+            "e": "x y z",
+            "et": "f g P Q X Y",
+            "t": "p q"
+          }
+        },
+        "lexicon": [
+          {
+            "words": [
+              "cat"
+            ],
+            "denotation": "Lx.cat(x)"
+          },
+          {
+            "words": [
+              "dog"
+            ],
+            "denotation": "Lx.dog(x)"
+          },
+          {
+            "words": [
+              "vanished",
+              "vanish"
+            ],
+            "denotation": "Lx.vanish(x)"
+          },
+          {
+            "words": [
+              "purrs",
+              "purr"
+            ],
+            "denotation": "Lx.purr(x)"
+          },
+          {
+            "words": [
+              "is"
+            ],
+            "denotation": "LX.X"
+          },
+          {
+            "words": [
+              "has"
+            ],
+            "denotation": "LX.X"
+          },
+          {
+            "words": [
+              "striped"
+            ],
+            "denotation": "Lx.striped(x)"
+          },
+          {
+            "words": [
+              "stripes"
+            ],
+            "denotation": "Lx.striped(x)"
+          },
+          {
+            "words": [
+              "something"
+            ],
+            "denotation": "Lf.Ex[f(x)]"
+          },
+          {
+            "words": [
+              "nothing"
+            ],
+            "denotation": "Lf.~Ex[f(x)]"
+          },
+          {
+            "words": [
+              "everything"
+            ],
+            "denotation": "Lf.Ax[f(x)]"
+          },
+          {
+            "words": [
+              "every",
+              "Every"
+            ],
+            "denotation": "Lf.Lg.Ax[f(x) -> g(x)]"
+          },
+          {
+            "words": [
+              "no",
+              "No"
+            ],
+            "denotation": "Lf.Lg.~Ex[f(x) ∧ g(x)]"
+          },
+          {
+            "words": [
+              "some",
+              "Some"
+            ],
+            "denotation": "Lf.Lg.Ex[f(x) ∧ g(x)]"
+          },
+          {
+            "words": [
+              "both",
+              "Both"
+            ],
+            "denotation": "Lf : card2(f) . Lg.Ax[f(x) -> g(x)]",
+            "displayAs": "both"
+          },
+          {
+            "words": [
+              "neither",
+              "Neither"
+            ],
+            "denotation": "Lf : card2(f) . Lg.~Ex[f(x) ∧ g(x)]",
+            "displayAs": "neither"
+          }
+        ],
+        "rules": {
+          "composition": {
+            "functionApplication": true,
+            "nonBranchingNodes": true
+          }
+        },
+        "exercises": [
+          {
+            "title": "A. Generalized quantifiers (§6.3)",
+            "instructions": "A quantificational DP is neither an individual (e) nor a set (⟨e,t⟩): it is a SECOND-ORDER property of type ⟨⟨e,t⟩,t⟩, taking the VP predicate as argument.",
+            "items": [
+              {
+                "sentence": "Something vanished.",
+                "tree": "[.S [.DP something ] [.VP vanished ] ]",
+                "targets": [
+                  "∃x[vanish(x)]"
+                ],
+                "reading": {
+                  "section": "6.3"
+                }
+              },
+              {
+                "sentence": "Nothing vanished.",
+                "tree": "[.S [.DP nothing ] [.VP vanished ] ]",
+                "targets": [
+                  "¬∃x[vanish(x)]"
+                ],
+                "reading": {
+                  "section": "6.3"
+                }
+              },
+              {
+                "sentence": "Everything vanished.",
+                "tree": "[.S [.DP everything ] [.VP vanished ] ]",
+                "targets": [
+                  "∀x[vanish(x)]"
+                ],
+                "reading": {
+                  "section": "6.3"
+                }
+              }
+            ]
+          },
+          {
+            "title": "B. Quantifying determiners (§6.4)",
+            "instructions": "A determiner is type ⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩: it takes the noun restrictor first, then the VP predicate. FA applies twice.",
+            "items": [
+              {
+                "sentence": "Every cat vanished.",
+                "tree": "[.S [.DP [.D every ] [.NP cat ] ] [.VP vanished ] ]",
+                "targets": [
+                  "∀x[cat(x) → vanish(x)]"
+                ],
+                "reading": {
+                  "section": "6.4"
+                }
+              },
+              {
+                "sentence": "No dog purrs.",
+                "tree": "[.S [.DP [.D no ] [.NP dog ] ] [.VP purrs ] ]",
+                "targets": [
+                  "¬∃x[dog(x) ∧ purr(x)]"
+                ],
+                "reading": {
+                  "section": "6.4"
+                }
+              },
+              {
+                "sentence": "Some cat purrs.",
+                "tree": "[.S [.DP [.D some ] [.NP cat ] ] [.VP purrs ] ]",
+                "targets": [
+                  "∃x[cat(x) ∧ purr(x)]"
+                ],
+                "reading": {
+                  "section": "6.4"
+                }
+              }
+            ]
+          },
+          {
+            "title": "C. Presuppositional both & neither (§6.7)",
+            "instructions": "Both and neither PRESUPPOSE that the restrictor has exactly two members — a partial function (Chapter 4's colon), presupposing |f|=2. The presupposition projects up to the whole sentence. They cannot be captured by a purely relational (total) theory.",
+            "items": [
+              {
+                "sentence": "neither cat",
+                "tree": "[.DP [.D neither ] [.NP cat ] ]",
+                "targets": [
+                  "card2(λx.cat(x)) : λg.¬∃x[cat(x) ∧ g(x)]"
+                ],
+                "reading": {
+                  "section": "6.7"
+                }
+              },
+              {
+                "sentence": "Neither cat has stripes.",
+                "tree": "[.S [.DP [.D neither ] [.NP cat ] ] [.VP [.V has ] [.NP stripes ] ] ]",
+                "targets": [
+                  "card2(λx.cat(x)) : ¬∃x[cat(x) ∧ striped(x)]"
+                ],
+                "reading": {
+                  "section": "6.7"
+                }
+              },
+              {
+                "sentence": "Both cats purr.",
+                "tree": "[.S [.DP [.D both ] [.NP cat ] ] [.VP purr ] ]",
+                "targets": [
+                  "card2(λx.cat(x)) : ∀x[cat(x) → purr(x)]"
+                ],
+                "reading": {
+                  "section": "6.7"
+                }
+              }
+            ]
+          }
+        ],
+        "reading": {
+          "format": "lingdown",
+          "markdown": "# Chapter 6 · Quantifiers: Their Semantic Type\n\nA proper name denotes an individual (type `e`), but a quantificational DP like\n*nothing* does not. *No one person is everything*; and *nothing* is not a set of\nindividuals either. So what type is it? Fregean reasoning gives a clear answer.\n\n## 6.3 Generalized quantifiers\n\nIn *Nothing vanished*, our rules make the VP *vanished* denote a characteristic\nfunction of type `⟨e,t⟩`, and the whole sentence must denote a truth value `t`. If\ncomposition is Functional Application, the subject *nothing* must be a function\n**from** `⟨e,t⟩` **to** `t` — type `⟨⟨e,t⟩,t⟩`. These are **generalized quantifiers**:\nsecond-order properties that take a first-order property as argument (@gq).\n\n```deriv\n[[something]]   = λf . ∃x[f(x)=1]    : <<e,t>,t>\n[[nothing]]     = λf . ¬∃x[f(x)=1]   : <<e,t>,t>\n[[everything]]  = λf . ∀x[f(x)=1]    : <<e,t>,t>\n```\n\nSo *Nothing vanished* says the predicate *vanished* is true of no individual:\n\n```deriv\n[[Nothing vanished]]  = ¬∃x[vanish(x)=1]    : t\n```\n\n```ex {#gq}\nSomething vanished.\nNothing vanished.\nEverything vanished.\n```\n\n## 6.4 Quantifying determiners\n\nA determiner combines with a noun (a `⟨e,t⟩` restrictor) to build a quantificational\nDP. So a determiner is type `⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩` — it takes the noun, then the\npredicate, and returns a truth value (@det).\n\n```deriv\n[[every]]  = λf . λg . ∀x[f(x)=1 → g(x)=1]    : <<e,t>,<<e,t>,t>>\n[[no]]     = λf . λg . ¬∃x[f(x)=1 and g(x)=1]  : <<e,t>,<<e,t>,t>>\n[[some]]   = λf . λg . ∃x[f(x)=1 and g(x)=1]   : <<e,t>,<<e,t>,t>>\n```\n\n*Every cat vanished* feeds *cat* to *every*, then *vanished* to the result:\n\n```deriv\n[[every cat]]           = λg . ∀x[cat(x)=1 → g(x)=1]    : <<e,t>,t>\n[[Every cat vanished]]  = ∀x[cat(x)=1 → vanish(x)=1]    : t\n```\n\n```ex {#det}\nEvery cat vanished.\nNo cat vanished.\n```\n\n## 6.7 Presuppositional quantifier phrases: *both* and *neither*\n\n*Neither cat has stripes* is clearly true if there are exactly two cats and neither\nis striped, and false if there are two cats and one or both is. But if there **aren't\nexactly two cats** — say only one, or three — we are reluctant to call it true *or*\nfalse: it seems inappropriate, just like *the cat* when there is no unique cat. So\n*both* and *neither* **presuppose** that the restrictor has exactly two members. We\ncapture this with a **partial function** (Chapter 4's colon), presupposing `|f|=2`:\n\n```deriv\n[[neither]]  = λf : |f|=2 . λg . ¬∃x[f(x)=1 and g(x)=1]   : <<e,t>,<<e,t>,t>>\n[[both]]     = λf : |f|=2 . λg . ∀x[f(x)=1 → g(x)=1]      : <<e,t>,<<e,t>,t>>\n```\n\nThe presupposition `|f|=2` rides up: *neither cat* is defined only if there are\nexactly two cats, and *Neither cat has stripes* (@both) inherits that condition while\nasserting that no cat is striped.\n\n```deriv\n[[neither cat]]              = |cat|=2 : λg . ¬∃x[cat(x)=1 and g(x)=1]   : <<e,t>,t>\n[[Neither cat has stripes]]  = |cat|=2 : ¬∃x[cat(x)=1 and striped(x)=1]  : t\n```\n\nThis is why *both* and *neither* resist a purely **relational** treatment (§6.7.2): a\nrelation is a set of pairs, so it can only ever be total — it cannot leave the\ntwo-cats case truth-valueless. Partiality is essential.\n\n```ex {#both}\nNeither cat has stripes.\nBoth cats have stripes.\n```\n\n> **Beyond this chapter (§6.8).** Whether *every*, *the*, and the weak determiners\n> (*a*, *two*, *most*) are likewise presuppositional is contested; *most* in\n> particular is not first-order, and we leave these cases to the reading.\n"
+        }
+      }
+    },
+    {
+      "key": "hk7-quantification",
+      "title": "Quantification & Grammar (§7.1–7.5)",
+      "content": {
+        "compose": 1,
+        "id": "hk7-quantification",
+        "title": "Quantification & Grammar (§7.1–7.5)",
+        "subtitle": "Heim & Kratzer — object quantifiers in situ (RaiseO) vs. by movement (QR+PA), scope, binding",
+        "notation": "hk",
+        "domain": {
+          "multiLetterNames": true,
+          "constants": {
+            "e": "j m x1 x2"
+          },
+          "variables": {
+            "e": "x y z",
+            "et": "f g P Q X Y",
+            "t": "p q"
+          }
+        },
+        "lexicon": [
+          {
+            "words": [
+              "John"
+            ],
+            "denotation": "j"
+          },
+          {
+            "words": [
+              "Mary"
+            ],
+            "denotation": "m"
+          },
+          {
+            "words": [
+              "linguist"
+            ],
+            "denotation": "Lx.linguist(x)"
+          },
+          {
+            "words": [
+              "publisher"
+            ],
+            "denotation": "Lx.publisher(x)"
+          },
+          {
+            "words": [
+              "offended",
+              "offend"
+            ],
+            "denotation": "Ly.Lx.offend(x,y)"
+          },
+          {
+            "words": [
+              "knows",
+              "know"
+            ],
+            "denotation": "Ly.Lx.know(x,y)"
+          },
+          {
+            "words": [
+              "everybody"
+            ],
+            "denotation": "Lf.Ax[f(x)]"
+          },
+          {
+            "words": [
+              "somebody"
+            ],
+            "denotation": "Lf.Ex[f(x)]"
+          },
+          {
+            "words": [
+              "every",
+              "Every"
+            ],
+            "denotation": "Lf.Lg.Ax[f(x) -> g(x)]"
+          },
+          {
+            "words": [
+              "some",
+              "Some"
+            ],
+            "denotation": "Lf.Lg.Ex[f(x) ∧ g(x)]"
+          },
+          {
+            "words": [
+              "no",
+              "No"
+            ],
+            "denotation": "Lf.Lg.~Ex[f(x) ∧ g(x)]"
+          },
+          {
+            "words": [
+              "he1",
+              "him1",
+              "his1",
+              "himself1"
+            ],
+            "denotation": "x1"
+          },
+          {
+            "words": [
+              "he2",
+              "him2",
+              "his2",
+              "himself2"
+            ],
+            "denotation": "x2"
+          }
+        ],
+        "rules": {
+          "composition": {
+            "functionApplication": true,
+            "nonBranchingNodes": true,
+            "predicateModification": true,
+            "predicateAbstraction": true
+          },
+          "typeShifts": [
+            "raiseO",
+            "raiseS"
+          ],
+          "quantifierRaising": true
+        },
+        "exercises": [
+          {
+            "title": "A. Object quantifiers in situ (RaiseO) — §7.1–7.2",
+            "instructions": "The verb wants an individual object (⟨e,⟨e,t⟩⟩) but a quantifier is ⟨⟨e,t⟩,t⟩, so FA fails. RaiseO lifts the verb's type ⟨e,⟨e,t⟩⟩ → ⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩ so the quantifier fits in situ — no movement.",
+            "items": [
+              {
+                "sentence": "John offended every linguist.",
+                "tree": "[.S [.DP John ] [.VP [.V offended ] [.DP [.D every ] [.NP linguist ] ] ] ]",
+                "targets": [
+                  "∀x[linguist(x) → offend(j,x)]"
+                ],
+                "reading": {
+                  "section": "7.2"
+                }
+              },
+              {
+                "sentence": "Mary offended some linguist.",
+                "tree": "[.S [.DP Mary ] [.VP [.V offended ] [.DP [.D some ] [.NP linguist ] ] ] ]",
+                "targets": [
+                  "∃x[linguist(x) ∧ offend(m,x)]"
+                ],
+                "reading": {
+                  "section": "7.2"
+                }
+              },
+              {
+                "sentence": "John knows everybody.",
+                "tree": "[.S [.DP John ] [.VP [.V knows ] [.DP everybody ] ] ]",
+                "targets": [
+                  "∀x[know(j,x)]"
+                ],
+                "reading": {
+                  "section": "7.2"
+                }
+              }
+            ]
+          },
+          {
+            "title": "B. Object quantifiers by movement (QR + PA) — §7.3",
+            "instructions": "The alternative repair MOVES the object quantifier, adjoining it above the clause with a co-indexed trace. Predicate Abstraction over the trace makes the remnant a ⟨e,t⟩ property — a fit argument for the raised quantifier. Same truth conditions as RaiseO.",
+            "items": [
+              {
+                "sentence": "John offended every linguist.",
+                "tree": "[.S [.DP [.D every ] [.NP linguist ] ] [.LP 1 [.S [.DP John ] [.VP [.V offended ] [.DP t1 ] ] ] ] ]",
+                "targets": [
+                  "∀x[linguist(x) → offend(j,x)]"
+                ],
+                "reading": {
+                  "section": "7.3"
+                }
+              },
+              {
+                "sentence": "Mary knows some publisher.",
+                "tree": "[.S [.DP [.D some ] [.NP publisher ] ] [.LP 1 [.S [.DP Mary ] [.VP [.V knows ] [.DP t1 ] ] ] ] ]",
+                "targets": [
+                  "∃x[publisher(x) ∧ know(m,x)]"
+                ],
+                "reading": {
+                  "section": "7.3"
+                }
+              }
+            ]
+          },
+          {
+            "title": "C. Scope ambiguity & inverse scope — §7.5.1",
+            "instructions": "With two quantifiers, movement derives BOTH scope orders (in-situ derives only the linear one). Raise the quantifiers in either order; PA gives two non-equivalent LFs. Build the LF for each reading.",
+            "items": [
+              {
+                "sentence": "Somebody offended everybody. (linear: ∃ > ∀)",
+                "tree": "[.S [.DP somebody ] [.LP 1 [.S [.DP everybody ] [.LP 2 [.S [.DP t1 ] [.VP [.V offended ] [.DP t2 ] ] ] ] ] ] ]",
+                "targets": [
+                  "∃x[∀y[offend(x,y)]]"
+                ],
+                "reading": {
+                  "section": "7.5.1"
+                }
+              },
+              {
+                "sentence": "Somebody offended everybody. (inverse: ∀ > ∃)",
+                "tree": "[.S [.DP everybody ] [.LP 2 [.S [.DP somebody ] [.LP 1 [.S [.DP t1 ] [.VP [.V offended ] [.DP t2 ] ] ] ] ] ] ]",
+                "targets": [
+                  "∀y[∃x[offend(x,y)]]"
+                ],
+                "reading": {
+                  "section": "7.5.1"
+                }
+              },
+              {
+                "sentence": "Some publisher offended every linguist. (inverse: ∀ > ∃)",
+                "tree": "[.S [.DP [.D every ] [.NP linguist ] ] [.LP 2 [.S [.DP [.D some ] [.NP publisher ] ] [.LP 1 [.S [.DP t1 ] [.VP [.V offended ] [.DP t2 ] ] ] ] ] ] ]",
+                "targets": [
+                  "∀y[linguist(y) → ∃x[publisher(x) ∧ offend(x,y)]]"
+                ],
+                "reading": {
+                  "section": "7.5.1"
+                }
+              }
+            ]
+          },
+          {
+            "title": "D. Quantifiers that bind pronouns — §7.5.3",
+            "instructions": "When the raised subject's trace and a pronoun share an index, PA abstracts over both, binding the pronoun as a variable. Raise the subject (index 1) over a clause whose object pronoun is himself₁.",
+            "items": [
+              {
+                "sentence": "Every publisher offended himself.",
+                "tree": "[.S [.DP [.D every ] [.NP publisher ] ] [.LP 1 [.S [.DP t1 ] [.VP [.V offended ] [.DP himself1 ] ] ] ] ]",
+                "targets": [
+                  "∀x[publisher(x) → offend(x,x)]"
+                ],
+                "reading": {
+                  "section": "7.5.3"
+                }
+              },
+              {
+                "sentence": "Some linguist knows himself.",
+                "tree": "[.S [.DP [.D some ] [.NP linguist ] ] [.LP 1 [.S [.DP t1 ] [.VP [.V knows ] [.DP himself1 ] ] ] ] ]",
+                "targets": [
+                  "∃x[linguist(x) ∧ know(x,x)]"
+                ],
+                "reading": {
+                  "section": "7.5.3"
+                }
+              }
+            ]
+          }
+        ],
+        "reading": {
+          "format": "lingdown",
+          "markdown": "# Chapter 7 · Quantification and Grammar\n\nQuantifiers in **subject** position composed cleanly: a generalized quantifier of\ntype `⟨⟨e,t⟩,t⟩` takes the VP predicate as argument. But quantifiers also appear in\n**object** position, and there a type mismatch arises. This chapter gives H&K's two\nrepairs — and shows they are not mere alternatives, because movement does strictly\nmore.\n\n## 7.1 The problem of quantifiers in object position\n\nIn *John offended every linguist* (@obj), the verb *offended* is type\n`⟨e,⟨e,t⟩⟩` — it wants an **individual** object. But *every linguist* is a\ngeneralized quantifier, type `⟨⟨e,t⟩,t⟩`. Neither sister has the other in its\ndomain, so Functional Application cannot apply, and the VP has no denotation.\n\n```deriv\n[[offended]]        = λy . λx . offend(x,y)=1    : <e,<e,t>>\n[[every linguist]]  = λg . ∀x[linguist(x)=1 → g(x)=1]   : <<e,t>,t>\n```\n\n```ex {#obj}\nJohn offended every linguist.\n```\n\n## 7.2 Repair in situ: flexible types (RaiseO)\n\nOne repair leaves the quantifier where it is and **raises the verb's type** so the\nobject slot can host a generalized quantifier. The type-shift **RaiseO** turns\n`⟨e,⟨e,t⟩⟩` into `⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩`, after which FA applies twice with no movement.\nThe result is exactly the desired truth conditions:\n\n```deriv\n[[John offended every linguist]]  = ∀x[linguist(x)=1 → offend(j,x)=1]   : t\n```\n\n## 7.3 Repair by movement: Quantifier Raising + PA\n\nThe other repair **moves** the object quantifier, adjoining it above the clause and\nleaving a co-indexed **trace**. **Predicate Abstraction** (Chapter 5) over that trace\nmakes the remnant clause a property of type `⟨e,t⟩` — a fit argument for the raised\nquantifier. The LF is *[every linguist] 1 [John offended t₁]*:\n\n```deriv\n[[John offended t1]]      = offend(j,x)=1            : t\n[[1 [John offended t1]]]  = λx . offend(j,x)=1       : <e,t>   (PA)\n[[(QR) every linguist …]] = ∀x[linguist(x)=1 → offend(j,x)=1]   : t   (FA)\n```\n\nBoth routes give the same truth conditions here. So why prefer movement?\n\n## 7.5.1 Scope ambiguity and inverse scope\n\nA sentence with **two** quantifiers, *Somebody offended everybody* (@scope), has\n**two** readings: a *linear* one (there is one person who offended everyone) and an\n*inverse* one (everyone was offended, by possibly different people). In-situ\ninterpretation predicts **only** the linear reading. Movement predicts **both**:\nraise the quantifiers in either order and PA delivers two non-equivalent LFs.\n\n```deriv\n[[Somebody offended everybody]]  (linear)   = ∃x . ∀y . offend(x,y)=1   : t\n[[Somebody offended everybody]]  (inverse)  = ∀y . ∃x . offend(x,y)=1   : t\n```\n\nThis is the decisive argument for movement: it generates inverse scope, which the\nflexible-types approach cannot.\n\n```ex {#scope}\nSomebody offended everybody.\nSome publisher offended every linguist.\n```\n\n## 7.5.3 Quantifiers that bind pronouns\n\nMovement also lets a quantifier **bind a pronoun**. When the raised subject leaves a\ntrace and a pronoun elsewhere carries the **same index**, PA abstracts over both at\nonce, so the pronoun is read as a bound variable. *Every publisher offended himself*\n(@bound) is *[every publisher] 1 [t₁ offended himself₁]*:\n\n```deriv\n[[t1 offended himself1]]      = offend(x,x)=1            : t\n[[1 [t1 offended himself1]]]  = λx . offend(x,x)=1       : <e,t>   (PA)\n[[Every publisher … himself]] = ∀x[publisher(x)=1 → offend(x,x)=1]   : t\n```\n\n```ex {#bound}\nEvery publisher offended himself.\n```\n\n> **Beyond this chapter.** Antecedent-contained deletion (§7.5.2) needs an ellipsis\n> resolution mechanism we do not model here; it is discussed in the reading only.\n"
+        }
+      }
+    },
+    {
+      "key": "hk9-pronouns",
+      "title": "Bound & Referential Pronouns (§9.1–9.2)",
+      "content": {
+        "compose": 1,
+        "id": "hk9-pronouns",
+        "title": "Bound & Referential Pronouns (§9.1–9.2)",
+        "subtitle": "Heim & Kratzer — pronouns as variables, and the co-reference vs. binding contrast",
+        "notation": "hk",
+        "domain": {
+          "multiLetterNames": true,
+          "constants": {
+            "e": "j b x1 x2"
+          },
+          "variables": {
+            "e": "x y z",
+            "et": "f g P Q X Y",
+            "t": "p q"
+          }
+        },
+        "lexicon": [
+          {
+            "words": [
+              "John"
+            ],
+            "denotation": "j"
+          },
+          {
+            "words": [
+              "Bill"
+            ],
+            "denotation": "b"
+          },
+          {
+            "words": [
+              "woman"
+            ],
+            "denotation": "Lx.woman(x)"
+          },
+          {
+            "words": [
+              "man"
+            ],
+            "denotation": "Lx.man(x)"
+          },
+          {
+            "words": [
+              "smokes",
+              "smoke"
+            ],
+            "denotation": "Lx.smoke(x)"
+          },
+          {
+            "words": [
+              "left",
+              "leave"
+            ],
+            "denotation": "Lx.leave(x)"
+          },
+          {
+            "words": [
+              "blamed",
+              "blame"
+            ],
+            "denotation": "Ly.Lx.blame(x,y)"
+          },
+          {
+            "words": [
+              "likes",
+              "like"
+            ],
+            "denotation": "Ly.Lx.like(x,y)"
+          },
+          {
+            "words": [
+              "is"
+            ],
+            "denotation": "LX.X"
+          },
+          {
+            "words": [
+              "she1",
+              "he1",
+              "him1",
+              "his1",
+              "himself1",
+              "herself1",
+              "her1"
+            ],
+            "denotation": "x1"
+          },
+          {
+            "words": [
+              "she2",
+              "he2",
+              "him2",
+              "his2",
+              "himself2",
+              "herself2",
+              "her2"
+            ],
+            "denotation": "x2"
+          },
+          {
+            "words": [
+              "every",
+              "Every"
+            ],
+            "denotation": "Lf.Lg.Ax[f(x) -> g(x)]"
+          },
+          {
+            "words": [
+              "no",
+              "No"
+            ],
+            "denotation": "Lf.Lg.~Ex[f(x) ∧ g(x)]"
+          }
+        ],
+        "rules": {
+          "composition": {
+            "functionApplication": true,
+            "nonBranchingNodes": true,
+            "predicateAbstraction": true
+          },
+          "quantifierRaising": true
+        },
+        "exercises": [
+          {
+            "title": "A. Referential pronouns as free variables (§9.1)",
+            "instructions": "A pronoun she₁ denotes g(1) — the individual the assignment maps its index to. With a FREE index, the denotation is an OPEN term (a free variable x₁ = g(1)), made definite only by the utterance context.",
+            "items": [
+              {
+                "sentence": "She smokes.",
+                "tree": "[.S [.DP she1 ] [.VP smokes ] ]",
+                "targets": [
+                  "smoke(x1)"
+                ],
+                "reading": {
+                  "section": "9.1"
+                }
+              },
+              {
+                "sentence": "He left.",
+                "tree": "[.S [.DP he1 ] [.VP left ] ]",
+                "targets": [
+                  "leave(x1)"
+                ],
+                "reading": {
+                  "section": "9.1"
+                }
+              },
+              {
+                "sentence": "John likes her.",
+                "tree": "[.S [.DP John ] [.VP [.V likes ] [.DP her2 ] ] ]",
+                "targets": [
+                  "like(j,x2)"
+                ],
+                "reading": {
+                  "section": "9.1"
+                }
+              }
+            ]
+          },
+          {
+            "title": "B. Co-reference: a free pronoun with a name (§9.2)",
+            "instructions": "On the CO-REFERENCE LF, the reflexive is just a free pronoun himself₁; with no movement, the denotation is the open term blame(j,x₁), true iff John blamed g(1). The context maps 1 to John.",
+            "items": [
+              {
+                "sentence": "John blamed himself. (co-reference LF)",
+                "tree": "[.S [.DP John ] [.VP [.V blamed ] [.DP himself1 ] ] ]",
+                "targets": [
+                  "blame(j,x1)"
+                ],
+                "reading": {
+                  "section": "9.2"
+                }
+              }
+            ]
+          },
+          {
+            "title": "C. Binding: movement + Predicate Abstraction (§9.2)",
+            "instructions": "On the BINDING LF, the antecedent raises, leaving a trace co-indexed with the pronoun; PA binds both. The denotation is the CLOSED term blame(j,j) — no dependence on the assignment. A quantifier antecedent allows ONLY this LF.",
+            "items": [
+              {
+                "sentence": "John blamed himself. (binding LF)",
+                "tree": "[.S [.DP John ] [.LP 1 [.S [.DP t1 ] [.VP [.V blamed ] [.DP himself1 ] ] ] ] ]",
+                "targets": [
+                  "blame(j,j)"
+                ],
+                "reading": {
+                  "section": "9.2"
+                }
+              },
+              {
+                "sentence": "Every woman blamed herself.",
+                "tree": "[.S [.DP [.D every ] [.NP woman ] ] [.LP 1 [.S [.DP t1 ] [.VP [.V blamed ] [.DP herself1 ] ] ] ] ]",
+                "targets": [
+                  "∀x[woman(x) → blame(x,x)]"
+                ],
+                "reading": {
+                  "section": "9.2"
+                }
+              },
+              {
+                "sentence": "No man likes himself.",
+                "tree": "[.S [.DP [.D no ] [.NP man ] ] [.LP 1 [.S [.DP t1 ] [.VP [.V likes ] [.DP himself1 ] ] ] ] ]",
+                "targets": [
+                  "¬∃x[man(x) ∧ like(x,x)]"
+                ],
+                "reading": {
+                  "section": "9.2"
+                }
+              }
+            ]
+          }
+        ],
+        "reading": {
+          "format": "lingdown",
+          "markdown": "# Chapter 9 · Bound and Referential Pronouns\n\nA pronoun gets its value in one of two ways. A **referential** pronoun (deictic or\nanaphoric to a referring antecedent) picks up an individual from the context. A\n**bound** pronoun is a variable bound by a quantifier. Both fall out of one\nmechanism: pronouns are variables, interpreted relative to an **assignment** `g`.\n\n## 9.1 Referential pronouns as free variables\n\nAn indexed pronoun `she_i` denotes, relative to `g`, the individual `g(i)`. When the\nindex is **free** — not bound by anything in the sentence — the denotation depends\nentirely on `g`, which the utterance context supplies. So *She smokes* (@ref) has the\n**open** denotation `smoke(g(1))=1`: relative to an assignment mapping 1 to some\nsalient woman, it is true iff that woman smokes.\n\n```deriv\n[[she1]]        = g(1)            : e\n[[She smokes]]  = smoke(g(1))=1   : t\n```\n\nWriting `x` for `g(1)`, the value is the open term `smoke(x)=1` — a proposition with\na free variable, made definite only once the context fixes `g`.\n\n```ex {#ref}\nShe smokes.\nHe left.\n```\n\n## 9.2 Co-reference or binding?\n\nNow consider *John blamed himself* (@cb). There are **two** LFs that yield the same\ntruth conditions, and the difference matters.\n\n**Co-reference.** *himself* is a referential pronoun `himself_1` whose index the\ncontext maps to John. No movement; the denotation is the open term `blame(j,g(1))=1`,\nwhich is true (given `g(1)=j`) iff John blamed John.\n\n```deriv\n[[John blamed himself1]]   = blame(j,g(1))=1    : t      (co-reference: g(1)=j)\n```\n\n**Binding.** *John* raises, leaving a trace co-indexed with the pronoun; Predicate\nAbstraction binds both. The denotation is the **closed** term `blame(j,j)=1`, with no\ndependence on `g`.\n\n```deriv\n[[1 [t1 blamed himself1]]]   = λx . blame(x,x)=1    : <e,t>   (PA)\n[[John 1 [t1 blamed himself1]]] = blame(j,j)=1      : t       (binding)\n```\n\nFor a **name** antecedent the two LFs are truth-conditionally equivalent, so either\nis available. But a **quantifier** cannot co-refer — it denotes no individual — so\n*Every woman blamed herself* (@cb) has **only** the binding LF, giving the bound\nreading `∀x[woman(x)=1 → blame(x,x)=1]`. This asymmetry is the diagnostic for\nbinding.\n\n```deriv\n[[Every woman blamed herself]]  = ∀x[woman(x)=1 → blame(x,x)=1]    : t\n```\n\n```ex {#cb}\nJohn blamed himself.\nEvery woman blamed herself.\n```\n\n> **Beyond this chapter (§9.3).** When elided material contains a pronoun, the\n> co-reference/binding distinction resurfaces as the **strict/sloppy** ambiguity of\n> VP-ellipsis (*John blamed himself, and Bill did too*). Resolving ellipsis needs an\n> LF-identity mechanism we do not model; it is discussed in the reading only.\n"
+        }
+      }
+    },
+    {
+      "key": "hk12-intensions",
+      "title": "First Steps Towards an Intensional Semantics (§12.1–12.3)",
+      "content": {
+        "compose": 1,
+        "id": "hk12-intensions",
+        "title": "First Steps Towards an Intensional Semantics (§12.1–12.3)",
+        "subtitle": "Heim & Kratzer — opacity, intensions, and Intensional Functional Application",
+        "notation": "hk",
+        "domain": {
+          "multiLetterNames": true,
+          "constants": {
+            "e": "m jn d",
+            "s": "w0"
+          },
+          "variables": {
+            "e": "x y z",
+            "s": "w' w''",
+            "st": "p q",
+            "et": "P Q X Y"
+          }
+        },
+        "lexicon": [
+          {
+            "words": [
+              "Mary"
+            ],
+            "denotation": "m"
+          },
+          {
+            "words": [
+              "Jan"
+            ],
+            "denotation": "jn"
+          },
+          {
+            "words": [
+              "Dick"
+            ],
+            "denotation": "d"
+          },
+          {
+            "words": [
+              "is"
+            ],
+            "denotation": "LX.X"
+          },
+          {
+            "words": [
+              "loyal"
+            ],
+            "denotation": "Lx.loyal(w0,x)"
+          },
+          {
+            "words": [
+              "deceitful"
+            ],
+            "denotation": "Lx.deceitful(w0,x)"
+          },
+          {
+            "words": [
+              "happy"
+            ],
+            "denotation": "Lx.happy(w0,x)"
+          },
+          {
+            "words": [
+              "believes",
+              "believe"
+            ],
+            "denotation": "Lp.Lx.Aw'[dox(w0,x,w') -> p(w')]",
+            "displayAs": "believes"
+          },
+          {
+            "words": [
+              "thinks",
+              "think"
+            ],
+            "denotation": "Lp.Lx.Aw'[think(w0,x,w') -> p(w')]",
+            "displayAs": "thinks"
+          },
+          {
+            "words": [
+              "hopes",
+              "hope"
+            ],
+            "denotation": "Lp.Lx.Aw'[hope(w0,x,w') -> p(w')]",
+            "displayAs": "hopes"
+          }
+        ],
+        "rules": {
+          "composition": {
+            "functionApplication": true,
+            "nonBranchingNodes": true,
+            "intensionalFunctionApplication": true
+          }
+        },
+        "exercises": [
+          {
+            "title": "A. Extensional clauses (FA) — §12.1",
+            "instructions": "Each embedded sentence is, by itself, extensional: it denotes a truth value (type t) at the evaluation world w. Compose by Function Application. Predicates carry the world: ⟦loyal⟧^w = λx.loyal(w,x).",
+            "items": [
+              {
+                "sentence": "Jan is loyal.",
+                "tree": "[.S [.DP Jan ] [.VP [.V is ] [.AP loyal ] ] ]",
+                "targets": [
+                  "loyal(w0,jn)"
+                ],
+                "reading": {
+                  "section": "12.1"
+                }
+              },
+              {
+                "sentence": "Dick is deceitful.",
+                "tree": "[.S [.DP Dick ] [.VP [.V is ] [.AP deceitful ] ] ]",
+                "targets": [
+                  "deceitful(w0,d)"
+                ],
+                "reading": {
+                  "section": "12.1"
+                }
+              }
+            ]
+          },
+          {
+            "title": "B. Attitude reports via IFA — §12.3",
+            "instructions": "An attitude verb wants a PROPOSITION ⟨s,t⟩, but the embedded clause supplies only a truth value t — FA is stuck. Intensional Functional Application (IFA) feeds the verb the clause's INTENSION λw'.⟦clause⟧^w'. The embedded clause is then evaluated at the belief-worlds w'.",
+            "items": [
+              {
+                "sentence": "Mary believes Jan is loyal.",
+                "tree": "[.S [.DP Mary ] [.VP [.V believes ] [.S [.DP Jan ] [.VP [.V is ] [.AP loyal ] ] ] ] ]",
+                "targets": [
+                  "∀w'[dox(w0,m,w') → loyal(w',jn)]"
+                ],
+                "reading": {
+                  "section": "12.3"
+                }
+              },
+              {
+                "sentence": "Mary believes Dick is deceitful.",
+                "tree": "[.S [.DP Mary ] [.VP [.V believes ] [.S [.DP Dick ] [.VP [.V is ] [.AP deceitful ] ] ] ] ]",
+                "targets": [
+                  "∀w'[dox(w0,m,w') → deceitful(w',d)]"
+                ],
+                "reading": {
+                  "section": "12.3"
+                }
+              },
+              {
+                "sentence": "Mary thinks Jan is happy.",
+                "tree": "[.S [.DP Mary ] [.VP [.V thinks ] [.S [.DP Jan ] [.VP [.V is ] [.AP happy ] ] ] ] ]",
+                "targets": [
+                  "∀w'[think(w0,m,w') → happy(w',jn)]"
+                ],
+                "reading": {
+                  "section": "12.3"
+                }
+              }
+            ]
+          },
+          {
+            "title": "C. Other attitude verbs — §12.3",
+            "instructions": "The same IFA mechanism handles every attitude verb; only the accessibility relation changes (belief, thought, hope). Each quantifies over the worlds compatible with the subject's attitude in w.",
+            "items": [
+              {
+                "sentence": "Mary hopes Jan is happy.",
+                "tree": "[.S [.DP Mary ] [.VP [.V hopes ] [.S [.DP Jan ] [.VP [.V is ] [.AP happy ] ] ] ] ]",
+                "targets": [
+                  "∀w'[hope(w0,m,w') → happy(w',jn)]"
+                ],
+                "reading": {
+                  "section": "12.3"
+                }
+              },
+              {
+                "sentence": "Dick believes Mary is happy.",
+                "tree": "[.S [.DP Dick ] [.VP [.V believes ] [.S [.DP Mary ] [.VP [.V is ] [.AP happy ] ] ] ] ]",
+                "targets": [
+                  "∀w'[dox(w0,d,w') → happy(w',m)]"
+                ],
+                "reading": {
+                  "section": "12.3"
+                }
+              }
+            ]
+          }
+        ],
+        "reading": {
+          "format": "lingdown",
+          "markdown": "# Chapter 12 · First Steps Towards an Intensional Semantics\n\nEverything so far has been **extensional**: a node's denotation is its extension —\nan individual, a truth value, a set. This chapter shows where that breaks down, and\ntakes the first step into **intensions**, relativising interpretation to a possible\nworld `w`. We write `⟦α⟧^w` for the extension of `α` **at `w`**.\n\n## 12.1 Where the extensional semantics breaks down\n\nA core assumption has been that the denotation of a complex node depends only on the\n**extensions** of its parts — so two parts with the same extension are\ninterchangeable. That assumption fails inside *believe*. Take H&K's pair (@break):\n\n```ex {#break}\nMary believes Jan is loyal.\nMary believes Dick is deceitful.\n```\n\nSuppose in the actual world Jan is loyal and Dick is deceitful, so `⟦Jan is\nloyal⟧^w = ⟦Dick is deceitful⟧^w = 1` — the two embedded sentences have the **same\nextension**. Extensional FA would then predict the two belief reports have the same\ntruth value. But Mary can believe one without the other: *believe* creates a\n**non-extensional** (opaque) context. What the verb cares about is not the embedded\nclause's truth value but **which worlds it is true in** — its *intension*.\n\n## 12.2 Intensions\n\nThe **intension** of `α` is the function from worlds to its extension at each\nworld: `λw . ⟦α⟧^w`. For a sentence, that is a **proposition** — type `⟨s,t⟩`, a\nfunction from worlds (type `s`) to truth values. The extension stays world-relative,\nso every predicate now carries the evaluation world; in our metalanguage we write it\nas an argument, `loyal(w,x)`, the formalisation of `⟦loyal⟧^w = λx . x is loyal in w`.\n\n```deriv\n[[Jan is loyal]]^w   = loyal(w,jn)=1            : t\n(its intension)      = λw' . loyal(w',jn)=1     : <s,t>\n```\n\n## 12.3 An intensional semantics\n\n**Attitude verbs** denote functions on propositions. Following Hintikka, *believe*\nquantifies over the worlds **compatible with what the subject believes** in `w`\n(the subject's *doxastic alternatives*, `Dox`):\n\n```deriv\n[[believes]]^w = λp . λx . ∀w'[ x's belief-worlds in w include w' → p(w')=1 ]   : <<s,t>,<e,t>>\n```\n\nwritten `λp . λx . ∀w'[Dox(w)(x)(w') → p(w')=1]`. The verb wants a **proposition**\n`⟨s,t⟩`, but the embedded clause supplies only a truth value `⟨t⟩` — so FA is stuck.\nH&K add **one** composition rule to bridge the gap:\n\n**Intensional Functional Application (IFA).** If α is a branching node with daughters\nβ and γ, and `⟦β⟧^w` is a function whose domain contains `λw' . ⟦γ⟧^w'`, then\n`⟦α⟧^w = ⟦β⟧^w(λw' . ⟦γ⟧^w')`.\n\nIFA feeds the verb the **intension** of its complement — formed on the spot by\nabstracting the embedded clause over the world `w'`. Note that this is a *composition\nrule*, not an operator in the tree: H&K deliberately avoid Montague's `^`/`˅` and\nbuild intension-formation into the rule itself. Applying it to *Mary believes Jan is\nloyal* (@break):\n\n```deriv\n[[believes [Jan is loyal]]]^w  = [[believes]]^w(λw' . loyal(w',jn)=1)            (IFA)\n[[Mary believes Jan is loyal]]^w = ∀w'[Dox(w)(m)(w') → loyal(w',jn)=1]           : t\n```\n\nThe report is true at `w` iff Jan is loyal in **every** world compatible with what\nMary believes in `w`. Because the embedded clause is now evaluated at the belief\nworlds `w'`, swapping in *Dick is deceitful* — true at the actual `w` but not\nnecessarily at Mary's belief worlds — gives a **different** result. The opacity is\ncaptured.\n\n```deriv\n[[Mary believes Dick is deceitful]]^w = ∀w'[Dox(w)(m)(w') → deceitful(w',d)=1]   : t\n```\n\n> **Notation note.** H&K write the world as a **superscript on the bracket**,\n> `⟦α⟧^w`, and keep the metalanguage extensional. COMPOSE threads the same world as\n> an explicit parameter `w` inside predicates (`loyal(w,x)` for `⟦loyal⟧^w(x)`), and\n> composes intensions with IFA — H&K's actual rule, *not* Montague's `^`/`˅`\n> operators. The matrix world prints as `w`, shifted worlds as `w'`.\n\n> **Beyond these first steps (§12.4).** A full intensional semantics also relativises\n> to **times** and handles intensional transitives (*seek*), de re/de dicto, and more;\n> H&K take only the first step here, and so do we.\n"
+        }
+      }
+    }
+  ]
+}

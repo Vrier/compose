@@ -1,0 +1,108 @@
+{
+  "compose": 1,
+  "id": "ch13-haveto",
+  "title": "Contextual Modal Base & Presupposition: have to (§13.5.1)",
+  "subtitle": "A context-supplied accessibility relation R, with a ∂-presupposition that R is deontic (the book's eq. 55 + the ∂ extension it suggests)",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b"
+    },
+    "variables": {
+      "e": "x y z",
+      "s": "w0 w w' w''",
+      "<s,t>": "p q",
+      "<s,<s,t>>": "R",
+      "et": "P Q"
+    }
+  },
+  "lexicon": [
+    { "words": ["Frodo"], "denotation": "f" },
+    { "words": ["Sam"], "denotation": "s" },
+    { "words": ["Gandalf"], "denotation": "g" },
+    { "words": ["Sauron"], "denotation": "n" },
+    { "words": ["Aragorn"], "denotation": "a" },
+    { "words": ["Boromir"], "denotation": "b" },
+    { "words": ["rides", "ride"], "denotation": "Lx.ride(w0,x)" },
+    { "words": ["sings", "sing"], "denotation": "Lx.sing(w0,x)" },
+    { "words": ["rests", "rest"], "denotation": "Lx.rest(w0,x)" },
+    { "words": ["guards", "guard"], "denotation": "Ly.Lx.guard(w0,x,y)" },
+    { "words": ["gate"], "denotation": "Lx.gate(w0,x)" },
+    { "words": ["the"], "denotation": "LX.Ix.X(x)" },
+    { "words": ["have_to_bare", "must_bare"], "denotation": "Lp.Aw'[R(w0)(w') -> p(w')]" },
+    { "words": ["have_to", "has_to", "must"], "denotation": "Lp.[∂(deontic(R)) & Aw'[R(w0)(w') -> p(w')]]" },
+    { "words": ["allowed_to", "may"], "denotation": "Lp.[∂(deontic(R)) & Ew'[R(w0)(w') & p(w')]]" }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": false,
+      "predicateAbstraction": true,
+      "intensionalFunctionApplication": true
+    },
+    "quantifierRaising": true
+  },
+  "exercises": [
+    {
+      "title": "A. have to — a contextual modal base (book eq. 55)",
+      "instructions": "The modal verb have to is unambiguously deontic in flavor, but WHICH rules are in force varies with context (the rules of the country, the rules of the house, …). The book models this with a free variable R of type ⟨s,⟨s,t⟩⟩ whose value the context supplies — a relation between worlds: have_to_bare ↝ λp.∀w′[R(ẇ)(w′) → p(w′)]. R(ẇ)(w′) says w′ conforms to the contextually relevant rules in force at the evaluation world ẇ. The modal takes the intension of its clausal sister by IFA, exactly like necessarily.",
+      "items": [
+        {
+          "sentence": "Frodo has to ride. (context-supplied rules, no presupposition)",
+          "tree": "[.ModP [.Mod have_to_bare ] [.S [.DP Frodo ] [.VP rides ] ] ]",
+          "targets": [
+            "∀w'[R(w0)(w') → ride(w',f)]"
+          ]
+        },
+        {
+          "sentence": "Gandalf has to guard the gate. (context-supplied rules)",
+          "tree": "[.ModP [.Mod have_to_bare ] [.S [.DP Gandalf ] [.VP [.V guards ] [.DP [.D the ] [.NP gate ] ] ] ] ]",
+          "targets": [
+            "∀w'[R(w0)(w') → guard(w',g,ιz[gate(w',z)])]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "B. Presupposing that R is deontic (the ∂ extension)",
+      "instructions": "The bare entry in A places no constraints on R at all — context could in principle supply any relation. The book notes that a presupposition that R is of a DEONTIC nature could be added in a system that supports the ∂ operator. Now that we have ∂, we can: have_to ↝ λp.[∂(deontic(R)) ∧ ∀w′[R(ẇ)(w′) → p(w′)]]. The ∂(deontic(R)) conjunct presupposes (does not assert) that the contextual relation is a genuinely deontic one. Compare the result with A: the only difference is the presuppositional ∂ conjunct.",
+      "items": [
+        {
+          "sentence": "Frodo has to ride. (presupposing R is deontic)",
+          "tree": "[.ModP [.Mod have_to ] [.S [.DP Frodo ] [.VP rides ] ] ]",
+          "targets": [
+            "∂(deontic(R)) ∧ ∀w'[R(w0)(w') → ride(w',f)]"
+          ]
+        },
+        {
+          "sentence": "Gandalf has to guard the gate. (presupposing R is deontic)",
+          "tree": "[.ModP [.Mod have_to ] [.S [.DP Gandalf ] [.VP [.V guards ] [.DP [.D the ] [.NP gate ] ] ] ] ]",
+          "targets": [
+            "∂(deontic(R)) ∧ ∀w'[R(w0)(w') → guard(w',g,ιz[gate(w',z)])]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "C. allowed to — the existential (deontic) dual",
+      "instructions": "Deontic possibility (permission) is the existential dual of deontic necessity (obligation), over the same contextual modal base R: allowed_to ↝ λp.[∂(deontic(R)) ∧ ∃w′[R(ẇ)(w′) ∧ p(w′)]]. The presupposition is identical; the force flips from ∀…→ to ∃…∧. Note that have to and allowed to relate as duals exactly as necessarily and possibly do.",
+      "items": [
+        {
+          "sentence": "Frodo is allowed to ride.",
+          "tree": "[.ModP [.Mod allowed_to ] [.S [.DP Frodo ] [.VP rides ] ] ]",
+          "targets": [
+            "∂(deontic(R)) ∧ ∃w'[R(w0)(w') ∧ ride(w',f)]"
+          ]
+        },
+        {
+          "sentence": "Sam is allowed to guard the gate.",
+          "tree": "[.ModP [.Mod allowed_to ] [.S [.DP Sam ] [.VP [.V guards ] [.DP [.D the ] [.NP gate ] ] ] ] ]",
+          "targets": [
+            "∂(deontic(R)) ∧ ∃w'[R(w0)(w') ∧ guard(w',s,ιz[gate(w',z)])]"
+          ]
+        }
+      ]
+    }
+  ]
+}

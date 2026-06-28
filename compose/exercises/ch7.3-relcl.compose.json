@@ -1,0 +1,352 @@
+{
+  "compose": 1,
+  "id": "ch7-relcl",
+  "title": "Relative Clauses (§7.3)",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w bi st pi tm el sr mr x1 x2"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "X Y Z P Q R F G H",
+      "t": "p q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "is",
+        "are"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "a",
+        "an"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "not"
+      ],
+      "denotation": "LP.Lx.~P(x)"
+    },
+    {
+      "words": [
+        "doesnt",
+        "does-not"
+      ],
+      "denotation": "LP.Lx.~P(x)"
+    },
+    {
+      "words": [
+        "who"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "wizard"
+      ],
+      "denotation": "Lx.wizard(x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(x)"
+    },
+    {
+      "words": [
+        "ranger"
+      ],
+      "denotation": "Lx.ranger(x)"
+    },
+    {
+      "words": [
+        "human"
+      ],
+      "denotation": "Lx.human(x)"
+    },
+    {
+      "words": [
+        "creature"
+      ],
+      "denotation": "Lx.creature(x)"
+    },
+    {
+      "words": [
+        "brave"
+      ],
+      "denotation": "Lx.brave(x)"
+    },
+    {
+      "words": [
+        "wise"
+      ],
+      "denotation": "Lx.wise(x)"
+    },
+    {
+      "words": [
+        "drinks",
+        "drink"
+      ],
+      "denotation": "Lx.drink(x)"
+    },
+    {
+      "words": [
+        "sings",
+        "sing"
+      ],
+      "denotation": "Lx.sing(x)"
+    },
+    {
+      "words": [
+        "fears",
+        "fear"
+      ],
+      "denotation": "Ly.Lx.fear(x,y)"
+    },
+    {
+      "words": [
+        "loves",
+        "love"
+      ],
+      "denotation": "Ly.Lx.love(x,y)"
+    },
+    {
+      "words": [
+        "trusts",
+        "trust"
+      ],
+      "denotation": "Ly.Lx.trust(x,y)"
+    },
+    {
+      "words": [
+        "visits",
+        "visit"
+      ],
+      "denotation": "Ly.Lx.visit(x,y)"
+    },
+    {
+      "words": [
+        "with"
+      ],
+      "denotation": "Ly.Lx.with(x,y)"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": true,
+      "predicateAbstraction": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Subject gap relative clauses",
+      "instructions": "A relative clause with a subject gap: \"who drinks\" is λx.drink(x), combining with the head noun by PM. Items 2 and 3 add copular predicates and negation.",
+      "items": [
+        {
+          "sentence": "wizard who drinks.",
+          "tree": "[.NP [.NP wizard ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP drinks ] ] ] ] ]",
+          "reading": {
+            "section": "7.3.1"
+          }
+        },
+        {
+          "sentence": "hobbit who is brave.",
+          "tree": "[.NP [.NP hobbit ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.V is ] [.AP brave ] ] ] ] ] ]",
+          "reading": {
+            "section": "7.3.1"
+          }
+        },
+        {
+          "sentence": "wizard who doesn't fear Sauron.",
+          "tree": "[.NP [.NP wizard ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.Neg doesnt ] [.VP [.V fears ] [.DP Sauron ] ] ] ] ] ] ]",
+          "reading": {
+            "section": "7.3.1"
+          }
+        }
+      ]
+    },
+    {
+      "title": "B. Object gap relative clauses",
+      "instructions": "A relative clause with an object gap uses Predicate Abstraction over the trace. Items 2 and 3 fold in negation and a prepositional phrase.",
+      "items": [
+        {
+          "sentence": "hobbit who Gandalf loves.",
+          "tree": "[.NP [.NP hobbit ] [.CP [.C who ] [.LP 1 [.S [.DP Gandalf ] [.VP [.V loves ] [.DP t1 ] ] ] ] ] ]",
+          "reading": {
+            "section": "7.3.2"
+          }
+        },
+        {
+          "sentence": "human who Strider doesn't trust.",
+          "tree": "[.NP [.NP human ] [.CP [.C who ] [.LP 1 [.S [.DP Strider ] [.VP [.Neg doesnt ] [.VP [.V trusts ] [.DP t1 ] ] ] ] ] ] ]",
+          "reading": {
+            "section": "7.3.2"
+          }
+        },
+        {
+          "sentence": "ranger who Frodo is with.",
+          "tree": "[.NP [.NP ranger ] [.CP [.C who ] [.LP 1 [.S [.DP Frodo ] [.VP [.V is ] [.PP [.P with ] [.DP t1 ] ] ] ] ] ] ]",
+          "reading": {
+            "section": "7.3.2"
+          }
+        }
+      ]
+    },
+    {
+      "title": "C. Full sentences with relative clauses",
+      "instructions": "A relative clause restricts the domain of a quantifier or identifies an individual via the copula. Items 2 and 3 introduce quantifiers.",
+      "items": [
+        {
+          "sentence": "Gandalf is a wizard who is wise.",
+          "tree": "[.S [.DP Gandalf ] [.VP [.V is ] [.NP [.D a ] [.NP [.NP wizard ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.V is ] [.AP wise ] ] ] ] ] ] ] ] ]",
+          "reading": {
+            "section": "7.3.2"
+          }
+        },
+        {
+          "sentence": "Every hobbit who drinks sings.",
+          "tree": "[.S [.DP [.D every ] [.NP [.NP hobbit ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP drinks ] ] ] ] ] ] [.VP sings ] ]",
+          "reading": {
+            "section": "7.3.2"
+          }
+        },
+        {
+          "sentence": "Some wise wizard who fears Sauron visits Saruman.",
+          "tree": "[.S [.DP [.D some ] [.NP [.AP wise ] [.NP [.NP wizard ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.V fears ] [.DP Sauron ] ] ] ] ] ] ] ] [.VP [.V visits ] [.DP Saruman ] ] ]",
+          "reading": {
+            "section": "7.3.2"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": {
+    "format": "lingdown",
+    "markdown": "# Chapter 7 · Relative Clauses\n\nA relative clause like *who drinks* restricts the set of individuals denoted by the head noun. Compositionally, the clause must produce a predicate of type ⟨e,t⟩ so it can combine with the noun by **Predicate Modification**. The mechanism is **Predicate Abstraction**, which turns a clause containing a gap into a lambda-abstract.\n\n## 7.3 Predicate Abstraction\n\nA relative clause leaves a **trace** — a silent pronoun — in the gap position. The trace is co-indexed with the relative pronoun. A **λ-phrase node** (LP) abstracts over the index, turning the full clause denotation into a function:\n\n**Predicate Abstraction (PA).** ⟦[LP n φ]⟧ = λx. ⟦φ⟧ where every free occurrence of trace t_n in φ is replaced by x.\n\nThe relative pronoun *who* is an identity function λX.X — it passes the LP denotation up unchanged.\n\n## 7.3.1 Subject gap relative clauses\n\nWhen the trace is in subject position, the S-internal predicate is already a one-place property once PA is applied. The resulting CP combines with the head noun by PM.\n\n```ex {#subj-gap}\nwizard who drinks\nhobbit who is brave\nwizard who doesn't fear Sauron\n```\n\n```deriv\n[[drinks]]               = lambda x.drink(x)                        : <e,t>\n[[LP 1 [S t1 drinks]]]   = lambda x.drink(x)                        : <e,t>   (PA)\n[[who]]                  = lambda X.X                                : <<e,t>,<e,t>>\n[[who drinks]]           = lambda x.drink(x)                        : <e,t>\n[[wizard]]               = lambda x.wizard(x)                       : <e,t>\n[[wizard who drinks]]    = lambda x.wizard(x) /\\ drink(x)           : <e,t>   (PM)\n```\n\n## 7.3.2 Object gap relative clauses\n\nWhen the trace is in **object position**, the clause contains a complete subject and a VP with the trace filling the object slot. PA abstracts over the trace index, producing a predicate that identifies which individuals stand in the relevant relation to the subject.\n\n```ex {#obj-gap}\nhobbit who Gandalf loves\nhuman who Strider doesn't trust\nranger who Frodo is with\n```\n\n```deriv\n[[loves]]                         = lambda y.lambda x.love(x,y)          : <e,<e,t>>\n[[loves t1]]                      = lambda x.love(x,t_1)                 : <e,t>\n[[Gandalf loves t1]]              = love(g,t_1)                          : t\n[[LP 1 [S Gandalf loves t1]]]     = lambda x.love(g,x)                   : <e,t>   (PA)\n[[who [LP 1 ...]]]                = lambda x.love(g,x)                   : <e,t>\n[[hobbit]]                        = lambda x.hobbit(x)                   : <e,t>\n[[hobbit who Gandalf loves]]      = lambda x.hobbit(x) /\\ love(g,x)      : <e,t>   (PM)\n```\n\n```tree\n[NP{lambda x.hobbit(x) /\\ love(g,x)}\n  [NP{lambda x.hobbit(x)} hobbit]\n  [CP{lambda x.love(g,x)}\n    [C{lambda X.X} who]\n    [LP{lambda x.love(g,x)} 1\n      [S{love(g,t_1)}\n        [DP{g} Gandalf]\n        [VP{lambda x.love(x,t_1)}\n          [V{lambda y.lambda x.love(x,y)} loves]\n          [DP{t_1} t_1]]]]]]\n```\n\nThe full-sentence exercises in Group C embed relative clauses inside DPs. A restricted quantifier like *every hobbit who drinks* has the restrictor λx.[hobbit(x) ∧ drink(x)] built by PM inside the NP, then the determiner *every* applies as usual:\n\n```deriv\n[[hobbit who drinks]]          = lambda x.hobbit(x) /\\ drink(x)                 : <e,t>\n[[every hobbit who drinks]]    = lambda Y.forall x[(hobbit(x) /\\ drink(x)) -> Y(x)] : <<e,t>,t>\n[[every hobbit who drinks sings]] = forall x[(hobbit(x) /\\ drink(x)) -> sing(x)] : t\n```\n"
+  }
+}

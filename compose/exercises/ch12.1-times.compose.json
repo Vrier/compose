@@ -1,0 +1,372 @@
+{
+  "compose": 1,
+  "id": "ch12-tense",
+  "title": "Tense (§12.2.2.4)",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "f s g n a b l m o w",
+      "i": "now dawn dusk noon"
+    },
+    "variables": {
+      "e": "x y z",
+      "i": "t t' t'' t1 t2 t3",
+      "it": "P Q R",
+      "et": "X Y Z",
+      "t": "p q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Legolas"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Gimli"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Galadriel"
+      ],
+      "denotation": "w"
+    },
+    {
+      "words": [
+        "Bilbo"
+      ],
+      "denotation": "bi"
+    },
+    {
+      "words": [
+        "Strider"
+      ],
+      "denotation": "st"
+    },
+    {
+      "words": [
+        "Pippin"
+      ],
+      "denotation": "pi"
+    },
+    {
+      "words": [
+        "Tom"
+      ],
+      "denotation": "tm"
+    },
+    {
+      "words": [
+        "Elrond"
+      ],
+      "denotation": "el"
+    },
+    {
+      "words": [
+        "Saruman"
+      ],
+      "denotation": "sr"
+    },
+    {
+      "words": [
+        "Moria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "now"
+      ],
+      "denotation": "now"
+    },
+    {
+      "words": [
+        "dawn"
+      ],
+      "denotation": "dawn"
+    },
+    {
+      "words": [
+        "dusk"
+      ],
+      "denotation": "dusk"
+    },
+    {
+      "words": [
+        "noon"
+      ],
+      "denotation": "noon"
+    },
+    {
+      "words": [
+        "rides",
+        "ride"
+      ],
+      "denotation": "Lx.Lt.ride(t,x)"
+    },
+    {
+      "words": [
+        "sings",
+        "sing"
+      ],
+      "denotation": "Lx.Lt.sing(t,x)"
+    },
+    {
+      "words": [
+        "rests",
+        "rest"
+      ],
+      "denotation": "Lx.Lt.rest(t,x)"
+    },
+    {
+      "words": [
+        "forges",
+        "forge"
+      ],
+      "denotation": "Ly.Lx.Lt.forge(t,x,y)"
+    },
+    {
+      "words": [
+        "reads",
+        "read"
+      ],
+      "denotation": "Ly.Lx.Lt.read(t,x,y)"
+    },
+    {
+      "words": [
+        "guards",
+        "guard"
+      ],
+      "denotation": "Ly.Lx.Lt.guard(t,x,y)"
+    },
+    {
+      "words": [
+        "sword"
+      ],
+      "denotation": "Lx.sword(x)"
+    },
+    {
+      "words": [
+        "map"
+      ],
+      "denotation": "Lx.map(x)"
+    },
+    {
+      "words": [
+        "gate"
+      ],
+      "denotation": "Lx.gate(x)"
+    },
+    {
+      "words": [
+        "ring"
+      ],
+      "denotation": "Lx.ring(x)"
+    },
+    {
+      "words": [
+        "hobbit"
+      ],
+      "denotation": "Lx.hobbit(x)"
+    },
+    {
+      "words": [
+        "elf"
+      ],
+      "denotation": "Lx.elf(x)"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "LX.Ix.X(x)"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "PFV"
+      ],
+      "denotation": "LP.Lt.Et'[t'⊆t & P(t')]"
+    },
+    {
+      "words": [
+        "PROG"
+      ],
+      "denotation": "LP.Lt.Et'[t⊆t' & P(t')]"
+    },
+    {
+      "words": [
+        "PAST"
+      ],
+      "denotation": "LP.Lt.[t=t1 & ∂(t1<now) & P(t1)]"
+    },
+    {
+      "words": [
+        "PRES"
+      ],
+      "denotation": "LP.Lt.[t=now & P(t)]"
+    },
+    {
+      "words": [
+        "at"
+      ],
+      "denotation": "Lt.t"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true,
+      "predicateModification": true,
+      "predicateAbstraction": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Past tense",
+      "instructions": "PAST takes the AspP (a predicate of times ⟨i,t⟩) and returns another ⟨i,t⟩. Its lexical entry is λPλt.[t=t1 ∧ ∂(t1<now) ∧ P(t1)]. Crucially, the pastness condition t1<now sits under the ∂ (‘presupposing that’) operator: PAST does not assert that the reference time is past, it PRESUPPOSES it — just like a gender feature on a pronoun. (If it were asserted, negation could target it, wrongly making ‘Frodo didn’t forge the sword’ true merely because some non-past time exists.) Apply EC at the TenseP root to bind the open time t.",
+      "items": [
+        {
+          "sentence": "Frodo forged the sword.",
+          "tree": "[.TenseP [.Tense PAST ] [.AspP [.Asp PFV ] [.vP [.DP Frodo ] [.VP [.V forges ] [.DP [.D the ] [.NP sword ] ] ] ] ] ]",
+          "targets": [
+            "∃t[t=t1 ∧ ∂(t1<now) ∧ ∃t'[t'⊆t1 ∧ forge(t',f,ιz[sword(z)])]]"
+          ]
+        },
+        {
+          "sentence": "Gandalf read the map.",
+          "tree": "[.TenseP [.Tense PAST ] [.AspP [.Asp PFV ] [.vP [.DP Gandalf ] [.VP [.V reads ] [.DP [.D the ] [.NP map ] ] ] ] ] ]",
+          "targets": [
+            "∃t[t=t1 ∧ ∂(t1<now) ∧ ∃t'[t'⊆t1 ∧ read(t',g,ιz[map(z)])]]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "B. Present tense",
+      "instructions": "PRES anchors the reference time to the speech time now. With progressive aspect, the event time properly includes now, so the event is in progress at the moment of speech. Close the open time with EC.",
+      "items": [
+        {
+          "sentence": "Frodo is forging the sword.",
+          "tree": "[.TenseP [.Tense PRES ] [.AspP [.Asp PROG ] [.vP [.DP Frodo ] [.VP [.V forges ] [.DP [.D the ] [.NP sword ] ] ] ] ] ]",
+          "targets": [
+            "∃t[t=now ∧ ∃t'[t⊆t' ∧ forge(t',f,ιz[sword(z)])]]"
+          ]
+        },
+        {
+          "sentence": "Gandalf is reading the map.",
+          "tree": "[.TenseP [.Tense PRES ] [.AspP [.Asp PROG ] [.vP [.DP Gandalf ] [.VP [.V reads ] [.DP [.D the ] [.NP map ] ] ] ] ] ]",
+          "targets": [
+            "∃t[t=now ∧ ∃t'[t⊆t' ∧ read(t',g,ιz[map(z)])]]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "C. Temporal modifiers",
+      "instructions": "A modifier \"at dawn\" denotes a time (dawn, type i); \"at\" = λt.t lets it compose. It saturates the TenseP's open time slot directly by Function Application — so the result is already type t and NO Existential Closure is needed. The free variable t1 is identified with the named time.",
+      "items": [
+        {
+          "sentence": "At dawn, Frodo forged the sword.",
+          "tree": "[.TenseP [.TenseP [.Tense PAST ] [.AspP [.Asp PFV ] [.vP [.DP Frodo ] [.VP [.V forges ] [.DP [.D the ] [.NP sword ] ] ] ] ] ] [.PP [.P at ] [.DP dawn ] ] ]",
+          "targets": [
+            "dawn=t1 ∧ ∂(t1<now) ∧ ∃t'[t'⊆t1 ∧ forge(t',f,ιz[sword(z)])]"
+          ]
+        },
+        {
+          "sentence": "At dusk, Gandalf read the map.",
+          "tree": "[.TenseP [.TenseP [.Tense PAST ] [.AspP [.Asp PFV ] [.vP [.DP Gandalf ] [.VP [.V reads ] [.DP [.D the ] [.NP map ] ] ] ] ] ] [.PP [.P at ] [.DP dusk ] ] ]",
+          "targets": [
+            "dusk=t1 ∧ ∂(t1<now) ∧ ∃t'[t'⊆t1 ∧ read(t',g,ιz[map(z)])]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "D. Past progressive (no completion inference)",
+      "instructions": "Swap PFV for PROG under the past tense. PROG ⇝ λPλt.∃t'[t⊆t' ∧ P(t')] makes the reference time t fall INSIDE the event time t', so the event need not have finished by the reference time. With ‘at dawn’ fixing t1, the result is type t (no EC). Compare with C: the perfective there put the event time inside the reference time (completion); here the reference time is inside the event time (in progress) — so this carries no completion inference. (Textbook Exercise 4.)",
+      "items": [
+        {
+          "sentence": "At dawn, Frodo was forging the sword.",
+          "tree": "[.TenseP [.TenseP [.Tense PAST ] [.AspP [.Asp PROG ] [.vP [.DP Frodo ] [.VP [.V forges ] [.DP [.D the ] [.NP sword ] ] ] ] ] ] [.PP [.P at ] [.DP dawn ] ] ]",
+          "targets": [
+            "dawn=t1 ∧ ∂(t1<now) ∧ ∃t'[t1⊆t' ∧ forge(t',f,ιz[sword(z)])]"
+          ]
+        },
+        {
+          "sentence": "At dusk, Gandalf was reading the map.",
+          "tree": "[.TenseP [.TenseP [.Tense PAST ] [.AspP [.Asp PROG ] [.vP [.DP Gandalf ] [.VP [.V reads ] [.DP [.D the ] [.NP map ] ] ] ] ] ] [.PP [.P at ] [.DP dusk ] ] ]",
+          "targets": [
+            "dusk=t1 ∧ ∂(t1<now) ∧ ∃t'[t1⊆t' ∧ read(t',g,ιz[map(z)])]"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "E. Simple present with perfective",
+      "instructions": "The simple present of a dynamic verb combines PRES with PFV. PRES sets t=now; PFV requires an event time t' contained in now. Since the speech time now is treated as a mere instant, the event must fit entirely within an instant — which is why the English simple present is odd for an event happening right now (‘#Frodo forges the sword’ as a play-by-play) and instead gets a habitual reading. Close the open time with EC. (Textbook Exercise 6.)",
+      "items": [
+        {
+          "sentence": "Frodo forges the sword. (simple present)",
+          "tree": "[.TenseP [.Tense PRES ] [.AspP [.Asp PFV ] [.vP [.DP Frodo ] [.VP [.V forges ] [.DP [.D the ] [.NP sword ] ] ] ] ] ]",
+          "targets": [
+            "∃t[t=now ∧ ∃t'[t'⊆t ∧ forge(t',f,ιz[sword(z)])]]"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,275 @@
+{
+  "compose": 1,
+  "id": "hk5-relatives",
+  "title": "Relative Clauses & Predicate Abstraction (§5.1–5.3)",
+  "subtitle": "Heim & Kratzer — traces, variable binding, and the third composition rule",
+  "notation": "hk",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "j m o b"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "f g P Q X Y",
+      "t": "p q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "John"
+      ],
+      "denotation": "j"
+    },
+    {
+      "words": [
+        "Mary"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Joe"
+      ],
+      "denotation": "o"
+    },
+    {
+      "words": [
+        "Bill"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "is",
+        "are"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "a",
+        "an"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "who",
+        "which",
+        "that"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "house"
+      ],
+      "denotation": "Lx.house(x)"
+    },
+    {
+      "words": [
+        "picture"
+      ],
+      "denotation": "Lx.picture(x)"
+    },
+    {
+      "words": [
+        "movie"
+      ],
+      "denotation": "Lx.movie(x)"
+    },
+    {
+      "words": [
+        "man"
+      ],
+      "denotation": "Lx.man(x)"
+    },
+    {
+      "words": [
+        "empty"
+      ],
+      "denotation": "Lx.empty(x)"
+    },
+    {
+      "words": [
+        "available"
+      ],
+      "denotation": "Lx.available(x)"
+    },
+    {
+      "words": [
+        "expensive"
+      ],
+      "denotation": "Lx.expensive(x)"
+    },
+    {
+      "words": [
+        "abandoned"
+      ],
+      "denotation": "Ly.Lx.abandon(x,y)"
+    },
+    {
+      "words": [
+        "saw"
+      ],
+      "denotation": "Ly.Lx.see(x,y)"
+    },
+    {
+      "words": [
+        "likes"
+      ],
+      "denotation": "Ly.Lx.like(x,y)"
+    },
+    {
+      "words": [
+        "bought"
+      ],
+      "denotation": "Ly.Lx.buy(x,y)"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "Lf : Ex[f(x) ∧ Ay[f(y) -> y=x]] . Ix.f(x)",
+      "displayAs": "the"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "Lf.Lg.Ax[f(x) -> g(x)]"
+    },
+    {
+      "words": [
+        "no",
+        "No"
+      ],
+      "denotation": "Lf.Lg.~Ex[f(x) ∧ g(x)]"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "predicateModification": true,
+      "nonBranchingNodes": true,
+      "predicateAbstraction": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Subject-gap relatives (§5.1–5.2)",
+      "instructions": "A relative clause is an intersective modifier of type ⟨e,t⟩, combining with the head noun by Predicate Modification. The trace t₁ denotes a variable; Predicate Abstraction over its index turns the clause into a property. The relative pronoun is vacuous (λX.X).",
+      "items": [
+        {
+          "sentence": "which is empty",
+          "tree": "[.CP [.C which ] [.LP 1 [.S [.DP t1 ] [.VP [.V is ] [.AP empty ] ] ] ] ]",
+          "targets": [
+            "λx.empty(x)"
+          ],
+          "reading": {
+            "section": "5.2"
+          }
+        },
+        {
+          "sentence": "house which is empty",
+          "tree": "[.NP [.NP house ] [.CP [.C which ] [.LP 1 [.S [.DP t1 ] [.VP [.V is ] [.AP empty ] ] ] ] ] ]",
+          "targets": [
+            "λx.house(x) ∧ empty(x)"
+          ],
+          "reading": {
+            "section": "5.2"
+          }
+        },
+        {
+          "sentence": "man who is available",
+          "tree": "[.NP [.NP man ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.V is ] [.AP available ] ] ] ] ] ]",
+          "targets": [
+            "λx.man(x) ∧ available(x)"
+          ],
+          "reading": {
+            "section": "5.2"
+          }
+        }
+      ]
+    },
+    {
+      "title": "B. Object-gap relatives & Predicate Abstraction (§5.2.3)",
+      "instructions": "When the trace is in OBJECT position, the desired value λx. John abandoned x is not the value of any subtree — Predicate Abstraction is essential. PA abstracts over the trace index after the subject and verb have composed around the trace.",
+      "items": [
+        {
+          "sentence": "which John abandoned t",
+          "tree": "[.CP [.C which ] [.LP 1 [.S [.DP John ] [.VP [.V abandoned ] [.DP t1 ] ] ] ] ]",
+          "targets": [
+            "λx.abandon(j,x)"
+          ],
+          "reading": {
+            "section": "5.2.3"
+          }
+        },
+        {
+          "sentence": "picture which John abandoned t",
+          "tree": "[.NP [.NP picture ] [.CP [.C which ] [.LP 1 [.S [.DP John ] [.VP [.V abandoned ] [.DP t1 ] ] ] ] ] ]",
+          "targets": [
+            "λx.picture(x) ∧ abandon(j,x)"
+          ],
+          "reading": {
+            "section": "5.2.3"
+          }
+        },
+        {
+          "sentence": "movie which Mary saw t",
+          "tree": "[.NP [.NP movie ] [.CP [.C which ] [.LP 1 [.S [.DP Mary ] [.VP [.V saw ] [.DP t1 ] ] ] ] ] ]",
+          "targets": [
+            "λx.movie(x) ∧ see(m,x)"
+          ],
+          "reading": {
+            "section": "5.2.3"
+          }
+        }
+      ]
+    },
+    {
+      "title": "C. Relatives in full DPs (§5.1, §5.3)",
+      "instructions": "The modified noun feeds a determiner. With the (Chapter 4's partial function), the uniqueness presupposition is now about the relative-clause-restricted set. With a quantifier, the relative clause restricts the quantifier's domain.",
+      "items": [
+        {
+          "sentence": "The house which is empty is available.",
+          "tree": "[.S [.DP [.D the ] [.NP [.NP house ] [.CP [.C which ] [.LP 1 [.S [.DP t1 ] [.VP [.V is ] [.AP empty ] ] ] ] ] ] ] [.VP [.V is ] [.AP available ] ] ]",
+          "targets": [
+            "∃x[house(x) ∧ empty(x) ∧ ∀y[house(y) ∧ empty(y) → y=x]] : available(ιx.house(x) ∧ empty(x))"
+          ],
+          "reading": {
+            "section": "5.1"
+          }
+        },
+        {
+          "sentence": "Every picture which John abandoned is expensive.",
+          "tree": "[.S [.DP [.D every ] [.NP [.NP picture ] [.CP [.C which ] [.LP 1 [.S [.DP John ] [.VP [.V abandoned ] [.DP t1 ] ] ] ] ] ] ] [.VP [.V is ] [.AP expensive ] ] ]",
+          "targets": [
+            "∀x[picture(x) ∧ abandon(j,x) → expensive(x)]"
+          ],
+          "reading": {
+            "section": "5.3"
+          }
+        },
+        {
+          "sentence": "No movie which Mary saw is expensive.",
+          "tree": "[.S [.DP [.D no ] [.NP [.NP movie ] [.CP [.C which ] [.LP 1 [.S [.DP Mary ] [.VP [.V saw ] [.DP t1 ] ] ] ] ] ] ] [.VP [.V is ] [.AP expensive ] ] ]",
+          "targets": [
+            "¬∃x[movie(x) ∧ see(m,x) ∧ expensive(x)]"
+          ],
+          "reading": {
+            "section": "5.3"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": {
+    "format": "lingdown",
+    "markdown": "# Chapter 5 · Relative Clauses, Variables, and Variable Binding\n\nA restrictive relative clause is **just another intersective modifier**. Following\nQuine, *which is empty* denotes the very same property as the adjective *empty* — a\ncharacteristic function of type `⟨e,t⟩` — and so combines with the head noun by\n**Predicate Modification**, exactly as a PP or AP does. The whole point of this\nchapter is to show how a clause *containing a gap* comes to denote such a property.\n\n## 5.1 Relative clauses as predicates\n\nTake H&K's opening example (@empty). The DP *the house which is empty* has a head\nnoun *house*, a relative clause *which is empty*, and the determiner *the*. If\n*which is empty* denotes `λx . empty(x)=1`, then PM gives *house which is empty* the\nvalue `λx . house(x)=1 and empty(x)=1`, and Functional Application feeds that to the\npartial *the* from Chapter 4. So *the house which is empty* is defined iff there is\nexactly one empty house, and denotes it; the whole sentence is then true iff that\nhouse is available.\n\n```ex {#empty}\nThe house which is empty is available.\n```\n\nThis already distinguishes restrictives from non-restrictives: *The house, which is\nempty, is available* presupposes a **unique house** (the *the* applies to *house*\nalone), whereas the restrictive only requires a unique empty house. We set\nnon-restrictives aside.\n\n## 5.2 Inside the relative clause: traces and variables\n\nA relative clause has a relative pronoun at the top and a **trace** in the gap.\nA subject-gap clause *which `t` is empty* is easy; the hard case, already noted by\nQuine, is an **object** gap (@abandon), where the desired value is `λx . John\nabandoned x` — and that is **not** the value of any subtree.\n\n```ex {#abandon}\nthe picture which John abandoned t\nthe movie which Mary saw t\n```\n\nThe trace cannot simply pick up a referent (§5.2.1): there is no smaller\nindividual-denoting constituent for it to inherit from, and trying to use the whole\ncontaining DP is viciously circular. The resolution (§5.2.2) is the **variable**.\n\n**Traces and Pronouns.** A trace `t_i` (and likewise a pronoun) denotes, relative to\nan assignment `g`, the individual `g(i)`. So `⟦t_1⟧^g = g(1)`, an individual of type\n`e` — a fine argument for the verb.\n\nWith this, the clause body has a value *relative to an assignment*: writing `x` for\n`g(1)`, *John abandoned `t_1`* denotes `abandon(j,x)=1`.\n\n## 5.2.3 Predicate Abstraction\n\nTo turn that open clause into a property, H&K add a third composition rule. The\nmoved relative pronoun (and its index) is **syncategorematic** — it has no value of\nits own but triggers abstraction over the indexed variable.\n\n**Predicate Abstraction (PA).** If α is a branching node whose daughters are a\nrelative pronoun (or index) `i` and a node β, then `⟦α⟧^g = λx . ⟦β⟧^{g[i→x]}` — the\nfunction mapping each `x` to the value β has when `i` is assigned `x`.\n\nSo PA over the object-gap clause gives `λx . abandon(j,x)=1`, type `⟨e,t⟩`, just what\nPM needs (@abandon-deriv). The relative pronoun *which* / *who* is then semantically\nvacuous, passing the abstract up unchanged.\n\n```deriv {#abandon-deriv}\n[[John abandoned t1]]              = abandon(j,x)=1            : t\n[[1 [John abandoned t1]]]          = λx . abandon(j,x)=1       : <e,t>   (PA)\n[[which John abandoned t1]]        = λx . abandon(j,x)=1       : <e,t>\n[[picture]]                        = λx . picture(x)=1         : <e,t>\n[[picture which John abandoned]]   = λx . picture(x)=1 and abandon(j,x)=1   : <e,t>   (PM)\n```\n\nA subject gap works the same way; PA simply abstracts over a trace that happens to\nsit in subject position (@subj-deriv).\n\n```deriv {#subj-deriv}\n[[t1 is empty]]                = empty(x)=1            : t\n[[1 [t1 is empty]]]            = λx . empty(x)=1       : <e,t>   (PA)\n[[which is empty]]             = λx . empty(x)=1       : <e,t>\n[[house which is empty]]       = λx . house(x)=1 and empty(x)=1   : <e,t>   (PM)\n```\n\n## 5.3 Multiple variables and such-that relatives\n\nThe same rule scales to **multiple variables** and to *such that* relatives, where\n*such* (like the relative pronoun) is a vacuous binder of the clause-internal index.\nOnce indices, not particular words, drive PA, the rule generalizes to every variable\nbinder in the grammar — the engine that Chapter 7 will reuse for quantifier raising.\n\n```ex {#such}\nthe picture such that Mary saw it\n```\n"
+  }
+}

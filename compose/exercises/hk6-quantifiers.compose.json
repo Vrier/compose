@@ -1,0 +1,245 @@
+{
+  "compose": 1,
+  "id": "hk6-quantifiers",
+  "title": "Quantifiers: Their Semantic Type (§6.3–6.7)",
+  "subtitle": "Heim & Kratzer — generalized quantifiers, quantifying determiners, and presuppositional both/neither",
+  "notation": "hk",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "a jn"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "f g P Q X Y",
+      "t": "p q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "cat"
+      ],
+      "denotation": "Lx.cat(x)"
+    },
+    {
+      "words": [
+        "dog"
+      ],
+      "denotation": "Lx.dog(x)"
+    },
+    {
+      "words": [
+        "vanished",
+        "vanish"
+      ],
+      "denotation": "Lx.vanish(x)"
+    },
+    {
+      "words": [
+        "purrs",
+        "purr"
+      ],
+      "denotation": "Lx.purr(x)"
+    },
+    {
+      "words": [
+        "is"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "has"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "striped"
+      ],
+      "denotation": "Lx.striped(x)"
+    },
+    {
+      "words": [
+        "stripes"
+      ],
+      "denotation": "Lx.striped(x)"
+    },
+    {
+      "words": [
+        "something"
+      ],
+      "denotation": "Lf.Ex[f(x)]"
+    },
+    {
+      "words": [
+        "nothing"
+      ],
+      "denotation": "Lf.~Ex[f(x)]"
+    },
+    {
+      "words": [
+        "everything"
+      ],
+      "denotation": "Lf.Ax[f(x)]"
+    },
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "Lf.Lg.Ax[f(x) -> g(x)]"
+    },
+    {
+      "words": [
+        "no",
+        "No"
+      ],
+      "denotation": "Lf.Lg.~Ex[f(x) ∧ g(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "Lf.Lg.Ex[f(x) ∧ g(x)]"
+    },
+    {
+      "words": [
+        "both",
+        "Both"
+      ],
+      "denotation": "Lf : card2(f) . Lg.Ax[f(x) -> g(x)]",
+      "displayAs": "both"
+    },
+    {
+      "words": [
+        "neither",
+        "Neither"
+      ],
+      "denotation": "Lf : card2(f) . Lg.~Ex[f(x) ∧ g(x)]",
+      "displayAs": "neither"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Generalized quantifiers (§6.3)",
+      "instructions": "A quantificational DP is neither an individual (e) nor a set (⟨e,t⟩): it is a SECOND-ORDER property of type ⟨⟨e,t⟩,t⟩, taking the VP predicate as argument.",
+      "items": [
+        {
+          "sentence": "Something vanished.",
+          "tree": "[.S [.DP something ] [.VP vanished ] ]",
+          "targets": [
+            "∃x[vanish(x)]"
+          ],
+          "reading": {
+            "section": "6.3"
+          }
+        },
+        {
+          "sentence": "Nothing vanished.",
+          "tree": "[.S [.DP nothing ] [.VP vanished ] ]",
+          "targets": [
+            "¬∃x[vanish(x)]"
+          ],
+          "reading": {
+            "section": "6.3"
+          }
+        },
+        {
+          "sentence": "Everything vanished.",
+          "tree": "[.S [.DP everything ] [.VP vanished ] ]",
+          "targets": [
+            "∀x[vanish(x)]"
+          ],
+          "reading": {
+            "section": "6.3"
+          }
+        }
+      ]
+    },
+    {
+      "title": "B. Quantifying determiners (§6.4)",
+      "instructions": "A determiner is type ⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩: it takes the noun restrictor first, then the VP predicate. FA applies twice.",
+      "items": [
+        {
+          "sentence": "Every cat vanished.",
+          "tree": "[.S [.DP [.D every ] [.NP cat ] ] [.VP vanished ] ]",
+          "targets": [
+            "∀x[cat(x) → vanish(x)]"
+          ],
+          "reading": {
+            "section": "6.4"
+          }
+        },
+        {
+          "sentence": "No dog purrs.",
+          "tree": "[.S [.DP [.D no ] [.NP dog ] ] [.VP purrs ] ]",
+          "targets": [
+            "¬∃x[dog(x) ∧ purr(x)]"
+          ],
+          "reading": {
+            "section": "6.4"
+          }
+        },
+        {
+          "sentence": "Some cat purrs.",
+          "tree": "[.S [.DP [.D some ] [.NP cat ] ] [.VP purrs ] ]",
+          "targets": [
+            "∃x[cat(x) ∧ purr(x)]"
+          ],
+          "reading": {
+            "section": "6.4"
+          }
+        }
+      ]
+    },
+    {
+      "title": "C. Presuppositional both & neither (§6.7)",
+      "instructions": "Both and neither PRESUPPOSE that the restrictor has exactly two members — a partial function (Chapter 4's colon), presupposing |f|=2. The presupposition projects up to the whole sentence. They cannot be captured by a purely relational (total) theory.",
+      "items": [
+        {
+          "sentence": "neither cat",
+          "tree": "[.DP [.D neither ] [.NP cat ] ]",
+          "targets": [
+            "card2(λx.cat(x)) : λg.¬∃x[cat(x) ∧ g(x)]"
+          ],
+          "reading": {
+            "section": "6.7"
+          }
+        },
+        {
+          "sentence": "Neither cat has stripes.",
+          "tree": "[.S [.DP [.D neither ] [.NP cat ] ] [.VP [.V has ] [.NP stripes ] ] ]",
+          "targets": [
+            "card2(λx.cat(x)) : ¬∃x[cat(x) ∧ striped(x)]"
+          ],
+          "reading": {
+            "section": "6.7"
+          }
+        },
+        {
+          "sentence": "Both cats purr.",
+          "tree": "[.S [.DP [.D both ] [.NP cat ] ] [.VP purr ] ]",
+          "targets": [
+            "card2(λx.cat(x)) : ∀x[cat(x) → purr(x)]"
+          ],
+          "reading": {
+            "section": "6.7"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": {
+    "format": "lingdown",
+    "markdown": "# Chapter 6 · Quantifiers: Their Semantic Type\n\nA proper name denotes an individual (type `e`), but a quantificational DP like\n*nothing* does not. *No one person is everything*; and *nothing* is not a set of\nindividuals either. So what type is it? Fregean reasoning gives a clear answer.\n\n## 6.3 Generalized quantifiers\n\nIn *Nothing vanished*, our rules make the VP *vanished* denote a characteristic\nfunction of type `⟨e,t⟩`, and the whole sentence must denote a truth value `t`. If\ncomposition is Functional Application, the subject *nothing* must be a function\n**from** `⟨e,t⟩` **to** `t` — type `⟨⟨e,t⟩,t⟩`. These are **generalized quantifiers**:\nsecond-order properties that take a first-order property as argument (@gq).\n\n```deriv\n[[something]]   = λf . ∃x[f(x)=1]    : <<e,t>,t>\n[[nothing]]     = λf . ¬∃x[f(x)=1]   : <<e,t>,t>\n[[everything]]  = λf . ∀x[f(x)=1]    : <<e,t>,t>\n```\n\nSo *Nothing vanished* says the predicate *vanished* is true of no individual:\n\n```deriv\n[[Nothing vanished]]  = ¬∃x[vanish(x)=1]    : t\n```\n\n```ex {#gq}\nSomething vanished.\nNothing vanished.\nEverything vanished.\n```\n\n## 6.4 Quantifying determiners\n\nA determiner combines with a noun (a `⟨e,t⟩` restrictor) to build a quantificational\nDP. So a determiner is type `⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩` — it takes the noun, then the\npredicate, and returns a truth value (@det).\n\n```deriv\n[[every]]  = λf . λg . ∀x[f(x)=1 → g(x)=1]    : <<e,t>,<<e,t>,t>>\n[[no]]     = λf . λg . ¬∃x[f(x)=1 and g(x)=1]  : <<e,t>,<<e,t>,t>>\n[[some]]   = λf . λg . ∃x[f(x)=1 and g(x)=1]   : <<e,t>,<<e,t>,t>>\n```\n\n*Every cat vanished* feeds *cat* to *every*, then *vanished* to the result:\n\n```deriv\n[[every cat]]           = λg . ∀x[cat(x)=1 → g(x)=1]    : <<e,t>,t>\n[[Every cat vanished]]  = ∀x[cat(x)=1 → vanish(x)=1]    : t\n```\n\n```ex {#det}\nEvery cat vanished.\nNo cat vanished.\n```\n\n## 6.7 Presuppositional quantifier phrases: *both* and *neither*\n\n*Neither cat has stripes* is clearly true if there are exactly two cats and neither\nis striped, and false if there are two cats and one or both is. But if there **aren't\nexactly two cats** — say only one, or three — we are reluctant to call it true *or*\nfalse: it seems inappropriate, just like *the cat* when there is no unique cat. So\n*both* and *neither* **presuppose** that the restrictor has exactly two members. We\ncapture this with a **partial function** (Chapter 4's colon), presupposing `|f|=2`:\n\n```deriv\n[[neither]]  = λf : |f|=2 . λg . ¬∃x[f(x)=1 and g(x)=1]   : <<e,t>,<<e,t>,t>>\n[[both]]     = λf : |f|=2 . λg . ∀x[f(x)=1 → g(x)=1]      : <<e,t>,<<e,t>,t>>\n```\n\nThe presupposition `|f|=2` rides up: *neither cat* is defined only if there are\nexactly two cats, and *Neither cat has stripes* (@both) inherits that condition while\nasserting that no cat is striped.\n\n```deriv\n[[neither cat]]              = |cat|=2 : λg . ¬∃x[cat(x)=1 and g(x)=1]   : <<e,t>,t>\n[[Neither cat has stripes]]  = |cat|=2 : ¬∃x[cat(x)=1 and striped(x)=1]  : t\n```\n\nThis is why *both* and *neither* resist a purely **relational** treatment (§6.7.2): a\nrelation is a set of pairs, so it can only ever be total — it cannot leave the\ntwo-cats case truth-valueless. Partiality is essential.\n\n```ex {#both}\nNeither cat has stripes.\nBoth cats have stripes.\n```\n\n> **Beyond this chapter (§6.8).** Whether *every*, *the*, and the weak determiners\n> (*a*, *two*, *most*) are likewise presuppositional is contested; *most* in\n> particular is not first-order, and we leave these cases to the reading.\n"
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "compose": 1,
+  "id": "hk2-fa",
+  "title": "Function Application & Semantic Types (§2.1–2.4)",
+  "subtitle": "Heim & Kratzer — the first Fregean fragment: FA, types e/t, transitive verbs, connectives",
+  "notation": "hk",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "a jn mr"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "f g P Q X Y",
+      "t": "p q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Ann"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Jan"
+      ],
+      "denotation": "jn"
+    },
+    {
+      "words": [
+        "Maria"
+      ],
+      "denotation": "mr"
+    },
+    {
+      "words": [
+        "smokes",
+        "smoke"
+      ],
+      "denotation": "Lx.smoke(x)"
+    },
+    {
+      "words": [
+        "works",
+        "work"
+      ],
+      "denotation": "Lx.work(x)"
+    },
+    {
+      "words": [
+        "is"
+      ],
+      "denotation": "LX.X"
+    },
+    {
+      "words": [
+        "boring"
+      ],
+      "denotation": "Lx.boring(x)"
+    },
+    {
+      "words": [
+        "likes",
+        "like"
+      ],
+      "denotation": "Ly.Lx.like(x,y)"
+    },
+    {
+      "words": [
+        "knows",
+        "know"
+      ],
+      "denotation": "Ly.Lx.know(x,y)"
+    },
+    {
+      "words": [
+        "and"
+      ],
+      "denotation": "Lp.Lq.q ∧ p",
+      "displayAs": "and"
+    },
+    {
+      "words": [
+        "itisnotthecasethat",
+        "not"
+      ],
+      "denotation": "Lp.~p",
+      "displayAs": "it is not the case that"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "nonBranchingNodes": true
+    }
+  },
+  "exercises": [
+    {
+      "title": "A. Intransitive verbs: FA, types e and ⟨e,t⟩ (§2.1)",
+      "instructions": "A name denotes an individual (type e); an intransitive verb denotes a characteristic function (type ⟨e,t⟩). Functional Application feeds the subject to the verb. The copula is is vacuous (λX.X).",
+      "items": [
+        {
+          "sentence": "Ann smokes.",
+          "tree": "[.S [.NP [.N Ann ] ] [.VP [.V smokes ] ] ]",
+          "targets": [
+            "smoke(a)"
+          ],
+          "reading": {
+            "section": "2.1"
+          }
+        },
+        {
+          "sentence": "Maria works.",
+          "tree": "[.S [.NP [.N Maria ] ] [.VP [.V works ] ] ]",
+          "targets": [
+            "work(mr)"
+          ],
+          "reading": {
+            "section": "2.1"
+          }
+        },
+        {
+          "sentence": "Ann is boring.",
+          "tree": "[.S [.NP [.N Ann ] ] [.VP [.V is ] [.AP boring ] ] ]",
+          "targets": [
+            "boring(a)"
+          ],
+          "reading": {
+            "section": "2.1"
+          }
+        }
+      ]
+    },
+    {
+      "title": "B. Transitive verbs: Schönfinkelization (§2.3)",
+      "instructions": "A transitive verb is a Schönfinkeled (curried) function of type ⟨e,⟨e,t⟩⟩ that takes its OBJECT first, then its subject. FA applies twice: verb + object, then VP + subject.",
+      "items": [
+        {
+          "sentence": "Ann likes Jan.",
+          "tree": "[.S [.NP Ann ] [.VP [.V likes ] [.NP Jan ] ] ]",
+          "targets": [
+            "like(a,jn)"
+          ],
+          "reading": {
+            "section": "2.3"
+          }
+        },
+        {
+          "sentence": "Jan knows Maria.",
+          "tree": "[.S [.NP Jan ] [.VP [.V knows ] [.NP Maria ] ] ]",
+          "targets": [
+            "know(jn,mr)"
+          ],
+          "reading": {
+            "section": "2.3"
+          }
+        },
+        {
+          "sentence": "Maria likes Ann.",
+          "tree": "[.S [.NP Maria ] [.VP [.V likes ] [.NP Ann ] ] ]",
+          "targets": [
+            "like(mr,a)"
+          ],
+          "reading": {
+            "section": "2.3"
+          }
+        }
+      ]
+    },
+    {
+      "title": "C. Sentential connectives (§2.4)",
+      "instructions": "Negation (it is not the case that) is type ⟨t,t⟩; sentential and is type ⟨t,⟨t,t⟩⟩. They take whole sentences (type t) as arguments.",
+      "items": [
+        {
+          "sentence": "It is not the case that Jan smokes.",
+          "tree": "[.S [.Neg not ] [.S [.NP Jan ] [.VP smokes ] ] ]",
+          "targets": [
+            "¬smoke(jn)"
+          ],
+          "reading": {
+            "section": "2.4"
+          }
+        },
+        {
+          "sentence": "Jan works, and it is not the case that Jan smokes.",
+          "tree": "[.S [.S [.NP Jan ] [.VP works ] ] [.Cnj [.Con and ] [.S [.Neg not ] [.S [.NP Jan ] [.VP smokes ] ] ] ] ]",
+          "targets": [
+            "work(jn) ∧ ¬smoke(jn)"
+          ],
+          "reading": {
+            "section": "2.4"
+          }
+        },
+        {
+          "sentence": "Ann smokes, and Maria works.",
+          "tree": "[.S [.S [.NP Ann ] [.VP smokes ] ] [.Cnj [.Con and ] [.S [.NP Maria ] [.VP works ] ] ] ]",
+          "targets": [
+            "smoke(a) ∧ work(mr)"
+          ],
+          "reading": {
+            "section": "2.4"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": {
+    "format": "lingdown",
+    "markdown": "# Chapter 2 · Executing the Fregean Program\n\nThis chapter builds the first working fragment. Every node in a syntax tree gets a\n**denotation** (its extension), and the denotation of a branching node is computed\nfrom the denotations of its daughters. We need just two things: a **lexicon** giving\nthe denotation of each word, and **composition rules** that combine them.\n\n## 2.1 Denotations and semantic types\n\nA proper name like *Ann* denotes an **individual** — H&K's type `e` (for *entity*).\nA sentence denotes a **truth value**, `1` or `0` — type `t`. An intransitive verb\nlike *smokes* is *unsaturated*: it denotes the **characteristic function** of the set\nof smokers, a function from individuals to truth values, type `⟨e,t⟩`:\n\n```deriv\n[[Ann]]      = a                       : e\n[[smokes]]   = λx . x smokes  =  λx . smoke(x)=1    : <e,t>\n```\n\nWe abbreviate *the function mapping each x to 1 iff x smokes* as `λx . smoke(x)=1`.\n\n**Functional Application (FA).** If α is a branching node with daughters β and γ,\nand `⟦β⟧` is a function whose domain contains `⟦γ⟧`, then `⟦α⟧ = ⟦β⟧(⟦γ⟧)`.\n\nPlus a rule for the vacuous N/V/VP layers:\n\n**Non-branching Nodes (NN).** If α has a single daughter β, then `⟦α⟧ = ⟦β⟧`.\n\nSo *Ann smokes* (@smokes) composes by feeding the subject to the verb's\ncharacteristic function — the sentence is `1` iff Ann smokes.\n\n```deriv\n[[Ann smokes]]  = [[smokes]]([[Ann]])  =  smoke(a)=1    : t\n```\n\n```ex {#smokes}\nAnn smokes.\nAnn is boring.\n```\n\n## 2.3 Transitive verbs and Schönfinkelization\n\nA transitive verb like *likes* relates two individuals. Rather than a function of a\npair, H&K use a **Schönfinkeled** (curried) function — one that takes its arguments\none at a time. `⟦likes⟧` takes the **object** first, returning a `⟨e,t⟩` function\nthat still wants the subject:\n\n```deriv\n[[likes]]      = λy . λx . x likes y           : <e,<e,t>>\n[[likes Jan]]  = λx . x likes Jan  =  λx . like(x,jn)=1    : <e,t>   (FA)\n```\n\nSo in *Ann likes Jan* (@likes), FA applies twice: *likes* combines with the object\n*Jan*, and the resulting VP combines with the subject *Ann*.\n\n```deriv\n[[Ann likes Jan]]  = like(a,jn)=1    : t\n```\n\n```ex {#likes}\nAnn likes Jan.\n```\n\n## 2.4 Sentential connectives\n\nNegation and conjunction operate on truth values. *It is not the case that* is a\nfunction of type `⟨t,t⟩`, and sentential *and* is of type `⟨t,⟨t,t⟩⟩`:\n\n```deriv\n[[it is not the case that]]  = λp . p = 0   =  λp . ¬p    : <t,t>\n[[and]]                      = λp . λq . q = 1 and p = 1  =  λp . λq . q ∧ p    : <t,<t,t>>\n```\n\nThese compose with whole sentences, so *Jan works, and it is not the case that Jan\nsmokes* (@conj) is true iff Jan works and Jan does not smoke.\n\n```deriv\n[[it is not the case that Jan smokes]]  = ¬smoke(jn)=1    : t\n[[Jan works and ... Jan smokes]]        = work(jn)=1 and ¬smoke(jn)=1    : t\n```\n\n```ex {#conj}\nJan works, and it is not the case that Jan smokes.\n```\n\n---\n\n### A note on Chapter 3: type-driven interpretation\n\nChapter 3 reframes what we just did. Notice we never had to *stipulate* which rule\napplies where — FA fires precisely when one sister is a function defined on the\nother. Interpretation is **type-driven**: the types decide the composition. A\ncorollary is that a tree can be **uninterpretable** purely on type grounds — if no\nrule's input condition is met at some node, the tree simply has no denotation. (This\nis different from a *presupposition failure*, Chapter 4, which depends on the actual\ndenotations, not just the types.) H&K also impose the **θ-Criterion** — each\nargument position filled exactly once — but in a type-driven system much of its work\nis already done by the requirement that every node compose.\n"
+  }
+}

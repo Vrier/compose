@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>COMPOSE — derivation demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* tokens lifted from the COMPOSE app — themes.css [data-theme="parchment"] */
+  :root{
+    --bg:        oklch(0.961 0.013 78);
+    --bg-grain:  oklch(0.945 0.016 76);
+    --panel:     oklch(0.985 0.008 82);
+    --panel-2:   oklch(0.972 0.011 80);
+    --ink:       oklch(0.285 0.022 52);
+    --ink-soft:  oklch(0.42 0.02 55);
+    --muted:     oklch(0.56 0.018 58);
+    --faint:     oklch(0.69 0.014 62);
+    --line:      oklch(0.875 0.016 72);
+    --line-soft: oklch(0.915 0.012 74);
+    --accent:    oklch(0.585 0.13 44);
+    --accent-ink:oklch(0.46 0.13 42);
+    --accent-soft:oklch(0.93 0.05 56);
+    --good:      oklch(0.55 0.1 150);
+    --good-soft: oklch(0.93 0.05 152);
+    --shadow:    0 1px 2px oklch(0.4 0.03 60 / 0.08), 0 8px 24px oklch(0.4 0.03 60 / 0.07);
+    --shadow-sm: 0 1px 2px oklch(0.4 0.03 60 / 0.1);
+    --serif: 'Spectral', Georgia, serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;}
+  body{
+    background:var(--bg);color:var(--ink);font-family:var(--serif);
+    overflow:hidden;-webkit-font-smoothing:antialiased;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .viewport{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .stage{
+    width:920px;height:560px;position:relative;flex:none;transform-origin:center center;
+    background:
+      radial-gradient(circle at 20% 14%, var(--bg-grain) 0, transparent 42%),
+      radial-gradient(circle at 84% 86%, var(--bg-grain) 0, transparent 46%),
+      var(--bg);
+  }
+
+  /* ---- header strip ---- */
+  .d-head{position:absolute;top:26px;left:36px;right:36px;display:flex;align-items:flex-start;justify-content:space-between;}
+  .d-kicker{font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent-ink);font-weight:500;}
+  .d-title{font-family:var(--serif);font-weight:600;font-size:27px;letter-spacing:-0.005em;color:var(--ink);margin-top:6px;}
+  .d-step{font-family:var(--mono);font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--faint);text-align:right;}
+  .d-step b{display:block;font-family:var(--serif);font-size:15px;letter-spacing:0;color:var(--accent-ink);margin-top:5px;
+    text-transform:none;font-weight:600;transition:color .3s;}
+
+  /* ---- tree ---- */
+  .tree{position:absolute;inset:0;}
+  svg.branches{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;}
+  svg.branches line{stroke:var(--line);stroke-width:1.5;transition:stroke .35s;}
+  svg.branches line.lit{stroke:var(--accent);stroke-width:1.8;}
+
+  /* a tree node: box, then meaning chip, then type badge (mirrors the app) */
+  .node{position:absolute;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;}
+  .nbox{
+    min-width:54px;padding:7px 14px;border-radius:9px;border:1.5px solid var(--line);background:var(--panel);
+    box-shadow:var(--shadow-sm);position:relative;transition:border-color .35s, box-shadow .35s, background .35s;
+  }
+  .node.leaf .nbox{background:var(--panel-2);}
+  .cat{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--muted);line-height:1.1;display:block;}
+  .word{font-family:var(--serif);font-size:16px;font-weight:500;color:var(--ink);line-height:1.1;display:block;margin-top:1px;}
+
+  /* meaning chip = node-meaning */
+  .den{
+    font-family:var(--mono);font-size:12.5px;line-height:1.3;color:var(--ink);white-space:nowrap;
+    padding:3px 9px;border-radius:7px;background:var(--panel-2);border:1px solid transparent;
+    opacity:0;transform:translateY(3px);transition:opacity .45s, transform .45s, background .35s, color .35s, border-color .35s;
+  }
+  .node.shown .den{opacity:1;transform:none;}
+  .den .pend{color:var(--muted);font-style:italic;}
+  .node.solved .den{background:color-mix(in oklab, var(--good-soft) 62%, transparent);color:var(--ink);border-color:color-mix(in oklab,var(--good) 22%,transparent);}
+
+  /* type badge = node-type-badge */
+  .typ{font-family:var(--mono);font-size:11px;color:var(--accent-ink);letter-spacing:0;white-space:nowrap;opacity:0;transition:opacity .4s;}
+  .node.shown .typ{opacity:0.92;}
+
+  /* active pair (selected) */
+  .node.lit .nbox{border-color:var(--accent);background:var(--accent-soft);box-shadow:var(--shadow);}
+  /* parent being computed = available (dashed, pulsing halo) */
+  .node.flash .nbox{border-color:var(--accent);border-style:dashed;}
+  .node.flash .nbox::after{content:'';position:absolute;inset:-4px;border-radius:12px;border:1px solid var(--accent);
+    opacity:0.3;animation:halo 1.6s ease-in-out infinite;}
+  @keyframes halo{0%,100%{opacity:0.12;}50%{opacity:0.42;}}
+  /* resolved */
+  .node.solved .nbox{border-color:var(--good);}
+
+  /* rule tag = node-rule-tag */
+  .rtag{
+    position:absolute;top:-9px;right:-10px;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:0.04em;
+    background:var(--good);color:#fff;padding:1px 6px;border-radius:5px;box-shadow:var(--shadow-sm);
+    opacity:0;transform:scale(0.6);transition:opacity .3s, transform .3s;
+  }
+  .node.solved .rtag{opacity:1;transform:scale(1);}
+
+  /* ---- footer caption ---- */
+  .d-foot{position:absolute;left:36px;right:36px;bottom:22px;display:flex;align-items:center;justify-content:space-between;gap:18px;
+    padding-top:14px;background:linear-gradient(180deg, transparent, var(--bg) 42%);}
+  .d-legend{display:flex;gap:18px;align-items:center;font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:0.02em;}
+  .d-legend i{font-style:normal;display:inline-flex;align-items:center;gap:6px;}
+  .d-legend .sw{width:11px;height:11px;border-radius:4px;border:1.5px solid var(--line);background:var(--panel-2);}
+  .d-legend .sw.acc{background:var(--accent-soft);border-color:var(--accent);border-style:dashed;}
+  .d-legend .sw.gd{background:var(--good-soft);border-color:var(--good);}
+  .d-result{
+    font-family:var(--mono);font-size:12.5px;color:var(--good);letter-spacing:0;
+    opacity:0;transform:translateY(4px);transition:opacity .5s, transform .5s;
+  }
+  .d-result.on{opacity:1;transform:none;}
+  .d-result b{color:var(--good);font-weight:600;}
+
+  .glyph-wm{position:absolute;right:28px;top:50%;transform:translateY(-50%);font-family:var(--serif);
+    font-size:210px;color:var(--accent);opacity:0.05;line-height:1;pointer-events:none;font-weight:500;}
+</style>
+</head>
+<body>
+<div class="viewport">
+  <div class="stage" id="stage">
+    <div class="glyph-wm">λ</div>
+    <div class="d-head">
+      <div>
+        <div class="d-kicker">Derivation</div>
+        <div class="d-title">"Every wizard sleeps."</div>
+      </div>
+      <div class="d-step">Composing bottom-up<b id="stepName">Lexical denotations</b></div>
+    </div>
+
+    <div class="tree" id="tree">
+      <svg class="branches" id="branches" viewBox="0 0 920 560" preserveAspectRatio="none">
+        <line data-edge="s-dp" />
+        <line data-edge="s-vp" />
+        <line data-edge="dp-d" />
+        <line data-edge="dp-np" />
+      </svg>
+
+      <!-- S -->
+      <div class="node branch shown" id="n-s" style="left:460px;top:100px;">
+        <div class="nbox"><span class="cat">S</span></div>
+        <div class="den"><span class="pend">ready — select</span></div>
+        <div class="typ">t</div>
+        <div class="rtag">FA</div>
+      </div>
+      <!-- DP -->
+      <div class="node branch shown" id="n-dp" style="left:300px;top:256px;">
+        <div class="nbox"><span class="cat">DP</span></div>
+        <div class="den"><span class="pend">ready — select</span></div>
+        <div class="typ">⟨et,t⟩</div>
+        <div class="rtag">FA</div>
+      </div>
+      <!-- VP -->
+      <div class="node leaf shown" id="n-vp" style="left:640px;top:256px;">
+        <div class="nbox"><span class="cat">VP</span><span class="word">sleeps</span></div>
+        <div class="den">λx.sleep(x)</div>
+        <div class="typ">⟨e,t⟩</div>
+      </div>
+      <!-- D -->
+      <div class="node leaf shown" id="n-d" style="left:206px;top:414px;">
+        <div class="nbox"><span class="cat">D</span><span class="word">every</span></div>
+        <div class="den">λP.λQ.∀x[P(x)→Q(x)]</div>
+        <div class="typ">⟨et,⟨et,t⟩⟩</div>
+      </div>
+      <!-- NP -->
+      <div class="node leaf shown" id="n-np" style="left:392px;top:414px;">
+        <div class="nbox"><span class="cat">NP</span><span class="word">wizard</span></div>
+        <div class="den">λx.wizard(x)</div>
+        <div class="typ">⟨e,t⟩</div>
+      </div>
+    </div>
+
+    <div class="d-foot">
+      <div class="d-legend">
+        <i><span class="sw acc"></span>ready — select</i>
+        <i><span class="sw gd"></span>resolved</i>
+      </div>
+      <div class="d-result" id="result">⊨ <b>∀x[wizard(x) → sleep(x)]</b></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var stage = document.getElementById('stage');
+  var viewport = document.querySelector('.viewport');
+  function fit(){
+    var k = Math.min(viewport.clientWidth/920, viewport.clientHeight/560);
+    stage.style.transform = 'scale(' + k + ')';
+  }
+  window.addEventListener('resize', fit); fit();
+
+  var edges = {
+    's-dp':['n-s','n-dp'], 's-vp':['n-s','n-vp'],
+    'dp-d':['n-dp','n-d'], 'dp-np':['n-dp','n-np']
+  };
+  function drawBranches(){
+    for (var key in edges){
+      var ln = document.querySelector('line[data-edge="'+key+'"]');
+      var p = document.getElementById(edges[key][0]);
+      var c = document.getElementById(edges[key][1]);
+      var px = p.offsetLeft, py = p.offsetTop + p.offsetHeight;   // parent bottom-center
+      var cx = c.offsetLeft, cy = c.offsetTop;                     // child top-center
+      ln.setAttribute('x1', px); ln.setAttribute('y1', py);
+      ln.setAttribute('x2', cx); ln.setAttribute('y2', cy);
+    }
+  }
+  function litEdge(key, on){ var ln = document.querySelector('line[data-edge="'+key+'"]'); if (ln) ln.classList.toggle('lit', on); }
+
+  var $ = function(id){ return document.getElementById(id); };
+  var stepName = $('stepName');
+  function setDen(id, html, pending){ $(id).querySelector('.den').innerHTML = pending ? '<span class="pend">'+html+'</span>' : html; }
+  function show(id){ $(id).classList.add('shown'); }
+  function lit(id, on){ $(id).classList.toggle('lit', on); }
+  function flash(id, on){ $(id).classList.toggle('flash', on); }
+  function solved(id){ $(id).classList.add('solved'); }
+
+  function reset(){
+    ['n-s','n-dp','n-vp','n-d','n-np'].forEach(function(id){ $(id).classList.remove('lit','solved','flash'); $(id).classList.add('shown'); });
+    setDen('n-s','ready — select', true);
+    setDen('n-dp','ready — select', true);
+    setDen('n-vp','λx.sleep(x)');
+    setDen('n-d','λP.λQ.∀x[P(x)→Q(x)]');
+    setDen('n-np','λx.wizard(x)');
+    for (var k in edges) litEdge(k, false);
+    $('result').classList.remove('on');
+    stepName.textContent = 'Lexical denotations';
+  }
+
+  var timers = [];
+  function at(t, fn){ timers.push(setTimeout(fn, t)); }
+  function clearAll(){ timers.forEach(clearTimeout); timers = []; }
+
+  function run(){
+    clearAll(); reset(); drawBranches();
+
+    at(300,  function(){ stepName.textContent = 'Lexical denotations'; lit('n-d',1); });
+    at(800,  function(){ lit('n-d',0); lit('n-np',1); });
+    at(1300, function(){ lit('n-np',0); lit('n-vp',1); });
+    at(1800, function(){ lit('n-vp',0); });
+
+    // combine D + NP -> DP  (Function Application)
+    at(2500, function(){ stepName.textContent = 'Function Application'; lit('n-d',1); lit('n-np',1); litEdge('dp-d',1); litEdge('dp-np',1); });
+    at(3150, function(){ flash('n-dp',1); });
+    at(3500, function(){
+      setDen('n-dp','λQ.∀x[wizard(x)→Q(x)]'); show('n-dp'); solved('n-dp');
+      lit('n-d',0); lit('n-np',0); litEdge('dp-d',0); litEdge('dp-np',0);
+    });
+    at(3900, function(){ flash('n-dp',0); });
+
+    // combine DP + VP -> S  (Function Application)
+    at(4900, function(){ stepName.textContent = 'Function Application'; lit('n-dp',1); lit('n-vp',1); litEdge('s-dp',1); litEdge('s-vp',1); });
+    at(5550, function(){ flash('n-s',1); });
+    at(5900, function(){
+      setDen('n-s','∀x[wizard(x)→sleep(x)]'); show('n-s'); solved('n-s');
+      lit('n-dp',0); lit('n-vp',0); litEdge('s-dp',0); litEdge('s-vp',0);
+    });
+    at(6300, function(){ flash('n-s',0); });
+
+    at(6700, function(){ stepName.textContent = 'Truth conditions'; $('result').classList.add('on'); });
+    at(10200, run);
+  }
+
+  if (document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ drawBranches(); run(); }); }
+  else { drawBranches(); run(); }
+  setTimeout(function(){ drawBranches(); }, 300);
+})();
+</script>
+</body>
+</html>
