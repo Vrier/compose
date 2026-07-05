@@ -37,6 +37,14 @@ export const HOSTED_TOKEN   = '/*__COMPOSE_HOSTED__*/';
 const parts = buildParts(SRC);
 const sdk = fs.readFileSync('node_modules/pocketbase/dist/pocketbase.umd.js', 'utf8');
 
+/* qrcode ships no prebuilt browser bundle — bundle it here at build time
+   (no CDN, zero runtime deps; S5/W5). Exposes window.QRCode. */
+const qrLib = esbuild.buildSync({
+  entryPoints: ['node_modules/qrcode/lib/browser.js'],
+  bundle: true, format: 'iife', globalName: 'QRCode',
+  platform: 'browser', minify: true, write: false,
+}).outputFiles[0].text;
+
 /* ---- 1 · The student substitution template ----------------------------- */
 const template = assemblePage(parts, {
   title: 'COMPOSE',
@@ -87,6 +95,7 @@ const dashPage = [
   '<script>\n' + safe(parts.reactProd) + '\n</script>',
   '<script>\n' + safe(parts.reactDomProd) + '\n</script>',
   '<script>\n' + safe(sdk) + '\n</script>',
+  '<script>\n' + safe(qrLib) + '\n</script>',
   '<script>\n' + safe(dashJs) + '\n</script>',
   '</body>',
   '</html>',
@@ -98,6 +107,13 @@ const write = (rel, html) => {
   fs.writeFileSync(path.join(OUT, rel), html);
   console.log('  ' + rel.padEnd(32) + ' ' + (Buffer.byteLength(html) / 1024).toFixed(0) + ' KB');
 };
+/* Engine files for the validation hook (goja runs them via the W13 module
+   footers). Generated copies — gitignored; source of truth stays compose/. */
+fs.mkdirSync(path.join(OUT, 'pb_hooks', 'vendor'), { recursive: true });
+for (const f of ['engine.js', 'lcformat.js']) {
+  fs.copyFileSync(path.join(SRC, f), path.join(OUT, 'pb_hooks', 'vendor', f));
+  console.log('  ' + ('pb_hooks/vendor/' + f).padEnd(32) + ' (vendored for goja validation)');
+}
 write('template.html', template);
 write('template-edit.html', templateEdit);
 write('library.json', JSON.stringify(libraryMap(SRC)));

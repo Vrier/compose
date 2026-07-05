@@ -14,6 +14,7 @@ uploads/
 server/template.html
 server/template-edit.html
 server/library.json
+server/pb_hooks/vendor/
 server/pb_public/*
 !server/pb_public/.gitkeep
 

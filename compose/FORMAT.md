@@ -95,6 +95,13 @@ written by new tools (the parser's diagnostics mode flags them): `den` → use
 > Legacy Lambda-Calculator `.lbd`/`.txt` DSL files still load — COMPOSE detects
 > the format automatically (a leading `{` means JSON).
 
+**Hosted limits.** When a companion bundle is saved to the hosted service it
+must pass full validation (every denotation type-checked, every tree and
+target parsed) and stay within: **2 MB** total, **40 worksheets** per bundle,
+**400 derivations** in total, unique worksheet keys. Violations are rejected
+with structured diagnostics naming the offending path. Hosted uploads accept
+the JSON formats only (not the legacy DSL).
+
 ---
 
 ## Textbook bundles (`.compose-bundle.json`)

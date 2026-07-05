@@ -107,10 +107,77 @@
     );
   }
 
+  /* ---- share modal (S5/W5): QR, copy, PNG download, printable A4 --------- */
+  function ShareModal({ v, onClose }) {
+    const url = window.location.origin + '/v/' + v.slug;
+    const canvasRef = useRef(null);
+    const [copied, setCopied] = useState(false);
+
+    useEffect(() => {
+      if (canvasRef.current && window.QRCode) {
+        window.QRCode.toCanvas(canvasRef.current, url, { width: 300, margin: 2 }, () => {});
+      }
+    }, [url]);
+
+    function copy() {
+      navigator.clipboard.writeText(url).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1500); });
+    }
+    function downloadPng() {
+      if (!canvasRef.current) return;
+      const a = document.createElement('a');
+      a.href = canvasRef.current.toDataURL('image/png');
+      a.download = 'compose-' + v.slug + '-qr.png';
+      a.click();
+    }
+    function printHandout() {
+      if (!canvasRef.current) return;
+      const png = canvasRef.current.toDataURL('image/png');
+      const w = window.open('', '_blank');
+      if (!w) { alert('Pop-up blocked — allow pop-ups to print the handout.'); return; }
+      w.document.write('<!DOCTYPE html><html><head><title>' + '</title><style>' +
+        '@page { size: A4; margin: 25mm; }' +
+        'body { font-family: Georgia, serif; color: #222; text-align: center; margin: 0; }' +
+        'h1 { font-size: 28pt; margin: 22mm 0 4mm; font-weight: 600; }' +
+        '.url { font-family: monospace; font-size: 15pt; margin: 0 0 14mm; word-break: break-all; }' +
+        'img { width: 100mm; height: 100mm; }' +          /* ≥ 8 cm, comfortably scannable */
+        '.foot { margin-top: 14mm; font-size: 11pt; color: #666; }' +
+        '</style></head><body>' +
+        '<h1></h1><div class="url"></div>' +
+        '<img src="' + png + '" alt="QR code" />' +
+        '<div class="foot">Scan the code or type the address. Your progress is saved in your own browser — use the same device and browser to continue.</div>' +
+        '</body></html>');
+      const doc = w.document;
+      doc.title = 'COMPOSE — ' + v.title;
+      doc.querySelector('h1').textContent = v.title;
+      doc.querySelector('.url').textContent = url;
+      doc.close();
+      w.focus();
+      setTimeout(() => w.print(), 250);
+    }
+
+    return (
+      <div className="dash-modal-back" onClick={onClose}>
+        <div className="dash-modal" onClick={(e) => e.stopPropagation()}>
+          <h2 className="dash-modal-title">{v.title}</h2>
+          <canvas ref={canvasRef} className="dash-qr" width={300} height={300} />
+          <div className="dash-share-url mono">{url}</div>
+          <div className="dash-share-actions">
+            <button className="btn-primary" onClick={copy}>{copied ? '✓ Copied' : '⧉ Copy link'}</button>
+            <button className="btn-ghost" onClick={downloadPng}>⬇ QR as PNG</button>
+            <button className="btn-ghost" onClick={printHandout}>🖨 Print A4 handout</button>
+            <button className="btn-ghost" onClick={onClose}>Close</button>
+          </div>
+          <div className="dash-note">Links are live: editing the version updates what students see at this same URL — printed QR codes stay valid.</div>
+        </div>
+      </div>
+    );
+  }
+
   /* ---- one version row --------------------------------------------------- */
   function VersionRow({ v, onChanged, onErr }) {
     const [title, setTitle] = useState(v.title);
     const [copied, setCopied] = useState(false);
+    const [sharing, setSharing] = useState(false);
     const fileRef = useRef(null);
     const url = window.location.origin + '/v/' + v.slug;
     const wsCount = (() => { const b = v.bundle || {}; const l = b.worksheets || b.exercises || []; return l.length; })();
@@ -167,6 +234,8 @@
             {v.published ? '● live' : '○ hidden'}
           </button>
           <a className="btn-primary dash-edit-btn" href={'/edit/' + v.id}>✎ Open editor</a>
+          <button className="btn-ghost dash-mini" title="Share: QR code, link, printable handout" onClick={() => setSharing(true)}>▤ Share</button>
+          {sharing && <ShareModal v={v} onClose={() => setSharing(false)} />}
           <button className="btn-ghost dash-mini" title="Download the companion bundle as a file" onClick={() => downloadJson((v.slug || 'version') + '.compose-bundle.json', v.bundle)}>⬇ bundle</button>
           <button className="btn-ghost dash-mini" title="Import a companion bundle file (replaces this version's worksheets)" onClick={() => fileRef.current && fileRef.current.click()}>⬆ import</button>
           <input ref={fileRef} type="file" accept=".json,application/json" style={{ display: 'none' }} onChange={importBundle} />
@@ -270,6 +339,12 @@
     .dash-mode.off { background: var(--panel-2); color: var(--ink-soft); }
     .dash-edit-btn { font-size: 13px; padding: 7px 12px; text-decoration: none; border-radius: 8px; }
     .dash-del:hover { color: var(--bad); }
+    .dash-modal-back { position: fixed; inset: 0; background: rgba(30,24,14,.45); display: flex; align-items: center; justify-content: center; z-index: 50; }
+    .dash-modal { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 26px 30px; max-width: 420px; text-align: center; }
+    .dash-modal-title { margin: 0 0 14px; font-size: 20px; }
+    .dash-qr { border-radius: 8px; background: #fff; }
+    .dash-share-url { font-family: 'IBM Plex Mono', monospace; font-size: 13px; margin: 12px 0; word-break: break-all; color: var(--ink-soft); }
+    .dash-share-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 10px; }
   `;
   document.head.appendChild(style);
 
