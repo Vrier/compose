@@ -145,7 +145,7 @@ export function assemblePage(parts, { title, identityJS, libraryJS = '', extraHe
 
 /* ---- inlineLibraryJS ------------------------------------------------------
    The full built-in worksheet library as a window.LC_FILES_INLINE script. */
-export function inlineLibraryJS(srcDir) {
+export function libraryMap(srcDir) {
   const dir = path.join(srcDir, 'exercises');
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.compose.json'));
   const lc = {};
@@ -156,5 +156,8 @@ export function inlineLibraryJS(srcDir) {
     try { title = JSON.parse(text).title || key; } catch {}
     lc[key] = { title, text };
   }
-  return `window.LC_FILES_INLINE = ${JSON.stringify(lc)};`;
+  return lc;
+}
+export function inlineLibraryJS(srcDir) {
+  return `window.LC_FILES_INLINE = ${JSON.stringify(libraryMap(srcDir))};`;
 }

@@ -5,6 +5,15 @@
    Only .pb.js files auto-register; this plain .js file is a passive module.
    =========================================================================== */
 module.exports = {
+  /* v.get('bundle') on a json field returns RAW JSON bytes in the goja VM,
+     not a parsed object (S4 finding — iterating .worksheets silently yields
+     nothing). Always go through this. */
+  parseBundle: function (v) {
+    const raw = v.get('bundle');
+    if (raw && typeof raw === 'object' && (raw.compose_bundle !== undefined || raw.worksheets !== undefined || raw.exercises !== undefined)) return raw;
+    try { return JSON.parse(toString(raw)); } catch (e) { return {}; }
+  },
+
   NOT_FOUND_HTML: `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8" /><title>COMPOSE — not found</title>
 <style>body{font-family:Georgia,serif;background:#efe7d6;color:#3a3226;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
@@ -23,7 +32,7 @@ Check the URL with your instructor, or try the <a href="/">main COMPOSE library<
     const esc = module.exports.escapeForScript;
     const substitute = (tpl, token, payload) => tpl.split(token).join(esc(payload));
 
-    const bundle = v.get('bundle');
+    const bundle = module.exports.parseBundle(v);
     const files = {};
     const keys = [];
     const chapters = [];
@@ -49,6 +58,39 @@ Check the URL with your instructor, or try the <a href="/">main COMPOSE library<
     const library = 'window.LC_FILES_INLINE = ' + JSON.stringify(files) + ';';
 
     let html = substitute(template, '/*__COMPOSE_IDENTITY__*/', identity);
+    html = substitute(html, '/*__COMPOSE_LIBRARY__*/', library);
+    return html;
+  },
+
+  /* Instructor editor page (S4): built-in library merged with the version's
+     own worksheets; COMPOSE_HOSTED context substituted into the edit template. */
+  buildEditPage: function (v, template, builtins) {
+    const esc = module.exports.escapeForScript;
+    const substitute = (tpl, token, payload) => tpl.split(token).join(esc(payload));
+
+    const bundle = module.exports.parseBundle(v);
+    const files = {};
+    for (const k in builtins) files[k] = builtins[k];
+    const keys = [];
+    const chapters = [];
+    for (const w of (bundle.worksheets || bundle.exercises || [])) {
+      if (!w || !w.key) continue;
+      const text = typeof w.text === 'string' ? w.text : JSON.stringify(w.content);
+      files[w.key] = { title: w.title || w.key, text };
+      keys.push(w.key);
+      chapters.push({ prefix: w.key, label: '★', title: (w.title || w.key) });
+    }
+
+    const identity =
+      'window.COMPOSE_BUILD = ' + JSON.stringify({ id: 'hosted-teacher', role: 'instructor', preload: 'inline', label: 'COMPOSE — ' + v.getString('title'), version: '1.0', date: '2026' }) + ';\n' +
+      'window.COMPOSE_CONFIG = ' + JSON.stringify({ role: 'instructor', assignment: null }) + ';\n' +
+      'window.COMPOSE_CHAPTERS_EXTRA = ' + JSON.stringify(chapters) + ';';
+    const hosted =
+      'window.COMPOSE_HOSTED = ' + JSON.stringify({ versionId: v.id, slug: v.getString('slug'), mode: v.getString('mode') || 'practice', title: v.getString('title'), keys: keys }) + ';';
+    const library = 'window.LC_FILES_INLINE = ' + JSON.stringify(files) + ';';
+
+    let html = substitute(template, '/*__COMPOSE_IDENTITY__*/', identity);
+    html = substitute(html, '/*__COMPOSE_HOSTED__*/', hosted);
     html = substitute(html, '/*__COMPOSE_LIBRARY__*/', library);
     return html;
   },

@@ -71,6 +71,7 @@ check "published defaults to true" "$R" '"published":true'
 say "— public serving"
 PAGE=$(curl -s "$B/v/$SLUG")
 check "page injects the worksheet library" "$PAGE" 'LC_FILES_INLINE'
+check "page injects the actual worksheet content" "$PAGE" 's3test'
 check "page injects isolated island"       "$PAGE" "\"island\":\"$SLUG\""
 check "page injects practice mode"         "$PAGE" '"mode":"practice"'
 check "page injects picker chapter for uncovered key" "$PAGE" 'COMPOSE_CHAPTERS_EXTRA'

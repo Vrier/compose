@@ -1593,6 +1593,10 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .app.is-mobile ~ .tweaks-panel, .app.is-mobile .tweaks-panel { bottom: 70px; }
 
 
+/* S4: editor save-to-server status */
+.fe-srv-ok { color: var(--good); font-size: 12.5px; cursor: pointer; }
+.fe-srv-err { color: var(--bad); font-size: 12.5px; cursor: pointer; max-width: 340px; }
+
 
 /* ===========================================================================
    lingdown.css — typesetting for the lingdown engine. Themable via --ld-*
@@ -6209,6 +6213,44 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
     if (onMinimize) onMinimize({ title: (title || "").trim() || "Untitled exercise", editKey });
     else onClose();
   }
+  const [srvMsg, setSrvMsg] = useState(null);
+  const [srvBusy, setSrvBusy] = useState(false);
+  async function saveToServer() {
+    const H = window.COMPOSE_HOSTED;
+    if (!H || !window.PocketBase) return;
+    const pb = new window.PocketBase(window.location.origin);
+    if (!pb.authStore.isValid) {
+      setSrvMsg({ kind: "err", msg: "Not logged in \u2014 open /dash, log in, then come back and save again." });
+      return;
+    }
+    setSrvBusy(true);
+    setSrvMsg(null);
+    try {
+      const text = generateJSON(state);
+      const obj = JSON.parse(text);
+      const v = await pb.collection("versions").getOne(H.versionId);
+      const bundle = v.bundle && v.bundle.compose_bundle ? v.bundle : { compose_bundle: 1, title: v.title, chapters: [], worksheets: [] };
+      let list = bundle.worksheets || bundle.exercises;
+      if (!list) {
+        bundle.worksheets = [];
+        list = bundle.worksheets;
+      }
+      let key = editKey;
+      if (!key) key = window.composeSlug(obj.title || "worksheet") + "-" + Math.random().toString(36).slice(2, 6);
+      const entry = { key, title: obj.title || key, content: obj };
+      const idx = list.findIndex((w) => w && w.key === key);
+      if (idx >= 0) list[idx] = entry;
+      else list.push(entry);
+      await pb.collection("versions").update(H.versionId, { bundle });
+      setEditKey(key);
+      if (Array.isArray(H.keys) && H.keys.indexOf(key) < 0) H.keys.push(key);
+      setSrvMsg({ kind: "ok", msg: "Saved \u2014 live for students at /v/" + H.slug });
+    } catch (err) {
+      const detail = err && err.response && err.response.message || err && err.message || "unknown error";
+      setSrvMsg({ kind: "err", msg: "Save to server failed: " + detail });
+    }
+    setSrvBusy(false);
+  }
   function doExport() {
     const text = generateJSON(state);
     const blob = new Blob([text], { type: "application/json" });
@@ -6279,7 +6321,16 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
       title: "Load this problem set into the app as a selectable exercise and open it for testing"
     },
     "\u25B6 Load into app"
-  ), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => setShowReading(true), title: "Attach or edit notes (Markdown) and link sections to exercises" }, "\u{1F4DD} Notes", reading.markdown && reading.markdown.trim() ? /* @__PURE__ */ React.createElement("span", { className: "fe-reading-dot" }) : null), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost fe-import-btn", onClick: doImport }, "\u2B06 Import"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost fe-export-btn", onClick: doExport }, "\u2B07 .json"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost fe-export-btn", onClick: doExportHtml }, "\u2B07 .html"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => {
+  ), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => setShowReading(true), title: "Attach or edit notes (Markdown) and link sections to exercises" }, "\u{1F4DD} Notes", reading.markdown && reading.markdown.trim() ? /* @__PURE__ */ React.createElement("span", { className: "fe-reading-dot" }) : null), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost fe-import-btn", onClick: doImport }, "\u2B06 Import"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost fe-export-btn", onClick: doExport }, "\u2B07 .json"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost fe-export-btn", onClick: doExportHtml }, "\u2B07 .html"), window.COMPOSE_HOSTED && /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      className: "btn-primary fe-export-btn",
+      onClick: saveToServer,
+      disabled: srvBusy,
+      title: 'Save this worksheet into the hosted version "' + window.COMPOSE_HOSTED.title + '" \u2014 students see the change immediately'
+    },
+    srvBusy ? "\u27F3 Saving\u2026" : "\u2601 Save to server"
+  ), srvMsg && /* @__PURE__ */ React.createElement("span", { className: srvMsg.kind === "ok" ? "fe-srv-ok" : "fe-srv-err", onClick: () => setSrvMsg(null) }, srvMsg.msg), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => {
     setState(emptyState());
     setEditKey(null);
   } }, "\u2715 Clear"), /* @__PURE__ */ React.createElement("button", { className: "icon-btn", onClick: minimize, "aria-label": "Minimise editor", title: "Minimise \u2014 keep editing later from the floating tab" }, "\u2013"), /* @__PURE__ */ React.createElement("button", { className: "icon-btn", onClick: onClose, "aria-label": "Close" }, "\u2715"))), /* @__PURE__ */ React.createElement("div", { className: "fe-body" }, /* @__PURE__ */ React.createElement(
@@ -8609,6 +8660,47 @@ function App() {
     setEditorInit({ text: null, key: null });
     setModal("editor");
   }
+  async function hostedFork(key) {
+    const H = window.COMPOSE_HOSTED;
+    const f = window.LC_FILES && window.LC_FILES[key];
+    if (!H || !f || !window.PocketBase) return;
+    const pb = new window.PocketBase(window.location.origin);
+    if (!pb.authStore.isValid) {
+      window.alert("Not logged in \u2014 open /dash, log in, then fork again.");
+      return;
+    }
+    try {
+      const newKey = key + "-fork" + Math.random().toString(36).slice(2, 6);
+      const title = (f.title || key) + " (copy)";
+      let content = null;
+      try {
+        content = JSON.parse(f.text);
+        if (content && content.title) content.title = title;
+      } catch (e2) {
+      }
+      const v = await pb.collection("versions").getOne(H.versionId);
+      const bundle = v.bundle && v.bundle.compose_bundle ? v.bundle : { compose_bundle: 1, title: v.title, chapters: [], worksheets: [] };
+      let list = bundle.worksheets || bundle.exercises;
+      if (!list) {
+        bundle.worksheets = [];
+        list = bundle.worksheets;
+      }
+      list.push(content ? { key: newKey, title, content } : { key: newKey, title, text: f.text });
+      await pb.collection("versions").update(H.versionId, { bundle });
+      if (Array.isArray(H.keys)) H.keys.push(newKey);
+      setEditorInit({ text: content ? JSON.stringify(content) : f.text, key: newKey });
+      setModal("editor");
+    } catch (err) {
+      const detail = err && err.response && err.response.message || err && err.message || "unknown error";
+      window.alert("Fork failed: " + detail);
+    }
+  }
+  function hostedEdit(key) {
+    const f = window.LC_FILES && window.LC_FILES[key];
+    if (!f) return;
+    setEditorInit({ text: f.text, key });
+    setModal("editor");
+  }
   function editUserExercise(key) {
     const f = userFiles.find((x) => x.key === key);
     setEditorInit({ text: f ? f.text : null, key });
@@ -8818,7 +8910,7 @@ function App() {
       if (toolsRef.current) toolsRef.current.open = false;
       setLoadErr(null);
       if (fileInput.current) fileInput.current.click();
-    } }, /* @__PURE__ */ React.createElement("span", null, "Import problem set\u2026"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u2191")), /* @__PURE__ */ React.createElement("div", { className: "tools-sep" }), /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
+    } }, /* @__PURE__ */ React.createElement("span", null, "Import problem set\u2026"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u2191")), /* @__PURE__ */ React.createElement("div", { className: "tools-sep" }), !(window.COMPOSE_BUILD && String(window.COMPOSE_BUILD.id || "").indexOf("hosted") === 0) && /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
       if (toolsRef.current) toolsRef.current.open = false;
       setModal("export");
     } }, /* @__PURE__ */ React.createElement("span", null, "Export assignment"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u2193")), /* @__PURE__ */ React.createElement("button", { className: "tool-btn", disabled: exporting, onClick: exportDerivation }, /* @__PURE__ */ React.createElement("span", null, exporting ? "Rendering\u2026" : "Export derivation (PNG)"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u29C9"))))), /* @__PURE__ */ React.createElement("div", { className: "settings-menu" }, /* @__PURE__ */ React.createElement("details", { className: "settings-details", ref: settingsRef }, /* @__PURE__ */ React.createElement("summary", { className: "file ghost settings-btn", title: "Settings" }, "\u2699 Settings"), /* @__PURE__ */ React.createElement("div", { className: "settings-dropdown" }, /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Dark mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (darkMode ? " on" : ""), role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode((d) => !d) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-resolve non-branching"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoNN ? " on" : ""), role: "switch", "aria-checked": autoNN, onClick: () => setAutoNN((s) => !s) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), !isStudentBuild && /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-apply composition rules"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoCompose ? " on" : ""), role: "switch", "aria-checked": autoCompose, onClick: () => setAutoCompose((s) => !s) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Collapse resolved subtrees"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (collapseResolved ? " on" : ""), role: "switch", "aria-checked": collapseResolved, onClick: () => setCollapseResolved((s) => !s) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("div", { className: "settings-row settings-layout-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Layout"), /* @__PURE__ */ React.createElement("div", { className: "seg-mini" }, /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() == null ? " on" : ""), onClick: () => setForceLayout(null) }, "Auto"), /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() === "mobile" ? " on" : ""), onClick: () => setForceLayout("mobile") }, "Mobile"))), /* @__PURE__ */ React.createElement("div", { className: "settings-stamp" }, BUILD.label || "COMPOSE", BUILD.version ? " \xB7 v" + BUILD.version : "", BUILD.date ? " \xB7 " + BUILD.date : ""))))),
@@ -8936,7 +9028,14 @@ function App() {
                 }
               },
               /* @__PURE__ */ React.createElement("span", { className: "fc-icon" }, active ? "\u{1F4D6}" : "\u{1F4D8}"),
-              /* @__PURE__ */ React.createElement("div", { style: { flex: 1 } }, /* @__PURE__ */ React.createElement("div", { className: "fc-title" }, l.title), /* @__PURE__ */ React.createElement("div", { className: "fc-meta" }, counts, " exercises \xB7 ", l.set.lexList.length, " entries"))
+              /* @__PURE__ */ React.createElement("div", { style: { flex: 1 } }, /* @__PURE__ */ React.createElement("div", { className: "fc-title" }, l.title), /* @__PURE__ */ React.createElement("div", { className: "fc-meta" }, counts, " exercises \xB7 ", l.set.lexList.length, " entries")),
+              window.COMPOSE_HOSTED && !isStudentBuild && ((window.COMPOSE_HOSTED.keys || []).includes(l.key) ? /* @__PURE__ */ React.createElement("button", { className: "fc-remove", title: "Edit this worksheet (saved on the server)", onClick: (e) => {
+                e.stopPropagation();
+                hostedEdit(l.key);
+              } }, "\u270E") : /* @__PURE__ */ React.createElement("button", { className: "fc-remove", title: "\u2442 Copy into my version for editing", onClick: (e) => {
+                e.stopPropagation();
+                hostedFork(l.key);
+              } }, "\u2442"))
             );
           }));
         }), bundles.length > 0 && bundles.map((b) => {

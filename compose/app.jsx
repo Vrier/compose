@@ -311,6 +311,39 @@ function App() {
     if (keys.has(fileKey)) { setFileKey(BUILTIN[0] ? BUILTIN[0].key : null); setSel({ gi: 0, pi: 0 }); }
   }
   function newUserExercise() { setEditorInit({ text: null, key: null }); setModal('editor'); }
+  // ---- hosted instructor actions (S4/W4) --------------------------------
+  // ⑂ fork: copy a worksheet into the hosted version's bundle, open editor.
+  // ✎ edit: open one of the version's own worksheets in the editor.
+  async function hostedFork(key) {
+    const H = window.COMPOSE_HOSTED; const f = window.LC_FILES && window.LC_FILES[key];
+    if (!H || !f || !window.PocketBase) return;
+    const pb = new window.PocketBase(window.location.origin);
+    if (!pb.authStore.isValid) { window.alert('Not logged in — open /dash, log in, then fork again.'); return; }
+    try {
+      const newKey = key + '-fork' + Math.random().toString(36).slice(2, 6);
+      const title = (f.title || key) + ' (copy)';
+      let content = null;
+      try { content = JSON.parse(f.text); if (content && content.title) content.title = title; } catch (e2) {}
+      const v = await pb.collection('versions').getOne(H.versionId);
+      const bundle = (v.bundle && v.bundle.compose_bundle) ? v.bundle : { compose_bundle: 1, title: v.title, chapters: [], worksheets: [] };
+      let list = bundle.worksheets || bundle.exercises;
+      if (!list) { bundle.worksheets = []; list = bundle.worksheets; }
+      list.push(content ? { key: newKey, title, content } : { key: newKey, title, text: f.text });
+      await pb.collection('versions').update(H.versionId, { bundle });
+      if (Array.isArray(H.keys)) H.keys.push(newKey);
+      setEditorInit({ text: content ? JSON.stringify(content) : f.text, key: newKey });
+      setModal('editor');
+    } catch (err) {
+      const detail = (err && err.response && err.response.message) || (err && err.message) || 'unknown error';
+      window.alert('Fork failed: ' + detail);
+    }
+  }
+  function hostedEdit(key) {
+    const f = window.LC_FILES && window.LC_FILES[key];
+    if (!f) return;
+    setEditorInit({ text: f.text, key });
+    setModal('editor');
+  }
   function editUserExercise(key) {
     const f = userFiles.find((x) => x.key === key);
     setEditorInit({ text: f ? f.text : null, key });
@@ -561,9 +594,11 @@ function App() {
                 <span>Import problem set…</span><span className="tool-ico">↑</span>
               </button>
               <div className="tools-sep" />
-              <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; setModal('export'); }}>
+              {!(window.COMPOSE_BUILD && String(window.COMPOSE_BUILD.id || '').indexOf('hosted') === 0) && (
+<button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; setModal('export'); }}>
                 <span>Export assignment</span><span className="tool-ico">↓</span>
               </button>
+)}
               <button className="tool-btn" disabled={exporting} onClick={exportDerivation}>
                 <span>{exporting ? 'Rendering…' : 'Export derivation (PNG)'}</span><span className="tool-ico">⧉</span>
               </button>
@@ -733,6 +768,11 @@ function App() {
                               <span className="fc-icon">{active ? '📖' : '📘'}</span>
                               <div style={{ flex: 1 }}><div className="fc-title">{l.title}</div>
                                 <div className="fc-meta">{counts} exercises · {l.set.lexList.length} entries</div></div>
+                              {window.COMPOSE_HOSTED && !isStudentBuild && (
+                                (window.COMPOSE_HOSTED.keys || []).includes(l.key)
+                                  ? <button className="fc-remove" title="Edit this worksheet (saved on the server)" onClick={(e) => { e.stopPropagation(); hostedEdit(l.key); }}>✎</button>
+                                  : <button className="fc-remove" title="⑂ Copy into my version for editing" onClick={(e) => { e.stopPropagation(); hostedFork(l.key); }}>⑂</button>
+                              )}
                             </div>
                           );
                         })}

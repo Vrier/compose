@@ -736,6 +736,39 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
     else onClose();
   }
 
+  // ---- Save to server (S4/W4): upsert this worksheet into the hosted
+  // version's bundle. Visible only when served from /edit/:id (COMPOSE_HOSTED).
+  const [srvMsg, setSrvMsg] = useState(null);
+  const [srvBusy, setSrvBusy] = useState(false);
+  async function saveToServer() {
+    const H = window.COMPOSE_HOSTED;
+    if (!H || !window.PocketBase) return;
+    const pb = new window.PocketBase(window.location.origin);
+    if (!pb.authStore.isValid) { setSrvMsg({ kind: 'err', msg: 'Not logged in — open /dash, log in, then come back and save again.' }); return; }
+    setSrvBusy(true); setSrvMsg(null);
+    try {
+      const text = generateJSON(state);
+      const obj = JSON.parse(text);
+      const v = await pb.collection('versions').getOne(H.versionId);
+      const bundle = (v.bundle && v.bundle.compose_bundle) ? v.bundle : { compose_bundle: 1, title: v.title, chapters: [], worksheets: [] };
+      let list = bundle.worksheets || bundle.exercises;
+      if (!list) { bundle.worksheets = []; list = bundle.worksheets; }
+      let key = editKey;
+      if (!key) key = window.composeSlug(obj.title || 'worksheet') + '-' + Math.random().toString(36).slice(2, 6);
+      const entry = { key, title: obj.title || key, content: obj };
+      const idx = list.findIndex((w) => w && w.key === key);
+      if (idx >= 0) list[idx] = entry; else list.push(entry);
+      await pb.collection('versions').update(H.versionId, { bundle });
+      setEditKey(key);
+      if (Array.isArray(H.keys) && H.keys.indexOf(key) < 0) H.keys.push(key);
+      setSrvMsg({ kind: 'ok', msg: 'Saved — live for students at /v/' + H.slug });
+    } catch (err) {
+      const detail = (err && err.response && err.response.message) || (err && err.message) || 'unknown error';
+      setSrvMsg({ kind: 'err', msg: 'Save to server failed: ' + detail });
+    }
+    setSrvBusy(false);
+  }
+
   // Export
   function doExport() {
     const text = generateJSON(state);
@@ -806,6 +839,13 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
             <button className="btn-ghost fe-import-btn" onClick={doImport}>⬆ Import</button>
             <button className="btn-ghost fe-export-btn" onClick={doExport}>⬇ .json</button>
             <button className="btn-ghost fe-export-btn" onClick={doExportHtml}>⬇ .html</button>
+            {window.COMPOSE_HOSTED && (
+              <button className="btn-primary fe-export-btn" onClick={saveToServer} disabled={srvBusy}
+                title={'Save this worksheet into the hosted version "' + window.COMPOSE_HOSTED.title + '" — students see the change immediately'}>
+                {srvBusy ? '⟳ Saving…' : '☁ Save to server'}
+              </button>
+            )}
+            {srvMsg && <span className={srvMsg.kind === 'ok' ? 'fe-srv-ok' : 'fe-srv-err'} onClick={() => setSrvMsg(null)}>{srvMsg.msg}</span>}
             <button className="btn-ghost" onClick={() => { setState(emptyState()); setEditKey(null); }}>✕ Clear</button>
             <button className="icon-btn" onClick={minimize} aria-label="Minimise editor" title="Minimise — keep editing later from the floating tab">–</button>
             <button className="icon-btn" onClick={onClose} aria-label="Close">✕</button>
