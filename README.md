@@ -31,16 +31,9 @@ dist/COMPOSE-student-cc.html     student, Coppock & Champollion library
 dist/COMPOSE-student.html        student, clean (loads an assignment)
 ```
 
-To regenerate them:
-
-```bash
-npm install
-npm run build      # → writes dist/*.html via build.mjs
-```
-
-The build (`build.mjs`) transpiles the `.jsx` with esbuild and inlines
-everything; React/ReactDOM/html-to-image are dev-dependencies used only at
-build time. There is no in-browser Babel and no CDN dependency.
+To regenerate them: `npm install && npm run build` (writes `dist/*.html` via
+`build.mjs`, which transpiles the `.jsx` with esbuild and inlines everything —
+no in-browser Babel, no CDN dependency).
 
 ### Developing (source tree)
 
@@ -49,27 +42,24 @@ dev/teacher source build loads its library by fetching `compose/exercises/`,
 which browsers block under `file://`:
 
 ```bash
-cd compose && python3 -m http.server 8000
-# then open http://localhost:8000/index.html
+cd compose && python3 -m http.server 8000   # then open http://localhost:8000/index.html
 ```
 
-> The source `index.html`/`teacher*.html`/`student*.html` still load React and
-> an in-browser JSX transpiler from a CDN — convenient for editing without a
-> build. The shippable artifacts are the `dist/` files above.
+> The source HTML entries still load React + an in-browser JSX transpiler from a
+> CDN — convenient for editing without a build. The shippable artifacts are the
+> `dist/` files.
 
 ### Testing
 
 ```bash
-npm test            # regression check: solve every tree in all 40 sets
+npm test            # solve every tree in all 40 sets, check against golden
 npm run test:update # regenerate the golden snapshot (for intended changes)
 ```
 
-`test/regression.mjs` loads the real engine, parses every set, solves every
-tree, and checks each result against the set's targets using the *same*
-equivalence logic the app uses to grade students. It compares the result to
-`test/golden.txt` and fails on any difference — so refactors that change engine
-or grader behaviour are caught immediately. When a change is intentional, run
-`npm run test:update` and commit the new golden file. No dependencies; pure Node.
+`test/regression.mjs` loads the real engine, solves every tree, and checks each
+result against the set's targets using the *same* equivalence logic the app uses
+to grade students, plus every node's `candidateRules` output — compared to
+`test/golden.txt`, failing on any difference. Pure Node, no dependencies.
 
 ## Builds
 
@@ -85,10 +75,8 @@ at the top of each HTML file:
 | `student.html` | Student | Clean (loads an assignment) |
 
 Teacher mode unlocks every composition rule, the editor, and answer reveals.
-Student builds hand out a fixed assignment with progress tracking.
-
-`COMPOSE-Website.html` is the standalone landing page; `COMPOSE-Demo.html` is a
-self-contained demo.
+Student builds hand out a fixed assignment with progress tracking. The marketing
+site lives separately in `compose/website/`.
 
 ## Authoring exercises
 
@@ -98,12 +86,18 @@ in-app editor (teacher mode → File picker → ✎ Create a new exercise) and
 `.compose-bundle.json`. The full format reference is in
 [`compose/FORMAT.md`](compose/FORMAT.md).
 
+Ready-made bundles live in `compose/bundles/`:
+`coppock-champollion.compose-bundle.json` (regenerate from the `ch*` sets with
+`npm run bundle:cc`) and `heim-kratzer.compose-bundle.json`. Drop either onto a
+clean build to load that textbook's whole library.
+
 ## Project layout
 
 ```
 build.mjs                                    self-contained production build
-package.json                                 build tooling + npm scripts
-test/regression.mjs, test/golden.txt         npm-test regression harness
+package.json                                 build/test scripts + deps
+test/regression.mjs, test/golden.txt         engine regression harness (npm test)
+scripts/make-cc-bundle.mjs                   regenerates the C&C bundle
 dist/                                        generated single-file builds (npm run build)
 compose/                                     ← the source app
   index.html, teacher*.html, student*.html   source build entry points
@@ -113,6 +107,8 @@ compose/                                     ← the source app
   themes.css, lingdown.css, ...              styling
   exercises/*.compose.json                   the exercise library (40 sets)
   reading/*.md                               notes companions (lingdown markup)
+  bundles/*.compose-bundle.json              loadable textbook bundles (C&C, H&K)
+  website/                                   marketing landing page + demo
   FORMAT.md                                   exercise file-format reference
   docs/                                       internal planning docs (not shipped)
 ```
@@ -128,9 +124,9 @@ library to Elizabeth Coppock and Lucas Champollion's open-access textbook,
 
 The COMPOSE source code is released under the [MIT License](LICENSE).
 
-The bundled exercise sets and notes companions are **original material**
-written for COMPOSE. They follow the structure and examples of the textbooks
-they accompany but paraphrase rather than reproduce them. COMPOSE does **not**
+The bundled exercise sets and notes companions are **original material** written
+for COMPOSE. They follow the structure and examples of the textbooks they
+accompany but paraphrase rather than reproduce them. COMPOSE does **not**
 distribute any copyrighted source texts — links point to the publishers' or
 authors' own open-access copies. Please respect the copyright of the underlying
 textbooks when using or extending the library.
@@ -140,14 +136,14 @@ textbooks when using or extending the library.
 ## Release checklist (in progress)
 
 - [x] Remove bundled copyrighted texts from the working copy
-- [x] Add README
-- [x] Add LICENSE (MIT)
-- [x] Remove scratch material (exercises-src/, screenshots/); move planning docs to `compose/docs/`
-- [x] Add a build step (precompile JSX, production React, drop the CDN/Babel dependency) — `build.mjs` → `dist/`
-- [x] Make the builds self-contained — all four `dist/` builds open from `file://`, no server
-- [x] Add a regression-test harness over the exercise library — `npm test` (golden file, all 40 sets)
-- [ ] Update the in-app **assignment export** (`export.jsx`) — it still re-fetches sibling
-      source files and embeds CDN React + Babel, so it won't work from a `dist/` build
+- [x] Add README + LICENSE (MIT)
+- [x] Remove scratch material; move planning docs to `compose/docs/`
+- [x] Build step — `build.mjs` → self-contained `dist/` (no CDN/Babel)
+- [x] Engine regression harness — `npm test` (golden file, all 40 sets)
+- [x] Tidy structure — `compose/bundles/`, `compose/website/`
+- [ ] Update the in-app **assignment export** (`export.jsx`) — it still re-fetches
+      sibling source files and embeds CDN React + Babel, so it won't work from a build
 - [ ] Verify the latest `dist/` builds in a real browser
 - [ ] Fill missing notes companions (ch6, ch10–ch13) or scope the claim
 - [ ] Reconcile set count / version numbers across the site and builds
+```

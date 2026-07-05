@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "description": "COMPOSE — an engine and problem-set builder for teaching compositional semantics.",
+  "author": "Thomas Stephen",
   "license": "MIT",
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
     "test": "node test/regression.mjs",
-    "test:update": "node test/regression.mjs --update"
+    "test:update": "node test/regression.mjs --update",
+    "bundle:cc": "node scripts/make-cc-bundle.mjs"
   },
   "devDependencies": {
     "esbuild": "0.23.0",
