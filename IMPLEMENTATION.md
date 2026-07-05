@@ -193,6 +193,8 @@ routerAdd('GET', '/v/{slug}', (e) => {
 ### S7 — Server tests  *(W7)*
 `test/server.mjs` (node, zero deps beyond fetch): spawn `./pocketbase serve --dir <tmp>` with migrations, wait for health, run: register (bad code fails / good succeeds), login, create, save bundle (invalid rejected, valid accepted), `GET /v/:slug` contains injected `LC_FILES_INLINE` and island, cross-user PATCH 403, bundle.json download. Wire `npm test` = regression + schema-check + server (skip server suite with a clear notice if the binary is absent).
 
+**S6 as-built notes:** shipped as specified, 46 checks covering W2+W3+W4+W6 journeys (superset of the brief's list: also edit route, dash, live-edit propagation, mode switch, pinned slug/opens, all four cap rejections, duplicate keys, rate limiting). Auto-runs `build:server` if generated artifacts are missing, so a fresh clone needs only `server/get-pocketbase.sh` before `npm test`. One instance runs everything with the S5 rate limiter live — register/auth budgets are annotated in the file; the 429 probe runs LAST. The per-session bash scripts (`manual-s3/4/5.sh`) remain as historical artifacts; `test/server.mjs` is the maintained suite.
+
 ### S8 — Deploy  *(W8)*
 Hetzner VPS (Ubuntu 24). Commit `deploy/Caddyfile`:
 ```
