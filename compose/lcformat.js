@@ -7,7 +7,9 @@
    ========================================================================= */
 (function () {
   'use strict';
-  const E = window.LC;
+  // Engine resolution (W13f): browser → window.LC; Node/PocketBase require →
+  // sibling module. The require branch is never evaluated in browsers.
+  const E = (typeof window !== 'undefined') ? window.LC : (typeof require === 'function' ? require : module.require)('./engine.js');
 
   /* ---- list / range expansion: "a-o", "x-z", bare tokens ---------------- */
   function expandList(str) {
@@ -208,6 +210,9 @@
 
   /* ---- composition rules (work on concrete/poly types) ------------------ */
   const norm = (term) => E.normalize(term);
+  // W13e: composition results carry incomplete:true when the β-reducer's step
+  // cap tripped, so callers can grade a runaway term as an error, not junk.
+  const normInfo = (term) => E.normalizeInfo(term);
   // Shared composition attempts — the single source of truth for FA / PM / IFA
   // matching + term building. Each returns {term,type,raw[,order]} or null.
   // Used by both applicable() (auto-solver) and candidateRules() (interactive UI).
@@ -216,7 +221,10 @@
       const sub = {}; const ft = refreshVars(f.type, {});
       if (isFun(ft) && unify(ft.from, refreshVars(a.type, {}), sub)) {
         const raw = E.App(f.term, a.term);
-        return { term: norm(raw), type: cleanType(walk(ft.to, sub)), raw, order };
+        const ni = normInfo(raw);
+        const out = { term: ni.term, type: cleanType(walk(ft.to, sub)), raw, order };
+        if (!ni.complete) out.incomplete = true;
+        return out;
       }
     }
     return null;
@@ -227,7 +235,10 @@
     if (isFun(lt) && isFun(rt) && unify(lt.to, 't', sub) && unify(rt.to, 't', sub) && unify(lt.from, rt.from, sub)) {
       const v = pmVar(l, r, walk(lt.from, sub));
       const raw = E.Lam(v, E.Bin('∧', E.App(l.term, E.Sym(v)), E.App(r.term, E.Sym(v))));
-      return { term: norm(raw), type: cleanType({ from: walk(lt.from, sub), to: 't' }), raw };
+      const ni = normInfo(raw);
+      const out = { term: ni.term, type: cleanType({ from: walk(lt.from, sub), to: 't' }), raw };
+      if (!ni.complete) out.incomplete = true;
+      return out;
     }
     return null;
   }
@@ -236,7 +247,10 @@
       const sub = {}; const ft = refreshVars(f.type, {});
       if (isFun(ft) && isFun(ft.from) && ft.from.from === 's' && unify(ft.from.to, refreshVars(a.type, {}), sub)) {
         const raw = E.App(f.term, E.Lam('w0', a.term));
-        return { term: norm(raw), type: cleanType(walk(ft.to, sub)), raw };
+        const ni = normInfo(raw);
+        const out = { term: ni.term, type: cleanType(walk(ft.to, sub)), raw };
+        if (!ni.complete) out.incomplete = true;
+        return out;
       }
     }
     return null;
@@ -259,6 +273,7 @@
     const fa = tryFA(l, r);
     if (fa) out.push({ key: 'fa', name: 'Function Application', abbr: 'FA', order: fa.order,
       desc: 'Apply the function sister to its argument sister.',
+      incomplete: fa.incomplete,
       raw: fa.raw, result: { term: fa.term, type: fa.type } });
     const pm = tryPM(l, r);
     if (pm) out.push({ key: 'pm', name: 'Predicate Modification', abbr: 'PM',
@@ -484,15 +499,20 @@
         if (!inner || inner.type == null) return null;
         const vname = 'x' + paIdx;
         const rawTerm = E.Lam(vname, inner.term);
-        return (result[node.id] = { term: norm(rawTerm), raw: rawTerm, idx: paIdx,
-          type: cleanType({ from: 'e', to: refreshVars(inner.type, {}) }), rule: 'PA' });
+        const ni = normInfo(rawTerm);
+        const paRes = { term: ni.term, raw: rawTerm, idx: paIdx,
+          type: cleanType({ from: 'e', to: refreshVars(inner.type, {}) }), rule: 'PA' };
+        if (!ni.complete) paRes.incomplete = true;
+        return (result[node.id] = paRes);
       }
       const kids = realKids.map(solve);
       if (kids.some((k) => !k || k.type == null)) return null;
       const rules = applicable(kids);
       if (rules.length === 0) return null;
       const chosen = rules[0];
-      return (result[node.id] = { term: chosen.result.term, type: chosen.result.type, raw: chosen.raw, rule: chosen.abbr || chosen.key });
+      const solved = { term: chosen.result.term, type: chosen.result.type, raw: chosen.raw, rule: chosen.abbr || chosen.key };
+      if (chosen.incomplete || (chosen.result && chosen.result.incomplete)) solved.incomplete = true;
+      return (result[node.id] = solved);
     }
     solve(root);
     return result;
@@ -501,11 +521,25 @@
   /* ---- whole-file parser ------------------------------------------------ */
   // Dispatches on content: a leading "{" means the native COMPOSE JSON format;
   // anything else is parsed as the legacy Lambda-Calculator DSL.
-  function parseFile(text, fallbackTitle) {
+  function parseFile(text, fallbackTitle, opts) {
+    const collect = !!(opts && opts.collect);
     const t = (text || '').trim();
     if (t.charAt(0) === '{') {
+      if (collect) {
+        // Diagnostics mode (W13a): JSON is the only hosted format — report
+        // instead of silently falling back to the legacy DSL parser.
+        let obj;
+        try { obj = JSON.parse(t); }
+        catch (e) { return { set: null, diagnostics: [{ level: 'error', path: '', message: 'not valid JSON: ' + e.message }] }; }
+        try { return parseJSON(obj, fallbackTitle, opts); }
+        catch (e) { return { set: null, diagnostics: [{ level: 'error', path: '', message: 'worksheet failed to parse: ' + e.message }] }; }
+      }
       try { return parseJSON(JSON.parse(t), fallbackTitle); }
       catch (e) { /* not valid JSON — fall through to the legacy DSL parser */ }
+    }
+    if (collect) {
+      const set = parseDSL(text, fallbackTitle);
+      return { set, diagnostics: [{ level: 'warn', path: '', message: 'legacy DSL input — hosted uploads accept the JSON worksheet format only' }] };
     }
     return parseDSL(text, fallbackTitle);
   }
@@ -548,8 +582,27 @@
     };
   }
 
-  // Native COMPOSE exercise format (JSON). See FORMAT.md for the schema.
-  function parseJSON(obj, fallbackTitle) {
+  // Native COMPOSE exercise format (JSON). See FORMAT.md and
+  // schemas/compose.schema.json. Second use: opts = { collect: true } turns on
+  // diagnostics mode (W13a) — the return value becomes { set, diagnostics }
+  // where diagnostics is [{ level: 'error'|'warn', path, message }]. Runtime
+  // callers (no opts) get exactly the historical lenient behaviour.
+  const STABLE_ID_RE = /^[A-Za-z0-9_-]{1,32}$/;
+  function parseJSON(obj, fallbackTitle, opts) {
+    const collect = !!(opts && opts.collect);
+    const diagnostics = collect ? [] : null;
+    const diag = (level, path, message) => { if (collect) diagnostics.push({ level, path, message }); };
+
+    // --- version enforcement (W13b): additive changes keep compose: 1;
+    // breaking changes bump it and ship a migration. ---
+    if (obj.compose !== 1) {
+      const msg = obj.compose === undefined
+        ? 'missing "compose" version field (expected compose: 1)'
+        : 'unsupported worksheet version compose: ' + JSON.stringify(obj.compose) + ' (this app understands version 1)';
+      if (collect) diag('error', 'compose', msg);
+      else if (typeof console !== 'undefined' && console.warn) console.warn('COMPOSE: ' + msg);
+    }
+
     const set = { id: obj.id || '', subtitle: obj.subtitle || '', title: obj.title || fallbackTitle || '',
       notation: obj.notation || 'cc',
       typeEnv: {}, constEnv: {}, lex: {}, lexList: [], rules: [], multiLetter: true, groups: [], displayHints: {} };
@@ -557,18 +610,22 @@
     // --- domain declarations ---
     const dom = obj.domain || {};
     set.multiLetter = dom.multiLetterNames !== false;
-    const applyDecls = (map, isConst) => {
+    const applyDecls = (map, isConst, dpath) => {
       for (const typeStr in (map || {})) {
-        let ty; try { ty = E.parseType(String(typeStr).replace(/⟨/g, '<').replace(/⟩/g, '>').trim()); } catch (e) { continue; }
-        if (containsProd(ty)) continue;
+        let ty; try { ty = E.parseType(String(typeStr).replace(/⟨/g, '<').replace(/⟩/g, '>').trim()); }
+        catch (e) { diag('warn', dpath + '["' + typeStr + '"]', 'unparseable type — declaration skipped'); continue; }
+        if (containsProd(ty)) { diag('warn', dpath + '["' + typeStr + '"]', 'product types are not supported in declarations — skipped (left to inference)'); continue; }
         for (const sym of expandList(map[typeStr])) { set.typeEnv[sym] = ty; if (isConst) set.constEnv[sym] = ty; }
       }
     };
-    applyDecls(dom.constants, true);
-    applyDecls(dom.variables, false);
+    applyDecls(dom.constants, true, 'domain.constants');
+    applyDecls(dom.variables, false, 'domain.variables');
 
     // --- lexicon ---
-    for (const e of (obj.lexicon || [])) {
+    (obj.lexicon || []).forEach((e, li) => {
+      if (e.den !== undefined) diag('warn', 'lexicon[' + li + '].den', 'deprecated field alias — use "denotation"');
+      if (e.display !== undefined) diag('warn', 'lexicon[' + li + '].display', 'deprecated field alias — use "displayAs"');
+      if (e.word !== undefined && e.words === undefined) diag('warn', 'lexicon[' + li + '].word', 'deprecated field alias — use "words" (array)');
       const words = Array.isArray(e.words) ? e.words.map((w) => String(w).trim()).filter(Boolean)
         : String(e.words || e.word || '').split(',').map((w) => w.trim()).filter(Boolean);
       const src = String(e.denotation || e.den || '').trim();
@@ -578,10 +635,11 @@
       const pr = E.tryParse(src);
       if (pr.ok) { term = pr.ast; try { type = inferType(term, set.typeEnv); } catch (ex) { err = ex.message; } }
       else err = pr.error;
+      if (err) diag('error', 'lexicon[' + li + '].denotation', (words.join(', ') || '(no words)') + ': ' + err);
       const entry = { words, src, term, type, err, hint: display };
       set.lexList.push(entry);
       for (const w of words) set.lex[w] = entry;
-    }
+    });
 
     // --- rule configuration (composition rules, type-shifts, behaviour) ---
     set.config = rulesToConfig(obj.rules);
@@ -594,11 +652,45 @@
     if (comp.intensionalFunctionApplication) set.rules.push('intensional function application');
 
     // --- exercises (every exercise is a tree; no kind needed) ---
+    // Stable ids (W13c): an optional "id" on each exercise (group) and each
+    // derivation (item) is preferred over the positional fallback, so progress
+    // keys survive reordering. Item ids get an 'i-' prefix so they can never
+    // collide with the positional g{i}p{j} namespace.
     (obj.exercises || []).forEach((g, gi) => {
-      const group = { id: 'g' + gi, kind: 'tree', title: g.title || '', directions: g.instructions || g.directions || '', problems: [] };
-      (g.items || g.trees || []).forEach((item, pi) => {
+      const gpath = 'exercises[' + gi + ']';
+      if (g.directions !== undefined && g.instructions === undefined) diag('warn', gpath + '.directions', 'deprecated field alias — use "instructions"');
+      let gid = null;
+      if (g.id !== undefined) {
+        if (typeof g.id === 'string' && STABLE_ID_RE.test(g.id)) gid = g.id;
+        else diag('warn', gpath + '.id', 'invalid id (allowed: 1–32 chars of A–Z a–z 0–9 _ -) — positional fallback used');
+      } else diag('warn', gpath, 'missing stable id — inserting or reordering exercises will scramble saved student progress');
+      const group = { id: gid || ('g' + gi), kind: 'tree', title: g.title || '', directions: g.instructions || g.directions || '', problems: [] };
+      const rawItems = g.derivations || g.items || g.trees || [];
+      if (!g.derivations && !g.items && g.trees) diag('warn', gpath + '.trees', 'deprecated field alias — use "derivations"');
+      rawItems.forEach((item, pi) => {
+        const ipath = gpath + '.derivations[' + pi + ']';
+        if (item.target !== undefined && item.targets === undefined) diag('warn', ipath + '.target', 'deprecated field alias — use "targets" (array)');
+        let iid = null;
+        if (item.id !== undefined) {
+          if (typeof item.id === 'string' && STABLE_ID_RE.test(item.id)) iid = item.id;
+          else diag('warn', ipath + '.id', 'invalid id (allowed: 1–32 chars of A–Z a–z 0–9 _ -) — positional fallback used');
+        } else diag('warn', ipath, 'missing stable id — inserting or reordering derivations will scramble saved student progress');
         const tgts = Array.isArray(item.targets) ? item.targets.filter(Boolean) : (item.target ? [item.target] : []);
-        group.problems.push({ id: group.id + 'p' + pi, kind: 'tree', tree: String(item.tree || '').trim(),
+        if (collect) {
+          const treeSrc = String(item.tree || '').trim();
+          if (!treeSrc) diag('error', ipath + '.tree', 'missing tree');
+          else { try { parseTree(treeSrc); } catch (ex) { diag('error', ipath + '.tree', 'tree does not parse: ' + ex.message); } }
+          tgts.forEach((ts, ti) => {
+            // mirror the grader's parseScopeTarget: formula is after the first
+            // colon; a trailing "(label)" lives in the label part, not the formula.
+            const str = String(ts);
+            const colon = str.indexOf(':');
+            const formula = (colon > -1 ? str.slice(colon + 1) : str).trim();
+            const r = E.tryParse(formula);
+            if (!r.ok) diag('error', ipath + '.targets[' + ti + ']', 'target does not parse — the grader could not check answers against it: ' + (r.error || ''));
+          });
+        }
+        group.problems.push({ id: iid ? 'i-' + iid : group.id + 'p' + pi, kind: 'tree', tree: String(item.tree || '').trim(),
           gloss: item.sentence || item.instructions || item.gloss || '',
           expected: item.expected || '', note: item.note || '',
           section: (item.reading && item.reading.section) || item.section || '',
@@ -613,7 +705,7 @@
     }
 
     if (!set.title) set.title = set.id || 'Exercise set';
-    return set;
+    return collect ? { set, diagnostics } : set;
   }
 
   function parseDSL(text, fallbackTitle) {
@@ -759,5 +851,8 @@
     return tree;
   }
 
-  window.LCFormat = { parseFile, parseJSON, parseDSL, rulesToConfig, parseTree, solveTree, applicable, candidateRules, inferType, expandList, refreshVars, SHIFTERS, applicableShifts, applyShift, findNodeById, findParentOf, allSNodes, isDominatedBy, applyQR };
+  // Universal module footer (W13f): mirror of engine.js.
+  const LCFORMAT_API = { parseFile, parseJSON, parseDSL, rulesToConfig, parseTree, solveTree, applicable, candidateRules, inferType, expandList, refreshVars, SHIFTERS, applicableShifts, applyShift, findNodeById, findParentOf, allSNodes, isDominatedBy, applyQR };
+  if (typeof window !== 'undefined') window.LCFormat = LCFORMAT_API;
+  if (typeof module !== 'undefined' && module.exports) module.exports = LCFORMAT_API;
 })();

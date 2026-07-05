@@ -8,6 +8,17 @@ You can author a set by hand in any text editor, or build one in the in-app
 (drag-and-drop or the file picker) restores everything below, including the rule
 configuration.
 
+**Version policy.** `"compose": 1` is required. Additive format changes keep the
+number at `1`; a breaking change bumps it to `2` and ships a migration in the
+app. Files with a missing or unknown version load with a console warning today
+and are rejected by hosted validation.
+
+**JSON Schemas.** `schemas/compose.schema.json` and
+`schemas/compose-bundle.schema.json` in the repo describe the canonical format
+(deprecated aliases are marked). Add
+`"$schema": "https://raw.githubusercontent.com/Vrier/compose/main/schemas/compose.schema.json"`
+to a worksheet file to get editor autocomplete and validation in VS Code.
+
 ```json
 {
   "compose": 1,
@@ -41,10 +52,12 @@ configuration.
 
   "exercises": [
     {
+      "id": "intrans",
       "title": "A. Intransitive verbs",
       "instructions": "optional directions shown under the title",
       "items": [
         {
+          "id": "frodo-runs",
           "sentence": "Frodo runs.",
           "tree": "[.S [.DP Frodo ] [.VP runs ] ]",
           "targets": ["run(f)"]
@@ -67,7 +80,17 @@ configuration.
 | `rules.typeShifts` | Array of enabled type-shifter keys: `lift`, `ident`, `iota`, `aop`, `be`, `lower`, `mod`, `modpred`, `ec-e` (EC over individuals), `ec-v` (EC over events), `ec-i` (EC over times), `ec` (polymorphic EC), `raiseO`, `raiseS`. |
 | `rules.quantifierRaising` | Enable drag-and-drop QR. |
 | `rules.autoResolveNonBranching` | Auto-collapse non-branching nodes. |
-| `exercises[].items[]` | Each item is one tree. `tree` uses bracket notation `[.Label child child]`; a leaf is a lexicon word, a trace is `t_1`, an index leaf is a bare number. `sentence` is the title shown to the student; `targets` (optional) are the accepted goal denotations — give two for a scope-ambiguous item to require both readings. |
+| `exercises[].items[]` | Each item is one tree (a **derivation**; `derivations` is the forward-looking spelling of the list and is accepted today). `tree` uses bracket notation `[.Label child child]`; a leaf is a lexicon word, a trace is `t_1`, an index leaf is a bare number. `sentence` is the title shown to the student; `targets` (optional) are the accepted goal denotations — give two for a scope-ambiguous item to require both readings. |
+| `id` (on exercises and items) | Optional **stable id** (1–32 chars of `A–Z a–z 0–9 _ -`). Student progress is keyed by these ids. **Without stable ids, inserting or reordering content silently re-attaches every student's saved progress to the wrong derivations** — critical for hosted worksheets, where links are live. The editor generates ids automatically. |
+| `notation` | `"cc"` (Coppock & Champollion, default) or `"hk"` (Heim & Kratzer) rendering conventions. |
+| `reading` | Optional embedded reading companion: `{ "format": "lingdown", "markdown": "…" }`. Items anchor to its `##` sections via `"reading": { "section": "…" }`. |
+| `hints`, `targetsMode` | Reserved (schema-valid, not yet consumed): per-item staged hints, and whether all targets are required (`"all"`, default) or any one suffices (`"any"`). |
+
+**Deprecated aliases.** These load for backwards compatibility but should not be
+written by new tools (the parser's diagnostics mode flags them): `den` → use
+`denotation`, `display` → `displayAs`, `word` → `words`, `trees` → `derivations`
+(or `items`), `target` → `targets`, `directions` → `instructions`, item-level
+`section` → `reading.section`.
 
 > Legacy Lambda-Calculator `.lbd`/`.txt` DSL files still load — COMPOSE detects
 > the format automatically (a leading `{` means JSON).
@@ -119,10 +142,10 @@ A bundle groups multiple exercise sets under a different textbook. Drop a `.comp
 
 | Field | Meaning |
 |---|---|
-| `compose_bundle` | Must be `1` — marks the file as a bundle. |
+| `compose_bundle` | Must be `1` — marks the file as a bundle. Same version policy as worksheets: additive changes keep `1`, breaking changes bump it with a migration. |
 | `title` | Textbook name shown in the exercise picker. |
 | `authors` | Author line shown under the title (optional). |
 | `chapters` | Array of `{prefix, label, title}` groupings for the exercise picker. Same structure as built-in chapters. |
-| `exercises[]` | One entry per exercise set (parallel to `.compose.json` files). Each must have a `key` (string), a `title`, and either `content` (an inline `.compose.json` object) or `text` (a JSON string). |
+| `exercises[]` | One entry per worksheet (parallel to `.compose.json` files). Each must have a `key` (string), a `title`, and either `content` (an inline `.compose.json` object, preferred) or `text` (a JSON string — legacy double-encoding). `worksheets[]` is the forward-looking canonical spelling and is accepted today. |
 
 > **Tip:** Use the built-in Exercise Editor (teacher mode → File picker → ✎ Create a new exercise) to draft individual exercise sets, then export them as `.compose.json` and embed them as the `content` field of each `exercises[]` entry.

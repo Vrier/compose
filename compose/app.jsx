@@ -183,10 +183,11 @@ function App() {
     let bundle;
     try { bundle = JSON.parse(text); } catch(e) { setLoadErr('Not valid JSON: ' + e.message); return; }
     if (!bundle.compose_bundle) { setLoadErr('Not a COMPOSE bundle — missing compose_bundle field.'); return; }
+    if (bundle.compose_bundle !== 1 && typeof console !== 'undefined' && console.warn) console.warn('COMPOSE: unsupported bundle version compose_bundle: ' + JSON.stringify(bundle.compose_bundle) + ' (this app understands version 1)');
     // resolve exercise text: either inline or via URL relative to nothing (user must provide inline)
     const id = 'bundle-' + Date.now();
     const sets = [];
-    for (const s of (bundle.exercises || [])) {
+    for (const s of (bundle.worksheets || bundle.exercises || [])) {
       const exerciseText = s.text || (s.content ? JSON.stringify(s.content) : null);
       if (!exerciseText) { setLoadErr('Exercise "' + (s.title||s.key) + '" has no inline text — bundle must include content.'); return; }
       sets.push({ key: id + '-' + (s.key||sets.length), title: s.title || s.key || 'Exercise', text: exerciseText });

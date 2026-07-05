@@ -297,13 +297,21 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
     return { label, sublabel, formula, term: r.ok ? r.ast : null };
   }
 
+  // W13d/e: returns true (match), false (no match), or the truthy string
+  // 'target-error' — the target itself is unusable (unparseable, or its
+  // normalization tripped the step cap). 'target-error' counts as matched for
+  // progress, but the UI must show a visible warning instead of a green tick.
   function matchesTarget(meaning, targetStr) {
     if (!meaning) return false;
     const { term } = parseScopeTarget(targetStr);
-    if (!term) return true; // no parseable target — accept any
+    if (!term) return 'target-error'; // unparseable target — never silently pass
     try {
-      const normD = E.normalize(meaning.term);
-      const normT = E.normalize(term);
+      const nD = E.normalizeInfo(meaning.term);
+      const nT = E.normalizeInfo(term);
+      if (!nT.complete) return 'target-error'; // runaway target term — cannot grade against junk
+      if (!nD.complete) return false;          // runaway derivation term — grade as non-match
+      const normD = nD.term;
+      const normT = nT.term;
       if (E.alphaEqualAC(normD, normT)) return true;
       // αβη + AC: also accept η-variants, e.g. ∗(λx.hobbit(x))(x) ≡ ∗hobbit(x)
       if (E.equivACη(meaning.term, term)) return true;
@@ -323,7 +331,10 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
     if (hasSingleTarget && !hasScopes) {
       // Single-target: check derivation matches
       const matched = matchesTarget(rootMeaning, problem.targets[0]);
-      if (matched) {
+      if (matched === 'target-error') {
+        setSingleFb({ ok: true, targetError: true });
+        onComplete && onComplete();
+      } else if (matched) {
         setSingleFb({ ok: true });
         onComplete && onComplete();
       } else {
@@ -335,11 +346,12 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
     const matched = matchesTarget(rootMeaning, targets[activeTargetIdx]);
     if (matched) {
       setCompletedTarget(activeTargetIdx);
-      setScopeFb({ kind: 'good', idx: activeTargetIdx });
+      setScopeFb({ kind: 'good', idx: activeTargetIdx, targetError: matched === 'target-error' });
       onComplete && onComplete();
     } else {
-      // Check if it matches a different target
-      const otherIdx = targets.findIndex((t, i) => i !== activeTargetIdx && matchesTarget(rootMeaning, t));
+      // Check if it matches a different target (strict true — a broken other
+      // target must not masquerade as the other scope reading)
+      const otherIdx = targets.findIndex((t, i) => i !== activeTargetIdx && matchesTarget(rootMeaning, t) === true);
       if (otherIdx > -1) {
         const { label } = parseScopeTarget(targets[otherIdx]);
         setScopeFb({ kind: 'wrong-scope', msg: 'You derived the "' + label + '" reading — select that checkbox to confirm it, or reset and try the other scope.' });
@@ -838,9 +850,11 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
           </div>
         )}
         {allDone && !hasScopes && !hasSingleTarget && <Feedback kind="good">Derivation complete — the root meaning is computed. Pick the next exercise on the left.</Feedback>}
-        {allDone && hasSingleTarget && !hasScopes && singleFb && singleFb.ok && <Feedback kind="good">✓ Correct derivation — the meaning matches the target.</Feedback>}
+        {allDone && hasSingleTarget && !hasScopes && singleFb && singleFb.ok && !singleFb.targetError && <Feedback kind="good">✓ Correct derivation — the meaning matches the target.</Feedback>}
+        {allDone && hasSingleTarget && !hasScopes && singleFb && singleFb.ok && singleFb.targetError && <Feedback kind="info">⚠ Derivation complete, but the target could not be checked — tell your instructor.</Feedback>}
         {allDone && hasSingleTarget && !hasScopes && singleFb && !singleFb.ok && <Feedback kind="bad">{singleFb.msg}</Feedback>}
-        {allDone && hasScopes && scopeFb && scopeFb.kind === 'good' && <Feedback kind="good">✓ {parseScopeTarget(problem.targets[scopeFb.idx]).label} scope reading confirmed!{completedTargets.size === problem.targets.length ? ' Both readings derived — well done.' : ' Select the other checkbox to derive the second reading.'}</Feedback>}
+        {allDone && hasScopes && scopeFb && scopeFb.kind === 'good' && scopeFb.targetError && <Feedback kind="info">⚠ Derivation complete, but this target could not be checked — tell your instructor.</Feedback>}
+        {allDone && hasScopes && scopeFb && scopeFb.kind === 'good' && !scopeFb.targetError && <Feedback kind="good">✓ {parseScopeTarget(problem.targets[scopeFb.idx]).label} scope reading confirmed!{completedTargets.size === problem.targets.length ? ' Both readings derived — well done.' : ' Select the other checkbox to derive the second reading.'}</Feedback>}
         {allDone && hasScopes && scopeFb && scopeFb.kind !== 'good' && <Feedback kind="bad">{scopeFb.msg}</Feedback>}
         {allNodesDone && !rootDone && rootMeaning && <Feedback kind="info">All nodes resolved, but the root is type <TypeBadge type={rootMeaning.type} /> — apply Existential Closure (EC) or another operation to reach type <span className="lx">t</span> before the exercise completes.</Feedback>}
 

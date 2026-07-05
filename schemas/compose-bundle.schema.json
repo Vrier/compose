@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Vrier/compose/main/schemas/compose-bundle.schema.json",
+  "title": "COMPOSE companion bundle (.compose-bundle.json)",
+  "description": "A companion groups worksheets under a source — a textbook, a course, or a paper. Canonical name for the worksheet list is worksheets[]; exercises[] is accepted as a legacy alias. Version policy: additive changes keep compose_bundle: 1; breaking changes bump the number and ship a migration.",
+  "type": "object",
+  "required": ["compose_bundle", "title"],
+  "anyOf": [
+    { "required": ["worksheets"] },
+    { "required": ["exercises"] }
+  ],
+  "properties": {
+    "compose_bundle": { "const": 1, "description": "Bundle format version. Must be 1." },
+    "title": { "type": "string", "minLength": 1, "description": "Source name shown in the worksheet picker." },
+    "authors": { "type": "string", "description": "Author line shown under the title." },
+    "chapters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["prefix"],
+        "properties": {
+          "prefix": { "type": "string", "description": "Worksheet keys are grouped under the chapter whose prefix they start with." },
+          "label": { "type": "string" },
+          "title": { "type": "string" }
+        }
+      }
+    },
+    "worksheets": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/worksheetEntry" },
+      "description": "Canonical name for the worksheet list."
+    },
+    "exercises": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/worksheetEntry" },
+      "deprecated": true,
+      "description": "Legacy alias for worksheets — accepted, but new files should use worksheets."
+    }
+  },
+  "$defs": {
+    "worksheetEntry": {
+      "type": "object",
+      "required": ["key"],
+      "anyOf": [
+        { "required": ["content"] },
+        { "required": ["text"] }
+      ],
+      "properties": {
+        "key": { "type": "string", "minLength": 1, "description": "Library key; also the prefix-matched handle for chapter grouping and progress storage." },
+        "title": { "type": "string" },
+        "content": { "$ref": "compose.schema.json", "description": "The worksheet as an inline JSON object (preferred)." },
+        "text": { "type": "string", "description": "The worksheet as a JSON string (legacy double-encoding; prefer content)." }
+      }
+    }
+  }
+}

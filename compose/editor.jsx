@@ -182,11 +182,12 @@ function generateJSON(state) {
       operators: (rules && rules.ops) ? { ...DEFAULT_OPS, ...rules.ops } : { ...DEFAULT_OPS },
     },
     exercises: groups.map((g) => ({
+      id: g.id || genId(),
       title: g.title || 'Exercises',
       items: g.trees
         .filter((it) => (it.tree || '').trim())
         .map((it) => {
-          const o = { tree: it.tree.trim() };
+          const o = { id: it.id || genId(), tree: it.tree.trim() };
           if ((it.instructions || '').trim()) o.sentence = it.instructions.trim();
           if ((it.expected || '').trim()) o.expected = it.expected.trim();
           if ((it.note || '').trim()) o.note = it.note.trim();
@@ -242,12 +243,18 @@ function parseFromText(text) {
       const jj = JSON.parse(text);
       if (jj && jj.reading && typeof jj.reading.markdown === 'string') reading = { markdown: jj.reading.markdown };
       if (jj && Array.isArray(jj.exercises)) jj.exercises.forEach((ge, gi) => {
-        (ge.items || []).forEach((it, ii) => {
+        if (groups[gi] && typeof ge.id === 'string') groups[gi].id = ge.id;
+        (ge.derivations || ge.items || []).forEach((it, ii) => {
           const sec = it && it.reading && it.reading.section;
           if (sec && groups[gi] && groups[gi].trees[ii]) groups[gi].trees[ii].section = sec;
+          if (it && typeof it.id === 'string' && groups[gi] && groups[gi].trees[ii]) groups[gi].trees[ii].id = it.id;
         });
       });
     } catch (e) {}
+    // W13c: every group/item leaves the editor with a stable id — files that
+    // never had ids gain them on their first edit (additive; old files on disk
+    // are untouched until re-exported).
+    groups.forEach(g => { if (!g.id) g.id = genId(); (g.trees || []).forEach(t => { if (!t.id) t.id = genId(); }); });
     // Recover rule config: native JSON files carry set.config; legacy files fall back to sensible defaults.
     const cfg = set.config || null;
     const rules = cfg
@@ -271,7 +278,10 @@ function parseFromText(text) {
   } catch { return null; }
 }
 
-const emptyGroup  = () => ({ title: '', trees: [{ instructions: '', tree: '', expected: '', note: '' }] });
+// W13c: stable ids — generated at creation time so hosted live edits never
+// scramble student progress keys (see FORMAT.md).
+const genId = () => Math.random().toString(36).slice(2, 8);
+const emptyGroup  = () => ({ id: genId(), title: '', trees: [{ id: genId(), instructions: '', tree: '', expected: '', note: '' }] });
 const emptyState  = () => ({
   title: '', lex: [{ word: '', den: '' }],
   groups: [emptyGroup()],
@@ -558,8 +568,8 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
   function delGroup(i) { setGroups(g => g.filter((_, j) => j !== i)); }
   function updGroup(i, patch) { setGroups(g => g.map((x, j) => j === i ? { ...x, ...patch } : x)); }
   function moveGroup(i, dir) { setGroups(g => { const j = i + dir; if (j < 0 || j >= g.length) return g; const n = g.slice(); const [it] = n.splice(i, 1); n.splice(j, 0, it); return n; }); }
-  function dupGroup(i) { setGroups(g => { const n = g.slice(); const copy = JSON.parse(JSON.stringify(g[i])); copy.title = (g[i].title || 'Group') + ' (copy)'; n.splice(i + 1, 0, copy); return n; }); }
-  function addTree(i)  { setGroups(g => g.map((x, j) => j === i ? { ...x, trees: [...x.trees, { instructions: '', tree: '', expected: '', note: '' }] } : x)); }
+  function dupGroup(i) { setGroups(g => { const n = g.slice(); const copy = JSON.parse(JSON.stringify(g[i])); copy.title = (g[i].title || 'Group') + ' (copy)'; copy.id = genId(); copy.trees = (copy.trees || []).map(t => ({ ...t, id: genId() })); n.splice(i + 1, 0, copy); return n; }); }
+  function addTree(i)  { setGroups(g => g.map((x, j) => j === i ? { ...x, trees: [...x.trees, { id: genId(), instructions: '', tree: '', expected: '', note: '' }] } : x)); }
   function delTree(i, k) { setGroups(g => g.map((x, j) => j === i ? { ...x, trees: x.trees.filter((_, m) => m !== k) } : x)); }
   function updTree(i, k, patch) { setGroups(g => g.map((x, j) => j === i ? { ...x, trees: x.trees.map((t, m) => m === k ? { ...t, ...patch } : t) } : x)); }
 
@@ -629,6 +639,11 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
                       </div>
                       <input className="fe-note-input" value={item.note || ''} placeholder="Teacher note (optional)…"
                         onChange={e => updTree(i, k, { note: e.target.value })} spellCheck={false} />
+                      {Array.isArray(item.targets) && item.targets.filter(Boolean).map((t, ti) => {
+                        const str = String(t); const c = str.indexOf(':');
+                        const ok = E.tryParse((c > -1 ? str.slice(c + 1) : str).trim()).ok;
+                        return ok ? null : <span key={'tgt' + ti} className="fe-type-err" title={'Target does not parse — the grader cannot check answers against it: ' + str}>⚠ target {ti + 1} unparseable</span>;
+                      })}
                       {sections && sections.length > 0 && (
                         <span className="fe-sec-field">
                           <span className="lab">📝 §</span>

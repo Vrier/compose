@@ -2678,18 +2678,26 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       default: return e;
     }
   }
-  function normalize(e, max = 1000) {
-    let cur = e, guard = 0;
+  // normalizeInfo: like normalize, but reports whether the term actually reached
+  // a normal form. complete:false means a step cap tripped (runaway term) and
+  // the returned term is only PARTIALLY reduced — callers must treat it as an
+  // error state and never grade against it (W13e). Control flow is identical
+  // to the historical normalize(), so `term` is byte-for-byte what normalize
+  // always returned.
+  function normalizeInfo(e, max = 1000) {
+    let cur = e, guard = 0, complete = false;
     // Interleave β-reduction with Def-floating: floating Def out of an application
     // can expose a fresh redex (App(Def(φ,f),a) → Def(φ,App(f,a))), so loop until stable.
     while (guard++ < max) {
-      let n = 0; while (n++ < max) { const s = betaStep(cur); if (!s) break; cur = s; }
+      let n = 0, betaCapped = true;
+      while (n++ < max) { const s = betaStep(cur); if (!s) { betaCapped = false; break; } cur = s; }
       const lifted = floatDef(cur);
-      if (alphaEqual(lifted, cur)) { cur = lifted; break; }
+      if (alphaEqual(lifted, cur)) { cur = lifted; if (!betaCapped) complete = true; break; }
       cur = lifted;
     }
-    return floatDef(simplifyEq(simplifyOplus(simplifyBool(cur))));
+    return { term: floatDef(simplifyEq(simplifyOplus(simplifyBool(cur)))), complete };
   }
+  function normalize(e, max = 1000) { return normalizeInfo(e, max).term; }
   // ---- one-point / equality-elimination laws (Partee 1986 type-shifting) ---
   // Sound logical equivalences that the type-shifters BE and lower rely on to
   // produce reduced forms:
@@ -3197,14 +3205,18 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
     return walk(term, new Map());
   }
 
-window.LC = {
+// Universal module footer (W13f): browsers get window.LC exactly as before;
+// Node (require) and PocketBase's embedded JS runtime get module.exports.
+const LC_API = {
     Sym, Lam, App, Not, Bin, Quant, Partial, Gsum, Card, Def,
     parse, tokenize, tryParse, asciiToUnicode, setNotation,
-    freeVars, subst, betaStep, normalize, simplifyBool, isNormal, findRedex, reduceAt, floatDef,
+    freeVars, subst, betaStep, normalize, normalizeInfo, simplifyBool, isNormal, findRedex, reduceAt, floatDef,
     alphaEqual, alphaEqualAC, equiv, prettifyVars, etaReduce, equivACη,
     parseType, typeToHTML, typeToStr, typeEqual, isFun,
     toHTML, toStr,
   };
+if (typeof window !== 'undefined') window.LC = LC_API;
+if (typeof module !== 'undefined' && module.exports) module.exports = LC_API;
 })();
 
 </script>
@@ -3218,7 +3230,9 @@ window.LC = {
    ========================================================================= */
 (function () {
   'use strict';
-  const E = window.LC;
+  // Engine resolution (W13f): browser → window.LC; Node/PocketBase require →
+  // sibling module. The require branch is never evaluated in browsers.
+  const E = (typeof window !== 'undefined') ? window.LC : (typeof require === 'function' ? require : module.require)('./engine.js');
 
   /* ---- list / range expansion: "a-o", "x-z", bare tokens ---------------- */
   function expandList(str) {
@@ -3419,6 +3433,9 @@ window.LC = {
 
   /* ---- composition rules (work on concrete/poly types) ------------------ */
   const norm = (term) => E.normalize(term);
+  // W13e: composition results carry incomplete:true when the β-reducer's step
+  // cap tripped, so callers can grade a runaway term as an error, not junk.
+  const normInfo = (term) => E.normalizeInfo(term);
   // Shared composition attempts — the single source of truth for FA / PM / IFA
   // matching + term building. Each returns {term,type,raw[,order]} or null.
   // Used by both applicable() (auto-solver) and candidateRules() (interactive UI).
@@ -3427,7 +3444,10 @@ window.LC = {
       const sub = {}; const ft = refreshVars(f.type, {});
       if (isFun(ft) && unify(ft.from, refreshVars(a.type, {}), sub)) {
         const raw = E.App(f.term, a.term);
-        return { term: norm(raw), type: cleanType(walk(ft.to, sub)), raw, order };
+        const ni = normInfo(raw);
+        const out = { term: ni.term, type: cleanType(walk(ft.to, sub)), raw, order };
+        if (!ni.complete) out.incomplete = true;
+        return out;
       }
     }
     return null;
@@ -3438,7 +3458,10 @@ window.LC = {
     if (isFun(lt) && isFun(rt) && unify(lt.to, 't', sub) && unify(rt.to, 't', sub) && unify(lt.from, rt.from, sub)) {
       const v = pmVar(l, r, walk(lt.from, sub));
       const raw = E.Lam(v, E.Bin('∧', E.App(l.term, E.Sym(v)), E.App(r.term, E.Sym(v))));
-      return { term: norm(raw), type: cleanType({ from: walk(lt.from, sub), to: 't' }), raw };
+      const ni = normInfo(raw);
+      const out = { term: ni.term, type: cleanType({ from: walk(lt.from, sub), to: 't' }), raw };
+      if (!ni.complete) out.incomplete = true;
+      return out;
     }
     return null;
   }
@@ -3447,7 +3470,10 @@ window.LC = {
       const sub = {}; const ft = refreshVars(f.type, {});
       if (isFun(ft) && isFun(ft.from) && ft.from.from === 's' && unify(ft.from.to, refreshVars(a.type, {}), sub)) {
         const raw = E.App(f.term, E.Lam('w0', a.term));
-        return { term: norm(raw), type: cleanType(walk(ft.to, sub)), raw };
+        const ni = normInfo(raw);
+        const out = { term: ni.term, type: cleanType(walk(ft.to, sub)), raw };
+        if (!ni.complete) out.incomplete = true;
+        return out;
       }
     }
     return null;
@@ -3470,6 +3496,7 @@ window.LC = {
     const fa = tryFA(l, r);
     if (fa) out.push({ key: 'fa', name: 'Function Application', abbr: 'FA', order: fa.order,
       desc: 'Apply the function sister to its argument sister.',
+      incomplete: fa.incomplete,
       raw: fa.raw, result: { term: fa.term, type: fa.type } });
     const pm = tryPM(l, r);
     if (pm) out.push({ key: 'pm', name: 'Predicate Modification', abbr: 'PM',
@@ -3695,15 +3722,20 @@ window.LC = {
         if (!inner || inner.type == null) return null;
         const vname = 'x' + paIdx;
         const rawTerm = E.Lam(vname, inner.term);
-        return (result[node.id] = { term: norm(rawTerm), raw: rawTerm, idx: paIdx,
-          type: cleanType({ from: 'e', to: refreshVars(inner.type, {}) }), rule: 'PA' });
+        const ni = normInfo(rawTerm);
+        const paRes = { term: ni.term, raw: rawTerm, idx: paIdx,
+          type: cleanType({ from: 'e', to: refreshVars(inner.type, {}) }), rule: 'PA' };
+        if (!ni.complete) paRes.incomplete = true;
+        return (result[node.id] = paRes);
       }
       const kids = realKids.map(solve);
       if (kids.some((k) => !k || k.type == null)) return null;
       const rules = applicable(kids);
       if (rules.length === 0) return null;
       const chosen = rules[0];
-      return (result[node.id] = { term: chosen.result.term, type: chosen.result.type, raw: chosen.raw, rule: chosen.abbr || chosen.key });
+      const solved = { term: chosen.result.term, type: chosen.result.type, raw: chosen.raw, rule: chosen.abbr || chosen.key };
+      if (chosen.incomplete || (chosen.result && chosen.result.incomplete)) solved.incomplete = true;
+      return (result[node.id] = solved);
     }
     solve(root);
     return result;
@@ -3712,11 +3744,25 @@ window.LC = {
   /* ---- whole-file parser ------------------------------------------------ */
   // Dispatches on content: a leading "{" means the native COMPOSE JSON format;
   // anything else is parsed as the legacy Lambda-Calculator DSL.
-  function parseFile(text, fallbackTitle) {
+  function parseFile(text, fallbackTitle, opts) {
+    const collect = !!(opts && opts.collect);
     const t = (text || '').trim();
     if (t.charAt(0) === '{') {
+      if (collect) {
+        // Diagnostics mode (W13a): JSON is the only hosted format — report
+        // instead of silently falling back to the legacy DSL parser.
+        let obj;
+        try { obj = JSON.parse(t); }
+        catch (e) { return { set: null, diagnostics: [{ level: 'error', path: '', message: 'not valid JSON: ' + e.message }] }; }
+        try { return parseJSON(obj, fallbackTitle, opts); }
+        catch (e) { return { set: null, diagnostics: [{ level: 'error', path: '', message: 'worksheet failed to parse: ' + e.message }] }; }
+      }
       try { return parseJSON(JSON.parse(t), fallbackTitle); }
       catch (e) { /* not valid JSON — fall through to the legacy DSL parser */ }
+    }
+    if (collect) {
+      const set = parseDSL(text, fallbackTitle);
+      return { set, diagnostics: [{ level: 'warn', path: '', message: 'legacy DSL input — hosted uploads accept the JSON worksheet format only' }] };
     }
     return parseDSL(text, fallbackTitle);
   }
@@ -3759,8 +3805,27 @@ window.LC = {
     };
   }
 
-  // Native COMPOSE exercise format (JSON). See FORMAT.md for the schema.
-  function parseJSON(obj, fallbackTitle) {
+  // Native COMPOSE exercise format (JSON). See FORMAT.md and
+  // schemas/compose.schema.json. Second use: opts = { collect: true } turns on
+  // diagnostics mode (W13a) — the return value becomes { set, diagnostics }
+  // where diagnostics is [{ level: 'error'|'warn', path, message }]. Runtime
+  // callers (no opts) get exactly the historical lenient behaviour.
+  const STABLE_ID_RE = /^[A-Za-z0-9_-]{1,32}$/;
+  function parseJSON(obj, fallbackTitle, opts) {
+    const collect = !!(opts && opts.collect);
+    const diagnostics = collect ? [] : null;
+    const diag = (level, path, message) => { if (collect) diagnostics.push({ level, path, message }); };
+
+    // --- version enforcement (W13b): additive changes keep compose: 1;
+    // breaking changes bump it and ship a migration. ---
+    if (obj.compose !== 1) {
+      const msg = obj.compose === undefined
+        ? 'missing "compose" version field (expected compose: 1)'
+        : 'unsupported worksheet version compose: ' + JSON.stringify(obj.compose) + ' (this app understands version 1)';
+      if (collect) diag('error', 'compose', msg);
+      else if (typeof console !== 'undefined' && console.warn) console.warn('COMPOSE: ' + msg);
+    }
+
     const set = { id: obj.id || '', subtitle: obj.subtitle || '', title: obj.title || fallbackTitle || '',
       notation: obj.notation || 'cc',
       typeEnv: {}, constEnv: {}, lex: {}, lexList: [], rules: [], multiLetter: true, groups: [], displayHints: {} };
@@ -3768,18 +3833,22 @@ window.LC = {
     // --- domain declarations ---
     const dom = obj.domain || {};
     set.multiLetter = dom.multiLetterNames !== false;
-    const applyDecls = (map, isConst) => {
+    const applyDecls = (map, isConst, dpath) => {
       for (const typeStr in (map || {})) {
-        let ty; try { ty = E.parseType(String(typeStr).replace(/⟨/g, '<').replace(/⟩/g, '>').trim()); } catch (e) { continue; }
-        if (containsProd(ty)) continue;
+        let ty; try { ty = E.parseType(String(typeStr).replace(/⟨/g, '<').replace(/⟩/g, '>').trim()); }
+        catch (e) { diag('warn', dpath + '["' + typeStr + '"]', 'unparseable type — declaration skipped'); continue; }
+        if (containsProd(ty)) { diag('warn', dpath + '["' + typeStr + '"]', 'product types are not supported in declarations — skipped (left to inference)'); continue; }
         for (const sym of expandList(map[typeStr])) { set.typeEnv[sym] = ty; if (isConst) set.constEnv[sym] = ty; }
       }
     };
-    applyDecls(dom.constants, true);
-    applyDecls(dom.variables, false);
+    applyDecls(dom.constants, true, 'domain.constants');
+    applyDecls(dom.variables, false, 'domain.variables');
 
     // --- lexicon ---
-    for (const e of (obj.lexicon || [])) {
+    (obj.lexicon || []).forEach((e, li) => {
+      if (e.den !== undefined) diag('warn', 'lexicon[' + li + '].den', 'deprecated field alias — use "denotation"');
+      if (e.display !== undefined) diag('warn', 'lexicon[' + li + '].display', 'deprecated field alias — use "displayAs"');
+      if (e.word !== undefined && e.words === undefined) diag('warn', 'lexicon[' + li + '].word', 'deprecated field alias — use "words" (array)');
       const words = Array.isArray(e.words) ? e.words.map((w) => String(w).trim()).filter(Boolean)
         : String(e.words || e.word || '').split(',').map((w) => w.trim()).filter(Boolean);
       const src = String(e.denotation || e.den || '').trim();
@@ -3789,10 +3858,11 @@ window.LC = {
       const pr = E.tryParse(src);
       if (pr.ok) { term = pr.ast; try { type = inferType(term, set.typeEnv); } catch (ex) { err = ex.message; } }
       else err = pr.error;
+      if (err) diag('error', 'lexicon[' + li + '].denotation', (words.join(', ') || '(no words)') + ': ' + err);
       const entry = { words, src, term, type, err, hint: display };
       set.lexList.push(entry);
       for (const w of words) set.lex[w] = entry;
-    }
+    });
 
     // --- rule configuration (composition rules, type-shifts, behaviour) ---
     set.config = rulesToConfig(obj.rules);
@@ -3805,11 +3875,45 @@ window.LC = {
     if (comp.intensionalFunctionApplication) set.rules.push('intensional function application');
 
     // --- exercises (every exercise is a tree; no kind needed) ---
+    // Stable ids (W13c): an optional "id" on each exercise (group) and each
+    // derivation (item) is preferred over the positional fallback, so progress
+    // keys survive reordering. Item ids get an 'i-' prefix so they can never
+    // collide with the positional g{i}p{j} namespace.
     (obj.exercises || []).forEach((g, gi) => {
-      const group = { id: 'g' + gi, kind: 'tree', title: g.title || '', directions: g.instructions || g.directions || '', problems: [] };
-      (g.items || g.trees || []).forEach((item, pi) => {
+      const gpath = 'exercises[' + gi + ']';
+      if (g.directions !== undefined && g.instructions === undefined) diag('warn', gpath + '.directions', 'deprecated field alias — use "instructions"');
+      let gid = null;
+      if (g.id !== undefined) {
+        if (typeof g.id === 'string' && STABLE_ID_RE.test(g.id)) gid = g.id;
+        else diag('warn', gpath + '.id', 'invalid id (allowed: 1–32 chars of A–Z a–z 0–9 _ -) — positional fallback used');
+      } else diag('warn', gpath, 'missing stable id — inserting or reordering exercises will scramble saved student progress');
+      const group = { id: gid || ('g' + gi), kind: 'tree', title: g.title || '', directions: g.instructions || g.directions || '', problems: [] };
+      const rawItems = g.derivations || g.items || g.trees || [];
+      if (!g.derivations && !g.items && g.trees) diag('warn', gpath + '.trees', 'deprecated field alias — use "derivations"');
+      rawItems.forEach((item, pi) => {
+        const ipath = gpath + '.derivations[' + pi + ']';
+        if (item.target !== undefined && item.targets === undefined) diag('warn', ipath + '.target', 'deprecated field alias — use "targets" (array)');
+        let iid = null;
+        if (item.id !== undefined) {
+          if (typeof item.id === 'string' && STABLE_ID_RE.test(item.id)) iid = item.id;
+          else diag('warn', ipath + '.id', 'invalid id (allowed: 1–32 chars of A–Z a–z 0–9 _ -) — positional fallback used');
+        } else diag('warn', ipath, 'missing stable id — inserting or reordering derivations will scramble saved student progress');
         const tgts = Array.isArray(item.targets) ? item.targets.filter(Boolean) : (item.target ? [item.target] : []);
-        group.problems.push({ id: group.id + 'p' + pi, kind: 'tree', tree: String(item.tree || '').trim(),
+        if (collect) {
+          const treeSrc = String(item.tree || '').trim();
+          if (!treeSrc) diag('error', ipath + '.tree', 'missing tree');
+          else { try { parseTree(treeSrc); } catch (ex) { diag('error', ipath + '.tree', 'tree does not parse: ' + ex.message); } }
+          tgts.forEach((ts, ti) => {
+            // mirror the grader's parseScopeTarget: formula is after the first
+            // colon; a trailing "(label)" lives in the label part, not the formula.
+            const str = String(ts);
+            const colon = str.indexOf(':');
+            const formula = (colon > -1 ? str.slice(colon + 1) : str).trim();
+            const r = E.tryParse(formula);
+            if (!r.ok) diag('error', ipath + '.targets[' + ti + ']', 'target does not parse — the grader could not check answers against it: ' + (r.error || ''));
+          });
+        }
+        group.problems.push({ id: iid ? 'i-' + iid : group.id + 'p' + pi, kind: 'tree', tree: String(item.tree || '').trim(),
           gloss: item.sentence || item.instructions || item.gloss || '',
           expected: item.expected || '', note: item.note || '',
           section: (item.reading && item.reading.section) || item.section || '',
@@ -3824,7 +3928,7 @@ window.LC = {
     }
 
     if (!set.title) set.title = set.id || 'Exercise set';
-    return set;
+    return collect ? { set, diagnostics } : set;
   }
 
   function parseDSL(text, fallbackTitle) {
@@ -3970,7 +4074,10 @@ window.LC = {
     return tree;
   }
 
-  window.LCFormat = { parseFile, parseJSON, parseDSL, rulesToConfig, parseTree, solveTree, applicable, candidateRules, inferType, expandList, refreshVars, SHIFTERS, applicableShifts, applyShift, findNodeById, findParentOf, allSNodes, isDominatedBy, applyQR };
+  // Universal module footer (W13f): mirror of engine.js.
+  const LCFORMAT_API = { parseFile, parseJSON, parseDSL, rulesToConfig, parseTree, solveTree, applicable, candidateRules, inferType, expandList, refreshVars, SHIFTERS, applicableShifts, applyShift, findNodeById, findParentOf, allSNodes, isDominatedBy, applyQR };
+  if (typeof window !== 'undefined') window.LCFormat = LCFORMAT_API;
+  if (typeof module !== 'undefined' && module.exports) module.exports = LCFORMAT_API;
 })();
 
 </script>
@@ -4782,10 +4889,14 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
   function matchesTarget(meaning, targetStr) {
     if (!meaning) return false;
     const { term } = parseScopeTarget(targetStr);
-    if (!term) return true;
+    if (!term) return "target-error";
     try {
-      const normD = E.normalize(meaning.term);
-      const normT = E.normalize(term);
+      const nD = E.normalizeInfo(meaning.term);
+      const nT = E.normalizeInfo(term);
+      if (!nT.complete) return "target-error";
+      if (!nD.complete) return false;
+      const normD = nD.term;
+      const normT = nT.term;
       if (E.alphaEqualAC(normD, normT)) return true;
       if (E.equivAC\u03B7(meaning.term, term)) return true;
       const sD = E.toStr(E.prettifyVars(normD));
@@ -4805,7 +4916,10 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
     }
     if (hasSingleTarget && !hasScopes) {
       const matched2 = matchesTarget(rootMeaning, problem.targets[0]);
-      if (matched2) {
+      if (matched2 === "target-error") {
+        setSingleFb({ ok: true, targetError: true });
+        onComplete && onComplete();
+      } else if (matched2) {
         setSingleFb({ ok: true });
         onComplete && onComplete();
       } else {
@@ -4817,10 +4931,10 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
     const matched = matchesTarget(rootMeaning, targets[activeTargetIdx]);
     if (matched) {
       setCompletedTarget(activeTargetIdx);
-      setScopeFb({ kind: "good", idx: activeTargetIdx });
+      setScopeFb({ kind: "good", idx: activeTargetIdx, targetError: matched === "target-error" });
       onComplete && onComplete();
     } else {
-      const otherIdx = targets.findIndex((t, i) => i !== activeTargetIdx && matchesTarget(rootMeaning, t));
+      const otherIdx = targets.findIndex((t, i) => i !== activeTargetIdx && matchesTarget(rootMeaning, t) === true);
       if (otherIdx > -1) {
         const { label } = parseScopeTarget(targets[otherIdx]);
         setScopeFb({ kind: "wrong-scope", msg: 'You derived the "' + label + '" reading \u2014 select that checkbox to confirm it, or reset and try the other scope.' });
@@ -5274,7 +5388,7 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
         );
       })));
     })()
-  )), /* @__PURE__ */ React.createElement("div", { className: "dock" }, !selected && !allDone && /* @__PURE__ */ React.createElement("div", { className: "dock-hint" }, availCount > 0 ? "Select a highlighted node to compute its meaning." : "Work bottom-up \u2014 the next node lights up once its children are resolved."), allDone && !hasScopes && !hasSingleTarget && /* @__PURE__ */ React.createElement(Feedback, { kind: "good" }, "Derivation complete \u2014 the root meaning is computed. Pick the next exercise on the left."), allDone && hasSingleTarget && !hasScopes && singleFb && singleFb.ok && /* @__PURE__ */ React.createElement(Feedback, { kind: "good" }, "\u2713 Correct derivation \u2014 the meaning matches the target."), allDone && hasSingleTarget && !hasScopes && singleFb && !singleFb.ok && /* @__PURE__ */ React.createElement(Feedback, { kind: "bad" }, singleFb.msg), allDone && hasScopes && scopeFb && scopeFb.kind === "good" && /* @__PURE__ */ React.createElement(Feedback, { kind: "good" }, "\u2713 ", parseScopeTarget(problem.targets[scopeFb.idx]).label, " scope reading confirmed!", completedTargets.size === problem.targets.length ? " Both readings derived \u2014 well done." : " Select the other checkbox to derive the second reading."), allDone && hasScopes && scopeFb && scopeFb.kind !== "good" && /* @__PURE__ */ React.createElement(Feedback, { kind: "bad" }, scopeFb.msg), allNodesDone && !rootDone && rootMeaning && /* @__PURE__ */ React.createElement(Feedback, { kind: "info" }, "All nodes resolved, but the root is type ", /* @__PURE__ */ React.createElement(TypeBadge, { type: rootMeaning.type }), " \u2014 apply Existential Closure (EC) or another operation to reach type ", /* @__PURE__ */ React.createElement("span", { className: "lx" }, "t"), " before the exercise completes."), selected && selected.mode === "view" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "dock-label" }, "\u27E8", selected.node.label || selected.node.word || "\u2022", "\u27E9 \xB7 resolved by ", /* @__PURE__ */ React.createElement("span", { style: { color: "var(--good)", fontWeight: 600 } }, selected.m.rule)), /* @__PURE__ */ React.createElement("div", { className: "compose-line", style: { fontSize: 18 } }, /* @__PURE__ */ React.createElement(Notation, { ast: selected.m.term }), /* @__PURE__ */ React.createElement(TypeBadge, { type: selected.m.type })), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 10 } }, /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => resetNode(selected.node) }, "\u21BA Reset this node"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => {
+  )), /* @__PURE__ */ React.createElement("div", { className: "dock" }, !selected && !allDone && /* @__PURE__ */ React.createElement("div", { className: "dock-hint" }, availCount > 0 ? "Select a highlighted node to compute its meaning." : "Work bottom-up \u2014 the next node lights up once its children are resolved."), allDone && !hasScopes && !hasSingleTarget && /* @__PURE__ */ React.createElement(Feedback, { kind: "good" }, "Derivation complete \u2014 the root meaning is computed. Pick the next exercise on the left."), allDone && hasSingleTarget && !hasScopes && singleFb && singleFb.ok && !singleFb.targetError && /* @__PURE__ */ React.createElement(Feedback, { kind: "good" }, "\u2713 Correct derivation \u2014 the meaning matches the target."), allDone && hasSingleTarget && !hasScopes && singleFb && singleFb.ok && singleFb.targetError && /* @__PURE__ */ React.createElement(Feedback, { kind: "info" }, "\u26A0 Derivation complete, but the target could not be checked \u2014 tell your instructor."), allDone && hasSingleTarget && !hasScopes && singleFb && !singleFb.ok && /* @__PURE__ */ React.createElement(Feedback, { kind: "bad" }, singleFb.msg), allDone && hasScopes && scopeFb && scopeFb.kind === "good" && scopeFb.targetError && /* @__PURE__ */ React.createElement(Feedback, { kind: "info" }, "\u26A0 Derivation complete, but this target could not be checked \u2014 tell your instructor."), allDone && hasScopes && scopeFb && scopeFb.kind === "good" && !scopeFb.targetError && /* @__PURE__ */ React.createElement(Feedback, { kind: "good" }, "\u2713 ", parseScopeTarget(problem.targets[scopeFb.idx]).label, " scope reading confirmed!", completedTargets.size === problem.targets.length ? " Both readings derived \u2014 well done." : " Select the other checkbox to derive the second reading."), allDone && hasScopes && scopeFb && scopeFb.kind !== "good" && /* @__PURE__ */ React.createElement(Feedback, { kind: "bad" }, scopeFb.msg), allNodesDone && !rootDone && rootMeaning && /* @__PURE__ */ React.createElement(Feedback, { kind: "info" }, "All nodes resolved, but the root is type ", /* @__PURE__ */ React.createElement(TypeBadge, { type: rootMeaning.type }), " \u2014 apply Existential Closure (EC) or another operation to reach type ", /* @__PURE__ */ React.createElement("span", { className: "lx" }, "t"), " before the exercise completes."), selected && selected.mode === "view" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "dock-label" }, "\u27E8", selected.node.label || selected.node.word || "\u2022", "\u27E9 \xB7 resolved by ", /* @__PURE__ */ React.createElement("span", { style: { color: "var(--good)", fontWeight: 600 } }, selected.m.rule)), /* @__PURE__ */ React.createElement("div", { className: "compose-line", style: { fontSize: 18 } }, /* @__PURE__ */ React.createElement(Notation, { ast: selected.m.term }), /* @__PURE__ */ React.createElement(TypeBadge, { type: selected.m.type })), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 10 } }, /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => resetNode(selected.node) }, "\u21BA Reset this node"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => {
     setSelected(null);
     setFb(null);
   } }, "Close"))), selected && selected.mode === "shift" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "dock-label" }, "Type-shift \u27E8", selected.node.label || selected.node.word || "\u2022", "\u27E9 ", /* @__PURE__ */ React.createElement("span", { className: "dock-sub" }, "current type ", /* @__PURE__ */ React.createElement(TypeBadge, { type: selected.m.type }))), /* @__PURE__ */ React.createElement("div", { className: "rule-row" }, selected.shifts.length === 0 && /* @__PURE__ */ React.createElement(Feedback, { kind: "info" }, "No type-shifting operations are enabled for a node of this type."), selected.shifts.map((op) => /* @__PURE__ */ React.createElement("button", { key: op.key, className: "rule-card shift-card", onClick: () => applyShift(op) }, /* @__PURE__ */ React.createElement("span", { className: "rc-name" }, op.name, " ", /* @__PURE__ */ React.createElement("span", { className: "rc-abbr shift-abbr" }, shiftArrow(op, selected.m && selected.m.type))), /* @__PURE__ */ React.createElement("span", { className: "rc-desc" }, op.desc))), selected.m.shifted && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", style: { alignSelf: "center" }, onClick: revertShift }, "Undo shift"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", style: { alignSelf: "center" }, onClick: () => {
@@ -5523,9 +5637,10 @@ function generateJSON(state) {
       operators: rules && rules.ops ? { ...DEFAULT_OPS, ...rules.ops } : { ...DEFAULT_OPS }
     },
     exercises: groups.map((g) => ({
+      id: g.id || genId(),
       title: g.title || "Exercises",
       items: g.trees.filter((it) => (it.tree || "").trim()).map((it) => {
-        const o = { tree: it.tree.trim() };
+        const o = { id: it.id || genId(), tree: it.tree.trim() };
         if ((it.instructions || "").trim()) o.sentence = it.instructions.trim();
         if ((it.expected || "").trim()) o.expected = it.expected.trim();
         if ((it.note || "").trim()) o.note = it.note.trim();
@@ -5576,13 +5691,21 @@ function parseFromText(text) {
       const jj = JSON.parse(text);
       if (jj && jj.reading && typeof jj.reading.markdown === "string") reading = { markdown: jj.reading.markdown };
       if (jj && Array.isArray(jj.exercises)) jj.exercises.forEach((ge, gi) => {
-        (ge.items || []).forEach((it, ii) => {
+        if (groups[gi] && typeof ge.id === "string") groups[gi].id = ge.id;
+        (ge.derivations || ge.items || []).forEach((it, ii) => {
           const sec = it && it.reading && it.reading.section;
           if (sec && groups[gi] && groups[gi].trees[ii]) groups[gi].trees[ii].section = sec;
+          if (it && typeof it.id === "string" && groups[gi] && groups[gi].trees[ii]) groups[gi].trees[ii].id = it.id;
         });
       });
     } catch (e) {
     }
+    groups.forEach((g) => {
+      if (!g.id) g.id = genId();
+      (g.trees || []).forEach((t) => {
+        if (!t.id) t.id = genId();
+      });
+    });
     const cfg = set.config || null;
     const rules = cfg ? { fa: cfg.fa, pm: cfg.pm, nn: cfg.nn, pa: cfg.pa, ifa: !!cfg.ifa, ops: { ...DEFAULT_OPS, ...cfg.ops || {} } } : { fa: true, pm: true, nn: true, pa: false, ifa: false, ops: { ...DEFAULT_OPS } };
     const shifts = cfg && cfg.shift ? Object.fromEntries(Sh.map((s) => [s.key, !!cfg.shift[s.key]])) : Object.fromEntries(Sh.map((s) => [s.key, false]));
@@ -5602,7 +5725,8 @@ function parseFromText(text) {
     return null;
   }
 }
-const emptyGroup = () => ({ title: "", trees: [{ instructions: "", tree: "", expected: "", note: "" }] });
+const genId = () => Math.random().toString(36).slice(2, 8);
+const emptyGroup = () => ({ id: genId(), title: "", trees: [{ id: genId(), instructions: "", tree: "", expected: "", note: "" }] });
 const emptyState = () => ({
   title: "",
   lex: [{ word: "", den: "" }],
@@ -5899,12 +6023,14 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
       const n = g.slice();
       const copy = JSON.parse(JSON.stringify(g[i]));
       copy.title = (g[i].title || "Group") + " (copy)";
+      copy.id = genId();
+      copy.trees = (copy.trees || []).map((t) => ({ ...t, id: genId() }));
       n.splice(i + 1, 0, copy);
       return n;
     });
   }
   function addTree(i) {
-    setGroups((g) => g.map((x, j) => j === i ? { ...x, trees: [...x.trees, { instructions: "", tree: "", expected: "", note: "" }] } : x));
+    setGroups((g) => g.map((x, j) => j === i ? { ...x, trees: [...x.trees, { id: genId(), instructions: "", tree: "", expected: "", note: "" }] } : x));
   }
   function delTree(i, k) {
     setGroups((g) => g.map((x, j) => j === i ? { ...x, trees: x.trees.filter((_, m) => m !== k) } : x));
@@ -5979,7 +6105,12 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
         onChange: (e) => updTree(i, k, { note: e.target.value }),
         spellCheck: false
       }
-    ), sections && sections.length > 0 && /* @__PURE__ */ React.createElement("span", { className: "fe-sec-field" }, /* @__PURE__ */ React.createElement("span", { className: "lab" }, "\u{1F4DD} \xA7"), /* @__PURE__ */ React.createElement(
+    ), Array.isArray(item.targets) && item.targets.filter(Boolean).map((t, ti) => {
+      const str = String(t);
+      const c = str.indexOf(":");
+      const ok = E.tryParse((c > -1 ? str.slice(c + 1) : str).trim()).ok;
+      return ok ? null : /* @__PURE__ */ React.createElement("span", { key: "tgt" + ti, className: "fe-type-err", title: "Target does not parse \u2014 the grader cannot check answers against it: " + str }, "\u26A0 target ", ti + 1, " unparseable");
+    }), sections && sections.length > 0 && /* @__PURE__ */ React.createElement("span", { className: "fe-sec-field" }, /* @__PURE__ */ React.createElement("span", { className: "lab" }, "\u{1F4DD} \xA7"), /* @__PURE__ */ React.createElement(
       "select",
       {
         className: "fe-sec-sel",
@@ -8297,9 +8428,10 @@ function App() {
       setLoadErr("Not a COMPOSE bundle \u2014 missing compose_bundle field.");
       return;
     }
+    if (bundle.compose_bundle !== 1 && typeof console !== "undefined" && console.warn) console.warn("COMPOSE: unsupported bundle version compose_bundle: " + JSON.stringify(bundle.compose_bundle) + " (this app understands version 1)");
     const id = "bundle-" + Date.now();
     const sets = [];
-    for (const s of bundle.exercises || []) {
+    for (const s of bundle.worksheets || bundle.exercises || []) {
       const exerciseText = s.text || (s.content ? JSON.stringify(s.content) : null);
       if (!exerciseText) {
         setLoadErr('Exercise "' + (s.title || s.key) + '" has no inline text \u2014 bundle must include content.');

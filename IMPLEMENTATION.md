@@ -107,6 +107,8 @@ Same pattern for `lcformat.js` (`LCFormat`), which must resolve the engine as `c
 8. **FORMAT.md**: document ids, version policy (additive=1; breaking⇒2+migration), `reading`, `notation`, aliases-as-deprecated, terminology.
 **Golden:** expect NO diff (all changes are additive/collect-mode). If a diff appears, you broke something.
 
+**S2 as-built notes (deviations from the brief above):** (a) ids are pattern-guarded — `[A-Za-z0-9_-]{1,32}`; a present-but-invalid id falls back to positional with a warn diagnostic (protects the `/`-delimited progress keys from a stray `/` in an id). (b) The require branch needed two extras: `compose/package.json` with `{ "type": "commonjs" }` (the root `"type": "module"` otherwise makes Node treat the engine files as ESM under require), and the resolver reads `(typeof require === 'function' ? require : module.require)('./engine.js')`. (c) The parser additionally accepts canonical `derivations[]` (worksheet) and `worksheets[]` (bundle, in `importBundle`) per PLAN §1.4; `items` remains a quiet accepted alias (no deprecation warn) until the W9 sweep, and the editor still writes `items`. (d) `incomplete:true` is threaded through tryFA/tryPM/tryIFA → `applicable()` → `solveTree` results; `candidateRules()` entries were left untouched (grading protection lives in `matchesTarget`'s normalizeInfo guard). (e) `parseFile` in collect mode reports invalid JSON / DSL input as diagnostics instead of silently falling back.
+
 ---
 
 ### S3 — PocketBase: collections, gate, serving routes  *(W2 + W3)*

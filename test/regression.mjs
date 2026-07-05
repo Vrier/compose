@@ -113,7 +113,19 @@ if (UPDATE) {
 if (!fs.existsSync(GOLDEN)) { console.error('No golden.txt — run `npm run test:update` first.'); process.exit(2); }
 
 const golden = fs.readFileSync(GOLDEN, 'utf8');
-if (snap === golden) { console.log(`✓ regression OK — ${count} snapshot lines match golden`); process.exit(0); }
+/* Browser-style smoke load: window-attached globals must still work. */
+function vmSmokeLoad() {
+  const ctx = vm.createContext({ console });
+  ctx.window = ctx;
+  const load = (f) => vm.runInContext(fs.readFileSync(path.join(SRC, f), 'utf8'), ctx, { filename: f });
+  load('engine.js');
+  load('lcformat.js');
+  if (!ctx.window.LC || !ctx.window.LCFormat) throw new Error('vm smoke load failed: window.LC / window.LCFormat not attached');
+  if (ctx.window.LC.toStr(ctx.window.LC.parse('\u03bbx.P(x)')).length === 0) throw new Error('vm smoke load: engine not functional');
+}
+vmSmokeLoad();
+
+if (snap === golden) { console.log(`✓ regression OK — ${count} snapshot lines match golden (require + vm smoke load)`); process.exit(0); }
 
 const a = golden.split('\n'), b = snap.split('\n');
 const diffs = [];

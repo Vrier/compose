@@ -448,18 +448,26 @@
       default: return e;
     }
   }
-  function normalize(e, max = 1000) {
-    let cur = e, guard = 0;
+  // normalizeInfo: like normalize, but reports whether the term actually reached
+  // a normal form. complete:false means a step cap tripped (runaway term) and
+  // the returned term is only PARTIALLY reduced — callers must treat it as an
+  // error state and never grade against it (W13e). Control flow is identical
+  // to the historical normalize(), so `term` is byte-for-byte what normalize
+  // always returned.
+  function normalizeInfo(e, max = 1000) {
+    let cur = e, guard = 0, complete = false;
     // Interleave β-reduction with Def-floating: floating Def out of an application
     // can expose a fresh redex (App(Def(φ,f),a) → Def(φ,App(f,a))), so loop until stable.
     while (guard++ < max) {
-      let n = 0; while (n++ < max) { const s = betaStep(cur); if (!s) break; cur = s; }
+      let n = 0, betaCapped = true;
+      while (n++ < max) { const s = betaStep(cur); if (!s) { betaCapped = false; break; } cur = s; }
       const lifted = floatDef(cur);
-      if (alphaEqual(lifted, cur)) { cur = lifted; break; }
+      if (alphaEqual(lifted, cur)) { cur = lifted; if (!betaCapped) complete = true; break; }
       cur = lifted;
     }
-    return floatDef(simplifyEq(simplifyOplus(simplifyBool(cur))));
+    return { term: floatDef(simplifyEq(simplifyOplus(simplifyBool(cur)))), complete };
   }
+  function normalize(e, max = 1000) { return normalizeInfo(e, max).term; }
   // ---- one-point / equality-elimination laws (Partee 1986 type-shifting) ---
   // Sound logical equivalences that the type-shifters BE and lower rely on to
   // produce reduced forms:
@@ -967,12 +975,16 @@
     return walk(term, new Map());
   }
 
-window.LC = {
+// Universal module footer (W13f): browsers get window.LC exactly as before;
+// Node (require) and PocketBase's embedded JS runtime get module.exports.
+const LC_API = {
     Sym, Lam, App, Not, Bin, Quant, Partial, Gsum, Card, Def,
     parse, tokenize, tryParse, asciiToUnicode, setNotation,
-    freeVars, subst, betaStep, normalize, simplifyBool, isNormal, findRedex, reduceAt, floatDef,
+    freeVars, subst, betaStep, normalize, normalizeInfo, simplifyBool, isNormal, findRedex, reduceAt, floatDef,
     alphaEqual, alphaEqualAC, equiv, prettifyVars, etaReduce, equivACη,
     parseType, typeToHTML, typeToStr, typeEqual, isFun,
     toHTML, toStr,
   };
+if (typeof window !== 'undefined') window.LC = LC_API;
+if (typeof module !== 'undefined' && module.exports) module.exports = LC_API;
 })();
