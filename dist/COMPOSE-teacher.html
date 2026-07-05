@@ -4278,7 +4278,16 @@ if (typeof module !== 'undefined' && module.exports) module.exports = LC_API;
     { prefix: 'partee', label: '★', title: 'Partee 1986 — NP Type-Shifting' },
     { prefix: 'montague', label: '★', title: 'Montague 1973 — PTQ' },
     { prefix: 'hk', label: 'H&K', title: 'Heim & Kratzer 1998' },
-  ];  const ORDER = window.LC_ORDER || [];
+  ];
+  // Hosted versions (W3): the serving route can append picker chapters for
+  // instructor worksheets whose keys match no built-in prefix — without this
+  // they would be invisible in the picker (verified S3).
+  if (Array.isArray(window.COMPOSE_CHAPTERS_EXTRA)) {
+    for (const c of window.COMPOSE_CHAPTERS_EXTRA) {
+      if (c && c.prefix && !CHAPTERS.some((x) => x.prefix === c.prefix)) CHAPTERS.push({ prefix: c.prefix, label: c.label || '📚', title: c.title || c.prefix });
+    }
+  }
+  const ORDER = window.LC_ORDER || [];
   const SETS = {};
   const LIBRARY = [];
   for (const key of ORDER) {
@@ -4721,6 +4730,14 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
   const canvasRef = useRef(null);
   const wrapRef = useRef(null);
   const [qrDrag, setQrDrag] = useState(null);
+  const LC_ASSESSMENT = (() => {
+    try {
+      const a = window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment;
+      return !!(a && a.mode === "assessment");
+    } catch (err) {
+      return false;
+    }
+  })();
   const [showTC, setShowTC] = useState(false);
   useEffect(() => {
     setShowTC(false);
@@ -5263,7 +5280,7 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
   }
   const availCount = layout.nodes.filter(({ node }) => isAvailable(node)).length;
   const sentence = problem.gloss || treeGloss(root);
-  return /* @__PURE__ */ React.createElement("div", { className: "stage" }, /* @__PURE__ */ React.createElement("div", { className: "prob-head" }, /* @__PURE__ */ React.createElement("div", { className: "prob-eyebrow" }, /* @__PURE__ */ React.createElement("span", null, "Derivation")), /* @__PURE__ */ React.createElement("div", { className: "prob-head-row" }, /* @__PURE__ */ React.createElement("h2", { className: "prob-title" }, sentence ? /* @__PURE__ */ React.createElement(React.Fragment, null, '"', sentence, '"') : /* @__PURE__ */ React.createElement("span", { className: "q" }, "Compute the meaning")), problem.targets && problem.targets.length >= 1 && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost tc-toggle" + (showTC ? " on" : ""), title: showTC ? "Hide target truth conditions" : "Show target truth conditions", onClick: () => setShowTC((v) => !v) }, "\u{1F441} Truth conditions"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost reset-deriv-btn", title: "Reset this derivation", onClick: () => {
+  return /* @__PURE__ */ React.createElement("div", { className: "stage" }, /* @__PURE__ */ React.createElement("div", { className: "prob-head" }, /* @__PURE__ */ React.createElement("div", { className: "prob-eyebrow" }, /* @__PURE__ */ React.createElement("span", null, "Derivation")), /* @__PURE__ */ React.createElement("div", { className: "prob-head-row" }, /* @__PURE__ */ React.createElement("h2", { className: "prob-title" }, sentence ? /* @__PURE__ */ React.createElement(React.Fragment, null, '"', sentence, '"') : /* @__PURE__ */ React.createElement("span", { className: "q" }, "Compute the meaning")), problem.targets && problem.targets.length >= 1 && !LC_ASSESSMENT && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost tc-toggle" + (showTC ? " on" : ""), title: showTC ? "Hide target truth conditions" : "Show target truth conditions", onClick: () => setShowTC((v) => !v) }, "\u{1F441} Truth conditions"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost reset-deriv-btn", title: "Reset this derivation", onClick: () => {
     if (hasScopes) {
       setScopeFb(null);
     } else {
@@ -5298,9 +5315,9 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
         }
       },
       /* @__PURE__ */ React.createElement("span", { className: "scope-cb-box" }, done ? "\u2713" : active ? "\u25C9" : "\u25CB"),
-      /* @__PURE__ */ React.createElement("span", { className: "scope-cb-text" }, /* @__PURE__ */ React.createElement("span", { className: "scope-cb-label" }, label || t), sublabel && /* @__PURE__ */ React.createElement("span", { className: "scope-cb-sub" }, sublabel), showTC && formula && /* @__PURE__ */ React.createElement("span", { className: "scope-cb-formula" }, formula))
+      /* @__PURE__ */ React.createElement("span", { className: "scope-cb-text" }, /* @__PURE__ */ React.createElement("span", { className: "scope-cb-label" }, label || t), sublabel && /* @__PURE__ */ React.createElement("span", { className: "scope-cb-sub" }, sublabel), showTC && !LC_ASSESSMENT && formula && /* @__PURE__ */ React.createElement("span", { className: "scope-cb-formula" }, formula))
     );
-  })) : problem.targets && problem.targets.length === 1 && showTC ? /* @__PURE__ */ React.createElement("div", { className: "prob-targets" }, /* @__PURE__ */ React.createElement("div", { className: "prob-target-line" }, problem.targets[0])) : null)), /* @__PURE__ */ React.createElement("div", { className: "canvas-shell" }, /* @__PURE__ */ React.createElement("div", { className: "zoom-controls", role: "group", "aria-label": "Zoom" }, /* @__PURE__ */ React.createElement("button", { className: "zoom-btn", title: "Zoom out", onClick: () => zoomButton(-1) }, "\u2212"), /* @__PURE__ */ React.createElement("button", { className: "zoom-btn zoom-level", title: "Fit the whole tree to view", onClick: fitTree }, Math.round(zoom * 100), "%"), /* @__PURE__ */ React.createElement("button", { className: "zoom-btn", title: "Zoom in", onClick: () => zoomButton(1) }, "+")), /* @__PURE__ */ React.createElement(
+  })) : problem.targets && problem.targets.length === 1 && showTC && !LC_ASSESSMENT ? /* @__PURE__ */ React.createElement("div", { className: "prob-targets" }, /* @__PURE__ */ React.createElement("div", { className: "prob-target-line" }, problem.targets[0])) : null)), /* @__PURE__ */ React.createElement("div", { className: "canvas-shell" }, /* @__PURE__ */ React.createElement("div", { className: "zoom-controls", role: "group", "aria-label": "Zoom" }, /* @__PURE__ */ React.createElement("button", { className: "zoom-btn", title: "Zoom out", onClick: () => zoomButton(-1) }, "\u2212"), /* @__PURE__ */ React.createElement("button", { className: "zoom-btn zoom-level", title: "Fit the whole tree to view", onClick: fitTree }, Math.round(zoom * 100), "%"), /* @__PURE__ */ React.createElement("button", { className: "zoom-btn", title: "Zoom in", onClick: () => zoomButton(1) }, "+")), /* @__PURE__ */ React.createElement(
     "div",
     {
       className: "canvas" + (panning ? " panning" : ""),
@@ -8900,7 +8917,7 @@ function App() {
         const builtinKeys = new Set(BUILTIN.map((l) => l.key));
         const userItems = LIB.filter((l) => l.user);
         return /* @__PURE__ */ React.createElement(React.Fragment, null, CHAPTERS.map((ch) => {
-          const chLibs = LIB.filter((l) => !l.user && (l.key.startsWith(ch.prefix + ".") || l.key.startsWith(ch.prefix + "-")));
+          const chLibs = LIB.filter((l) => !l.user && (l.key === ch.prefix || l.key.startsWith(ch.prefix + ".") || l.key.startsWith(ch.prefix + "-")));
           if (!chLibs.length) return null;
           const chActive = chLibs.some((l) => !custom && l.key === fileKey);
           return /* @__PURE__ */ React.createElement("details", { key: ch.prefix, className: "fc-chapter", open: chActive || void 0 }, /* @__PURE__ */ React.createElement("summary", { className: "fc-chapter-head" }, /* @__PURE__ */ React.createElement("span", { className: "fc-ch-label" }, ch.label), ch.title, /* @__PURE__ */ React.createElement("span", { className: "fc-ch-count" }, chLibs.length, " problem sets")), chLibs.map((l) => {

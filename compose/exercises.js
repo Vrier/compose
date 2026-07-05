@@ -19,7 +19,16 @@
     { prefix: 'partee', label: '★', title: 'Partee 1986 — NP Type-Shifting' },
     { prefix: 'montague', label: '★', title: 'Montague 1973 — PTQ' },
     { prefix: 'hk', label: 'H&K', title: 'Heim & Kratzer 1998' },
-  ];  const ORDER = window.LC_ORDER || [];
+  ];
+  // Hosted versions (W3): the serving route can append picker chapters for
+  // instructor worksheets whose keys match no built-in prefix — without this
+  // they would be invisible in the picker (verified S3).
+  if (Array.isArray(window.COMPOSE_CHAPTERS_EXTRA)) {
+    for (const c of window.COMPOSE_CHAPTERS_EXTRA) {
+      if (c && c.prefix && !CHAPTERS.some((x) => x.prefix === c.prefix)) CHAPTERS.push({ prefix: c.prefix, label: c.label || '📚', title: c.title || c.prefix });
+    }
+  }
+  const ORDER = window.LC_ORDER || [];
   const SETS = {};
   const LIBRARY = [];
   for (const key of ORDER) {

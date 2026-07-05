@@ -98,6 +98,10 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
   const canvasRef = useRef(null);
   const wrapRef = useRef(null);
   const [qrDrag, setQrDrag] = useState(null); // {nodeId, label, x, y, dropTarget}
+  // Assessment mode (W3): a hosted version can be served with
+  // assignment.mode === 'assessment' — every reveal-the-answer affordance
+  // (the target truth conditions) must disappear for students.
+  const LC_ASSESSMENT = (() => { try { const a = window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment; return !!(a && a.mode === 'assessment'); } catch (err) { return false; } })();
   const [showTC, setShowTC] = useState(false);
   useEffect(() => { setShowTC(false); }, [problem.id]);
 
@@ -661,7 +665,7 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
         </div>
         <div className="prob-head-row">
           <h2 className="prob-title">{sentence ? <>"{sentence}"</> : <span className="q">Compute the meaning</span>}</h2>
-          {problem.targets && problem.targets.length >= 1 && (
+          {problem.targets && problem.targets.length >= 1 && !LC_ASSESSMENT && (
             <button className={'btn-ghost tc-toggle'+(showTC?' on':'')} title={showTC ? 'Hide target truth conditions' : 'Show target truth conditions'} onClick={() => setShowTC(v => !v)}>
               👁 Truth conditions
             </button>
@@ -707,13 +711,13 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
                     <span className="scope-cb-text">
                       <span className="scope-cb-label">{label || t}</span>
                       {sublabel && <span className="scope-cb-sub">{sublabel}</span>}
-                      {showTC && formula && <span className="scope-cb-formula">{formula}</span>}
+                      {showTC && !LC_ASSESSMENT && formula && <span className="scope-cb-formula">{formula}</span>}
                     </span>
                   </button>
                 );
               })}
             </div>
-          ) : problem.targets && problem.targets.length === 1 && showTC ? (
+          ) : problem.targets && problem.targets.length === 1 && showTC && !LC_ASSESSMENT ? (
             <div className="prob-targets">
               <div className="prob-target-line">{problem.targets[0]}</div>
             </div>

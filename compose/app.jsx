@@ -715,7 +715,7 @@ function App() {
                 const userItems = LIB.filter(l => l.user);
                 return (<>
                   {CHAPTERS.map(ch => {
-                    const chLibs = LIB.filter(l => !l.user && (l.key.startsWith(ch.prefix + '.') || l.key.startsWith(ch.prefix + '-')));
+                    const chLibs = LIB.filter(l => !l.user && (l.key === ch.prefix || l.key.startsWith(ch.prefix + '.') || l.key.startsWith(ch.prefix + '-')));
                     if (!chLibs.length) return null;
                     const chActive = chLibs.some(l => !custom && l.key === fileKey);
                     return (
