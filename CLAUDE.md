@@ -21,3 +21,17 @@ Champollion's *Invitation to Formal Semantics*.
 - Keep the standalone `.md` in `compose/reading/` as the source of truth; re-embed
   into the `.compose.json` when it changes.
 - The textbook is copyrighted — condense and paraphrase, never paste prose verbatim.
+
+## Hosted V1 build (multi-session)
+
+The repo is being taken to a hosted service across multiple sessions:
+
+- **PLAN.md is the plan of record** — product spec, terminology (§1.4), locked
+  architecture (§3), work items, and the §8 progress tracker + session log (the
+  only memory between sessions; update and commit it every session).
+- **IMPLEMENTATION.md contains binding per-session briefs** (§3) and the verified
+  interface contracts (§2, C1–C8). If the repo disagrees with the docs, the repo
+  wins: verify, then fix the doc in the same commit.
+- **The session protocol in IMPLEMENTATION.md §0 is mandatory**: start green
+  (`npm test`), stay in scope, end green, update PLAN.md §8, commit.
+- PROMPTS.md holds the bootstrap/session/resume prompts used to run each session.
