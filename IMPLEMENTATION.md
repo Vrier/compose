@@ -196,10 +196,10 @@ routerAdd('GET', '/v/{slug}', (e) => {
 **S6 as-built notes:** shipped as specified, 46 checks covering W2+W3+W4+W6 journeys (superset of the brief's list: also edit route, dash, live-edit propagation, mode switch, pinned slug/opens, all four cap rejections, duplicate keys, rate limiting). Auto-runs `build:server` if generated artifacts are missing, so a fresh clone needs only `server/get-pocketbase.sh` before `npm test`. One instance runs everything with the S5 rate limiter live — register/auth budgets are annotated in the file; the 429 probe runs LAST. The per-session bash scripts (`manual-s3/4/5.sh`) remain as historical artifacts; `test/server.mjs` is the maintained suite.
 
 ### S8 — Deploy  *(W8)*
-Hetzner VPS (Ubuntu 24). Commit `deploy/Caddyfile`:
+Hetzner VPS (Ubuntu 24) — **provisioned: 167.233.233.109, domain `tstephen.com` (S7)**. Committed `deploy/Caddyfile` (real values, plus www-redirect):
 ```
-tstephen.example {  root * /srv/site  file_server }
-compose.tstephen.example {  reverse_proxy 127.0.0.1:8090 }
+tstephen.com {  root * /srv/site  file_server }
+compose.tstephen.com {  reverse_proxy 127.0.0.1:8090 }
 ```
 `deploy/compose.service` (systemd): `ExecStart=/srv/compose/pocketbase serve --http 127.0.0.1:8090 --dir /srv/compose/pb_data`, `Restart=always`, dedicated user. Backups: PocketBase scheduled backups ON + `deploy/backup.sh` (nightly rclone/scp of latest backup off-box) + cron line in DEPLOY.md. Write `DEPLOY.md`: provision, DNS, firewall (22/80/443), invite-code admin, password-reset-by-admin, update procedure, restore drill (perform once, note date). **Acceptance:** live HTTPS `/`, `/v/:slug`, `/dash`; kill -9 recovers; drill done.
 

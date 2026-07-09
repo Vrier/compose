@@ -1,0 +1,3 @@
+# COMPOSE (S7/W8) — install at /etc/sudoers.d/compose (mode 0440).
+# Lets the unprivileged deploy user restart the service and nothing else.
+compose ALL=(root) NOPASSWD: /usr/bin/systemctl restart compose, /usr/bin/systemctl status compose, /usr/bin/systemctl is-active compose

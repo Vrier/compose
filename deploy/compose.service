@@ -1,0 +1,35 @@
+# ===========================================================================
+# COMPOSE — systemd unit (S7/W8). Install at /etc/systemd/system/compose.service
+#
+# Notes:
+# - Explicit --hooksDir/--migrationsDir/--publicDir: PocketBase's relative
+#   default resolution is unreliable (S3 finding) — never rely on it.
+# - Data lives OUTSIDE the repo clone (/srv/compose-data) so git operations
+#   during deploys can never touch the database. The database IS the product.
+# ===========================================================================
+[Unit]
+Description=COMPOSE (PocketBase)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=compose
+Group=compose
+WorkingDirectory=/srv/compose/server
+ExecStart=/srv/compose/server/pocketbase serve \
+  --http 127.0.0.1:8090 \
+  --dir /srv/compose-data \
+  --hooksDir /srv/compose/server/pb_hooks \
+  --migrationsDir /srv/compose/server/pb_migrations \
+  --publicDir /srv/compose/server/pb_public
+Restart=always
+RestartSec=3
+# hardening (proportionate)
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/srv/compose-data
+
+[Install]
+WantedBy=multi-user.target

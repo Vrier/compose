@@ -1,0 +1,53 @@
+# ===========================================================================
+# COMPOSE — test + deploy on every push to main (S7/W8).
+#
+# Runs the FULL test suite (regression + schema + the 46-check server suite
+# against a real PocketBase fetched by the pin script), and only then SSHes
+# to the VPS and runs deploy/deploy.sh (pull → build → restart).
+#
+# Required repository secret (Settings → Secrets and variables → Actions):
+#   DEPLOY_SSH_KEY — private half of the dedicated Actions→server keypair
+#                    (public half in /home/compose/.ssh/authorized_keys;
+#                    generation is step 9 of DEPLOY.md)
+# ===========================================================================
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install deps
+        run: npm ci --no-audit --no-fund
+
+      - name: Fetch pinned PocketBase (enables the server suite)
+        run: bash server/get-pocketbase.sh
+
+      - name: Full test suite (regression + schema + live server checks)
+        run: npm test
+
+      - name: Deploy over SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh -i ~/.ssh/deploy_key \
+              -o StrictHostKeyChecking=accept-new \
+              compose@167.233.233.109 \
+              'bash /srv/compose/deploy/deploy.sh'

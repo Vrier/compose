@@ -1,0 +1,22 @@
+# ===========================================================================
+# COMPOSE — Caddyfile (S7/W8)
+# Installed at /etc/caddy/Caddyfile. Caddy obtains and renews Let's Encrypt
+# certificates automatically for every site listed here.
+# ===========================================================================
+
+# Personal site (placeholder until it has content)
+tstephen.com {
+	root * /srv/site
+	file_server
+	encode gzip
+}
+
+www.tstephen.com {
+	redir https://tstephen.com{uri} permanent
+}
+
+# COMPOSE — reverse proxy to PocketBase (systemd unit `compose`)
+compose.tstephen.com {
+	reverse_proxy 127.0.0.1:8090
+	encode gzip
+}
