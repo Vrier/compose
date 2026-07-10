@@ -858,6 +858,69 @@
     return s;
   }
 
+  // ---- LaTeX printer (S10/W15) --------------------------------------------
+  // Structural mirror of toStr: same precedence and parenthesization, so the
+  // exported source reads exactly like the on-screen term. Math-mode output.
+  const LATEX_SPECIALS = { '\\': '\\textbackslash{}', '{': '\\{', '}': '\\}', '$': '\\$', '&': '\\&', '#': '\\#', '^': '\\^{}', '_': '\\_', '%': '\\%', '~': '\\~{}' };
+  function latexEscape(str) {
+    return String(str).replace(/[\\{}$&#^_%~]/g, (c) => LATEX_SPECIALS[c]);
+  }
+  function symLaTeX(name) {
+    if (_disp === 'hk' && name === 'w0') return 'w';
+    if (name === '⊤') return '\\top ';
+    if (name === '⊥') return '\\bot ';
+    const nm = name.match(/^([A-Za-z]+)(\d+)$/);
+    if (nm) {
+      const base = nm[1].length === 1 ? nm[1] : '\\mathit{' + latexEscape(nm[1]) + '}';
+      return base + '_{' + nm[2] + '}';
+    }
+    if (name.length <= 2 && /^[A-Za-z]['‘’′]?$/.test(name)) return name.replace(/[‘’′]/g, "'");
+    return '\\mathit{' + latexEscape(name) + '}';
+  }
+  const LATEX_OPS = { '∧': '\\land', '∨': '\\lor', '→': '\\rightarrow', '↔': '\\leftrightarrow',
+    '=': '=', '≠': '\\neq', '<': '<', '>': '>', '⊆': '\\subseteq', '≤': '\\leq', '⊕': '\\oplus' };
+  function toLaTeX(e, parentPrec = -1, mode) {
+    if (typeof mode === 'string') _disp = mode;
+    let s;
+    switch (e.t) {
+      case 'sym': s = symLaTeX(e.name); break;
+      case 'app': {
+        const { head, args } = spine(e);
+        if (head.t === 'sym') s = symLaTeX(head.name) + '(' + args.map((a) => toLaTeX(a, -1)).join(', ') + ')';
+        else s = toLaTeX(head, 5) + args.map((a) => '(' + toLaTeX(a, -1) + ')').join('');
+        break;
+      }
+      case 'not': s = '\\lnot ' + toLaTeX(e.e, 4); break;
+      case 'star': s = '{\\ast}' + toLaTeX(e.e, 5); break;
+      case 'partial': s = '\\partial(' + toLaTeX(e.e, 0) + ')'; break;
+      case 'gsum': s = '{\\textstyle\\bigoplus}' + toLaTeX(e.e, 5); break;
+      case 'card': s = '\\lvert ' + toLaTeX(e.e, 0) + '\\rvert'; break;
+      case 'def': s = (_disp === 'hk') ? (toLaTeX(e.cond, 3) + ' : ' + toLaTeX(e.e, 0)) : ('\\partial(' + toLaTeX(e.cond, 0) + ') \\land ' + toLaTeX(e.e, 2)); break;
+      case 'bin': s = toLaTeX(e.l, prec(e) + (e.op === '→' ? 1 : 0)) + ' ' + (LATEX_OPS[e.op] || latexEscape(e.op)) + ' ' + toLaTeX(e.r, prec(e)); break;
+      case 'lam': {
+        if (e.dom) { s = '\\lambda ' + symLaTeX(e.v) + ' : ' + toLaTeX(e.dom, 1) + ' \\,.\\, ' + toLaTeX(e.body, 0); break; }
+        let chain = [], cur = e;
+        while (cur.t === 'lam' && !cur.dom) { chain.push(cur.v); cur = cur.body; }
+        s = chain.map((v) => '\\lambda ' + symLaTeX(v)).join(' ') + '.' + toLaTeX(cur, 0);
+        break;
+      }
+      case 'quant': {
+        const q = { '∀': '\\forall', '∃': '\\exists', 'ι': '\\iota' }[e.q] || e.q;
+        s = q + ' ' + symLaTeX(e.v) + '.' + toLaTeX(e.body, 0);
+        break;
+      }
+      default: s = '';
+    }
+    if (prec(e) < parentPrec) s = '(' + s + ')';
+    return s;
+  }
+  function typeToLaTeX(t) {
+    if (typeof t === 'string') return t;
+    if (t.var) { const g = { a: '\\alpha', b: '\\beta', c: '\\gamma', d: '\\delta', e: '\\varepsilon', A: '\\alpha', B: '\\beta', C: '\\gamma' }; return g[t.var] || t.var; }
+    if (t.prod) return typeToLaTeX(t.prod[0]) + ' \\times ' + typeToLaTeX(t.prod[1]);
+    return '\\langle ' + typeToLaTeX(t.from) + ',' + typeToLaTeX(t.to) + '\\rangle';
+  }
+
   // ---- ASCII shortcuts → unicode (for student input) ----------------------
   function asciiToUnicode(str) {
     let s = str;
@@ -981,6 +1044,7 @@ const LC_API = {
     Sym, Lam, App, Not, Bin, Quant, Partial, Gsum, Card, Def,
     parse, tokenize, tryParse, asciiToUnicode, setNotation,
     freeVars, subst, betaStep, normalize, normalizeInfo, simplifyBool, isNormal, findRedex, reduceAt, floatDef,
+    toLaTeX, typeToLaTeX,
     alphaEqual, alphaEqualAC, equiv, prettifyVars, etaReduce, equivACη,
     parseType, typeToHTML, typeToStr, typeEqual, isFun,
     toHTML, toStr,

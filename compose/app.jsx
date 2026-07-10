@@ -457,6 +457,36 @@ function App() {
   }
 
   const groups = (custom ? [{ id: 'custom', kind: 'tree', title: 'Custom', problems: [custom.problem] }] : (set ? set.groups : [])).filter(g => g.kind === 'tree');
+
+  // ---- S10/W15: deep links — #gid.pid (optionally #setKey/gid.pid) --------
+  const applyHash = useCallback((hash) => {
+    const m = /^#(?:([^\/]+)\/)?([^.\/]+)\.(.+)$/.exec(hash || '');
+    if (!m) return;
+    const [, hkey, gid, pid] = m;
+    const entry = hkey ? LIB.find((l) => l.key === hkey) : (LIB.find((l) => l.key === fileKey) || LIB[0]);
+    if (!entry) return;
+    const gs = entry.set.groups.filter((g) => g.kind === 'tree');
+    const gi = gs.findIndex((g) => g.id === gid);
+    if (gi < 0) return;
+    const pi = gs[gi].problems.findIndex((pb) => pb.id === pid);
+    if (pi < 0) return;
+    setCustom(null);
+    if (entry.key !== fileKey) setFileKey(entry.key);
+    setSel({ gi, pi });
+  }, [LIB, fileKey]);
+  useEffect(() => {
+    if (window.location.hash) applyHash(window.location.hash);
+    const onHash = () => applyHash(window.location.hash);
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, [applyHash]);
+  useEffect(() => {
+    if (custom || !set || !groups.length) return;
+    const g = groups[sel.gi] || groups[0];
+    const pb = g && (g.problems[sel.pi] || g.problems[0]);
+    if (!g || !pb) return;
+    try { window.history.replaceState(null, '', '#' + g.id + '.' + pb.id); } catch (e) {}
+  }, [sel.gi, sel.pi, fileKey, custom, set]);
   const group = groups[sel.gi] || groups[0] || null;
   const problem = group ? (group.problems[sel.pi] || group.problems[0]) : null;
 

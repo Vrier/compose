@@ -694,6 +694,7 @@
           gloss: item.sentence || item.instructions || item.gloss || '',
           expected: item.expected || '', note: item.note || '',
           section: (item.reading && item.reading.section) || item.section || '',
+          hints: Array.isArray(item.hints) ? item.hints.filter((h) => typeof h === 'string' && h.trim()) : undefined,
           targets: tgts.length ? tgts : undefined });
       });
       set.groups.push(group);
@@ -851,8 +852,55 @@
     return tree;
   }
 
+  /* ---- LaTeX derivation export (S10/W15) --------------------------------- */
+  // Emits a forest environment for a solved tree: every node shows its label,
+  // denotation, type and (for inner nodes) the composition rule. `solution` is
+  // a solveTree() result map. The requires-block travels with every export so
+  // the snippet is self-documenting.
+  const LATEX_PREAMBLE_NOTE = [
+    '% ============================================================',
+    '% COMPOSE derivation export — compose.tstephen.com',
+    '% Requires in your document preamble:',
+    '%   \\usepackage{forest}',
+    '%   \\newcommand{\\cnode}[1]{{\\sffamily #1}}          % category label',
+    '%   \\newcommand{\\crule}[1]{{\\tiny\\sffamily [#1]}}  % composition rule tag',
+    '% ============================================================',
+  ].join('\n');
+
+  function latexTextEscape(str) {
+    return String(str).replace(/[\\{}$&#^_%~]/g, (c) => ({ '\\': '\\textbackslash{}', '{': '\\{', '}': '\\}', '$': '\\$', '&': '\\&', '#': '\\#', '^': '\\^{}', '_': '\\_', '%': '\\%', '~': '\\~{}' }[c]));
+  }
+
+  function derivationToLaTeX(root, solution, opts) {
+    const o = opts || {};
+    function nodeTex(node, depth) {
+      const pad = '  '.repeat(depth + 1);
+      const m = solution[node.id];
+      const parts = [];
+      if (node.children && node.children.length) {
+        parts.push('\\cnode{' + latexTextEscape(node.label || '·') + '}');
+      } else {
+        parts.push('\\textit{' + latexTextEscape(node.word || node.label || '') + '}');
+      }
+      if (m && m.term != null) {
+        parts.push('{$' + E.toLaTeX(m.term) + '$}');
+        if (m.type != null) parts.push('{\\footnotesize $' + E.typeToLaTeX(m.type) + '$}');
+        if (m.rule && m.rule !== 'lex' && m.rule !== 'trace') parts.push('\\crule{' + latexTextEscape(m.rule) + '}');
+      }
+      const cell = '{' + parts.join(' \\\\ ') + '}';
+      if (!node.children || node.children.length === 0) return pad + '[' + cell + ']';
+      return pad + '[' + cell + '\n' + node.children.map((c) => nodeTex(c, depth + 1)).join('\n') + '\n' + pad + ']';
+    }
+    const head = o.sentence ? '% "' + String(o.sentence).replace(/\n/g, ' ') + '"\n' : '';
+    return LATEX_PREAMBLE_NOTE + '\n' + head +
+      '\\begin{forest}\n' +
+      '  for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}\n' +
+      nodeTex(root, 0) + '\n' +
+      '\\end{forest}\n';
+  }
+
   // Universal module footer (W13f): mirror of engine.js.
-  const LCFORMAT_API = { parseFile, parseJSON, parseDSL, rulesToConfig, parseTree, solveTree, applicable, candidateRules, inferType, expandList, refreshVars, SHIFTERS, applicableShifts, applyShift, findNodeById, findParentOf, allSNodes, isDominatedBy, applyQR };
+  const LCFORMAT_API = { parseFile, parseJSON, parseDSL, rulesToConfig, parseTree, solveTree, applicable, candidateRules, inferType, expandList, refreshVars, SHIFTERS, applicableShifts, applyShift, findNodeById, findParentOf, allSNodes, isDominatedBy, applyQR, derivationToLaTeX };
   if (typeof window !== 'undefined') window.LCFormat = LCFORMAT_API;
   if (typeof module !== 'undefined' && module.exports) module.exports = LCFORMAT_API;
 })();

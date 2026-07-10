@@ -133,6 +133,9 @@
     // protected spans first, so their contents are never reinterpreted
     s = s.replace(/\$([^$]+)\$/g, (m, c) => hold('<span class="ld-math">' + mathHtml(c) + '</span>'));
     s = s.replace(/`([^`]+)`/g, (m, c) => hold('<code>' + escapeHtml(c) + '</code>'));
+    // derivation deep link (S10):  [[derivation:g.p|label]]  →  #g.p anchor
+    s = s.replace(/\[\[derivation:([\w.\/-]+)(?:\|([^\]]*))?\]\]/g, (m, tgt, label) =>
+      hold('<a class="ld-deriv-link" href="#' + escapeHtml(tgt) + '">' + escapeHtml(label || tgt) + '</a>'));
     s = s.replace(/\[\[([^\]]*)\]\]/g, (m, c) => hold('⟦' + escapeHtml(c) + '⟧'));
     if (ctx && !ctx.noFn) {
       // inline footnote  ^[text]

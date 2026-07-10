@@ -1620,6 +1620,10 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .phone-gate-btn { display: block; width: 100%; box-sizing: border-box; margin: 10px 0 0; padding: 12px; text-decoration: none; }
 .phone-gate-continue { margin-top: 22px; font-size: 13px; color: var(--ink-soft); background: none; border: none; cursor: pointer; }
 
+/* S10 (W15): hints + latex */
+.hint-list { margin: 8px 0 4px; display: flex; flex-direction: column; gap: 6px; }
+.hint-item { font-size: 13.5px; }
+
 
 /* ===========================================================================
    lingdown.css — typesetting for the lingdown engine. Themable via --ld-*
@@ -1740,6 +1744,10 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .ld-avm-attr { font-family: var(--ld-mono); font-size: 11.5px; letter-spacing: 0.03em; color: var(--ld-accent-ink); font-variant: all-small-caps; }
 .ld-avm-val { font-family: var(--ld-mono); font-size: 12.5px; color: var(--ld-ink); }
 .ld-avm-val .ld-avm { padding-top: 2px; padding-bottom: 2px; }
+
+/* S10 (W15): derivation deep links */
+.ld-deriv-link { color: #b5532f; text-decoration: none; border-bottom: 1px dashed #b5532f; cursor: pointer; }
+.ld-deriv-link:hover { border-bottom-style: solid; }
 
 
 /* ===========================================================================
@@ -3128,6 +3136,69 @@ if (typeof module !== 'undefined' && module.exports) module.exports = { COMPOSE_
     return s;
   }
 
+  // ---- LaTeX printer (S10/W15) --------------------------------------------
+  // Structural mirror of toStr: same precedence and parenthesization, so the
+  // exported source reads exactly like the on-screen term. Math-mode output.
+  const LATEX_SPECIALS = { '\\': '\\textbackslash{}', '{': '\\{', '}': '\\}', '$': '\\$', '&': '\\&', '#': '\\#', '^': '\\^{}', '_': '\\_', '%': '\\%', '~': '\\~{}' };
+  function latexEscape(str) {
+    return String(str).replace(/[\\{}$&#^_%~]/g, (c) => LATEX_SPECIALS[c]);
+  }
+  function symLaTeX(name) {
+    if (_disp === 'hk' && name === 'w0') return 'w';
+    if (name === '⊤') return '\\top ';
+    if (name === '⊥') return '\\bot ';
+    const nm = name.match(/^([A-Za-z]+)(\d+)$/);
+    if (nm) {
+      const base = nm[1].length === 1 ? nm[1] : '\\mathit{' + latexEscape(nm[1]) + '}';
+      return base + '_{' + nm[2] + '}';
+    }
+    if (name.length <= 2 && /^[A-Za-z]['‘’′]?$/.test(name)) return name.replace(/[‘’′]/g, "'");
+    return '\\mathit{' + latexEscape(name) + '}';
+  }
+  const LATEX_OPS = { '∧': '\\land', '∨': '\\lor', '→': '\\rightarrow', '↔': '\\leftrightarrow',
+    '=': '=', '≠': '\\neq', '<': '<', '>': '>', '⊆': '\\subseteq', '≤': '\\leq', '⊕': '\\oplus' };
+  function toLaTeX(e, parentPrec = -1, mode) {
+    if (typeof mode === 'string') _disp = mode;
+    let s;
+    switch (e.t) {
+      case 'sym': s = symLaTeX(e.name); break;
+      case 'app': {
+        const { head, args } = spine(e);
+        if (head.t === 'sym') s = symLaTeX(head.name) + '(' + args.map((a) => toLaTeX(a, -1)).join(', ') + ')';
+        else s = toLaTeX(head, 5) + args.map((a) => '(' + toLaTeX(a, -1) + ')').join('');
+        break;
+      }
+      case 'not': s = '\\lnot ' + toLaTeX(e.e, 4); break;
+      case 'star': s = '{\\ast}' + toLaTeX(e.e, 5); break;
+      case 'partial': s = '\\partial(' + toLaTeX(e.e, 0) + ')'; break;
+      case 'gsum': s = '{\\textstyle\\bigoplus}' + toLaTeX(e.e, 5); break;
+      case 'card': s = '\\lvert ' + toLaTeX(e.e, 0) + '\\rvert'; break;
+      case 'def': s = (_disp === 'hk') ? (toLaTeX(e.cond, 3) + ' : ' + toLaTeX(e.e, 0)) : ('\\partial(' + toLaTeX(e.cond, 0) + ') \\land ' + toLaTeX(e.e, 2)); break;
+      case 'bin': s = toLaTeX(e.l, prec(e) + (e.op === '→' ? 1 : 0)) + ' ' + (LATEX_OPS[e.op] || latexEscape(e.op)) + ' ' + toLaTeX(e.r, prec(e)); break;
+      case 'lam': {
+        if (e.dom) { s = '\\lambda ' + symLaTeX(e.v) + ' : ' + toLaTeX(e.dom, 1) + ' \\,.\\, ' + toLaTeX(e.body, 0); break; }
+        let chain = [], cur = e;
+        while (cur.t === 'lam' && !cur.dom) { chain.push(cur.v); cur = cur.body; }
+        s = chain.map((v) => '\\lambda ' + symLaTeX(v)).join(' ') + '.' + toLaTeX(cur, 0);
+        break;
+      }
+      case 'quant': {
+        const q = { '∀': '\\forall', '∃': '\\exists', 'ι': '\\iota' }[e.q] || e.q;
+        s = q + ' ' + symLaTeX(e.v) + '.' + toLaTeX(e.body, 0);
+        break;
+      }
+      default: s = '';
+    }
+    if (prec(e) < parentPrec) s = '(' + s + ')';
+    return s;
+  }
+  function typeToLaTeX(t) {
+    if (typeof t === 'string') return t;
+    if (t.var) { const g = { a: '\\alpha', b: '\\beta', c: '\\gamma', d: '\\delta', e: '\\varepsilon', A: '\\alpha', B: '\\beta', C: '\\gamma' }; return g[t.var] || t.var; }
+    if (t.prod) return typeToLaTeX(t.prod[0]) + ' \\times ' + typeToLaTeX(t.prod[1]);
+    return '\\langle ' + typeToLaTeX(t.from) + ',' + typeToLaTeX(t.to) + '\\rangle';
+  }
+
   // ---- ASCII shortcuts → unicode (for student input) ----------------------
   function asciiToUnicode(str) {
     let s = str;
@@ -3251,6 +3322,7 @@ const LC_API = {
     Sym, Lam, App, Not, Bin, Quant, Partial, Gsum, Card, Def,
     parse, tokenize, tryParse, asciiToUnicode, setNotation,
     freeVars, subst, betaStep, normalize, normalizeInfo, simplifyBool, isNormal, findRedex, reduceAt, floatDef,
+    toLaTeX, typeToLaTeX,
     alphaEqual, alphaEqualAC, equiv, prettifyVars, etaReduce, equivACη,
     parseType, typeToHTML, typeToStr, typeEqual, isFun,
     toHTML, toStr,
@@ -3957,6 +4029,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = LC_API;
           gloss: item.sentence || item.instructions || item.gloss || '',
           expected: item.expected || '', note: item.note || '',
           section: (item.reading && item.reading.section) || item.section || '',
+          hints: Array.isArray(item.hints) ? item.hints.filter((h) => typeof h === 'string' && h.trim()) : undefined,
           targets: tgts.length ? tgts : undefined });
       });
       set.groups.push(group);
@@ -4114,8 +4187,55 @@ if (typeof module !== 'undefined' && module.exports) module.exports = LC_API;
     return tree;
   }
 
+  /* ---- LaTeX derivation export (S10/W15) --------------------------------- */
+  // Emits a forest environment for a solved tree: every node shows its label,
+  // denotation, type and (for inner nodes) the composition rule. `solution` is
+  // a solveTree() result map. The requires-block travels with every export so
+  // the snippet is self-documenting.
+  const LATEX_PREAMBLE_NOTE = [
+    '% ============================================================',
+    '% COMPOSE derivation export — compose.tstephen.com',
+    '% Requires in your document preamble:',
+    '%   \\usepackage{forest}',
+    '%   \\newcommand{\\cnode}[1]{{\\sffamily #1}}          % category label',
+    '%   \\newcommand{\\crule}[1]{{\\tiny\\sffamily [#1]}}  % composition rule tag',
+    '% ============================================================',
+  ].join('\n');
+
+  function latexTextEscape(str) {
+    return String(str).replace(/[\\{}$&#^_%~]/g, (c) => ({ '\\': '\\textbackslash{}', '{': '\\{', '}': '\\}', '$': '\\$', '&': '\\&', '#': '\\#', '^': '\\^{}', '_': '\\_', '%': '\\%', '~': '\\~{}' }[c]));
+  }
+
+  function derivationToLaTeX(root, solution, opts) {
+    const o = opts || {};
+    function nodeTex(node, depth) {
+      const pad = '  '.repeat(depth + 1);
+      const m = solution[node.id];
+      const parts = [];
+      if (node.children && node.children.length) {
+        parts.push('\\cnode{' + latexTextEscape(node.label || '·') + '}');
+      } else {
+        parts.push('\\textit{' + latexTextEscape(node.word || node.label || '') + '}');
+      }
+      if (m && m.term != null) {
+        parts.push('{$' + E.toLaTeX(m.term) + '$}');
+        if (m.type != null) parts.push('{\\footnotesize $' + E.typeToLaTeX(m.type) + '$}');
+        if (m.rule && m.rule !== 'lex' && m.rule !== 'trace') parts.push('\\crule{' + latexTextEscape(m.rule) + '}');
+      }
+      const cell = '{' + parts.join(' \\\\ ') + '}';
+      if (!node.children || node.children.length === 0) return pad + '[' + cell + ']';
+      return pad + '[' + cell + '\n' + node.children.map((c) => nodeTex(c, depth + 1)).join('\n') + '\n' + pad + ']';
+    }
+    const head = o.sentence ? '% "' + String(o.sentence).replace(/\n/g, ' ') + '"\n' : '';
+    return LATEX_PREAMBLE_NOTE + '\n' + head +
+      '\\begin{forest}\n' +
+      '  for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}\n' +
+      nodeTex(root, 0) + '\n' +
+      '\\end{forest}\n';
+  }
+
   // Universal module footer (W13f): mirror of engine.js.
-  const LCFORMAT_API = { parseFile, parseJSON, parseDSL, rulesToConfig, parseTree, solveTree, applicable, candidateRules, inferType, expandList, refreshVars, SHIFTERS, applicableShifts, applyShift, findNodeById, findParentOf, allSNodes, isDominatedBy, applyQR };
+  const LCFORMAT_API = { parseFile, parseJSON, parseDSL, rulesToConfig, parseTree, solveTree, applicable, candidateRules, inferType, expandList, refreshVars, SHIFTERS, applicableShifts, applyShift, findNodeById, findParentOf, allSNodes, isDominatedBy, applyQR, derivationToLaTeX };
   if (typeof window !== 'undefined') window.LCFormat = LCFORMAT_API;
   if (typeof module !== 'undefined' && module.exports) module.exports = LCFORMAT_API;
 })();
@@ -4964,6 +5084,24 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
     }
   }
   const [scopeFb, setScopeFb] = useState(null);
+  const [latexCopied, setLatexCopied] = useState(false);
+  const hintList = !LC_ASSESSMENT && Array.isArray(problem.hints) && problem.hints.length ? problem.hints : null;
+  const [hintStage, setHintStage] = useState(0);
+  useEffect(() => {
+    setHintStage(0);
+    setLatexCopied(false);
+  }, [problem]);
+  function copyLaTeX() {
+    try {
+      const tex = window.LCFormat.derivationToLaTeX(root, solution, { sentence: problem.gloss || "" });
+      navigator.clipboard.writeText(tex).then(() => {
+        setLatexCopied(true);
+        setTimeout(() => setLatexCopied(false), 1800);
+      });
+    } catch (err) {
+      window.alert("LaTeX export failed: " + (err && err.message));
+    }
+  }
   const allDone = allNodesDone && rootDone;
   useEffect(() => {
     if (!allDone) return;
@@ -5330,7 +5468,23 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
     else onSetMeanings({});
     setSelected(null);
     setFb(null);
-  } }, "\u21BA Reset"), teacherMode && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost reveal-soln-btn", title: "Fill in the full worked solution (teacher answer key)", onClick: revealSolution }, "\u{1F511} Reveal solution"), slotHistory.length > 0 && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost reset-deriv-btn", title: "Undo the last Quantifier Raising \u2014 restores the tree and the compositions you had before raising", onClick: undoQR }, "\u21B6 Undo raise")), /* @__PURE__ */ React.createElement("div", { className: "prob-instr" }, problem.instructions && /* @__PURE__ */ React.createElement("span", { className: "prob-sent-text" }, problem.instructions), hasScopes ? /* @__PURE__ */ React.createElement("div", { className: "scope-targets" }, problem.targets.map((t, i) => {
+  } }, "\u21BA Reset"), (teacherMode || allDone && !LC_ASSESSMENT) && solution[root.id] && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost latex-btn", title: "Copy this derivation as LaTeX (forest) \u2014 paste into a handout or paper", onClick: copyLaTeX }, latexCopied ? "\u2713 Copied" : "\u2398 Copy LaTeX"), hintList && /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      className: "btn-ghost hint-btn",
+      title: "Reveal the next hint",
+      disabled: hintStage > hintList.length || hintStage === hintList.length && LC_ASSESSMENT,
+      onClick: () => {
+        if (hintStage < hintList.length) setHintStage(hintStage + 1);
+        else {
+          revealSolution();
+          setHintStage(hintStage + 1);
+        }
+      }
+    },
+    "\u{1F4A1} ",
+    hintStage < hintList.length ? "Hint (" + (hintStage + 1) + "/" + hintList.length + ")" : hintStage === hintList.length ? "Show answer" : "Answer shown"
+  ), teacherMode && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost reveal-soln-btn", title: "Fill in the full worked solution (teacher answer key)", onClick: revealSolution }, "\u{1F511} Reveal solution"), slotHistory.length > 0 && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost reset-deriv-btn", title: "Undo the last Quantifier Raising \u2014 restores the tree and the compositions you had before raising", onClick: undoQR }, "\u21B6 Undo raise")), hintList && hintStage > 0 && /* @__PURE__ */ React.createElement("div", { className: "hint-list" }, hintList.slice(0, Math.min(hintStage, hintList.length)).map((h, i) => /* @__PURE__ */ React.createElement("div", { key: i, className: "feedback info hint-item" }, /* @__PURE__ */ React.createElement("span", { className: "fi" }, "\u{1F4A1}"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("b", null, "Hint ", i + 1, "."), " ", h)))), /* @__PURE__ */ React.createElement("div", { className: "prob-instr" }, problem.instructions && /* @__PURE__ */ React.createElement("span", { className: "prob-sent-text" }, problem.instructions), hasScopes ? /* @__PURE__ */ React.createElement("div", { className: "scope-targets" }, problem.targets.map((t, i) => {
     const done = completedTargets.has(i);
     const active = activeTargetIdx === i;
     const { label, sublabel, formula } = parseScopeTarget(t);
@@ -5702,6 +5856,7 @@ function generateJSON(state) {
         if ((it.expected || "").trim()) o.expected = it.expected.trim();
         if ((it.note || "").trim()) o.note = it.note.trim();
         if (Array.isArray(it.targets) && it.targets.filter(Boolean).length) o.targets = it.targets.filter(Boolean);
+        if (Array.isArray(it.hints) && it.hints.filter(Boolean).length) o.hints = it.hints.filter(Boolean);
         if ((it.section || "").trim()) o.reading = { section: it.section.trim() };
         return o;
       })
@@ -5740,7 +5895,8 @@ function parseFromText(text) {
         tree: p.tree || "",
         expected: p.expected || "",
         note: p.note || "",
-        targets: p.targets ? p.targets.slice() : void 0
+        targets: p.targets ? p.targets.slice() : void 0,
+        hints: Array.isArray(p.hints) && p.hints.length ? p.hints.slice() : void 0
       }))
     }));
     let reading = { markdown: "" };
@@ -6679,6 +6835,9 @@ window.__composeDefaultVars = defaultVars;
     // protected spans first, so their contents are never reinterpreted
     s = s.replace(/\$([^$]+)\$/g, (m, c) => hold('<span class="ld-math">' + mathHtml(c) + '</span>'));
     s = s.replace(/`([^`]+)`/g, (m, c) => hold('<code>' + escapeHtml(c) + '</code>'));
+    // derivation deep link (S10):  [[derivation:g.p|label]]  →  #g.p anchor
+    s = s.replace(/\[\[derivation:([\w.\/-]+)(?:\|([^\]]*))?\]\]/g, (m, tgt, label) =>
+      hold('<a class="ld-deriv-link" href="#' + escapeHtml(tgt) + '">' + escapeHtml(label || tgt) + '</a>'));
     s = s.replace(/\[\[([^\]]*)\]\]/g, (m, c) => hold('⟦' + escapeHtml(c) + '⟧'));
     if (ctx && !ctx.noFn) {
       // inline footnote  ^[text]
@@ -8820,6 +8979,37 @@ function App() {
     setModal("editor");
   }
   const groups = (custom ? [{ id: "custom", kind: "tree", title: "Custom", problems: [custom.problem] }] : set ? set.groups : []).filter((g) => g.kind === "tree");
+  const applyHash = useCallback((hash) => {
+    const m = /^#(?:([^\/]+)\/)?([^.\/]+)\.(.+)$/.exec(hash || "");
+    if (!m) return;
+    const [, hkey, gid, pid] = m;
+    const entry = hkey ? LIB.find((l) => l.key === hkey) : LIB.find((l) => l.key === fileKey) || LIB[0];
+    if (!entry) return;
+    const gs = entry.set.groups.filter((g) => g.kind === "tree");
+    const gi = gs.findIndex((g) => g.id === gid);
+    if (gi < 0) return;
+    const pi = gs[gi].problems.findIndex((pb) => pb.id === pid);
+    if (pi < 0) return;
+    setCustom(null);
+    if (entry.key !== fileKey) setFileKey(entry.key);
+    setSel({ gi, pi });
+  }, [LIB, fileKey]);
+  useEffect(() => {
+    if (window.location.hash) applyHash(window.location.hash);
+    const onHash = () => applyHash(window.location.hash);
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, [applyHash]);
+  useEffect(() => {
+    if (custom || !set || !groups.length) return;
+    const g = groups[sel.gi] || groups[0];
+    const pb = g && (g.problems[sel.pi] || g.problems[0]);
+    if (!g || !pb) return;
+    try {
+      window.history.replaceState(null, "", "#" + g.id + "." + pb.id);
+    } catch (e) {
+    }
+  }, [sel.gi, sel.pi, fileKey, custom, set]);
   const group = groups[sel.gi] || groups[0] || null;
   const problem = group ? group.problems[sel.pi] || group.problems[0] : null;
   async function exportDerivation() {

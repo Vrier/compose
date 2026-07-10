@@ -1,0 +1,1462 @@
+ch10-coord | g0p0 | \mathit{sing}(f) \land \mathit{ride}(g)
+ch10-coord | g0p0 | F | % ============================================================
+ch10-coord | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch10-coord | g0p0 | F | % Requires in your document preamble:
+ch10-coord | g0p0 | F | %   \usepackage{forest}
+ch10-coord | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch10-coord | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch10-coord | g0p0 | F | % ============================================================
+ch10-coord | g0p0 | F | % "Frodo sings and Gandalf rides."
+ch10-coord | g0p0 | F | \begin{forest}
+ch10-coord | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch10-coord | g0p0 | F |   [{\cnode{S} \\ {$\mathit{sing}(f) \land \mathit{ride}(g)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch10-coord | g0p0 | F |     [{\cnode{S} \\ {$\mathit{sing}(f)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch10-coord | g0p0 | F |       [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch10-coord | g0p0 | F |         [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
+ch10-coord | g0p0 | F |       ]
+ch10-coord | g0p0 | F |       [{\cnode{VP} \\ {$\lambda x.\mathit{sing}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch10-coord | g0p0 | F |         [{\textit{sings} \\ {$\lambda x.\mathit{sing}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch10-coord | g0p0 | F |       ]
+ch10-coord | g0p0 | F |     ]
+ch10-coord | g0p0 | F |     [{\cnode{ConjP} \\ {$\lambda p.p \land \mathit{ride}(g)$} \\ {\footnotesize $\langle t,t\rangle$} \\ \crule{FA}}
+ch10-coord | g0p0 | F |       [{\cnode{Conj} \\ {$\lambda q \lambda p.p \land q$} \\ {\footnotesize $\langle t,\langle t,t\rangle\rangle$} \\ \crule{NN}}
+ch10-coord | g0p0 | F |         [{\textit{andS} \\ {$\lambda q \lambda p.p \land q$} \\ {\footnotesize $\langle t,\langle t,t\rangle\rangle$}}]
+ch10-coord | g0p0 | F |       ]
+ch10-coord | g0p0 | F |       [{\cnode{S} \\ {$\mathit{ride}(g)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch10-coord | g0p0 | F |         [{\cnode{DP} \\ {$g$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch10-coord | g0p0 | F |           [{\textit{Gandalf} \\ {$g$} \\ {\footnotesize $e$}}]
+ch10-coord | g0p0 | F |         ]
+ch10-coord | g0p0 | F |         [{\cnode{VP} \\ {$\lambda x.\mathit{ride}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch10-coord | g0p0 | F |           [{\textit{rides} \\ {$\lambda x.\mathit{ride}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch10-coord | g0p0 | F |         ]
+ch10-coord | g0p0 | F |       ]
+ch10-coord | g0p0 | F |     ]
+ch10-coord | g0p0 | F |   ]
+ch10-coord | g0p0 | F | \end{forest}
+ch10-coord | g0p0 | F | 
+ch10-coord | g0p1 | \mathit{rest}(f) \lor \mathit{sing}(g)
+ch10-coord | g0p2 | \mathit{guard}(a, \iota x.\mathit{ring}(x)) \land \mathit{read}(s, \iota x.\mathit{map}(x))
+ch10-coord | g1p0 | \mathit{sing}(f) \land \mathit{ride}(f)
+ch10-coord | g1p1 | \mathit{rest}(g) \lor \mathit{sing}(g)
+ch10-coord | g1p2 | \mathit{guard}(s, \iota x.\mathit{ring}(x)) \land \mathit{ride}(s)
+ch10-coord | g2p0 | \mathit{guard}(f, \iota x.\mathit{ring}(x)) \land \mathit{carry}(f, \iota x.\mathit{ring}(x))
+ch10-coord | g2p1 | \mathit{read}(s, \iota x.\mathit{map}(x)) \land \mathit{find}(s, \iota x.\mathit{map}(x))
+ch10-coord | g3p0 | UNSOLVED
+ch10-coord | g3p1 | \mathit{sing}(f) \land \mathit{ride}(f)
+ch10-cumulative | g0p0 | {\ast}\mathit{carry}(\iota x.{\ast}(\lambda x.\mathit{hobbit}(x))(x) \land (\forall y.{\ast}(\lambda x.\mathit{hobbit}(x))(y) \rightarrow y \leq x))(\iota x.{\ast}(\lambda x.\mathit{ring}(x))(x) \land (\forall y.{\ast}(\lambda x.\mathit{ring}(x))(y) \rightarrow y \leq x))
+ch10-cumulative | g0p0 | F | % ============================================================
+ch10-cumulative | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch10-cumulative | g0p0 | F | % Requires in your document preamble:
+ch10-cumulative | g0p0 | F | %   \usepackage{forest}
+ch10-cumulative | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch10-cumulative | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch10-cumulative | g0p0 | F | % ============================================================
+ch10-cumulative | g0p0 | F | % "The hobbits carried the rings. (cumulative)"
+ch10-cumulative | g0p0 | F | \begin{forest}
+ch10-cumulative | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch10-cumulative | g0p0 | F |   [{\cnode{S} \\ {${\ast}\mathit{carry}(\iota x.{\ast}(\lambda x.\mathit{hobbit}(x))(x) \land (\forall y.{\ast}(\lambda x.\mathit{hobbit}(x))(y) \rightarrow y \leq x))(\iota x.{\ast}(\lambda x.\mathit{ring}(x))(x) \land (\forall y.{\ast}(\lambda x.\mathit{ring}(x))(y) \rightarrow y \leq x))$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch10-cumulative | g0p0 | F |     [{\cnode{DP} \\ {$\iota x.{\ast}(\lambda x.\mathit{hobbit}(x))(x) \land (\forall y.{\ast}(\lambda x.\mathit{hobbit}(x))(y) \rightarrow y \leq x)$} \\ {\footnotesize $e$} \\ \crule{FA}}
+ch10-cumulative | g0p0 | F |       [{\cnode{D} \\ {$\lambda X.\iota x.X(x) \land (\forall y.X(y) \rightarrow y \leq x)$} \\ {\footnotesize $\langle \langle e,t\rangle,e\rangle$} \\ \crule{NN}}
+ch10-cumulative | g0p0 | F |         [{\textit{theSUPR} \\ {$\lambda X.\iota x.X(x) \land (\forall y.X(y) \rightarrow y \leq x)$} \\ {\footnotesize $\langle \langle e,t\rangle,e\rangle$}}]
+ch10-cumulative | g0p0 | F |       ]
+ch10-cumulative | g0p0 | F |       [{\cnode{NP} \\ {${\ast}(\lambda x.\mathit{hobbit}(x))$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch10-cumulative | g0p0 | F |         [{\textit{hobbits} \\ {${\ast}(\lambda x.\mathit{hobbit}(x))$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch10-cumulative | g0p0 | F |       ]
+ch10-cumulative | g0p0 | F |     ]
+ch10-cumulative | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.{\ast}\mathit{carry}(x)(\iota x.{\ast}(\lambda x.\mathit{ring}(x))(x) \land (\forall y.{\ast}(\lambda x.\mathit{ring}(x))(y) \rightarrow y \leq x))$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+ch10-cumulative | g0p0 | F |       [{\cnode{V} \\ {$\lambda y \lambda x.{\ast}\mathit{carry}(x)(y)$} \\ {\footnotesize $\langle e,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch10-cumulative | g0p0 | F |         [{\textit{cum\_carry} \\ {$\lambda y \lambda x.{\ast}\mathit{carry}(x)(y)$} \\ {\footnotesize $\langle e,\langle e,t\rangle\rangle$}}]
+ch10-cumulative | g0p0 | F |       ]
+ch10-cumulative | g0p0 | F |       [{\cnode{DP} \\ {$\iota x.{\ast}(\lambda x.\mathit{ring}(x))(x) \land (\forall y.{\ast}(\lambda x.\mathit{ring}(x))(y) \rightarrow y \leq x)$} \\ {\footnotesize $e$} \\ \crule{FA}}
+ch10-cumulative | g0p0 | F |         [{\cnode{D} \\ {$\lambda X.\iota x.X(x) \land (\forall y.X(y) \rightarrow y \leq x)$} \\ {\footnotesize $\langle \langle e,t\rangle,e\rangle$} \\ \crule{NN}}
+ch10-cumulative | g0p0 | F |           [{\textit{theSUPR} \\ {$\lambda X.\iota x.X(x) \land (\forall y.X(y) \rightarrow y \leq x)$} \\ {\footnotesize $\langle \langle e,t\rangle,e\rangle$}}]
+ch10-cumulative | g0p0 | F |         ]
+ch10-cumulative | g0p0 | F |         [{\cnode{NP} \\ {${\ast}(\lambda x.\mathit{ring}(x))$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch10-cumulative | g0p0 | F |           [{\textit{rings} \\ {${\ast}(\lambda x.\mathit{ring}(x))$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch10-cumulative | g0p0 | F |         ]
+ch10-cumulative | g0p0 | F |       ]
+ch10-cumulative | g0p0 | F |     ]
+ch10-cumulative | g0p0 | F |   ]
+ch10-cumulative | g0p0 | F | \end{forest}
+ch10-cumulative | g0p0 | F | 
+ch10-cumulative | g0p1 | {\ast}\mathit{read}(\iota x.{\ast}(\lambda x.\mathit{elf}(x))(x) \land (\forall y.{\ast}(\lambda x.\mathit{elf}(x))(y) \rightarrow y \leq x))(\iota x.{\ast}(\lambda x.\mathit{map}(x))(x) \land (\forall y.{\ast}(\lambda x.\mathit{map}(x))(y) \rightarrow y \leq x))
+ch10-cumulative | g1p0 | UNSOLVED
+ch10-cumulative | g1p1 | {\ast}\mathit{carry}(\iota x.{\ast}(\lambda x.\mathit{hobbit}(x))(x) \land (\forall y.{\ast}(\lambda x.\mathit{hobbit}(x))(y) \rightarrow y \leq x))(\iota x.{\ast}(\lambda x.\mathit{ring}(x))(x) \land (\forall y.{\ast}(\lambda x.\mathit{ring}(x))(y) \rightarrow y \leq x))
+ch10-lift | g0p0 | (\forall x.\mathit{hobbit}(x) \rightarrow \mathit{ride}(x)) \land (\exists x.\mathit{elf}(x) \land \mathit{ride}(x))
+ch10-lift | g0p0 | F | % ============================================================
+ch10-lift | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch10-lift | g0p0 | F | % Requires in your document preamble:
+ch10-lift | g0p0 | F | %   \usepackage{forest}
+ch10-lift | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch10-lift | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch10-lift | g0p0 | F | % ============================================================
+ch10-lift | g0p0 | F | % "Every hobbit and some elf ride."
+ch10-lift | g0p0 | F | \begin{forest}
+ch10-lift | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch10-lift | g0p0 | F |   [{\cnode{S} \\ {$(\forall x.\mathit{hobbit}(x) \rightarrow \mathit{ride}(x)) \land (\exists x.\mathit{elf}(x) \land \mathit{ride}(x))$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch10-lift | g0p0 | F |     [{\cnode{DP} \\ {$\lambda P.(\forall x.\mathit{hobbit}(x) \rightarrow P(x)) \land (\exists x.\mathit{elf}(x) \land P(x))$} \\ {\footnotesize $\langle \langle e,t\rangle,t\rangle$} \\ \crule{FA}}
+ch10-lift | g0p0 | F |       [{\cnode{DP} \\ {$\lambda Y.\forall x.\mathit{hobbit}(x) \rightarrow Y(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,t\rangle$} \\ \crule{FA}}
+ch10-lift | g0p0 | F |         [{\cnode{D} \\ {$\lambda X \lambda Y.\forall x.X(x) \rightarrow Y(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle$} \\ \crule{NN}}
+ch10-lift | g0p0 | F |           [{\textit{every} \\ {$\lambda X \lambda Y.\forall x.X(x) \rightarrow Y(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle$}}]
+ch10-lift | g0p0 | F |         ]
+ch10-lift | g0p0 | F |         [{\cnode{NP} \\ {$\lambda x.\mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch10-lift | g0p0 | F |           [{\textit{hobbit} \\ {$\lambda x.\mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch10-lift | g0p0 | F |         ]
+ch10-lift | g0p0 | F |       ]
+ch10-lift | g0p0 | F |       [{\cnode{ConjP} \\ {$\lambda U \lambda P.U(P) \land (\exists x.\mathit{elf}(x) \land P(x))$} \\ {\footnotesize $\langle \langle \langle e,t\rangle,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle$} \\ \crule{FA}}
+ch10-lift | g0p0 | F |         [{\cnode{Conj} \\ {$\lambda T \lambda U \lambda P.U(P) \land T(P)$} \\ {\footnotesize $\langle \langle \langle e,t\rangle,t\rangle,\langle \langle \langle e,t\rangle,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle\rangle$} \\ \crule{NN}}
+ch10-lift | g0p0 | F |           [{\textit{andDP} \\ {$\lambda T \lambda U \lambda P.U(P) \land T(P)$} \\ {\footnotesize $\langle \langle \langle e,t\rangle,t\rangle,\langle \langle \langle e,t\rangle,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle\rangle$}}]
+ch10-lift | g0p0 | F |         ]
+ch10-lift | g0p0 | F |         [{\cnode{DP} \\ {$\lambda Y.\exists x.\mathit{elf}(x) \land Y(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,t\rangle$} \\ \crule{FA}}
+ch10-lift | g0p0 | F |           [{\cnode{D} \\ {$\lambda X \lambda Y.\exists x.X(x) \land Y(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle$} \\ \crule{NN}}
+ch10-lift | g0p0 | F |             [{\textit{some} \\ {$\lambda X \lambda Y.\exists x.X(x) \land Y(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle$}}]
+ch10-lift | g0p0 | F |           ]
+ch10-lift | g0p0 | F |           [{\cnode{NP} \\ {$\lambda x.\mathit{elf}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch10-lift | g0p0 | F |             [{\textit{elf} \\ {$\lambda x.\mathit{elf}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch10-lift | g0p0 | F |           ]
+ch10-lift | g0p0 | F |         ]
+ch10-lift | g0p0 | F |       ]
+ch10-lift | g0p0 | F |     ]
+ch10-lift | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{ride}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch10-lift | g0p0 | F |       [{\textit{rides} \\ {$\lambda x.\mathit{ride}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch10-lift | g0p0 | F |     ]
+ch10-lift | g0p0 | F |   ]
+ch10-lift | g0p0 | F | \end{forest}
+ch10-lift | g0p0 | F | 
+ch10-lift | g0p1 | (\exists x.\mathit{dwarf}(x) \land \mathit{sing}(x)) \lor (\forall x.\mathit{elf}(x) \rightarrow \mathit{sing}(x))
+ch10-lift | g1p0 | UNSOLVED
+ch10-lift | g1p1 | UNSOLVED
+ch10-lift | g1p2 | UNSOLVED
+ch10-mereology | g0p0 | f \oplus s
+ch10-mereology | g0p0 | F | % ============================================================
+ch10-mereology | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch10-mereology | g0p0 | F | % Requires in your document preamble:
+ch10-mereology | g0p0 | F | %   \usepackage{forest}
+ch10-mereology | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch10-mereology | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch10-mereology | g0p0 | F | % ============================================================
+ch10-mereology | g0p0 | F | % "Frodo and Sam (the sum f⊕s)."
+ch10-mereology | g0p0 | F | \begin{forest}
+ch10-mereology | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch10-mereology | g0p0 | F |   [{\cnode{DP} \\ {$f \oplus s$} \\ {\footnotesize $e$} \\ \crule{FA}}
+ch10-mereology | g0p0 | F |     [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch10-mereology | g0p0 | F |       [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
+ch10-mereology | g0p0 | F |     ]
+ch10-mereology | g0p0 | F |     [{\cnode{ConjP} \\ {$\lambda z.z \oplus s$} \\ {\footnotesize $\langle e,e\rangle$} \\ \crule{FA}}
+ch10-mereology | g0p0 | F |       [{\cnode{Conj} \\ {$\lambda y \lambda z.z \oplus y$} \\ {\footnotesize $\langle e,\langle e,e\rangle\rangle$} \\ \crule{NN}}
+ch10-mereology | g0p0 | F |         [{\textit{andE} \\ {$\lambda y \lambda z.z \oplus y$} \\ {\footnotesize $\langle e,\langle e,e\rangle\rangle$}}]
+ch10-mereology | g0p0 | F |       ]
+ch10-mereology | g0p0 | F |       [{\cnode{DP} \\ {$s$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch10-mereology | g0p0 | F |         [{\textit{Sam} \\ {$s$} \\ {\footnotesize $e$}}]
+ch10-mereology | g0p0 | F |       ]
+ch10-mereology | g0p0 | F |     ]
+ch10-mereology | g0p0 | F |   ]
+ch10-mereology | g0p0 | F | \end{forest}
+ch10-mereology | g0p0 | F | 
+ch10-mereology | g0p1 | f \oplus s \oplus a
+ch10-mereology | g0p2 | \mathit{carry\_coll}(g \oplus a, \iota x.\mathit{ring}(x))
+ch10-mereology | g1p0 | f \leq f \oplus s
+ch10-mereology | g1p1 | f \leq s \oplus g
+ch10-mereology | g2p0 | \lvert f \oplus s\rvert = \mathit{2}
+ch10-mereology | g2p1 | \lvert f \oplus s \oplus g\rvert = \mathit{3}
+ch10-mereology | g3p0 | \exists x.{\ast}(\lambda x.\mathit{hobbit}(x))(x) \land \lvert x\rvert = \mathit{2} \land \mathit{ride}(x)
+ch10-mereology | g3p1 | \exists x.{\ast}(\lambda x.\mathit{elf}(x))(x) \land \lvert x\rvert = \mathit{3} \land \mathit{sing}(x)
+ch10-plural | g0p0 | {\ast}\mathit{hobbit}
+ch10-plural | g0p0 | F | % ============================================================
+ch10-plural | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch10-plural | g0p0 | F | % Requires in your document preamble:
+ch10-plural | g0p0 | F | %   \usepackage{forest}
+ch10-plural | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch10-plural | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch10-plural | g0p0 | F | % ============================================================
+ch10-plural | g0p0 | F | % "hobbits (∗hobbit)"
+ch10-plural | g0p0 | F | \begin{forest}
+ch10-plural | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch10-plural | g0p0 | F |   [{\cnode{NP} \\ {${\ast}\mathit{hobbit}$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+ch10-plural | g0p0 | F |     [{\cnode{N} \\ {$\mathit{hobbit}$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch10-plural | g0p0 | F |       [{\textit{hobbit} \\ {$\mathit{hobbit}$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch10-plural | g0p0 | F |     ]
+ch10-plural | g0p0 | F |     [{\cnode{Pl} \\ {$\lambda P.{\ast}P$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch10-plural | g0p0 | F |       [{\textit{-s} \\ {$\lambda P.{\ast}P$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
+ch10-plural | g0p0 | F |     ]
+ch10-plural | g0p0 | F |   ]
+ch10-plural | g0p0 | F | \end{forest}
+ch10-plural | g0p0 | F | 
+ch10-plural | g0p1 | {\ast}\mathit{elf}
+ch10-plural | g0p2 | {\ast}\mathit{dwarf}
+ch10-plural | g1p0 | \iota x.{\ast}\mathit{hobbit}(x) \land (\forall y.{\ast}\mathit{hobbit}(y) \rightarrow y \leq x)
+ch10-plural | g1p1 | \iota x.{\ast}\mathit{elf}(x) \land (\forall y.{\ast}\mathit{elf}(y) \rightarrow y \leq x)
+ch10-plural | g2p0 | \mathit{ride}(\iota x.{\ast}\mathit{hobbit}(x) \land (\forall y.{\ast}\mathit{hobbit}(y) \rightarrow y \leq x))
+ch10-plural | g2p1 | \mathit{sing}(\iota x.{\ast}\mathit{elf}(x) \land (\forall y.{\ast}\mathit{elf}(y) \rightarrow y \leq x))
+ch10-plural | g3p0 | {\ast}\mathit{singer}
+ch10-plural | g3p1 | {\ast}\mathit{singer}(f \oplus s)
+ch10-plural | g3p2 | \exists x.{\ast}\mathit{singer}(x) \land \mathit{meet}(x)
+ch10-plural | g3p3 | \mathit{meet}(f \oplus s \oplus \mathit{pi})
+ch10-plural | g4p0 | \mathit{meet}({\textstyle\bigoplus}{\ast}\mathit{singer})
+ch10-plural | g4p1 | \mathit{meet}({\textstyle\bigoplus}(\lambda x.\lvert x\rvert = \mathit{2} \land {\ast}\mathit{singer}(x)))
+ch10-plural | g5p0 | \exists x.\lvert x\rvert = \mathit{2} \land {\ast}\mathit{singer}(x) \land \mathit{meet}(x)
+ch10.5-fragment | g0p0 | {\ast}\mathit{smoke}(\mathit{mx} \oplus l)
+ch10.5-fragment | g0p0 | F | % ============================================================
+ch10.5-fragment | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch10.5-fragment | g0p0 | F | % Requires in your document preamble:
+ch10.5-fragment | g0p0 | F | %   \usepackage{forest}
+ch10.5-fragment | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch10.5-fragment | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch10.5-fragment | g0p0 | F | % ============================================================
+ch10.5-fragment | g0p0 | F | % "Maxine and LaVerne smoke."
+ch10.5-fragment | g0p0 | F | \begin{forest}
+ch10.5-fragment | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch10.5-fragment | g0p0 | F |   [{\cnode{S} \\ {${\ast}\mathit{smoke}(\mathit{mx} \oplus l)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch10.5-fragment | g0p0 | F |     [{\cnode{DP} \\ {$\mathit{mx} \oplus l$} \\ {\footnotesize $e$} \\ \crule{FA}}
+ch10.5-fragment | g0p0 | F |       [{\cnode{DP} \\ {$\mathit{mx}$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch10.5-fragment | g0p0 | F |         [{\textit{Maxine} \\ {$\mathit{mx}$} \\ {\footnotesize $e$}}]
+ch10.5-fragment | g0p0 | F |       ]
+ch10.5-fragment | g0p0 | F |       [{\cnode{Coord'} \\ {$\lambda z.z \oplus l$} \\ {\footnotesize $\langle e,e\rangle$} \\ \crule{FA}}
+ch10.5-fragment | g0p0 | F |         [{\cnode{Coord} \\ {$\lambda y \lambda z.z \oplus y$} \\ {\footnotesize $\langle e,\langle e,e\rangle\rangle$} \\ \crule{NN}}
+ch10.5-fragment | g0p0 | F |           [{\textit{andE} \\ {$\lambda y \lambda z.z \oplus y$} \\ {\footnotesize $\langle e,\langle e,e\rangle\rangle$}}]
+ch10.5-fragment | g0p0 | F |         ]
+ch10.5-fragment | g0p0 | F |         [{\cnode{DP} \\ {$l$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch10.5-fragment | g0p0 | F |           [{\textit{LaVerne} \\ {$l$} \\ {\footnotesize $e$}}]
+ch10.5-fragment | g0p0 | F |         ]
+ch10.5-fragment | g0p0 | F |       ]
+ch10.5-fragment | g0p0 | F |     ]
+ch10.5-fragment | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.{\ast}\mathit{smoke}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch10.5-fragment | g0p0 | F |       [{\textit{smoke} \\ {$\lambda x.{\ast}\mathit{smoke}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch10.5-fragment | g0p0 | F |     ]
+ch10.5-fragment | g0p0 | F |   ]
+ch10.5-fragment | g0p0 | F | \end{forest}
+ch10.5-fragment | g0p0 | F | 
+ch10.5-fragment | g0p1 | {\ast}\mathit{drink}(\mathit{mx} \oplus l \oplus \mathit{pt})
+ch10.5-fragment | g1p0 | {\ast}\mathit{catch}(\mathit{mx})(\mathit{su})
+ch10.5-fragment | g1p1 | {\ast}\mathit{catch}(\mathit{mx} \oplus l)(\mathit{my})
+ch10.5-fragment | g2p0 | \exists x.{\ast}\mathit{singer}(x) \land {\ast}\mathit{smoke}(x)
+ch10.5-fragment | g3p0 | UNSOLVED
+ch11.1-dav | g0p0 | \lambda e.\mathit{run}(e, f)
+ch11.1-dav | g0p0 | F | % ============================================================
+ch11.1-dav | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch11.1-dav | g0p0 | F | % Requires in your document preamble:
+ch11.1-dav | g0p0 | F | %   \usepackage{forest}
+ch11.1-dav | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch11.1-dav | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch11.1-dav | g0p0 | F | % ============================================================
+ch11.1-dav | g0p0 | F | % "Frodo runs."
+ch11.1-dav | g0p0 | F | \begin{forest}
+ch11.1-dav | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch11.1-dav | g0p0 | F |   [{\cnode{S} \\ {$\lambda e.\mathit{run}(e, f)$} \\ {\footnotesize $\langle v,t\rangle$} \\ \crule{FA}}
+ch11.1-dav | g0p0 | F |     [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch11.1-dav | g0p0 | F |       [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
+ch11.1-dav | g0p0 | F |     ]
+ch11.1-dav | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x \lambda e.\mathit{run}(e, x)$} \\ {\footnotesize $\langle e,\langle v,t\rangle\rangle$} \\ \crule{NN}}
+ch11.1-dav | g0p0 | F |       [{\textit{runs} \\ {$\lambda x \lambda e.\mathit{run}(e, x)$} \\ {\footnotesize $\langle e,\langle v,t\rangle\rangle$}}]
+ch11.1-dav | g0p0 | F |     ]
+ch11.1-dav | g0p0 | F |   ]
+ch11.1-dav | g0p0 | F | \end{forest}
+ch11.1-dav | g0p0 | F | 
+ch11.1-dav | g0p1 | \lambda e.\mathit{sing}(e, g)
+ch11.1-dav | g0p2 | \lambda e.\mathit{sleep}(e, s)
+ch11.1-dav | g1p0 | \lambda e.\mathit{love}(e, f, s)
+ch11.1-dav | g1p1 | \lambda e.\mathit{help}(e, a, b)
+ch11.1-dav | g1p2 | \lambda e.\mathit{fear}(e, m, n)
+ch11.1-dav | g2p0 | UNSOLVED
+ch11.1-dav | g2p1 | UNSOLVED
+ch11.1-dav | g2p2 | UNSOLVED
+ch11.1-dav | g3p0 | UNSOLVED
+ch11.1-dav | g3p1 | UNSOLVED
+ch11.1-dav | g3p2 | UNSOLVED
+ch11.1-dav | g4p0 | UNSOLVED
+ch11.1-dav | g4p1 | UNSOLVED
+ch11.1-dav | g4p2 | UNSOLVED
+ch11.1-dav | g5p0 | \lambda e.\mathit{fear}(e, a, \iota x.\mathit{orc}(x))
+ch11.1-dav | g5p1 | \lambda e.\mathit{love}(e, f, \iota y.\mathit{poss}(s, y) \land \mathit{horse}(y))
+ch11.1-dav | g5p2 | UNSOLVED
+ch11.3-neodav | g0p0 | \lambda e.\mathit{agent}(e, f) \land \mathit{run}(e)
+ch11.3-neodav | g0p0 | F | % ============================================================
+ch11.3-neodav | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch11.3-neodav | g0p0 | F | % Requires in your document preamble:
+ch11.3-neodav | g0p0 | F | %   \usepackage{forest}
+ch11.3-neodav | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch11.3-neodav | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch11.3-neodav | g0p0 | F | % ============================================================
+ch11.3-neodav | g0p0 | F | % "Frodo runs."
+ch11.3-neodav | g0p0 | F | \begin{forest}
+ch11.3-neodav | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch11.3-neodav | g0p0 | F |   [{\cnode{S} \\ {$\lambda e.\mathit{agent}(e, f) \land \mathit{run}(e)$} \\ {\footnotesize $\langle v,t\rangle$} \\ \crule{PM}}
+ch11.3-neodav | g0p0 | F |     [{\cnode{AgentP} \\ {$\lambda e.\mathit{agent}(e, f)$} \\ {\footnotesize $\langle v,t\rangle$} \\ \crule{FA}}
+ch11.3-neodav | g0p0 | F |       [{\cnode{Agent} \\ {$\lambda x \lambda e.\mathit{agent}(e, x)$} \\ {\footnotesize $\langle e,\langle v,t\rangle\rangle$} \\ \crule{NN}}
+ch11.3-neodav | g0p0 | F |         [{\textit{Agent} \\ {$\lambda x \lambda e.\mathit{agent}(e, x)$} \\ {\footnotesize $\langle e,\langle v,t\rangle\rangle$}}]
+ch11.3-neodav | g0p0 | F |       ]
+ch11.3-neodav | g0p0 | F |       [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch11.3-neodav | g0p0 | F |         [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
+ch11.3-neodav | g0p0 | F |       ]
+ch11.3-neodav | g0p0 | F |     ]
+ch11.3-neodav | g0p0 | F |     [{\cnode{VP} \\ {$\lambda e.\mathit{run}(e)$} \\ {\footnotesize $\langle v,t\rangle$} \\ \crule{NN}}
+ch11.3-neodav | g0p0 | F |       [{\textit{runE} \\ {$\lambda e.\mathit{run}(e)$} \\ {\footnotesize $\langle v,t\rangle$}}]
+ch11.3-neodav | g0p0 | F |     ]
+ch11.3-neodav | g0p0 | F |   ]
+ch11.3-neodav | g0p0 | F | \end{forest}
+ch11.3-neodav | g0p0 | F | 
+ch11.3-neodav | g0p1 | \lambda e.\mathit{agent}(e, g) \land \mathit{sing}(e)
+ch11.3-neodav | g0p2 | \lambda e.\mathit{agent}(e, s) \land \mathit{sleep}(e)
+ch11.3-neodav | g1p0 | \lambda e.\mathit{agent}(e, f) \land \mathit{love}(e) \land \mathit{theme}(e, s)
+ch11.3-neodav | g1p1 | \lambda e.\mathit{agent}(e, a) \land \mathit{help}(e) \land \mathit{theme}(e, b)
+ch11.3-neodav | g1p2 | \lambda e.\mathit{agent}(e, m) \land \mathit{fear}(e) \land \mathit{theme}(e, n)
+ch11.3-neodav | g2p0 | \lambda e.\mathit{agent}(e, f) \land \mathit{quick}(e) \land \mathit{run}(e)
+ch11.3-neodav | g2p1 | \lambda e.\mathit{agent}(e, g) \land \mathit{slow}(e) \land \mathit{sing}(e)
+ch11.3-neodav | g2p2 | \lambda e.\mathit{agent}(e, f) \land \mathit{slow}(e) \land \mathit{love}(e) \land \mathit{theme}(e, s)
+ch11.3-neodav | g3p0 | UNSOLVED
+ch11.3-neodav | g3p1 | UNSOLVED
+ch11.3-neodav | g3p2 | UNSOLVED
+ch11.3-neodav | g4p0 | UNSOLVED
+ch11.3-neodav | g4p1 | UNSOLVED
+ch11.3-neodav | g4p2 | UNSOLVED
+ch11.3-neodav | g5p0 | UNSOLVED
+ch11.3-neodav | g5p1 | UNSOLVED
+ch11.3-neodav | g5p2 | UNSOLVED
+ch11.3-neodav | g6p0 | \lambda e.\mathit{agent}(e, f) \land \mathit{run}(e) \land \mathit{in}(e, o)
+ch11.3-neodav | g6p1 | \lambda e.\mathit{agent}(e, a) \land \mathit{love}(e) \land \mathit{theme}(e, \iota y.\mathit{poss}(s, y) \land \mathit{horse}(y))
+ch11.3-neodav | g6p2 | \lambda e.\mathit{agent}(e, f) \land \mathit{love}(e) \land \mathit{theme}(e, s) \land \mathit{in}(e, o)
+ch11.4-continuation | g0p0 | \lambda k.\exists e.\mathit{run}(e) \land \mathit{agent}(e, f) \land k(e)
+ch11.4-continuation | g0p0 | F | % ============================================================
+ch11.4-continuation | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch11.4-continuation | g0p0 | F | % Requires in your document preamble:
+ch11.4-continuation | g0p0 | F | %   \usepackage{forest}
+ch11.4-continuation | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch11.4-continuation | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch11.4-continuation | g0p0 | F | % ============================================================
+ch11.4-continuation | g0p0 | F | % "Frodo runs."
+ch11.4-continuation | g0p0 | F | \begin{forest}
+ch11.4-continuation | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch11.4-continuation | g0p0 | F |   [{\cnode{S} \\ {$\lambda k.\exists e.\mathit{run}(e) \land \mathit{agent}(e, f) \land k(e)$} \\ {\footnotesize $\langle \langle v,t\rangle,t\rangle$} \\ \crule{FA}}
+ch11.4-continuation | g0p0 | F |     [{\cnode{AgentP} \\ {$\lambda V \lambda k.V(\lambda e.\mathit{agent}(e, f) \land k(e))$} \\ {\footnotesize $\langle \langle \langle v,t\rangle,t\rangle,\langle \langle v,t\rangle,t\rangle\rangle$} \\ \crule{FA}}
+ch11.4-continuation | g0p0 | F |       [{\cnode{Agent} \\ {$\lambda x \lambda V \lambda k.V(\lambda e.\mathit{agent}(e, x) \land k(e))$} \\ {\footnotesize $\langle e,\langle \langle \langle v,t\rangle,t\rangle,\langle \langle v,t\rangle,t\rangle\rangle\rangle$} \\ \crule{NN}}
+ch11.4-continuation | g0p0 | F |         [{\textit{Agent} \\ {$\lambda x \lambda V \lambda k.V(\lambda e.\mathit{agent}(e, x) \land k(e))$} \\ {\footnotesize $\langle e,\langle \langle \langle v,t\rangle,t\rangle,\langle \langle v,t\rangle,t\rangle\rangle\rangle$}}]
+ch11.4-continuation | g0p0 | F |       ]
+ch11.4-continuation | g0p0 | F |       [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch11.4-continuation | g0p0 | F |         [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
+ch11.4-continuation | g0p0 | F |       ]
+ch11.4-continuation | g0p0 | F |     ]
+ch11.4-continuation | g0p0 | F |     [{\cnode{VP} \\ {$\lambda k.\exists e.\mathit{run}(e) \land k(e)$} \\ {\footnotesize $\langle \langle v,t\rangle,t\rangle$} \\ \crule{NN}}
+ch11.4-continuation | g0p0 | F |       [{\textit{runs} \\ {$\lambda k.\exists e.\mathit{run}(e) \land k(e)$} \\ {\footnotesize $\langle \langle v,t\rangle,t\rangle$}}]
+ch11.4-continuation | g0p0 | F |     ]
+ch11.4-continuation | g0p0 | F |   ]
+ch11.4-continuation | g0p0 | F | \end{forest}
+ch11.4-continuation | g0p0 | F | 
+ch11.4-continuation | g0p1 | \lambda k.\exists e.\mathit{sing}(e) \land \mathit{agent}(e, g) \land k(e)
+ch11.4-continuation | g0p2 | \lambda k.\exists e.\mathit{sleep}(e) \land \mathit{agent}(e, s) \land k(e)
+ch11.4-continuation | g1p0 | \lambda k.\exists e.\mathit{love}(e) \land \mathit{theme}(e, s) \land \mathit{agent}(e, f) \land k(e)
+ch11.4-continuation | g1p1 | \lambda k.\exists e.\mathit{help}(e) \land \mathit{theme}(e, b) \land \mathit{agent}(e, a) \land k(e)
+ch11.4-continuation | g1p2 | \lambda k.\exists e.\mathit{fear}(e) \land \mathit{theme}(e, n) \land \mathit{agent}(e, m) \land k(e)
+ch11.4-continuation | g2p0 | \lambda k.\exists e.\mathit{run}(e) \land \mathit{slow}(e) \land \mathit{agent}(e, f) \land k(e)
+ch11.4-continuation | g2p1 | \lambda k.\exists e.\mathit{sing}(e) \land \mathit{loud}(e) \land \mathit{agent}(e, g) \land k(e)
+ch11.4-continuation | g2p2 | \lambda k.\exists e.\mathit{run}(e) \land \mathit{in}(e, o) \land \mathit{agent}(e, f) \land k(e)
+ch11.4-continuation | g3p0 | UNSOLVED
+ch11.4-continuation | g3p1 | UNSOLVED
+ch11.4-continuation | g3p2 | UNSOLVED
+ch11.4-continuation | g4p0 | \lambda k.(\exists e.\mathit{smoke}(e) \land \mathit{agent}(e, f) \land k(e)) \land (\exists e.\mathit{drink}(e) \land \mathit{agent}(e, f) \land k(e))
+ch11.4-continuation | g4p1 | \lambda k.(\exists e.\mathit{smoke}(e) \land \mathit{slow}(e) \land \mathit{agent}(e, f) \land k(e)) \land (\exists e.\mathit{drink}(e) \land \mathit{quick}(e) \land \mathit{agent}(e, f) \land k(e))
+ch11.4-continuation | g5p0 | \lambda k.\lnot (\exists e.\mathit{sleep}(e) \land \mathit{agent}(e, s) \land k(e))
+ch11.4-continuation | g5p1 | \lambda k.\lnot (\exists e.\mathit{love}(e) \land \mathit{theme}(e, s) \land \mathit{agent}(e, f) \land k(e))
+ch11.4-continuation | g5p2 | \lambda k.\lnot (\exists e.\mathit{sing}(e) \land \mathit{loud}(e) \land \mathit{agent}(e, g) \land k(e))
+ch11.5-conjneg | g0p0 | \lambda e.\mathit{agent}(e, f) \land \mathit{smoke}(e) \land \mathit{drink}(e)
+ch11.5-conjneg | g0p0 | F | % ============================================================
+ch11.5-conjneg | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch11.5-conjneg | g0p0 | F | % Requires in your document preamble:
+ch11.5-conjneg | g0p0 | F | %   \usepackage{forest}
+ch11.5-conjneg | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch11.5-conjneg | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch11.5-conjneg | g0p0 | F | % ============================================================
+ch11.5-conjneg | g0p0 | F | % "Frodo smoked and drank."
+ch11.5-conjneg | g0p0 | F | \begin{forest}
+ch11.5-conjneg | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch11.5-conjneg | g0p0 | F |   [{\cnode{S} \\ {$\lambda e.\mathit{agent}(e, f) \land \mathit{smoke}(e) \land \mathit{drink}(e)$} \\ {\footnotesize $\langle v,t\rangle$} \\ \crule{PM}}
+ch11.5-conjneg | g0p0 | F |     [{\cnode{AgentP} \\ {$\lambda e.\mathit{agent}(e, f)$} \\ {\footnotesize $\langle v,t\rangle$} \\ \crule{FA}}
+ch11.5-conjneg | g0p0 | F |       [{\cnode{Agent} \\ {$\lambda x \lambda e.\mathit{agent}(e, x)$} \\ {\footnotesize $\langle e,\langle v,t\rangle\rangle$} \\ \crule{NN}}
+ch11.5-conjneg | g0p0 | F |         [{\textit{Agent} \\ {$\lambda x \lambda e.\mathit{agent}(e, x)$} \\ {\footnotesize $\langle e,\langle v,t\rangle\rangle$}}]
+ch11.5-conjneg | g0p0 | F |       ]
+ch11.5-conjneg | g0p0 | F |       [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch11.5-conjneg | g0p0 | F |         [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
+ch11.5-conjneg | g0p0 | F |       ]
+ch11.5-conjneg | g0p0 | F |     ]
+ch11.5-conjneg | g0p0 | F |     [{\cnode{VP} \\ {$\lambda e.\mathit{smoke}(e) \land \mathit{drink}(e)$} \\ {\footnotesize $\langle v,t\rangle$} \\ \crule{FA}}
+ch11.5-conjneg | g0p0 | F |       [{\cnode{VP} \\ {$\lambda e.\mathit{smoke}(e)$} \\ {\footnotesize $\langle v,t\rangle$} \\ \crule{NN}}
+ch11.5-conjneg | g0p0 | F |         [{\textit{smokeE} \\ {$\lambda e.\mathit{smoke}(e)$} \\ {\footnotesize $\langle v,t\rangle$}}]
+ch11.5-conjneg | g0p0 | F |       ]
+ch11.5-conjneg | g0p0 | F |       [{\cnode{CoordP} \\ {$\lambda P \lambda e.P(e) \land \mathit{drink}(e)$} \\ {\footnotesize $\langle \langle v,t\rangle,\langle v,t\rangle\rangle$} \\ \crule{FA}}
+ch11.5-conjneg | g0p0 | F |         [{\cnode{Coord} \\ {$\lambda Q \lambda P \lambda e.P(e) \land Q(e)$} \\ {\footnotesize $\langle \langle v,t\rangle,\langle \langle v,t\rangle,\langle v,t\rangle\rangle\rangle$} \\ \crule{NN}}
+ch11.5-conjneg | g0p0 | F |           [{\textit{andVP} \\ {$\lambda Q \lambda P \lambda e.P(e) \land Q(e)$} \\ {\footnotesize $\langle \langle v,t\rangle,\langle \langle v,t\rangle,\langle v,t\rangle\rangle\rangle$}}]
+ch11.5-conjneg | g0p0 | F |         ]
+ch11.5-conjneg | g0p0 | F |         [{\cnode{VP} \\ {$\lambda e.\mathit{drink}(e)$} \\ {\footnotesize $\langle v,t\rangle$} \\ \crule{NN}}
+ch11.5-conjneg | g0p0 | F |           [{\textit{drinkE} \\ {$\lambda e.\mathit{drink}(e)$} \\ {\footnotesize $\langle v,t\rangle$}}]
+ch11.5-conjneg | g0p0 | F |         ]
+ch11.5-conjneg | g0p0 | F |       ]
+ch11.5-conjneg | g0p0 | F |     ]
+ch11.5-conjneg | g0p0 | F |   ]
+ch11.5-conjneg | g0p0 | F | \end{forest}
+ch11.5-conjneg | g0p0 | F | 
+ch11.5-conjneg | g0p1 | \lambda e.\mathit{agent}(e, g) \land \mathit{sing}(e) \land \mathit{sleep}(e)
+ch11.5-conjneg | g0p2 | \lambda e.\mathit{agent}(e, s) \land \mathit{run}(e) \land \mathit{sing}(e)
+ch11.5-conjneg | g1p0 | \lambda e.\mathit{agent}(e, f) \land \mathit{slow}(e) \land \mathit{smoke}(e) \land \mathit{quick}(e) \land \mathit{drink}(e)
+ch11.5-conjneg | g2p0 | \lambda e.\mathit{agent}(e, \mathit{sp}) \land \lnot \mathit{bark}(e)
+ch11.5-conjneg | g2p1 | \lambda e.\mathit{agent}(e, f) \land \lnot \mathit{sing}(e)
+ch11.5-conjneg | g3p0 | UNSOLVED
+ch11.5-conjneg | g3p1 | UNSOLVED
+ch11.5-conjneg | g3p2 | UNSOLVED
+ch12.1-times | g0p0 | \lambda t.t = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t' \subseteq t_{1} \land \mathit{forge}(t', f, \iota x.\mathit{sword}(x)))
+ch12.1-times | g0p0 | F | % ============================================================
+ch12.1-times | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch12.1-times | g0p0 | F | % Requires in your document preamble:
+ch12.1-times | g0p0 | F | %   \usepackage{forest}
+ch12.1-times | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch12.1-times | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch12.1-times | g0p0 | F | % ============================================================
+ch12.1-times | g0p0 | F | % "Frodo forged the sword."
+ch12.1-times | g0p0 | F | \begin{forest}
+ch12.1-times | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch12.1-times | g0p0 | F |   [{\cnode{TenseP} \\ {$\lambda t.t = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t' \subseteq t_{1} \land \mathit{forge}(t', f, \iota x.\mathit{sword}(x)))$} \\ {\footnotesize $\langle i,t\rangle$} \\ \crule{FA}}
+ch12.1-times | g0p0 | F |     [{\cnode{Tense} \\ {$\lambda P \lambda t.t = t_{1} \land \partial(t_{1} < \mathit{now}) \land P(t_{1})$} \\ {\footnotesize $\langle \langle i,t\rangle,\langle i,t\rangle\rangle$} \\ \crule{NN}}
+ch12.1-times | g0p0 | F |       [{\textit{PAST} \\ {$\lambda P \lambda t.t = t_{1} \land \partial(t_{1} < \mathit{now}) \land P(t_{1})$} \\ {\footnotesize $\langle \langle i,t\rangle,\langle i,t\rangle\rangle$}}]
+ch12.1-times | g0p0 | F |     ]
+ch12.1-times | g0p0 | F |     [{\cnode{AspP} \\ {$\lambda t.\exists t'.t' \subseteq t \land \mathit{forge}(t', f, \iota x.\mathit{sword}(x))$} \\ {\footnotesize $\langle i,t\rangle$} \\ \crule{FA}}
+ch12.1-times | g0p0 | F |       [{\cnode{Asp} \\ {$\lambda P \lambda t.\exists t'.t' \subseteq t \land P(t')$} \\ {\footnotesize $\langle \langle i,t\rangle,\langle i,t\rangle\rangle$} \\ \crule{NN}}
+ch12.1-times | g0p0 | F |         [{\textit{PFV} \\ {$\lambda P \lambda t.\exists t'.t' \subseteq t \land P(t')$} \\ {\footnotesize $\langle \langle i,t\rangle,\langle i,t\rangle\rangle$}}]
+ch12.1-times | g0p0 | F |       ]
+ch12.1-times | g0p0 | F |       [{\cnode{vP} \\ {$\lambda t.\mathit{forge}(t, f, \iota x.\mathit{sword}(x))$} \\ {\footnotesize $\langle i,t\rangle$} \\ \crule{FA}}
+ch12.1-times | g0p0 | F |         [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch12.1-times | g0p0 | F |           [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
+ch12.1-times | g0p0 | F |         ]
+ch12.1-times | g0p0 | F |         [{\cnode{VP} \\ {$\lambda x \lambda t.\mathit{forge}(t, x, \iota x.\mathit{sword}(x))$} \\ {\footnotesize $\langle e,\langle i,t\rangle\rangle$} \\ \crule{FA}}
+ch12.1-times | g0p0 | F |           [{\cnode{V} \\ {$\lambda y \lambda x \lambda t.\mathit{forge}(t, x, y)$} \\ {\footnotesize $\langle e,\langle e,\langle i,t\rangle\rangle\rangle$} \\ \crule{NN}}
+ch12.1-times | g0p0 | F |             [{\textit{forges} \\ {$\lambda y \lambda x \lambda t.\mathit{forge}(t, x, y)$} \\ {\footnotesize $\langle e,\langle e,\langle i,t\rangle\rangle\rangle$}}]
+ch12.1-times | g0p0 | F |           ]
+ch12.1-times | g0p0 | F |           [{\cnode{DP} \\ {$\iota x.\mathit{sword}(x)$} \\ {\footnotesize $e$} \\ \crule{FA}}
+ch12.1-times | g0p0 | F |             [{\cnode{D} \\ {$\lambda X.\iota x.X(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,e\rangle$} \\ \crule{NN}}
+ch12.1-times | g0p0 | F |               [{\textit{the} \\ {$\lambda X.\iota x.X(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,e\rangle$}}]
+ch12.1-times | g0p0 | F |             ]
+ch12.1-times | g0p0 | F |             [{\cnode{NP} \\ {$\lambda x.\mathit{sword}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch12.1-times | g0p0 | F |               [{\textit{sword} \\ {$\lambda x.\mathit{sword}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch12.1-times | g0p0 | F |             ]
+ch12.1-times | g0p0 | F |           ]
+ch12.1-times | g0p0 | F |         ]
+ch12.1-times | g0p0 | F |       ]
+ch12.1-times | g0p0 | F |     ]
+ch12.1-times | g0p0 | F |   ]
+ch12.1-times | g0p0 | F | \end{forest}
+ch12.1-times | g0p0 | F | 
+ch12.1-times | g0p1 | \lambda t.t = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t' \subseteq t_{1} \land \mathit{read}(t', g, \iota x.\mathit{map}(x)))
+ch12.1-times | g1p0 | \lambda t.t = \mathit{now} \land (\exists t'.t \subseteq t' \land \mathit{forge}(t', f, \iota x.\mathit{sword}(x)))
+ch12.1-times | g1p1 | \lambda t.t = \mathit{now} \land (\exists t'.t \subseteq t' \land \mathit{read}(t', g, \iota x.\mathit{map}(x)))
+ch12.1-times | g2p0 | \mathit{dawn} = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t' \subseteq t_{1} \land \mathit{forge}(t', f, \iota x.\mathit{sword}(x)))
+ch12.1-times | g2p1 | \mathit{dusk} = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t' \subseteq t_{1} \land \mathit{read}(t', g, \iota x.\mathit{map}(x)))
+ch12.1-times | g3p0 | \mathit{dawn} = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t_{1} \subseteq t' \land \mathit{forge}(t', f, \iota x.\mathit{sword}(x)))
+ch12.1-times | g3p1 | \mathit{dusk} = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t_{1} \subseteq t' \land \mathit{read}(t', g, \iota x.\mathit{map}(x)))
+ch12.1-times | g4p0 | \lambda t.t = \mathit{now} \land (\exists t'.t' \subseteq t \land \mathit{forge}(t', f, \iota x.\mathit{sword}(x)))
+ch12.2-aspects | g0p0 | \mathit{dawn} = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t' < t_{1} \land (\exists t_{2}.t_{2} \subseteq t' \land \mathit{forge}(t_{2}, f, \iota x.\mathit{sword}(x))))
+ch12.2-aspects | g0p0 | F | % ============================================================
+ch12.2-aspects | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch12.2-aspects | g0p0 | F | % Requires in your document preamble:
+ch12.2-aspects | g0p0 | F | %   \usepackage{forest}
+ch12.2-aspects | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch12.2-aspects | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch12.2-aspects | g0p0 | F | % ============================================================
+ch12.2-aspects | g0p0 | F | % "At dawn, Frodo had forged the sword."
+ch12.2-aspects | g0p0 | F | \begin{forest}
+ch12.2-aspects | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch12.2-aspects | g0p0 | F |   [{\cnode{TenseP} \\ {$\mathit{dawn} = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t' < t_{1} \land (\exists t_{2}.t_{2} \subseteq t' \land \mathit{forge}(t_{2}, f, \iota x.\mathit{sword}(x))))$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch12.2-aspects | g0p0 | F |     [{\cnode{TenseP} \\ {$\lambda t.t = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t' < t_{1} \land (\exists t_{2}.t_{2} \subseteq t' \land \mathit{forge}(t_{2}, f, \iota x.\mathit{sword}(x))))$} \\ {\footnotesize $\langle i,t\rangle$} \\ \crule{FA}}
+ch12.2-aspects | g0p0 | F |       [{\cnode{Tense} \\ {$\lambda P \lambda t.t = t_{1} \land \partial(t_{1} < \mathit{now}) \land P(t_{1})$} \\ {\footnotesize $\langle \langle i,t\rangle,\langle i,t\rangle\rangle$} \\ \crule{NN}}
+ch12.2-aspects | g0p0 | F |         [{\textit{PAST} \\ {$\lambda P \lambda t.t = t_{1} \land \partial(t_{1} < \mathit{now}) \land P(t_{1})$} \\ {\footnotesize $\langle \langle i,t\rangle,\langle i,t\rangle\rangle$}}]
+ch12.2-aspects | g0p0 | F |       ]
+ch12.2-aspects | g0p0 | F |       [{\cnode{PerfP} \\ {$\lambda t.\exists t'.t' < t \land (\exists t_{1}.t_{1} \subseteq t' \land \mathit{forge}(t_{1}, f, \iota x.\mathit{sword}(x)))$} \\ {\footnotesize $\langle i,t\rangle$} \\ \crule{FA}}
+ch12.2-aspects | g0p0 | F |         [{\cnode{Perf} \\ {$\lambda P \lambda t.\exists t'.t' < t \land P(t')$} \\ {\footnotesize $\langle \langle i,t\rangle,\langle i,t\rangle\rangle$} \\ \crule{NN}}
+ch12.2-aspects | g0p0 | F |           [{\textit{PERFECT} \\ {$\lambda P \lambda t.\exists t'.t' < t \land P(t')$} \\ {\footnotesize $\langle \langle i,t\rangle,\langle i,t\rangle\rangle$}}]
+ch12.2-aspects | g0p0 | F |         ]
+ch12.2-aspects | g0p0 | F |         [{\cnode{AspP} \\ {$\lambda t.\exists t'.t' \subseteq t \land \mathit{forge}(t', f, \iota x.\mathit{sword}(x))$} \\ {\footnotesize $\langle i,t\rangle$} \\ \crule{FA}}
+ch12.2-aspects | g0p0 | F |           [{\cnode{Asp} \\ {$\lambda P \lambda t.\exists t'.t' \subseteq t \land P(t')$} \\ {\footnotesize $\langle \langle i,t\rangle,\langle i,t\rangle\rangle$} \\ \crule{NN}}
+ch12.2-aspects | g0p0 | F |             [{\textit{PFV} \\ {$\lambda P \lambda t.\exists t'.t' \subseteq t \land P(t')$} \\ {\footnotesize $\langle \langle i,t\rangle,\langle i,t\rangle\rangle$}}]
+ch12.2-aspects | g0p0 | F |           ]
+ch12.2-aspects | g0p0 | F |           [{\cnode{vP} \\ {$\lambda t.\mathit{forge}(t, f, \iota x.\mathit{sword}(x))$} \\ {\footnotesize $\langle i,t\rangle$} \\ \crule{FA}}
+ch12.2-aspects | g0p0 | F |             [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch12.2-aspects | g0p0 | F |               [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
+ch12.2-aspects | g0p0 | F |             ]
+ch12.2-aspects | g0p0 | F |             [{\cnode{VP} \\ {$\lambda x \lambda t.\mathit{forge}(t, x, \iota x.\mathit{sword}(x))$} \\ {\footnotesize $\langle e,\langle i,t\rangle\rangle$} \\ \crule{FA}}
+ch12.2-aspects | g0p0 | F |               [{\cnode{V} \\ {$\lambda y \lambda x \lambda t.\mathit{forge}(t, x, y)$} \\ {\footnotesize $\langle e,\langle e,\langle i,t\rangle\rangle\rangle$} \\ \crule{NN}}
+ch12.2-aspects | g0p0 | F |                 [{\textit{forges} \\ {$\lambda y \lambda x \lambda t.\mathit{forge}(t, x, y)$} \\ {\footnotesize $\langle e,\langle e,\langle i,t\rangle\rangle\rangle$}}]
+ch12.2-aspects | g0p0 | F |               ]
+ch12.2-aspects | g0p0 | F |               [{\cnode{DP} \\ {$\iota x.\mathit{sword}(x)$} \\ {\footnotesize $e$} \\ \crule{FA}}
+ch12.2-aspects | g0p0 | F |                 [{\cnode{D} \\ {$\lambda X.\iota x.X(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,e\rangle$} \\ \crule{NN}}
+ch12.2-aspects | g0p0 | F |                   [{\textit{the} \\ {$\lambda X.\iota x.X(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,e\rangle$}}]
+ch12.2-aspects | g0p0 | F |                 ]
+ch12.2-aspects | g0p0 | F |                 [{\cnode{NP} \\ {$\lambda x.\mathit{sword}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch12.2-aspects | g0p0 | F |                   [{\textit{sword} \\ {$\lambda x.\mathit{sword}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch12.2-aspects | g0p0 | F |                 ]
+ch12.2-aspects | g0p0 | F |               ]
+ch12.2-aspects | g0p0 | F |             ]
+ch12.2-aspects | g0p0 | F |           ]
+ch12.2-aspects | g0p0 | F |         ]
+ch12.2-aspects | g0p0 | F |       ]
+ch12.2-aspects | g0p0 | F |     ]
+ch12.2-aspects | g0p0 | F |     [{\cnode{PP} \\ {$\mathit{dawn}$} \\ {\footnotesize $i$} \\ \crule{FA}}
+ch12.2-aspects | g0p0 | F |       [{\cnode{P} \\ {$\lambda t.t$} \\ {\footnotesize $\langle i,i\rangle$} \\ \crule{NN}}
+ch12.2-aspects | g0p0 | F |         [{\textit{at} \\ {$\lambda t.t$} \\ {\footnotesize $\langle i,i\rangle$}}]
+ch12.2-aspects | g0p0 | F |       ]
+ch12.2-aspects | g0p0 | F |       [{\cnode{DP} \\ {$\mathit{dawn}$} \\ {\footnotesize $i$} \\ \crule{NN}}
+ch12.2-aspects | g0p0 | F |         [{\textit{dawn} \\ {$\mathit{dawn}$} \\ {\footnotesize $i$}}]
+ch12.2-aspects | g0p0 | F |       ]
+ch12.2-aspects | g0p0 | F |     ]
+ch12.2-aspects | g0p0 | F |   ]
+ch12.2-aspects | g0p0 | F | \end{forest}
+ch12.2-aspects | g0p0 | F | 
+ch12.2-aspects | g1p0 | \lambda t.t = \mathit{now} \land (\exists t'.t' < t \land (\exists t_{1}.t_{1} \subseteq t' \land \mathit{forge}(t_{1}, f, \iota x.\mathit{sword}(x))))
+ch12.2-aspects | g2p0 | \lambda t.t = \mathit{now} \land (\exists t'.t' < t \land (\exists t_{1}.t' \subseteq t_{1} \land \mathit{read}(t_{1}, g, \iota x.\mathit{map}(x))))
+ch12.3-future | g0p0 | \lambda t.t = \mathit{now} \land (\exists t'.t < t' \land \mathit{forge}(t', f, \iota x.\mathit{sword}(x)))
+ch12.3-future | g0p0 | F | % ============================================================
+ch12.3-future | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch12.3-future | g0p0 | F | % Requires in your document preamble:
+ch12.3-future | g0p0 | F | %   \usepackage{forest}
+ch12.3-future | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch12.3-future | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch12.3-future | g0p0 | F | % ============================================================
+ch12.3-future | g0p0 | F | % "Frodo will forge the sword. (ignoring aspect)"
+ch12.3-future | g0p0 | F | \begin{forest}
+ch12.3-future | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch12.3-future | g0p0 | F |   [{\cnode{TenseP} \\ {$\lambda t.t = \mathit{now} \land (\exists t'.t < t' \land \mathit{forge}(t', f, \iota x.\mathit{sword}(x)))$} \\ {\footnotesize $\langle i,t\rangle$} \\ \crule{FA}}
+ch12.3-future | g0p0 | F |     [{\cnode{Tense} \\ {$\lambda P \lambda t.t = \mathit{now} \land P(t)$} \\ {\footnotesize $\langle \langle i,t\rangle,\langle i,t\rangle\rangle$} \\ \crule{NN}}
+ch12.3-future | g0p0 | F |       [{\textit{PRESENT} \\ {$\lambda P \lambda t.t = \mathit{now} \land P(t)$} \\ {\footnotesize $\langle \langle i,t\rangle,\langle i,t\rangle\rangle$}}]
+ch12.3-future | g0p0 | F |     ]
+ch12.3-future | g0p0 | F |     [{\cnode{ModP} \\ {$\lambda t.\exists t'.t < t' \land \mathit{forge}(t', f, \iota x.\mathit{sword}(x))$} \\ {\footnotesize $\langle i,t\rangle$} \\ \crule{FA}}
+ch12.3-future | g0p0 | F |       [{\cnode{Mod} \\ {$\lambda P \lambda t.\exists t'.t < t' \land P(t')$} \\ {\footnotesize $\langle \langle i,t\rangle,\langle i,t\rangle\rangle$} \\ \crule{NN}}
+ch12.3-future | g0p0 | F |         [{\textit{WOLL} \\ {$\lambda P \lambda t.\exists t'.t < t' \land P(t')$} \\ {\footnotesize $\langle \langle i,t\rangle,\langle i,t\rangle\rangle$}}]
+ch12.3-future | g0p0 | F |       ]
+ch12.3-future | g0p0 | F |       [{\cnode{vP} \\ {$\lambda t.\mathit{forge}(t, f, \iota x.\mathit{sword}(x))$} \\ {\footnotesize $\langle i,t\rangle$} \\ \crule{FA}}
+ch12.3-future | g0p0 | F |         [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch12.3-future | g0p0 | F |           [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
+ch12.3-future | g0p0 | F |         ]
+ch12.3-future | g0p0 | F |         [{\cnode{VP} \\ {$\lambda x \lambda t.\mathit{forge}(t, x, \iota x.\mathit{sword}(x))$} \\ {\footnotesize $\langle e,\langle i,t\rangle\rangle$} \\ \crule{FA}}
+ch12.3-future | g0p0 | F |           [{\cnode{V} \\ {$\lambda y \lambda x \lambda t.\mathit{forge}(t, x, y)$} \\ {\footnotesize $\langle e,\langle e,\langle i,t\rangle\rangle\rangle$} \\ \crule{NN}}
+ch12.3-future | g0p0 | F |             [{\textit{forges} \\ {$\lambda y \lambda x \lambda t.\mathit{forge}(t, x, y)$} \\ {\footnotesize $\langle e,\langle e,\langle i,t\rangle\rangle\rangle$}}]
+ch12.3-future | g0p0 | F |           ]
+ch12.3-future | g0p0 | F |           [{\cnode{DP} \\ {$\iota x.\mathit{sword}(x)$} \\ {\footnotesize $e$} \\ \crule{FA}}
+ch12.3-future | g0p0 | F |             [{\cnode{D} \\ {$\lambda X.\iota x.X(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,e\rangle$} \\ \crule{NN}}
+ch12.3-future | g0p0 | F |               [{\textit{the} \\ {$\lambda X.\iota x.X(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,e\rangle$}}]
+ch12.3-future | g0p0 | F |             ]
+ch12.3-future | g0p0 | F |             [{\cnode{NP} \\ {$\lambda x.\mathit{sword}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch12.3-future | g0p0 | F |               [{\textit{sword} \\ {$\lambda x.\mathit{sword}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch12.3-future | g0p0 | F |             ]
+ch12.3-future | g0p0 | F |           ]
+ch12.3-future | g0p0 | F |         ]
+ch12.3-future | g0p0 | F |       ]
+ch12.3-future | g0p0 | F |     ]
+ch12.3-future | g0p0 | F |   ]
+ch12.3-future | g0p0 | F | \end{forest}
+ch12.3-future | g0p0 | F | 
+ch12.3-future | g0p1 | \lambda t.t = \mathit{now} \land (\exists t'.t < t' \land \mathit{read}(t', g, \iota x.\mathit{map}(x)))
+ch12.3-future | g1p0 | \lambda t.t = \mathit{now} \land (\exists t'.t < t' \land (\exists t_{1}.t_{1} \subseteq t' \land \mathit{forge}(t_{1}, f, \iota x.\mathit{sword}(x))))
+ch12.3-future | g2p0 | \mathit{dawn} = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t_{1} < t' \land (\exists t_{2}.t_{2} \subseteq t' \land \mathit{forge}(t_{2}, f, \iota x.\mathit{sword}(x))))
+ch12.3-future | g2p1 | \mathit{dusk} = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t_{1} < t' \land (\exists t_{2}.t_{2} \subseteq t' \land \mathit{read}(t_{2}, g, \iota x.\mathit{map}(x))))
+ch13.1-worlds | g0p0 | \mathit{ride}(w_{0}, f)
+ch13.1-worlds | g0p0 | F | % ============================================================
+ch13.1-worlds | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch13.1-worlds | g0p0 | F | % Requires in your document preamble:
+ch13.1-worlds | g0p0 | F | %   \usepackage{forest}
+ch13.1-worlds | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch13.1-worlds | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch13.1-worlds | g0p0 | F | % ============================================================
+ch13.1-worlds | g0p0 | F | % "Frodo rides."
+ch13.1-worlds | g0p0 | F | \begin{forest}
+ch13.1-worlds | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch13.1-worlds | g0p0 | F |   [{\cnode{S} \\ {$\mathit{ride}(w_{0}, f)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch13.1-worlds | g0p0 | F |     [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch13.1-worlds | g0p0 | F |       [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
+ch13.1-worlds | g0p0 | F |     ]
+ch13.1-worlds | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{ride}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch13.1-worlds | g0p0 | F |       [{\textit{rides} \\ {$\lambda x.\mathit{ride}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch13.1-worlds | g0p0 | F |     ]
+ch13.1-worlds | g0p0 | F |   ]
+ch13.1-worlds | g0p0 | F | \end{forest}
+ch13.1-worlds | g0p0 | F | 
+ch13.1-worlds | g0p1 | \mathit{sing}(w_{0}, g)
+ch13.1-worlds | g0p2 | \mathit{rest}(w_{0}, a)
+ch13.1-worlds | g1p0 | \mathit{find}(w_{0}, f, \iota x.\mathit{ring}(w_{0}, x))
+ch13.1-worlds | g1p1 | \mathit{read}(w_{0}, g, \iota x.\mathit{map}(w_{0}, x))
+ch13.1-worlds | g1p2 | \mathit{see}(w_{0}, s, \iota x.\mathit{gate}(w_{0}, x))
+ch13.1-worlds | g2p0 | \forall x.\mathit{hobbit}(w_{0}, x) \rightarrow \mathit{ride}(w_{0}, x)
+ch13.1-worlds | g2p1 | \exists x.\mathit{elf}(w_{0}, x) \land \mathit{sing}(w_{0}, x)
+ch13.1-worlds | g2p2 | UNSOLVED
+ch13.2-modals | g0p0 | \forall w'.\mathit{acc}(w_{0}, w') \rightarrow \mathit{ride}(w', f)
+ch13.2-modals | g0p0 | F | % ============================================================
+ch13.2-modals | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch13.2-modals | g0p0 | F | % Requires in your document preamble:
+ch13.2-modals | g0p0 | F | %   \usepackage{forest}
+ch13.2-modals | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch13.2-modals | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch13.2-modals | g0p0 | F | % ============================================================
+ch13.2-modals | g0p0 | F | % "Necessarily, Frodo rides."
+ch13.2-modals | g0p0 | F | \begin{forest}
+ch13.2-modals | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch13.2-modals | g0p0 | F |   [{\cnode{IP} \\ {$\forall w'.\mathit{acc}(w_{0}, w') \rightarrow \mathit{ride}(w', f)$} \\ {\footnotesize $t$} \\ \crule{IFA}}
+ch13.2-modals | g0p0 | F |     [{\cnode{Adv} \\ {$\lambda p.\forall w'.\mathit{acc}(w_{0}, w') \rightarrow p(w')$} \\ {\footnotesize $\langle \langle s,t\rangle,t\rangle$} \\ \crule{NN}}
+ch13.2-modals | g0p0 | F |       [{\textit{necessarily} \\ {$\lambda p.\forall w'.\mathit{acc}(w_{0}, w') \rightarrow p(w')$} \\ {\footnotesize $\langle \langle s,t\rangle,t\rangle$}}]
+ch13.2-modals | g0p0 | F |     ]
+ch13.2-modals | g0p0 | F |     [{\cnode{S} \\ {$\mathit{ride}(w_{0}, f)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch13.2-modals | g0p0 | F |       [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch13.2-modals | g0p0 | F |         [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
+ch13.2-modals | g0p0 | F |       ]
+ch13.2-modals | g0p0 | F |       [{\cnode{VP} \\ {$\lambda x.\mathit{ride}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch13.2-modals | g0p0 | F |         [{\textit{rides} \\ {$\lambda x.\mathit{ride}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch13.2-modals | g0p0 | F |       ]
+ch13.2-modals | g0p0 | F |     ]
+ch13.2-modals | g0p0 | F |   ]
+ch13.2-modals | g0p0 | F | \end{forest}
+ch13.2-modals | g0p0 | F | 
+ch13.2-modals | g0p1 | \forall w'.\mathit{acc}(w_{0}, w') \rightarrow \mathit{sing}(w', g)
+ch13.2-modals | g0p2 | \forall w'.\mathit{acc}(w_{0}, w') \rightarrow \mathit{find}(w', f, \iota x.\mathit{ring}(w', x))
+ch13.2-modals | g1p0 | \exists w'.\mathit{acc}(w_{0}, w') \land \mathit{rest}(w', a)
+ch13.2-modals | g1p1 | \exists w'.\mathit{acc}(w_{0}, w') \land \mathit{find}(w', g, \iota x.\mathit{ring}(w', x))
+ch13.2-modals | g2p0 | \forall w'.\mathit{deon\_acc}(w_{0}, w') \rightarrow \mathit{guard}(w', f, \iota x.\mathit{gate}(w', x))
+ch13.2-modals | g2p1 | \exists w'.\mathit{meta\_acc}(w_{0}, w') \land \mathit{sing}(w', s)
+ch13.2-modals | g2p2 | \exists w'.\mathit{epist\_acc}(w_{0}, w') \land \mathit{find}(w', \iota x.\mathit{elf}(w', x), \iota x.\mathit{ring}(w', x))
+ch13.3-intensional | g0p0 | \mathit{find}(w_{0}, f, \iota x.\mathit{ring}(w_{0}, x))
+ch13.3-intensional | g0p0 | F | % ============================================================
+ch13.3-intensional | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch13.3-intensional | g0p0 | F | % Requires in your document preamble:
+ch13.3-intensional | g0p0 | F | %   \usepackage{forest}
+ch13.3-intensional | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch13.3-intensional | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch13.3-intensional | g0p0 | F | % ============================================================
+ch13.3-intensional | g0p0 | F | % "Frodo finds the ring."
+ch13.3-intensional | g0p0 | F | \begin{forest}
+ch13.3-intensional | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch13.3-intensional | g0p0 | F |   [{\cnode{S} \\ {$\mathit{find}(w_{0}, f, \iota x.\mathit{ring}(w_{0}, x))$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch13.3-intensional | g0p0 | F |     [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch13.3-intensional | g0p0 | F |       [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
+ch13.3-intensional | g0p0 | F |     ]
+ch13.3-intensional | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{find}(w_{0}, x, \iota x.\mathit{ring}(w_{0}, x))$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+ch13.3-intensional | g0p0 | F |       [{\cnode{V} \\ {$\lambda y \lambda x.\mathit{find}(w_{0}, x, y)$} \\ {\footnotesize $\langle e,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch13.3-intensional | g0p0 | F |         [{\textit{finds} \\ {$\lambda y \lambda x.\mathit{find}(w_{0}, x, y)$} \\ {\footnotesize $\langle e,\langle e,t\rangle\rangle$}}]
+ch13.3-intensional | g0p0 | F |       ]
+ch13.3-intensional | g0p0 | F |       [{\cnode{DP} \\ {$\iota x.\mathit{ring}(w_{0}, x)$} \\ {\footnotesize $e$} \\ \crule{FA}}
+ch13.3-intensional | g0p0 | F |         [{\cnode{D} \\ {$\lambda X.\iota x.X(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,e\rangle$} \\ \crule{NN}}
+ch13.3-intensional | g0p0 | F |           [{\textit{the} \\ {$\lambda X.\iota x.X(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,e\rangle$}}]
+ch13.3-intensional | g0p0 | F |         ]
+ch13.3-intensional | g0p0 | F |         [{\cnode{NP} \\ {$\lambda x.\mathit{ring}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch13.3-intensional | g0p0 | F |           [{\textit{ring} \\ {$\lambda x.\mathit{ring}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch13.3-intensional | g0p0 | F |         ]
+ch13.3-intensional | g0p0 | F |       ]
+ch13.3-intensional | g0p0 | F |     ]
+ch13.3-intensional | g0p0 | F |   ]
+ch13.3-intensional | g0p0 | F | \end{forest}
+ch13.3-intensional | g0p0 | F | 
+ch13.3-intensional | g0p1 | \mathit{see}(w_{0}, g, \iota x.\mathit{dragon}(w_{0}, x))
+ch13.3-intensional | g1p0 | \mathit{seek}(w_{0}, f, \lambda w_{0} \lambda x.\mathit{dragon}(w_{0}, x))
+ch13.3-intensional | g1p1 | \mathit{seek}(w_{0}, s, \lambda w_{0} \lambda x.\mathit{ring}(w_{0}, x))
+ch13.3-intensional | g2p0 | UNSOLVED
+ch13.3-intensional | g2p1 | \mathit{seek}(w_{0}, f, \lambda w_{0} \lambda x.\mathit{dragon}(w_{0}, x))
+ch13.4-attitudes | g0p0 | \forall w'.\mathit{dox}(w_{0}, g, w') \rightarrow \mathit{ride}(w', f)
+ch13.4-attitudes | g0p0 | F | % ============================================================
+ch13.4-attitudes | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch13.4-attitudes | g0p0 | F | % Requires in your document preamble:
+ch13.4-attitudes | g0p0 | F | %   \usepackage{forest}
+ch13.4-attitudes | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch13.4-attitudes | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch13.4-attitudes | g0p0 | F | % ============================================================
+ch13.4-attitudes | g0p0 | F | % "Gandalf believes Frodo rides."
+ch13.4-attitudes | g0p0 | F | \begin{forest}
+ch13.4-attitudes | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch13.4-attitudes | g0p0 | F |   [{\cnode{S} \\ {$\forall w'.\mathit{dox}(w_{0}, g, w') \rightarrow \mathit{ride}(w', f)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch13.4-attitudes | g0p0 | F |     [{\cnode{DP} \\ {$g$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch13.4-attitudes | g0p0 | F |       [{\textit{Gandalf} \\ {$g$} \\ {\footnotesize $e$}}]
+ch13.4-attitudes | g0p0 | F |     ]
+ch13.4-attitudes | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\forall w'.\mathit{dox}(w_{0}, x, w') \rightarrow \mathit{ride}(w', f)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{IFA}}
+ch13.4-attitudes | g0p0 | F |       [{\cnode{V} \\ {$\lambda p \lambda x.\forall w'.\mathit{dox}(w_{0}, x, w') \rightarrow p(w')$} \\ {\footnotesize $\langle \langle s,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch13.4-attitudes | g0p0 | F |         [{\textit{believes} \\ {$\lambda p \lambda x.\forall w'.\mathit{dox}(w_{0}, x, w') \rightarrow p(w')$} \\ {\footnotesize $\langle \langle s,t\rangle,\langle e,t\rangle\rangle$}}]
+ch13.4-attitudes | g0p0 | F |       ]
+ch13.4-attitudes | g0p0 | F |       [{\cnode{CP} \\ {$\mathit{ride}(w_{0}, f)$} \\ {\footnotesize $t$} \\ \crule{NN}}
+ch13.4-attitudes | g0p0 | F |         [{\cnode{S} \\ {$\mathit{ride}(w_{0}, f)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch13.4-attitudes | g0p0 | F |           [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch13.4-attitudes | g0p0 | F |             [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
+ch13.4-attitudes | g0p0 | F |           ]
+ch13.4-attitudes | g0p0 | F |           [{\cnode{VP} \\ {$\lambda x.\mathit{ride}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch13.4-attitudes | g0p0 | F |             [{\textit{rides} \\ {$\lambda x.\mathit{ride}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch13.4-attitudes | g0p0 | F |           ]
+ch13.4-attitudes | g0p0 | F |         ]
+ch13.4-attitudes | g0p0 | F |       ]
+ch13.4-attitudes | g0p0 | F |     ]
+ch13.4-attitudes | g0p0 | F |   ]
+ch13.4-attitudes | g0p0 | F | \end{forest}
+ch13.4-attitudes | g0p0 | F | 
+ch13.4-attitudes | g0p1 | \forall w'.\mathit{dox}(w_{0}, f, w') \rightarrow \mathit{sing}(w', s)
+ch13.4-attitudes | g0p2 | \forall w'.\mathit{dox}(w_{0}, s, w') \rightarrow \mathit{read}(w', g, \iota x.\mathit{map}(w', x))
+ch13.4-attitudes | g1p0 | \forall w'.\mathit{boul}(w_{0}, f, w') \rightarrow \mathit{sing}(w', s)
+ch13.4-attitudes | g1p1 | \forall w'.\mathit{boul}(w_{0}, g, w') \rightarrow \mathit{find}(w', f, \iota x.\mathit{ring}(w', x))
+ch13.4-attitudes | g2p0 | \forall w'.\mathit{acc}(w_{0}, w') \rightarrow (\forall w.\mathit{dox}(w', g, w) \rightarrow \mathit{ride}(w, f))
+ch13.4-attitudes | g2p1 | \forall w'.\mathit{dox}(w_{0}, g, w') \rightarrow (\forall w.\mathit{acc}(w', w) \rightarrow \mathit{sing}(w, s))
+ch13.5-dere | g0p0 | \forall w'.\mathit{dox}(w_{0}, g, w') \rightarrow (\exists x.\mathit{dragon}(w', x) \land \mathit{ride}(w', x))
+ch13.5-dere | g0p0 | F | % ============================================================
+ch13.5-dere | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch13.5-dere | g0p0 | F | % Requires in your document preamble:
+ch13.5-dere | g0p0 | F | %   \usepackage{forest}
+ch13.5-dere | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch13.5-dere | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch13.5-dere | g0p0 | F | % ============================================================
+ch13.5-dere | g0p0 | F | % "Gandalf believes a dragon rides. (de dicto — no particular dragon)"
+ch13.5-dere | g0p0 | F | \begin{forest}
+ch13.5-dere | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch13.5-dere | g0p0 | F |   [{\cnode{S} \\ {$\forall w'.\mathit{dox}(w_{0}, g, w') \rightarrow (\exists x.\mathit{dragon}(w', x) \land \mathit{ride}(w', x))$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch13.5-dere | g0p0 | F |     [{\cnode{DP} \\ {$g$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch13.5-dere | g0p0 | F |       [{\textit{Gandalf} \\ {$g$} \\ {\footnotesize $e$}}]
+ch13.5-dere | g0p0 | F |     ]
+ch13.5-dere | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\forall w'.\mathit{dox}(w_{0}, x, w') \rightarrow (\exists x.\mathit{dragon}(w', x) \land \mathit{ride}(w', x))$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{IFA}}
+ch13.5-dere | g0p0 | F |       [{\cnode{V} \\ {$\lambda p \lambda x.\forall w'.\mathit{dox}(w_{0}, x, w') \rightarrow p(w')$} \\ {\footnotesize $\langle \langle s,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch13.5-dere | g0p0 | F |         [{\textit{believes} \\ {$\lambda p \lambda x.\forall w'.\mathit{dox}(w_{0}, x, w') \rightarrow p(w')$} \\ {\footnotesize $\langle \langle s,t\rangle,\langle e,t\rangle\rangle$}}]
+ch13.5-dere | g0p0 | F |       ]
+ch13.5-dere | g0p0 | F |       [{\cnode{CP} \\ {$\exists x.\mathit{dragon}(w_{0}, x) \land \mathit{ride}(w_{0}, x)$} \\ {\footnotesize $t$} \\ \crule{NN}}
+ch13.5-dere | g0p0 | F |         [{\cnode{S} \\ {$\exists x.\mathit{dragon}(w_{0}, x) \land \mathit{ride}(w_{0}, x)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch13.5-dere | g0p0 | F |           [{\cnode{DP} \\ {$\lambda Y.\exists x.\mathit{dragon}(w_{0}, x) \land Y(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,t\rangle$} \\ \crule{FA}}
+ch13.5-dere | g0p0 | F |             [{\cnode{D} \\ {$\lambda X \lambda Y.\exists x.X(x) \land Y(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle$} \\ \crule{NN}}
+ch13.5-dere | g0p0 | F |               [{\textit{a} \\ {$\lambda X \lambda Y.\exists x.X(x) \land Y(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle$}}]
+ch13.5-dere | g0p0 | F |             ]
+ch13.5-dere | g0p0 | F |             [{\cnode{NP} \\ {$\lambda x.\mathit{dragon}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch13.5-dere | g0p0 | F |               [{\textit{dragon} \\ {$\lambda x.\mathit{dragon}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch13.5-dere | g0p0 | F |             ]
+ch13.5-dere | g0p0 | F |           ]
+ch13.5-dere | g0p0 | F |           [{\cnode{VP} \\ {$\lambda x.\mathit{ride}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch13.5-dere | g0p0 | F |             [{\textit{rides} \\ {$\lambda x.\mathit{ride}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch13.5-dere | g0p0 | F |           ]
+ch13.5-dere | g0p0 | F |         ]
+ch13.5-dere | g0p0 | F |       ]
+ch13.5-dere | g0p0 | F |     ]
+ch13.5-dere | g0p0 | F |   ]
+ch13.5-dere | g0p0 | F | \end{forest}
+ch13.5-dere | g0p0 | F | 
+ch13.5-dere | g0p1 | \forall w'.\mathit{boul}(w_{0}, f, w') \rightarrow (\exists x.\mathit{elf}(w', x) \land \mathit{sing}(w', x))
+ch13.5-dere | g0p2 | \forall w'.\mathit{dox}(w_{0}, s, w') \rightarrow (\forall x.\mathit{hobbit}(w', x) \rightarrow \mathit{find}(w', x, \iota x.\mathit{ring}(w', x)))
+ch13.5-dere | g1p0 | \forall w'.\mathit{dox}(w_{0}, g, w') \rightarrow (\exists x.\mathit{dragon}(w', x) \land \mathit{ride}(w', x))
+ch13.5-dere | g1p1 | \forall w'.\mathit{boul}(w_{0}, f, w') \rightarrow (\exists x.\mathit{elf}(w', x) \land \mathit{sing}(w', x))
+ch13.5-dere | g1p2 | \forall w'.\mathit{dox}(w_{0}, s, w') \rightarrow (\exists x.\mathit{hobbit}(w', x) \land \mathit{find}(w', x, \iota x.\mathit{ring}(w', x)))
+ch13.5-dere | g2p0 | \forall w'.\mathit{acc}(w_{0}, w') \rightarrow \mathit{ride}(w', f)
+ch13.5-dere | g2p1 | \forall w'.\mathit{acc}(w_{0}, w') \rightarrow (\exists x.\mathit{hobbit}(w', x) \land \mathit{find}(w', x, \iota x.\mathit{ring}(w', x)))
+ch13.5-dere | g2p2 | \forall w'.\mathit{acc}(w_{0}, w') \rightarrow (\exists x.\mathit{hobbit}(w', x) \land \mathit{find}(w', x, \iota x.\mathit{ring}(w', x)))
+ch13.6-worlds-times | g0p0 | \mathit{dawn} = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t' \subseteq t_{1} \land \mathit{ride}(w_{0}, t', f))
+ch13.6-worlds-times | g0p0 | F | % ============================================================
+ch13.6-worlds-times | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch13.6-worlds-times | g0p0 | F | % Requires in your document preamble:
+ch13.6-worlds-times | g0p0 | F | %   \usepackage{forest}
+ch13.6-worlds-times | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch13.6-worlds-times | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch13.6-worlds-times | g0p0 | F | % ============================================================
+ch13.6-worlds-times | g0p0 | F | % "At dawn, Frodo rode."
+ch13.6-worlds-times | g0p0 | F | \begin{forest}
+ch13.6-worlds-times | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch13.6-worlds-times | g0p0 | F |   [{\cnode{TenseP} \\ {$\mathit{dawn} = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t' \subseteq t_{1} \land \mathit{ride}(w_{0}, t', f))$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch13.6-worlds-times | g0p0 | F |     [{\cnode{TenseP} \\ {$\lambda t.t = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t' \subseteq t_{1} \land \mathit{ride}(w_{0}, t', f))$} \\ {\footnotesize $\langle i,t\rangle$} \\ \crule{FA}}
+ch13.6-worlds-times | g0p0 | F |       [{\cnode{Tense} \\ {$\lambda H \lambda t.t = t_{1} \land \partial(t_{1} < \mathit{now}) \land H(t_{1})$} \\ {\footnotesize $\langle \langle i,t\rangle,\langle i,t\rangle\rangle$} \\ \crule{NN}}
+ch13.6-worlds-times | g0p0 | F |         [{\textit{PAST} \\ {$\lambda H \lambda t.t = t_{1} \land \partial(t_{1} < \mathit{now}) \land H(t_{1})$} \\ {\footnotesize $\langle \langle i,t\rangle,\langle i,t\rangle\rangle$}}]
+ch13.6-worlds-times | g0p0 | F |       ]
+ch13.6-worlds-times | g0p0 | F |       [{\cnode{AspP} \\ {$\lambda t.\exists t'.t' \subseteq t \land \mathit{ride}(w_{0}, t', f)$} \\ {\footnotesize $\langle i,t\rangle$} \\ \crule{FA}}
+ch13.6-worlds-times | g0p0 | F |         [{\cnode{Asp} \\ {$\lambda H \lambda t.\exists t'.t' \subseteq t \land H(t')$} \\ {\footnotesize $\langle \langle i,t\rangle,\langle i,t\rangle\rangle$} \\ \crule{NN}}
+ch13.6-worlds-times | g0p0 | F |           [{\textit{PFV} \\ {$\lambda H \lambda t.\exists t'.t' \subseteq t \land H(t')$} \\ {\footnotesize $\langle \langle i,t\rangle,\langle i,t\rangle\rangle$}}]
+ch13.6-worlds-times | g0p0 | F |         ]
+ch13.6-worlds-times | g0p0 | F |         [{\cnode{vP} \\ {$\lambda t.\mathit{ride}(w_{0}, t, f)$} \\ {\footnotesize $\langle i,t\rangle$} \\ \crule{FA}}
+ch13.6-worlds-times | g0p0 | F |           [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch13.6-worlds-times | g0p0 | F |             [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
+ch13.6-worlds-times | g0p0 | F |           ]
+ch13.6-worlds-times | g0p0 | F |           [{\cnode{VP} \\ {$\lambda x \lambda t.\mathit{ride}(w_{0}, t, x)$} \\ {\footnotesize $\langle e,\langle i,t\rangle\rangle$} \\ \crule{NN}}
+ch13.6-worlds-times | g0p0 | F |             [{\textit{rides} \\ {$\lambda x \lambda t.\mathit{ride}(w_{0}, t, x)$} \\ {\footnotesize $\langle e,\langle i,t\rangle\rangle$}}]
+ch13.6-worlds-times | g0p0 | F |           ]
+ch13.6-worlds-times | g0p0 | F |         ]
+ch13.6-worlds-times | g0p0 | F |       ]
+ch13.6-worlds-times | g0p0 | F |     ]
+ch13.6-worlds-times | g0p0 | F |     [{\cnode{PP} \\ {$\mathit{dawn}$} \\ {\footnotesize $i$} \\ \crule{FA}}
+ch13.6-worlds-times | g0p0 | F |       [{\cnode{P} \\ {$\lambda t.t$} \\ {\footnotesize $\langle i,i\rangle$} \\ \crule{NN}}
+ch13.6-worlds-times | g0p0 | F |         [{\textit{at} \\ {$\lambda t.t$} \\ {\footnotesize $\langle i,i\rangle$}}]
+ch13.6-worlds-times | g0p0 | F |       ]
+ch13.6-worlds-times | g0p0 | F |       [{\cnode{DP} \\ {$\mathit{dawn}$} \\ {\footnotesize $i$} \\ \crule{NN}}
+ch13.6-worlds-times | g0p0 | F |         [{\textit{dawn} \\ {$\mathit{dawn}$} \\ {\footnotesize $i$}}]
+ch13.6-worlds-times | g0p0 | F |       ]
+ch13.6-worlds-times | g0p0 | F |     ]
+ch13.6-worlds-times | g0p0 | F |   ]
+ch13.6-worlds-times | g0p0 | F | \end{forest}
+ch13.6-worlds-times | g0p0 | F | 
+ch13.6-worlds-times | g0p1 | \mathit{dusk} = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t' \subseteq t_{1} \land \mathit{read}(w_{0}, t', g, \iota x.\mathit{map}(w_{0}, x)))
+ch13.6-worlds-times | g1p0 | \forall w'.\mathit{acc}(w_{0}, w') \rightarrow \mathit{dawn} = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t' \subseteq t_{1} \land \mathit{ride}(w', t', f))
+ch13.6-worlds-times | g1p1 | \exists w'.\mathit{acc}(w_{0}, w') \land \mathit{dusk} = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t' \subseteq t_{1} \land \mathit{read}(w', t', g, \iota x.\mathit{map}(w', x)))
+ch13.6-worlds-times | g2p0 | \forall w'.\mathit{dox}(w_{0}, g, w') \rightarrow \mathit{dawn} = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t' \subseteq t_{1} \land \mathit{ride}(w', t', f))
+ch13.6-worlds-times | g2p1 | \forall w'.\mathit{boul}(w_{0}, f, w') \rightarrow \mathit{dawn} = t_{1} \land \partial(t_{1} < \mathit{now}) \land (\exists t'.t' \subseteq t_{1} \land \mathit{ride}(w', t', f))
+ch13.7-haveto | g0p0 | \forall w'.R(w_{0}, w') \rightarrow \mathit{ride}(w', f)
+ch13.7-haveto | g0p0 | F | % ============================================================
+ch13.7-haveto | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch13.7-haveto | g0p0 | F | % Requires in your document preamble:
+ch13.7-haveto | g0p0 | F | %   \usepackage{forest}
+ch13.7-haveto | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch13.7-haveto | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch13.7-haveto | g0p0 | F | % ============================================================
+ch13.7-haveto | g0p0 | F | % "Frodo has to ride. (context-supplied rules, no presupposition)"
+ch13.7-haveto | g0p0 | F | \begin{forest}
+ch13.7-haveto | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch13.7-haveto | g0p0 | F |   [{\cnode{ModP} \\ {$\forall w'.R(w_{0}, w') \rightarrow \mathit{ride}(w', f)$} \\ {\footnotesize $t$} \\ \crule{IFA}}
+ch13.7-haveto | g0p0 | F |     [{\cnode{Mod} \\ {$\lambda p.\forall w'.R(w_{0}, w') \rightarrow p(w')$} \\ {\footnotesize $\langle \langle s,t\rangle,t\rangle$} \\ \crule{NN}}
+ch13.7-haveto | g0p0 | F |       [{\textit{have\_to\_bare} \\ {$\lambda p.\forall w'.R(w_{0}, w') \rightarrow p(w')$} \\ {\footnotesize $\langle \langle s,t\rangle,t\rangle$}}]
+ch13.7-haveto | g0p0 | F |     ]
+ch13.7-haveto | g0p0 | F |     [{\cnode{S} \\ {$\mathit{ride}(w_{0}, f)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch13.7-haveto | g0p0 | F |       [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch13.7-haveto | g0p0 | F |         [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
+ch13.7-haveto | g0p0 | F |       ]
+ch13.7-haveto | g0p0 | F |       [{\cnode{VP} \\ {$\lambda x.\mathit{ride}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch13.7-haveto | g0p0 | F |         [{\textit{rides} \\ {$\lambda x.\mathit{ride}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch13.7-haveto | g0p0 | F |       ]
+ch13.7-haveto | g0p0 | F |     ]
+ch13.7-haveto | g0p0 | F |   ]
+ch13.7-haveto | g0p0 | F | \end{forest}
+ch13.7-haveto | g0p0 | F | 
+ch13.7-haveto | g0p1 | \forall w'.R(w_{0}, w') \rightarrow \mathit{guard}(w', g, \iota x.\mathit{gate}(w', x))
+ch13.7-haveto | g1p0 | \partial(\mathit{deontic}(R)) \land (\forall w'.R(w_{0}, w') \rightarrow \mathit{ride}(w', f))
+ch13.7-haveto | g1p1 | \partial(\mathit{deontic}(R)) \land (\forall w'.R(w_{0}, w') \rightarrow \mathit{guard}(w', g, \iota x.\mathit{gate}(w', x)))
+ch13.7-haveto | g2p0 | \partial(\mathit{deontic}(R)) \land (\exists w'.R(w_{0}, w') \land \mathit{ride}(w', f))
+ch13.7-haveto | g2p1 | \partial(\mathit{deontic}(R)) \land (\exists w'.R(w_{0}, w') \land \mathit{guard}(w', s, \iota x.\mathit{gate}(w', x)))
+ch6.1-fa | g0p0 | \mathit{run}(f)
+ch6.1-fa | g0p0 | F | % ============================================================
+ch6.1-fa | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch6.1-fa | g0p0 | F | % Requires in your document preamble:
+ch6.1-fa | g0p0 | F | %   \usepackage{forest}
+ch6.1-fa | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch6.1-fa | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch6.1-fa | g0p0 | F | % ============================================================
+ch6.1-fa | g0p0 | F | % "Frodo runs."
+ch6.1-fa | g0p0 | F | \begin{forest}
+ch6.1-fa | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch6.1-fa | g0p0 | F |   [{\cnode{S} \\ {$\mathit{run}(f)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch6.1-fa | g0p0 | F |     [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch6.1-fa | g0p0 | F |       [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
+ch6.1-fa | g0p0 | F |     ]
+ch6.1-fa | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{run}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch6.1-fa | g0p0 | F |       [{\textit{runs} \\ {$\lambda x.\mathit{run}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch6.1-fa | g0p0 | F |     ]
+ch6.1-fa | g0p0 | F |   ]
+ch6.1-fa | g0p0 | F | \end{forest}
+ch6.1-fa | g0p0 | F | 
+ch6.1-fa | g0p1 | \mathit{hike}(\mathit{st})
+ch6.1-fa | g0p2 | \mathit{garden}(s)
+ch6.1-fa | g1p0 | \mathit{love}(\mathit{bi}, f)
+ch6.1-fa | g1p1 | \mathit{trust}(f, s)
+ch6.1-fa | g1p2 | \mathit{give}(g, s, f)
+ch6.1-fa | g2p0 | \mathit{hobbit}(f)
+ch6.1-fa | g2p1 | \mathit{wizard}(g)
+ch6.1-fa | g2p2 | \mathit{brave}(s)
+ch6.1-fa | g3p0 | \mathit{with}(s, f)
+ch6.1-fa | g3p1 | \mathit{in}(n, o)
+ch6.1-fa | g3p2 | \mathit{near}(g, w)
+ch6.1-fa | g4p0 | \lnot \mathit{fight}(f)
+ch6.1-fa | g4p1 | \lnot \mathit{hobbit}(n)
+ch6.1-fa | g4p2 | \lnot \mathit{in}(n, w)
+ch6.2-quant | g0p0 | \forall x.\mathit{beautiful}(x)
+ch6.2-quant | g0p0 | F | % ============================================================
+ch6.2-quant | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch6.2-quant | g0p0 | F | % Requires in your document preamble:
+ch6.2-quant | g0p0 | F | %   \usepackage{forest}
+ch6.2-quant | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch6.2-quant | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch6.2-quant | g0p0 | F | % ============================================================
+ch6.2-quant | g0p0 | F | % "Everything is beautiful."
+ch6.2-quant | g0p0 | F | \begin{forest}
+ch6.2-quant | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch6.2-quant | g0p0 | F |   [{\cnode{S} \\ {$\forall x.\mathit{beautiful}(x)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch6.2-quant | g0p0 | F |     [{\cnode{DP} \\ {$\lambda P.\forall x.P(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,t\rangle$} \\ \crule{NN}}
+ch6.2-quant | g0p0 | F |       [{\textit{everything} \\ {$\lambda P.\forall x.P(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,t\rangle$}}]
+ch6.2-quant | g0p0 | F |     ]
+ch6.2-quant | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{beautiful}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+ch6.2-quant | g0p0 | F |       [{\cnode{V} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch6.2-quant | g0p0 | F |         [{\textit{is} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
+ch6.2-quant | g0p0 | F |       ]
+ch6.2-quant | g0p0 | F |       [{\cnode{AP} \\ {$\lambda x.\mathit{beautiful}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch6.2-quant | g0p0 | F |         [{\textit{beautiful} \\ {$\lambda x.\mathit{beautiful}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch6.2-quant | g0p0 | F |       ]
+ch6.2-quant | g0p0 | F |     ]
+ch6.2-quant | g0p0 | F |   ]
+ch6.2-quant | g0p0 | F | \end{forest}
+ch6.2-quant | g0p0 | F | 
+ch6.2-quant | g0p1 | \lnot (\exists x.\mathit{love}(x, n))
+ch6.2-quant | g0p2 | \exists x.\lnot \mathit{beautiful}(x)
+ch6.2-quant | g1p0 | \forall x.\mathit{hobbit}(x) \rightarrow \mathit{drink}(x)
+ch6.2-quant | g1p1 | \lnot (\exists x.\mathit{elf}(x) \land \mathit{fear}(x, n))
+ch6.2-quant | g1p2 | \exists x.\mathit{elf}(x) \land \lnot \mathit{drink}(x)
+ch6.2-quant | g2p0 | \forall x.\mathit{dwarf}(x) \rightarrow \mathit{trust}(x, a)
+ch6.2-quant | g2p1 | \exists x.\mathit{elf}(x) \land \lnot \mathit{fear}(x, n)
+ch6.2-quant | g2p2 | \lnot (\exists x.\mathit{orc}(x) \land \mathit{ranger}(x))
+ch6.2-quant | g3p0 | UNSOLVED
+ch6.2-quant | g3p1 | \forall x.\mathit{hobbit}(x) \rightarrow \lnot \mathit{love}(x, g)
+ch6.2-quant | g3p2 | \exists x.\mathit{elf}(x) \land \lnot \mathit{trust}(x, n)
+ch7.1-adj | g0p0 | \mathit{mischievous}(\mathit{pi}) \land \mathit{hobbit}(\mathit{pi})
+ch7.1-adj | g0p0 | F | % ============================================================
+ch7.1-adj | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch7.1-adj | g0p0 | F | % Requires in your document preamble:
+ch7.1-adj | g0p0 | F | %   \usepackage{forest}
+ch7.1-adj | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch7.1-adj | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch7.1-adj | g0p0 | F | % ============================================================
+ch7.1-adj | g0p0 | F | % "Pippin is a mischievous hobbit."
+ch7.1-adj | g0p0 | F | \begin{forest}
+ch7.1-adj | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch7.1-adj | g0p0 | F |   [{\cnode{S} \\ {$\mathit{mischievous}(\mathit{pi}) \land \mathit{hobbit}(\mathit{pi})$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch7.1-adj | g0p0 | F |     [{\cnode{DP} \\ {$\mathit{pi}$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch7.1-adj | g0p0 | F |       [{\textit{Pippin} \\ {$\mathit{pi}$} \\ {\footnotesize $e$}}]
+ch7.1-adj | g0p0 | F |     ]
+ch7.1-adj | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{mischievous}(x) \land \mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+ch7.1-adj | g0p0 | F |       [{\cnode{V} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch7.1-adj | g0p0 | F |         [{\textit{is} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
+ch7.1-adj | g0p0 | F |       ]
+ch7.1-adj | g0p0 | F |       [{\cnode{NP} \\ {$\lambda x.\mathit{mischievous}(x) \land \mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+ch7.1-adj | g0p0 | F |         [{\cnode{D} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch7.1-adj | g0p0 | F |           [{\textit{a} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
+ch7.1-adj | g0p0 | F |         ]
+ch7.1-adj | g0p0 | F |         [{\cnode{NP} \\ {$\lambda x.\mathit{mischievous}(x) \land \mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PM}}
+ch7.1-adj | g0p0 | F |           [{\cnode{AP} \\ {$\lambda x.\mathit{mischievous}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch7.1-adj | g0p0 | F |             [{\textit{mischievous} \\ {$\lambda x.\mathit{mischievous}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch7.1-adj | g0p0 | F |           ]
+ch7.1-adj | g0p0 | F |           [{\cnode{NP} \\ {$\lambda x.\mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch7.1-adj | g0p0 | F |             [{\textit{hobbit} \\ {$\lambda x.\mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch7.1-adj | g0p0 | F |           ]
+ch7.1-adj | g0p0 | F |         ]
+ch7.1-adj | g0p0 | F |       ]
+ch7.1-adj | g0p0 | F |     ]
+ch7.1-adj | g0p0 | F |   ]
+ch7.1-adj | g0p0 | F | \end{forest}
+ch7.1-adj | g0p0 | F | 
+ch7.1-adj | g0p1 | \lnot (\mathit{mundane}(\mathit{tm}) \land \mathit{creature}(\mathit{tm}))
+ch7.1-adj | g0p2 | \forall x.\mathit{traveling}(x) \land \mathit{hobbit}(x) \rightarrow \mathit{brave}(x) \land \mathit{creature}(x)
+ch7.1-adj | g1p0 | \mathit{mischievous}(\mathit{tm}) \land \mathit{magical}(\mathit{tm}) \land \mathit{creature}(\mathit{tm})
+ch7.1-adj | g1p1 | \lnot (\mathit{human}(\mathit{st}) \land \mathit{ranger}(\mathit{st}))
+ch7.1-adj | g1p2 | \lnot (\exists x.\mathit{traveling}(x) \land \mathit{hobbit}(x) \land \mathit{mischievous}(x) \land \mathit{brave}(x) \land \mathit{creature}(x))
+ch7.1-adj | g2p0 | \mathit{alleged}(\lambda x.\mathit{king}(x), \mathit{st})
+ch7.1-adj | g2p1 | \mathit{former}(\lambda x.\mathit{traveling}(x) \land \mathit{hobbit}(x), \mathit{bi})
+ch7.1-adj | g2p2 | \exists x.\mathit{alleged}(\lambda x.\mathit{wise}(x) \land \mathit{wizard}(x), x) \land \mathit{see}(x, n)
+ch7.2-adjts | g0p0 | \mathit{mischievous}(\mathit{pi}) \land \mathit{hobbit}(\mathit{pi})
+ch7.2-adjts | g0p0 | F | % ============================================================
+ch7.2-adjts | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch7.2-adjts | g0p0 | F | % Requires in your document preamble:
+ch7.2-adjts | g0p0 | F | %   \usepackage{forest}
+ch7.2-adjts | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch7.2-adjts | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch7.2-adjts | g0p0 | F | % ============================================================
+ch7.2-adjts | g0p0 | F | % "Pippin is a mischievous hobbit."
+ch7.2-adjts | g0p0 | F | \begin{forest}
+ch7.2-adjts | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch7.2-adjts | g0p0 | F |   [{\cnode{S} \\ {$\mathit{mischievous}(\mathit{pi}) \land \mathit{hobbit}(\mathit{pi})$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch7.2-adjts | g0p0 | F |     [{\cnode{DP} \\ {$\mathit{pi}$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch7.2-adjts | g0p0 | F |       [{\textit{Pippin} \\ {$\mathit{pi}$} \\ {\footnotesize $e$}}]
+ch7.2-adjts | g0p0 | F |     ]
+ch7.2-adjts | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{mischievous}(x) \land \mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+ch7.2-adjts | g0p0 | F |       [{\cnode{V} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch7.2-adjts | g0p0 | F |         [{\textit{is} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
+ch7.2-adjts | g0p0 | F |       ]
+ch7.2-adjts | g0p0 | F |       [{\cnode{NP} \\ {$\lambda x.\mathit{mischievous}(x) \land \mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+ch7.2-adjts | g0p0 | F |         [{\cnode{D} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch7.2-adjts | g0p0 | F |           [{\textit{a} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
+ch7.2-adjts | g0p0 | F |         ]
+ch7.2-adjts | g0p0 | F |         [{\cnode{NP} \\ {$\lambda x.\mathit{mischievous}(x) \land \mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PM}}
+ch7.2-adjts | g0p0 | F |           [{\cnode{AP} \\ {$\lambda x.\mathit{mischievous}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch7.2-adjts | g0p0 | F |             [{\textit{mischievous} \\ {$\lambda x.\mathit{mischievous}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch7.2-adjts | g0p0 | F |           ]
+ch7.2-adjts | g0p0 | F |           [{\cnode{NP} \\ {$\lambda x.\mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch7.2-adjts | g0p0 | F |             [{\textit{hobbit} \\ {$\lambda x.\mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch7.2-adjts | g0p0 | F |           ]
+ch7.2-adjts | g0p0 | F |         ]
+ch7.2-adjts | g0p0 | F |       ]
+ch7.2-adjts | g0p0 | F |     ]
+ch7.2-adjts | g0p0 | F |   ]
+ch7.2-adjts | g0p0 | F | \end{forest}
+ch7.2-adjts | g0p0 | F | 
+ch7.2-adjts | g0p1 | \lnot (\mathit{mundane}(\mathit{tm}) \land \mathit{creature}(\mathit{tm}))
+ch7.2-adjts | g0p2 | \forall x.\mathit{traveling}(x) \land \mathit{hobbit}(x) \rightarrow \mathit{brave}(x) \land \mathit{creature}(x)
+ch7.2-adjts | g1p0 | \mathit{mischievous}(\mathit{tm}) \land \mathit{magical}(\mathit{tm}) \land \mathit{creature}(\mathit{tm})
+ch7.2-adjts | g1p1 | \lnot (\mathit{human}(\mathit{st}) \land \mathit{ranger}(\mathit{st}))
+ch7.2-adjts | g1p2 | \lnot (\exists x.\mathit{traveling}(x) \land \mathit{hobbit}(x) \land \mathit{mischievous}(x) \land \mathit{brave}(x) \land \mathit{creature}(x))
+ch7.2-adjts | g2p0 | \mathit{alleged}(\lambda x.\mathit{king}(x), \mathit{st})
+ch7.2-adjts | g2p1 | \mathit{former}(\lambda x.\mathit{traveling}(x) \land \mathit{hobbit}(x), \mathit{bi})
+ch7.2-adjts | g2p2 | \exists x.\mathit{alleged}(\lambda x.\mathit{wise}(x) \land \mathit{wizard}(x), x) \land \mathit{see}(x, n)
+ch7.3-relcl | g0p0 | \lambda x.\mathit{wizard}(x) \land \mathit{drink}(x)
+ch7.3-relcl | g0p0 | F | % ============================================================
+ch7.3-relcl | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch7.3-relcl | g0p0 | F | % Requires in your document preamble:
+ch7.3-relcl | g0p0 | F | %   \usepackage{forest}
+ch7.3-relcl | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch7.3-relcl | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch7.3-relcl | g0p0 | F | % ============================================================
+ch7.3-relcl | g0p0 | F | % "wizard who drinks."
+ch7.3-relcl | g0p0 | F | \begin{forest}
+ch7.3-relcl | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch7.3-relcl | g0p0 | F |   [{\cnode{NP} \\ {$\lambda x.\mathit{wizard}(x) \land \mathit{drink}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PM}}
+ch7.3-relcl | g0p0 | F |     [{\cnode{NP} \\ {$\lambda x.\mathit{wizard}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch7.3-relcl | g0p0 | F |       [{\textit{wizard} \\ {$\lambda x.\mathit{wizard}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch7.3-relcl | g0p0 | F |     ]
+ch7.3-relcl | g0p0 | F |     [{\cnode{CP} \\ {$\lambda x_{1}.\mathit{drink}(x_{1})$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+ch7.3-relcl | g0p0 | F |       [{\cnode{C} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch7.3-relcl | g0p0 | F |         [{\textit{who} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
+ch7.3-relcl | g0p0 | F |       ]
+ch7.3-relcl | g0p0 | F |       [{\cnode{LP} \\ {$\lambda x_{1}.\mathit{drink}(x_{1})$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PA}}
+ch7.3-relcl | g0p0 | F |         [{\textit{1}}]
+ch7.3-relcl | g0p0 | F |         [{\cnode{S} \\ {$\mathit{drink}(x_{1})$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch7.3-relcl | g0p0 | F |           [{\cnode{DP} \\ {$x_{1}$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch7.3-relcl | g0p0 | F |             [{\textit{t1} \\ {$x_{1}$} \\ {\footnotesize $e$}}]
+ch7.3-relcl | g0p0 | F |           ]
+ch7.3-relcl | g0p0 | F |           [{\cnode{VP} \\ {$\lambda x.\mathit{drink}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch7.3-relcl | g0p0 | F |             [{\textit{drinks} \\ {$\lambda x.\mathit{drink}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch7.3-relcl | g0p0 | F |           ]
+ch7.3-relcl | g0p0 | F |         ]
+ch7.3-relcl | g0p0 | F |       ]
+ch7.3-relcl | g0p0 | F |     ]
+ch7.3-relcl | g0p0 | F |   ]
+ch7.3-relcl | g0p0 | F | \end{forest}
+ch7.3-relcl | g0p0 | F | 
+ch7.3-relcl | g0p1 | \lambda x.\mathit{hobbit}(x) \land \mathit{brave}(x)
+ch7.3-relcl | g0p2 | \lambda x.\mathit{wizard}(x) \land \lnot \mathit{fear}(x, n)
+ch7.3-relcl | g1p0 | \lambda x.\mathit{hobbit}(x) \land \mathit{love}(g, x)
+ch7.3-relcl | g1p1 | \lambda x.\mathit{human}(x) \land \lnot \mathit{trust}(\mathit{st}, x)
+ch7.3-relcl | g1p2 | \lambda x.\mathit{ranger}(x) \land \mathit{with}(f, x)
+ch7.3-relcl | g2p0 | \mathit{wizard}(g) \land \mathit{wise}(g)
+ch7.3-relcl | g2p1 | \forall x.\mathit{hobbit}(x) \land \mathit{drink}(x) \rightarrow \mathit{sing}(x)
+ch7.3-relcl | g2p2 | \exists x.\mathit{wise}(x) \land \mathit{wizard}(x) \land \mathit{fear}(x, n) \land \mathit{visit}(x, \mathit{sr})
+ch7.4-objraise | g0p0 | UNSOLVED
+ch7.4-objraise | g0p1 | UNSOLVED
+ch7.4-objraise | g0p2 | UNSOLVED
+ch7.4-objraise | g1p0 | UNSOLVED
+ch7.4-objraise | g1p1 | UNSOLVED
+ch7.4-objraise | g1p2 | UNSOLVED
+ch7.5-objts | g0p0 | UNSOLVED
+ch7.5-objts | g0p1 | UNSOLVED
+ch7.5-objts | g0p2 | UNSOLVED
+ch7.5-objts | g1p0 | UNSOLVED
+ch7.5-objts | g1p1 | UNSOLVED
+ch7.5-objts | g1p2 | UNSOLVED
+ch7.6-pron | g0p0 | \mathit{king}(x_{1})
+ch7.6-pron | g0p0 | F | % ============================================================
+ch7.6-pron | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch7.6-pron | g0p0 | F | % Requires in your document preamble:
+ch7.6-pron | g0p0 | F | %   \usepackage{forest}
+ch7.6-pron | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch7.6-pron | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch7.6-pron | g0p0 | F | % ============================================================
+ch7.6-pron | g0p0 | F | % "He is a king."
+ch7.6-pron | g0p0 | F | \begin{forest}
+ch7.6-pron | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch7.6-pron | g0p0 | F |   [{\cnode{S} \\ {$\mathit{king}(x_{1})$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch7.6-pron | g0p0 | F |     [{\cnode{DP} \\ {$x_{1}$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch7.6-pron | g0p0 | F |       [{\textit{he1} \\ {$x_{1}$} \\ {\footnotesize $e$}}]
+ch7.6-pron | g0p0 | F |     ]
+ch7.6-pron | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{king}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+ch7.6-pron | g0p0 | F |       [{\cnode{V} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch7.6-pron | g0p0 | F |         [{\textit{is} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
+ch7.6-pron | g0p0 | F |       ]
+ch7.6-pron | g0p0 | F |       [{\cnode{NP} \\ {$\lambda x.\mathit{king}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+ch7.6-pron | g0p0 | F |         [{\cnode{D} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch7.6-pron | g0p0 | F |           [{\textit{a} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
+ch7.6-pron | g0p0 | F |         ]
+ch7.6-pron | g0p0 | F |         [{\cnode{NP} \\ {$\lambda x.\mathit{king}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch7.6-pron | g0p0 | F |           [{\textit{king} \\ {$\lambda x.\mathit{king}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch7.6-pron | g0p0 | F |         ]
+ch7.6-pron | g0p0 | F |       ]
+ch7.6-pron | g0p0 | F |     ]
+ch7.6-pron | g0p0 | F |   ]
+ch7.6-pron | g0p0 | F | \end{forest}
+ch7.6-pron | g0p0 | F | 
+ch7.6-pron | g0p1 | \mathit{love}(x_{1}, a)
+ch7.6-pron | g0p2 | UNSOLVED
+ch7.6-pron | g1p0 | \forall x.\mathit{dwarf}(x) \rightarrow \mathit{trust}(x, x_{1})
+ch7.6-pron | g1p1 | \mathit{ranger}(\mathit{st}) \land \lnot \mathit{trust}(\mathit{st}, \mathit{st})
+ch7.6-pron | g1p2 | UNSOLVED
+ch8.1-defn | g0p0 | \mathit{carry}(f, \iota x.\mathit{ring}(x))
+ch8.1-defn | g0p0 | F | % ============================================================
+ch8.1-defn | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch8.1-defn | g0p0 | F | % Requires in your document preamble:
+ch8.1-defn | g0p0 | F | %   \usepackage{forest}
+ch8.1-defn | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch8.1-defn | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch8.1-defn | g0p0 | F | % ============================================================
+ch8.1-defn | g0p0 | F | % "Frodo carries the ring."
+ch8.1-defn | g0p0 | F | \begin{forest}
+ch8.1-defn | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch8.1-defn | g0p0 | F |   [{\cnode{S} \\ {$\mathit{carry}(f, \iota x.\mathit{ring}(x))$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch8.1-defn | g0p0 | F |     [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch8.1-defn | g0p0 | F |       [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
+ch8.1-defn | g0p0 | F |     ]
+ch8.1-defn | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{carry}(x, \iota x.\mathit{ring}(x))$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+ch8.1-defn | g0p0 | F |       [{\cnode{V} \\ {$\lambda y \lambda x.\mathit{carry}(x, y)$} \\ {\footnotesize $\langle e,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch8.1-defn | g0p0 | F |         [{\textit{carries} \\ {$\lambda y \lambda x.\mathit{carry}(x, y)$} \\ {\footnotesize $\langle e,\langle e,t\rangle\rangle$}}]
+ch8.1-defn | g0p0 | F |       ]
+ch8.1-defn | g0p0 | F |       [{\cnode{DP} \\ {$\iota x.\mathit{ring}(x)$} \\ {\footnotesize $e$} \\ \crule{FA}}
+ch8.1-defn | g0p0 | F |         [{\cnode{D} \\ {$\lambda X.\iota x.X(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,e\rangle$} \\ \crule{NN}}
+ch8.1-defn | g0p0 | F |           [{\textit{the} \\ {$\lambda X.\iota x.X(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,e\rangle$}}]
+ch8.1-defn | g0p0 | F |         ]
+ch8.1-defn | g0p0 | F |         [{\cnode{NP} \\ {$\lambda x.\mathit{ring}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch8.1-defn | g0p0 | F |           [{\textit{ring} \\ {$\lambda x.\mathit{ring}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch8.1-defn | g0p0 | F |         ]
+ch8.1-defn | g0p0 | F |       ]
+ch8.1-defn | g0p0 | F |     ]
+ch8.1-defn | g0p0 | F |   ]
+ch8.1-defn | g0p0 | F | \end{forest}
+ch8.1-defn | g0p0 | F | 
+ch8.1-defn | g0p1 | \mathit{trust}(l, \iota x.\mathit{rightful}(\lambda x.\mathit{king}(x), x))
+ch8.1-defn | g0p2 | \mathit{in}(\iota x.\mathit{elf}(x) \land \mathit{trust}(x, m), \mathit{mr})
+ch8.1-defn | g1p0 | \iota y.\mathit{poss}(b, y) \land \mathit{sword}(y)
+ch8.1-defn | g1p1 | \iota y.\mathit{poss}(x_{1}, y) \land \mathit{bow}(y)
+ch8.1-defn | g1p2 | \iota y.\mathit{poss}(x_{1}, y) \land \mathit{axe}(y)
+ch8.1-defn | g2p0 | \lnot \mathit{pass}(\iota x.\mathit{balrog}(x))
+ch8.1-defn | g2p1 | \mathit{slay}(\iota x.\mathit{balrog}(x), \iota x.\mathit{wise}(x) \land \mathit{wizard}(x))
+ch8.1-defn | g2p2 | \mathit{flee}(\iota x.\mathit{fellowship}(x), \iota y.\mathit{poss}(w, y) \land \mathit{kingdom}(y))
+ch8.1-defn | g3p0 | \mathit{admire}(w, \iota y.\mathit{poss}(x_{1}, y) \land \mathit{hair}(y))
+ch8.1-defn | g3p1 | UNSOLVED
+ch8.1-defn | g3p2 | \mathit{love}(\iota y.\mathit{poss}(b, y) \land \mathit{king}(y), b) \land \mathit{until}(\mathit{die}(b))
+ch8.4-definedness | g0p0 | \partial(\mathit{card}_{2}(\lambda x.\mathit{tower}(x))) \land \lnot (\exists x.\mathit{tower}(x) \land \mathit{white}(x))
+ch8.4-definedness | g0p0 | F | % ============================================================
+ch8.4-definedness | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+ch8.4-definedness | g0p0 | F | % Requires in your document preamble:
+ch8.4-definedness | g0p0 | F | %   \usepackage{forest}
+ch8.4-definedness | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch8.4-definedness | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch8.4-definedness | g0p0 | F | % ============================================================
+ch8.4-definedness | g0p0 | F | % "Neither tower is white."
+ch8.4-definedness | g0p0 | F | \begin{forest}
+ch8.4-definedness | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch8.4-definedness | g0p0 | F |   [{\cnode{S} \\ {$\partial(\mathit{card}_{2}(\lambda x.\mathit{tower}(x))) \land \lnot (\exists x.\mathit{tower}(x) \land \mathit{white}(x))$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch8.4-definedness | g0p0 | F |     [{\cnode{DP} \\ {$\lambda Y.\partial(\mathit{card}_{2}(\lambda x.\mathit{tower}(x))) \land \lnot (\exists x.\mathit{tower}(x) \land Y(x))$} \\ {\footnotesize $\langle \langle e,t\rangle,t\rangle$} \\ \crule{FA}}
+ch8.4-definedness | g0p0 | F |       [{\cnode{D} \\ {$\lambda X \lambda Y.\partial(\mathit{card}_{2}(X)) \land \lnot (\exists x.X(x) \land Y(x))$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle$} \\ \crule{NN}}
+ch8.4-definedness | g0p0 | F |         [{\textit{neither} \\ {$\lambda X \lambda Y.\partial(\mathit{card}_{2}(X)) \land \lnot (\exists x.X(x) \land Y(x))$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle$}}]
+ch8.4-definedness | g0p0 | F |       ]
+ch8.4-definedness | g0p0 | F |       [{\cnode{NP} \\ {$\lambda x.\mathit{tower}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch8.4-definedness | g0p0 | F |         [{\textit{tower} \\ {$\lambda x.\mathit{tower}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch8.4-definedness | g0p0 | F |       ]
+ch8.4-definedness | g0p0 | F |     ]
+ch8.4-definedness | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{white}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+ch8.4-definedness | g0p0 | F |       [{\cnode{V} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch8.4-definedness | g0p0 | F |         [{\textit{is} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
+ch8.4-definedness | g0p0 | F |       ]
+ch8.4-definedness | g0p0 | F |       [{\cnode{AP} \\ {$\lambda x.\mathit{white}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch8.4-definedness | g0p0 | F |         [{\textit{white} \\ {$\lambda x.\mathit{white}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch8.4-definedness | g0p0 | F |       ]
+ch8.4-definedness | g0p0 | F |     ]
+ch8.4-definedness | g0p0 | F |   ]
+ch8.4-definedness | g0p0 | F | \end{forest}
+ch8.4-definedness | g0p0 | F | 
+ch8.4-definedness | g0p1 | \partial(\mathit{card}_{2}(\lambda x.\mathit{tree}(x))) \land \lnot (\exists x.\mathit{tree}(x) \land \mathit{dark}(x))
+ch8.4-definedness | g1p0 | \partial(\exists x.\mathit{ring}(x)) \land (\forall x.\mathit{ring}(x) \rightarrow \mathit{golden}(x))
+ch8.4-definedness | g1p1 | \partial(\exists x.\mathit{wizard}(x)) \land (\forall x.\mathit{wizard}(x) \rightarrow \mathit{wise}(x))
+ch8.4-definedness | g2p0 | \lnot (\partial(\exists x.\mathit{ring}(x)) \land (\forall x.\mathit{ring}(x) \rightarrow \mathit{golden}(x)))
+ch8.4-definedness | g3p0 | \exists x.\mathit{ring}(x) \land \mathit{golden}(x)
+hk1-conventions | g0p0 | a
+hk1-conventions | g0p0 | F | % ============================================================
+hk1-conventions | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+hk1-conventions | g0p0 | F | % Requires in your document preamble:
+hk1-conventions | g0p0 | F | %   \usepackage{forest}
+hk1-conventions | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+hk1-conventions | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+hk1-conventions | g0p0 | F | % ============================================================
+hk1-conventions | g0p0 | F | % "Ann"
+hk1-conventions | g0p0 | F | \begin{forest}
+hk1-conventions | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+hk1-conventions | g0p0 | F |   [{\cnode{DP} \\ {$a$} \\ {\footnotesize $e$} \\ \crule{NN}}
+hk1-conventions | g0p0 | F |     [{\cnode{N} \\ {$a$} \\ {\footnotesize $e$} \\ \crule{NN}}
+hk1-conventions | g0p0 | F |       [{\textit{Ann} \\ {$a$} \\ {\footnotesize $e$}}]
+hk1-conventions | g0p0 | F |     ]
+hk1-conventions | g0p0 | F |   ]
+hk1-conventions | g0p0 | F | \end{forest}
+hk1-conventions | g0p0 | F | 
+hk1-conventions | g0p1 | \lambda x.\mathit{cat}(x)
+hk1-conventions | g0p2 | \mathit{smoke}(a)
+hk12-intensions | g0p0 | \mathit{loyal}(w_{0}, \mathit{jn})
+hk12-intensions | g0p0 | F | % ============================================================
+hk12-intensions | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+hk12-intensions | g0p0 | F | % Requires in your document preamble:
+hk12-intensions | g0p0 | F | %   \usepackage{forest}
+hk12-intensions | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+hk12-intensions | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+hk12-intensions | g0p0 | F | % ============================================================
+hk12-intensions | g0p0 | F | % "Jan is loyal."
+hk12-intensions | g0p0 | F | \begin{forest}
+hk12-intensions | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+hk12-intensions | g0p0 | F |   [{\cnode{S} \\ {$\mathit{loyal}(w_{0}, \mathit{jn})$} \\ {\footnotesize $t$} \\ \crule{FA}}
+hk12-intensions | g0p0 | F |     [{\cnode{DP} \\ {$\mathit{jn}$} \\ {\footnotesize $e$} \\ \crule{NN}}
+hk12-intensions | g0p0 | F |       [{\textit{Jan} \\ {$\mathit{jn}$} \\ {\footnotesize $e$}}]
+hk12-intensions | g0p0 | F |     ]
+hk12-intensions | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{loyal}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+hk12-intensions | g0p0 | F |       [{\cnode{V} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+hk12-intensions | g0p0 | F |         [{\textit{is} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
+hk12-intensions | g0p0 | F |       ]
+hk12-intensions | g0p0 | F |       [{\cnode{AP} \\ {$\lambda x.\mathit{loyal}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+hk12-intensions | g0p0 | F |         [{\textit{loyal} \\ {$\lambda x.\mathit{loyal}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+hk12-intensions | g0p0 | F |       ]
+hk12-intensions | g0p0 | F |     ]
+hk12-intensions | g0p0 | F |   ]
+hk12-intensions | g0p0 | F | \end{forest}
+hk12-intensions | g0p0 | F | 
+hk12-intensions | g0p1 | \mathit{deceitful}(w_{0}, d)
+hk12-intensions | g1p0 | \forall w'.\mathit{dox}(w_{0}, m, w') \rightarrow \mathit{loyal}(w', \mathit{jn})
+hk12-intensions | g1p1 | \forall w'.\mathit{dox}(w_{0}, m, w') \rightarrow \mathit{deceitful}(w', d)
+hk12-intensions | g1p2 | \forall w'.\mathit{think}(w_{0}, m, w') \rightarrow \mathit{happy}(w', \mathit{jn})
+hk12-intensions | g2p0 | \forall w'.\mathit{hope}(w_{0}, m, w') \rightarrow \mathit{happy}(w', \mathit{jn})
+hk12-intensions | g2p1 | \forall w'.\mathit{dox}(w_{0}, d, w') \rightarrow \mathit{happy}(w', m)
+hk2-fa | g0p0 | \mathit{smoke}(a)
+hk2-fa | g0p0 | F | % ============================================================
+hk2-fa | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+hk2-fa | g0p0 | F | % Requires in your document preamble:
+hk2-fa | g0p0 | F | %   \usepackage{forest}
+hk2-fa | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+hk2-fa | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+hk2-fa | g0p0 | F | % ============================================================
+hk2-fa | g0p0 | F | % "Ann smokes."
+hk2-fa | g0p0 | F | \begin{forest}
+hk2-fa | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+hk2-fa | g0p0 | F |   [{\cnode{S} \\ {$\mathit{smoke}(a)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+hk2-fa | g0p0 | F |     [{\cnode{NP} \\ {$a$} \\ {\footnotesize $e$} \\ \crule{NN}}
+hk2-fa | g0p0 | F |       [{\cnode{N} \\ {$a$} \\ {\footnotesize $e$} \\ \crule{NN}}
+hk2-fa | g0p0 | F |         [{\textit{Ann} \\ {$a$} \\ {\footnotesize $e$}}]
+hk2-fa | g0p0 | F |       ]
+hk2-fa | g0p0 | F |     ]
+hk2-fa | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{smoke}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+hk2-fa | g0p0 | F |       [{\cnode{V} \\ {$\lambda x.\mathit{smoke}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+hk2-fa | g0p0 | F |         [{\textit{smokes} \\ {$\lambda x.\mathit{smoke}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+hk2-fa | g0p0 | F |       ]
+hk2-fa | g0p0 | F |     ]
+hk2-fa | g0p0 | F |   ]
+hk2-fa | g0p0 | F | \end{forest}
+hk2-fa | g0p0 | F | 
+hk2-fa | g0p1 | \mathit{work}(\mathit{mr})
+hk2-fa | g0p2 | \mathit{boring}(a)
+hk2-fa | g1p0 | \mathit{like}(a, \mathit{jn})
+hk2-fa | g1p1 | \mathit{know}(\mathit{jn}, \mathit{mr})
+hk2-fa | g1p2 | \mathit{like}(\mathit{mr}, a)
+hk2-fa | g2p0 | \lnot \mathit{smoke}(\mathit{jn})
+hk2-fa | g2p1 | \mathit{work}(\mathit{jn}) \land \lnot \mathit{smoke}(\mathit{jn})
+hk2-fa | g2p2 | \mathit{smoke}(a) \land \mathit{work}(\mathit{mr})
+hk4-definites | g0p0 | \lambda x.\mathit{gray}(x) \land \mathit{cat}(x)
+hk4-definites | g0p0 | F | % ============================================================
+hk4-definites | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+hk4-definites | g0p0 | F | % Requires in your document preamble:
+hk4-definites | g0p0 | F | %   \usepackage{forest}
+hk4-definites | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+hk4-definites | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+hk4-definites | g0p0 | F | % ============================================================
+hk4-definites | g0p0 | F | % "gray cat"
+hk4-definites | g0p0 | F | \begin{forest}
+hk4-definites | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+hk4-definites | g0p0 | F |   [{\cnode{NP} \\ {$\lambda x.\mathit{gray}(x) \land \mathit{cat}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PM}}
+hk4-definites | g0p0 | F |     [{\cnode{AP} \\ {$\lambda x.\mathit{gray}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+hk4-definites | g0p0 | F |       [{\textit{gray} \\ {$\lambda x.\mathit{gray}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+hk4-definites | g0p0 | F |     ]
+hk4-definites | g0p0 | F |     [{\cnode{NP} \\ {$\lambda x.\mathit{cat}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+hk4-definites | g0p0 | F |       [{\textit{cat} \\ {$\lambda x.\mathit{cat}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+hk4-definites | g0p0 | F |     ]
+hk4-definites | g0p0 | F |   ]
+hk4-definites | g0p0 | F | \end{forest}
+hk4-definites | g0p0 | F | 
+hk4-definites | g0p1 | \mathit{gray}(j) \land \mathit{cat}(j)
+hk4-definites | g0p2 | \mathit{cat}(k) \land \mathit{in}(k, \mathit{tx})
+hk4-definites | g1p0 | \partial(\exists x.\mathit{cat}(x) \land (\forall y.\mathit{cat}(y) \rightarrow y = x)) \land (\iota x.\mathit{cat}(x))
+hk4-definites | g1p1 | \partial(\exists x.\mathit{cat}(x) \land (\forall y.\mathit{cat}(y) \rightarrow y = x)) \land \mathit{gray}(\iota x.\mathit{cat}(x))
+hk4-definites | g2p0 | \partial(\exists x.\mathit{gray}(x) \land \mathit{cat}(x) \land (\forall y.\mathit{gray}(y) \land \mathit{cat}(y) \rightarrow y = x)) \land (\iota x.\mathit{gray}(x) \land \mathit{cat}(x))
+hk4-definites | g2p1 | \partial(\exists x.\mathit{gray}(x) \land \mathit{cat}(x) \land (\forall y.\mathit{gray}(y) \land \mathit{cat}(y) \rightarrow y = x)) \land \mathit{fond}(\iota x.\mathit{gray}(x) \land \mathit{cat}(x), o)
+hk5-relatives | g0p0 | \lambda x_{1}.\mathit{empty}(x_{1})
+hk5-relatives | g0p0 | F | % ============================================================
+hk5-relatives | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+hk5-relatives | g0p0 | F | % Requires in your document preamble:
+hk5-relatives | g0p0 | F | %   \usepackage{forest}
+hk5-relatives | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+hk5-relatives | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+hk5-relatives | g0p0 | F | % ============================================================
+hk5-relatives | g0p0 | F | % "which is empty"
+hk5-relatives | g0p0 | F | \begin{forest}
+hk5-relatives | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+hk5-relatives | g0p0 | F |   [{\cnode{CP} \\ {$\lambda x_{1}.\mathit{empty}(x_{1})$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+hk5-relatives | g0p0 | F |     [{\cnode{C} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+hk5-relatives | g0p0 | F |       [{\textit{which} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
+hk5-relatives | g0p0 | F |     ]
+hk5-relatives | g0p0 | F |     [{\cnode{LP} \\ {$\lambda x_{1}.\mathit{empty}(x_{1})$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PA}}
+hk5-relatives | g0p0 | F |       [{\textit{1}}]
+hk5-relatives | g0p0 | F |       [{\cnode{S} \\ {$\mathit{empty}(x_{1})$} \\ {\footnotesize $t$} \\ \crule{FA}}
+hk5-relatives | g0p0 | F |         [{\cnode{DP} \\ {$x_{1}$} \\ {\footnotesize $e$} \\ \crule{NN}}
+hk5-relatives | g0p0 | F |           [{\textit{t1} \\ {$x_{1}$} \\ {\footnotesize $e$}}]
+hk5-relatives | g0p0 | F |         ]
+hk5-relatives | g0p0 | F |         [{\cnode{VP} \\ {$\lambda x.\mathit{empty}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+hk5-relatives | g0p0 | F |           [{\cnode{V} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+hk5-relatives | g0p0 | F |             [{\textit{is} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
+hk5-relatives | g0p0 | F |           ]
+hk5-relatives | g0p0 | F |           [{\cnode{AP} \\ {$\lambda x.\mathit{empty}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+hk5-relatives | g0p0 | F |             [{\textit{empty} \\ {$\lambda x.\mathit{empty}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+hk5-relatives | g0p0 | F |           ]
+hk5-relatives | g0p0 | F |         ]
+hk5-relatives | g0p0 | F |       ]
+hk5-relatives | g0p0 | F |     ]
+hk5-relatives | g0p0 | F |   ]
+hk5-relatives | g0p0 | F | \end{forest}
+hk5-relatives | g0p0 | F | 
+hk5-relatives | g0p1 | \lambda x.\mathit{house}(x) \land \mathit{empty}(x)
+hk5-relatives | g0p2 | \lambda x.\mathit{man}(x) \land \mathit{available}(x)
+hk5-relatives | g1p0 | \lambda x_{1}.\mathit{abandon}(j, x_{1})
+hk5-relatives | g1p1 | \lambda x.\mathit{picture}(x) \land \mathit{abandon}(j, x)
+hk5-relatives | g1p2 | \lambda x.\mathit{movie}(x) \land \mathit{see}(m, x)
+hk5-relatives | g2p0 | \partial(\exists x.\mathit{house}(x) \land \mathit{empty}(x) \land (\forall y.\mathit{house}(y) \land \mathit{empty}(y) \rightarrow y = x)) \land \mathit{available}(\iota x.\mathit{house}(x) \land \mathit{empty}(x))
+hk5-relatives | g2p1 | \forall x.\mathit{picture}(x) \land \mathit{abandon}(j, x) \rightarrow \mathit{expensive}(x)
+hk5-relatives | g2p2 | \lnot (\exists x.\mathit{movie}(x) \land \mathit{see}(m, x) \land \mathit{expensive}(x))
+hk6-quantifiers | g0p0 | \exists x.\mathit{vanish}(x)
+hk6-quantifiers | g0p0 | F | % ============================================================
+hk6-quantifiers | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+hk6-quantifiers | g0p0 | F | % Requires in your document preamble:
+hk6-quantifiers | g0p0 | F | %   \usepackage{forest}
+hk6-quantifiers | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+hk6-quantifiers | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+hk6-quantifiers | g0p0 | F | % ============================================================
+hk6-quantifiers | g0p0 | F | % "Something vanished."
+hk6-quantifiers | g0p0 | F | \begin{forest}
+hk6-quantifiers | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+hk6-quantifiers | g0p0 | F |   [{\cnode{S} \\ {$\exists x.\mathit{vanish}(x)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+hk6-quantifiers | g0p0 | F |     [{\cnode{DP} \\ {$\lambda f.\exists x.f(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,t\rangle$} \\ \crule{NN}}
+hk6-quantifiers | g0p0 | F |       [{\textit{something} \\ {$\lambda f.\exists x.f(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,t\rangle$}}]
+hk6-quantifiers | g0p0 | F |     ]
+hk6-quantifiers | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{vanish}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+hk6-quantifiers | g0p0 | F |       [{\textit{vanished} \\ {$\lambda x.\mathit{vanish}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+hk6-quantifiers | g0p0 | F |     ]
+hk6-quantifiers | g0p0 | F |   ]
+hk6-quantifiers | g0p0 | F | \end{forest}
+hk6-quantifiers | g0p0 | F | 
+hk6-quantifiers | g0p1 | \lnot (\exists x.\mathit{vanish}(x))
+hk6-quantifiers | g0p2 | \forall x.\mathit{vanish}(x)
+hk6-quantifiers | g1p0 | \forall x.\mathit{cat}(x) \rightarrow \mathit{vanish}(x)
+hk6-quantifiers | g1p1 | \lnot (\exists x.\mathit{dog}(x) \land \mathit{purr}(x))
+hk6-quantifiers | g1p2 | \exists x.\mathit{cat}(x) \land \mathit{purr}(x)
+hk6-quantifiers | g2p0 | \partial(\mathit{card}_{2}(\lambda x.\mathit{cat}(x))) \land (\lambda g.\lnot (\exists x.\mathit{cat}(x) \land g(x)))
+hk6-quantifiers | g2p1 | \partial(\mathit{card}_{2}(\lambda x.\mathit{cat}(x))) \land \lnot (\exists x.\mathit{cat}(x) \land \mathit{striped}(x))
+hk6-quantifiers | g2p2 | \partial(\mathit{card}_{2}(\lambda x.\mathit{cat}(x))) \land (\forall x.\mathit{cat}(x) \rightarrow \mathit{purr}(x))
+hk7-quantification | g0p0 | UNSOLVED
+hk7-quantification | g0p1 | UNSOLVED
+hk7-quantification | g0p2 | UNSOLVED
+hk7-quantification | g1p0 | \forall x.\mathit{linguist}(x) \rightarrow \mathit{offend}(j, x)
+hk7-quantification | g1p0 | F | % ============================================================
+hk7-quantification | g1p0 | F | % COMPOSE derivation export — compose.tstephen.com
+hk7-quantification | g1p0 | F | % Requires in your document preamble:
+hk7-quantification | g1p0 | F | %   \usepackage{forest}
+hk7-quantification | g1p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+hk7-quantification | g1p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+hk7-quantification | g1p0 | F | % ============================================================
+hk7-quantification | g1p0 | F | % "John offended every linguist."
+hk7-quantification | g1p0 | F | \begin{forest}
+hk7-quantification | g1p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+hk7-quantification | g1p0 | F |   [{\cnode{S} \\ {$\forall x.\mathit{linguist}(x) \rightarrow \mathit{offend}(j, x)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+hk7-quantification | g1p0 | F |     [{\cnode{DP} \\ {$\lambda g.\forall x.\mathit{linguist}(x) \rightarrow g(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,t\rangle$} \\ \crule{FA}}
+hk7-quantification | g1p0 | F |       [{\cnode{D} \\ {$\lambda f \lambda g.\forall x.f(x) \rightarrow g(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle$} \\ \crule{NN}}
+hk7-quantification | g1p0 | F |         [{\textit{every} \\ {$\lambda f \lambda g.\forall x.f(x) \rightarrow g(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle$}}]
+hk7-quantification | g1p0 | F |       ]
+hk7-quantification | g1p0 | F |       [{\cnode{NP} \\ {$\lambda x.\mathit{linguist}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+hk7-quantification | g1p0 | F |         [{\textit{linguist} \\ {$\lambda x.\mathit{linguist}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+hk7-quantification | g1p0 | F |       ]
+hk7-quantification | g1p0 | F |     ]
+hk7-quantification | g1p0 | F |     [{\cnode{LP} \\ {$\lambda x_{1}.\mathit{offend}(j, x_{1})$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PA}}
+hk7-quantification | g1p0 | F |       [{\textit{1}}]
+hk7-quantification | g1p0 | F |       [{\cnode{S} \\ {$\mathit{offend}(j, x_{1})$} \\ {\footnotesize $t$} \\ \crule{FA}}
+hk7-quantification | g1p0 | F |         [{\cnode{DP} \\ {$j$} \\ {\footnotesize $e$} \\ \crule{NN}}
+hk7-quantification | g1p0 | F |           [{\textit{John} \\ {$j$} \\ {\footnotesize $e$}}]
+hk7-quantification | g1p0 | F |         ]
+hk7-quantification | g1p0 | F |         [{\cnode{VP} \\ {$\lambda x.\mathit{offend}(x, x_{1})$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+hk7-quantification | g1p0 | F |           [{\cnode{V} \\ {$\lambda y \lambda x.\mathit{offend}(x, y)$} \\ {\footnotesize $\langle e,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+hk7-quantification | g1p0 | F |             [{\textit{offended} \\ {$\lambda y \lambda x.\mathit{offend}(x, y)$} \\ {\footnotesize $\langle e,\langle e,t\rangle\rangle$}}]
+hk7-quantification | g1p0 | F |           ]
+hk7-quantification | g1p0 | F |           [{\cnode{DP} \\ {$x_{1}$} \\ {\footnotesize $e$} \\ \crule{NN}}
+hk7-quantification | g1p0 | F |             [{\textit{t1} \\ {$x_{1}$} \\ {\footnotesize $e$}}]
+hk7-quantification | g1p0 | F |           ]
+hk7-quantification | g1p0 | F |         ]
+hk7-quantification | g1p0 | F |       ]
+hk7-quantification | g1p0 | F |     ]
+hk7-quantification | g1p0 | F |   ]
+hk7-quantification | g1p0 | F | \end{forest}
+hk7-quantification | g1p0 | F | 
+hk7-quantification | g1p1 | \exists x.\mathit{publisher}(x) \land \mathit{know}(m, x)
+hk7-quantification | g2p0 | \exists x.\forall y.\mathit{offend}(x, y)
+hk7-quantification | g2p1 | \forall x.\exists y.\mathit{offend}(y, x)
+hk7-quantification | g2p2 | \forall x.\mathit{linguist}(x) \rightarrow (\exists y.\mathit{publisher}(y) \land \mathit{offend}(y, x))
+hk7-quantification | g3p0 | \forall x.\mathit{publisher}(x) \rightarrow \mathit{offend}(x, x)
+hk7-quantification | g3p1 | \exists x.\mathit{linguist}(x) \land \mathit{know}(x, x)
+hk9-pronouns | g0p0 | \mathit{smoke}(x_{1})
+hk9-pronouns | g0p0 | F | % ============================================================
+hk9-pronouns | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+hk9-pronouns | g0p0 | F | % Requires in your document preamble:
+hk9-pronouns | g0p0 | F | %   \usepackage{forest}
+hk9-pronouns | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+hk9-pronouns | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+hk9-pronouns | g0p0 | F | % ============================================================
+hk9-pronouns | g0p0 | F | % "She smokes."
+hk9-pronouns | g0p0 | F | \begin{forest}
+hk9-pronouns | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+hk9-pronouns | g0p0 | F |   [{\cnode{S} \\ {$\mathit{smoke}(x_{1})$} \\ {\footnotesize $t$} \\ \crule{FA}}
+hk9-pronouns | g0p0 | F |     [{\cnode{DP} \\ {$x_{1}$} \\ {\footnotesize $e$} \\ \crule{NN}}
+hk9-pronouns | g0p0 | F |       [{\textit{she1} \\ {$x_{1}$} \\ {\footnotesize $e$}}]
+hk9-pronouns | g0p0 | F |     ]
+hk9-pronouns | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{smoke}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+hk9-pronouns | g0p0 | F |       [{\textit{smokes} \\ {$\lambda x.\mathit{smoke}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+hk9-pronouns | g0p0 | F |     ]
+hk9-pronouns | g0p0 | F |   ]
+hk9-pronouns | g0p0 | F | \end{forest}
+hk9-pronouns | g0p0 | F | 
+hk9-pronouns | g0p1 | \mathit{leave}(x_{1})
+hk9-pronouns | g0p2 | \mathit{like}(j, x_{2})
+hk9-pronouns | g1p0 | \mathit{blame}(j, x_{1})
+hk9-pronouns | g2p0 | \mathit{blame}(j, j)
+hk9-pronouns | g2p1 | \forall x.\mathit{woman}(x) \rightarrow \mathit{blame}(x, x)
+hk9-pronouns | g2p2 | \lnot (\exists x.\mathit{man}(x) \land \mathit{like}(x, x))
+montague-ptq | g0p0 | \mathit{walk}(j)
+montague-ptq | g0p0 | F | % ============================================================
+montague-ptq | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+montague-ptq | g0p0 | F | % Requires in your document preamble:
+montague-ptq | g0p0 | F | %   \usepackage{forest}
+montague-ptq | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+montague-ptq | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+montague-ptq | g0p0 | F | % ============================================================
+montague-ptq | g0p0 | F | % "John walks."
+montague-ptq | g0p0 | F | \begin{forest}
+montague-ptq | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+montague-ptq | g0p0 | F |   [{\cnode{S} \\ {$\mathit{walk}(j)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+montague-ptq | g0p0 | F |     [{\cnode{DP} \\ {$j$} \\ {\footnotesize $e$} \\ \crule{NN}}
+montague-ptq | g0p0 | F |       [{\textit{John} \\ {$j$} \\ {\footnotesize $e$}}]
+montague-ptq | g0p0 | F |     ]
+montague-ptq | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{walk}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+montague-ptq | g0p0 | F |       [{\textit{walks} \\ {$\lambda x.\mathit{walk}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+montague-ptq | g0p0 | F |     ]
+montague-ptq | g0p0 | F |   ]
+montague-ptq | g0p0 | F | \end{forest}
+montague-ptq | g0p0 | F | 
+montague-ptq | g0p1 | \forall x.\mathit{man}(x) \rightarrow \mathit{walk}(x)
+montague-ptq | g1p0 | UNSOLVED
+montague-ptq | g1p1 | \forall y.\mathit{woman}(y) \rightarrow \mathit{love}(j, y)
+montague-ptq | g1p2 | \exists y.\mathit{unicorn}(y) \land \mathit{find}(j, y)
+montague-ptq | g2p0 | UNSOLVED
+montague-ptq | g2p1 | \mathit{man}(j)
+montague-ptq | g3p0 | \exists x.\mathit{man}(x) \land (\forall y.\mathit{man}(y) \rightarrow y = x) \land \mathit{walk}(x)
+montague-ptq | g4p0 | \forall x.\mathit{man}(x) \rightarrow (\exists y.\mathit{woman}(y) \land \mathit{love}(x, y))
+montague-ptq | g4p1 | \exists y.\mathit{unicorn}(y) \land \mathit{seek}(j, y)
+partee-triangle | g0p0 | \mathit{walk}(j)
+partee-triangle | g0p0 | F | % ============================================================
+partee-triangle | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
+partee-triangle | g0p0 | F | % Requires in your document preamble:
+partee-triangle | g0p0 | F | %   \usepackage{forest}
+partee-triangle | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+partee-triangle | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+partee-triangle | g0p0 | F | % ============================================================
+partee-triangle | g0p0 | F | % "John walks."
+partee-triangle | g0p0 | F | \begin{forest}
+partee-triangle | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+partee-triangle | g0p0 | F |   [{\cnode{S} \\ {$\mathit{walk}(j)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+partee-triangle | g0p0 | F |     [{\cnode{DP} \\ {$j$} \\ {\footnotesize $e$} \\ \crule{NN}}
+partee-triangle | g0p0 | F |       [{\textit{John} \\ {$j$} \\ {\footnotesize $e$}}]
+partee-triangle | g0p0 | F |     ]
+partee-triangle | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{walk}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+partee-triangle | g0p0 | F |       [{\textit{walks} \\ {$\lambda x.\mathit{walk}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+partee-triangle | g0p0 | F |     ]
+partee-triangle | g0p0 | F |   ]
+partee-triangle | g0p0 | F | \end{forest}
+partee-triangle | g0p0 | F | 
+partee-triangle | g0p1 | \mathit{tall}(m)
+partee-triangle | g0p2 | \forall x.\mathit{student}(x) \rightarrow \mathit{walk}(x)
+partee-triangle | g1p0 | UNSOLVED
+partee-triangle | g2p0 | \lambda x.\mathit{moon}(x) \land \mathit{rise}(x)
+partee-triangle | g3p0 | \lambda x.\mathit{dog}(x) \land \mathit{bark}(x)
+partee-triangle | g4p0 | UNSOLVED
+partee-triangle | g5p0 | UNSOLVED
+partee-triangle | g5p1 | UNSOLVED
+partee-triangle | g6p0 | j
+partee-triangle | g7p0 | UNSOLVED

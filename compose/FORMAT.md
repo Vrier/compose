@@ -84,7 +84,21 @@ to a worksheet file to get editor autocomplete and validation in VS Code.
 | `id` (on exercises and items) | Optional **stable id** (1–32 chars of `A–Z a–z 0–9 _ -`). Student progress is keyed by these ids. **Without stable ids, inserting or reordering content silently re-attaches every student's saved progress to the wrong derivations** — critical for hosted worksheets, where links are live. The editor generates ids automatically. |
 | `notation` | `"cc"` (Coppock & Champollion, default) or `"hk"` (Heim & Kratzer) rendering conventions. |
 | `reading` | Optional embedded reading companion: `{ "format": "lingdown", "markdown": "…" }`. Items anchor to its `##` sections via `"reading": { "section": "…" }`. |
-| `hints`, `targetsMode` | Reserved (schema-valid, not yet consumed): per-item staged hints, and whether all targets are required (`"all"`, default) or any one suffices (`"any"`). |
+| `hints` | Per-derivation staged hints (array of strings). Students reveal them one at a time via a 💡 button; after the last hint, a final "Show answer" stage fills in the worked solution (practice mode only — in assessment mode the button is absent entirely). |
+| `targetsMode` | Reserved (schema-valid, not yet consumed): whether all targets are required (`"all"`, default) or any one suffices (`"any"`). |
+
+**Deep links.** Every derivation is addressable as `#<exerciseId>.<derivationId>`
+(e.g. `https://…/v/ab3k9x2m#g2.i-d3`), using the stable ids above — "do
+derivation 3 tonight" can be a hyperlink. An optional worksheet prefix
+`#<worksheetKey>/<exerciseId>.<derivationId>` also switches worksheet. In
+lingdown readings, `[[derivation:g2.i-d3|derivation 3]]` renders a same-page
+link.
+
+**LaTeX export.** A solved derivation's "⎘ Copy LaTeX" button emits a
+`forest` tree with denotation, type and rule at every node. Each export
+carries its own requires-block; in short: `\usepackage{forest}` plus
+`\newcommand{\cnode}[1]{{\sffamily #1}}` and
+`\newcommand{\crule}[1]{{\tiny\sffamily [#1]}}`.
 
 **Deprecated aliases.** These load for backwards compatibility but should not be
 written by new tools (the parser's diagnostics mode flags them): `den` → use

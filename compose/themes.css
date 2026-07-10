@@ -1605,3 +1605,7 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .phone-gate-card p { font-size: 14.5px; line-height: 1.55; color: var(--ink-soft); }
 .phone-gate-btn { display: block; width: 100%; box-sizing: border-box; margin: 10px 0 0; padding: 12px; text-decoration: none; }
 .phone-gate-continue { margin-top: 22px; font-size: 13px; color: var(--ink-soft); background: none; border: none; cursor: pointer; }
+
+/* S10 (W15): hints + latex */
+.hint-list { margin: 8px 0 4px; display: flex; flex-direction: column; gap: 6px; }
+.hint-item { font-size: 13.5px; }

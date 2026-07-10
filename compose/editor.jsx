@@ -192,6 +192,7 @@ function generateJSON(state) {
           if ((it.expected || '').trim()) o.expected = it.expected.trim();
           if ((it.note || '').trim()) o.note = it.note.trim();
           if (Array.isArray(it.targets) && it.targets.filter(Boolean).length) o.targets = it.targets.filter(Boolean);
+          if (Array.isArray(it.hints) && it.hints.filter(Boolean).length) o.hints = it.hints.filter(Boolean);
           if ((it.section || '').trim()) o.reading = { section: it.section.trim() };
           return o;
         }),
@@ -235,6 +236,7 @@ function parseFromText(text) {
         instructions: p.gloss || p.instructions || '', tree: p.tree || '',
         expected: p.expected || '', note: p.note || '',
         targets: p.targets ? p.targets.slice() : undefined,
+        hints: Array.isArray(p.hints) && p.hints.length ? p.hints.slice() : undefined,
       })),
     }));
     // Recover the reading companion + per-exercise section anchors (native JSON only).

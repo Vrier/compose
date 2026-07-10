@@ -327,6 +327,17 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
   }
 
   const [scopeFb, setScopeFb] = useState(null);
+  // S10/W15: LaTeX copy + staged hints
+  const [latexCopied, setLatexCopied] = useState(false);
+  const hintList = (!LC_ASSESSMENT && Array.isArray(problem.hints) && problem.hints.length) ? problem.hints : null;
+  const [hintStage, setHintStage] = useState(0);
+  useEffect(() => { setHintStage(0); setLatexCopied(false); }, [problem]);
+  function copyLaTeX() {
+    try {
+      const tex = window.LCFormat.derivationToLaTeX(root, solution, { sentence: problem.gloss || '' });
+      navigator.clipboard.writeText(tex).then(() => { setLatexCopied(true); setTimeout(() => setLatexCopied(false), 1800); });
+    } catch (err) { window.alert('LaTeX export failed: ' + (err && err.message)); }
+  }
   const allDone = allNodesDone && rootDone;
 
   useEffect(() => {
@@ -676,6 +687,19 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
             if (onResetExercise) onResetExercise(); else onSetMeanings({});
             setSelected(null); setFb(null);
           }}>↺ Reset</button>
+          {(teacherMode || (allDone && !LC_ASSESSMENT)) && solution[root.id] && (
+            <button className="btn-ghost latex-btn" title="Copy this derivation as LaTeX (forest) — paste into a handout or paper" onClick={copyLaTeX}>{latexCopied ? '✓ Copied' : '⎘ Copy LaTeX'}</button>
+          )}
+          {hintList && (
+            <button className="btn-ghost hint-btn" title="Reveal the next hint"
+              disabled={hintStage > hintList.length || (hintStage === hintList.length && LC_ASSESSMENT)}
+              onClick={() => {
+                if (hintStage < hintList.length) setHintStage(hintStage + 1);
+                else { revealSolution(); setHintStage(hintStage + 1); }
+              }}>
+              💡 {hintStage < hintList.length ? 'Hint (' + (hintStage + 1) + '/' + hintList.length + ')' : hintStage === hintList.length ? 'Show answer' : 'Answer shown'}
+            </button>
+          )}
           {teacherMode && (
             <button className="btn-ghost reveal-soln-btn" title="Fill in the full worked solution (teacher answer key)" onClick={revealSolution}>🔑 Reveal solution</button>
           )}
@@ -683,6 +707,13 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
             <button className="btn-ghost reset-deriv-btn" title="Undo the last Quantifier Raising — restores the tree and the compositions you had before raising" onClick={undoQR}>↶ Undo raise</button>
           )}
         </div>
+        {hintList && hintStage > 0 && (
+          <div className="hint-list">
+            {hintList.slice(0, Math.min(hintStage, hintList.length)).map((h, i) => (
+              <div key={i} className="feedback info hint-item"><span className="fi">💡</span><span><b>Hint {i + 1}.</b> {h}</span></div>
+            ))}
+          </div>
+        )}
         <div className="prob-instr">
           {problem.instructions && <span className="prob-sent-text">{problem.instructions}</span>}
           {hasScopes ? (
