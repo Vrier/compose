@@ -178,7 +178,9 @@ function App() {
   const [modal, setModal] = useState(null); // 'files' | 'editor' | 'rules' | null
   const [custom, setCustom] = useState(null); // {set, problem}
   const [allowedMap, setAllowedMap] = useState(() => sanitizeAllowedMap(load('lc2-allowed', {})));
-  const [teacherMode, setTeacherMode] = useState(() => isStudentBuild ? false : load('lc2-teacher', false));
+  // Hosted editor pages (/edit/:id) open IN teacher mode — that's what the
+  // instructor came for; the toggle preference still persists per build.
+  const [teacherMode, setTeacherMode] = useState(() => isStudentBuild ? false : load('lc2-teacher', String((window.COMPOSE_BUILD || {}).id || '') === 'hosted-teacher'));
   const [darkMode, setDarkMode] = useState(() => load('lc2-dark', false));
   const [rightTab, setRightTab] = useState('lexicon'); // right sidebar: 'lexicon' | 'reading'
   const isMobile = useIsMobile(760);

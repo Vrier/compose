@@ -8823,7 +8823,7 @@ function App() {
   const [modal, setModal] = useState(null);
   const [custom, setCustom] = useState(null);
   const [allowedMap, setAllowedMap] = useState(() => sanitizeAllowedMap(load("lc2-allowed", {})));
-  const [teacherMode, setTeacherMode] = useState(() => isStudentBuild ? false : load("lc2-teacher", false));
+  const [teacherMode, setTeacherMode] = useState(() => isStudentBuild ? false : load("lc2-teacher", String((window.COMPOSE_BUILD || {}).id || "") === "hosted-teacher"));
   const [darkMode, setDarkMode] = useState(() => load("lc2-dark", false));
   const [rightTab, setRightTab] = useState("lexicon");
   const isMobile = useIsMobile(760);
