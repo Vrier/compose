@@ -80,6 +80,25 @@ const rootPage = assemblePage(parts, {
   libraryJS: '',
 });
 
+/* ---- 3a · Public editor sandbox (S13.2) ---------------------------------
+   /editor — the full authoring surface with NO account and NO server side:
+   no SDK, no __COMPOSE_HOSTED__ context, so Save-to-server / fork / edit
+   never render; "Export assignment" (JSON download) is the only way out.
+   Opens in teacher mode with the Getting Started sample (id gates in
+   app.jsx key off 'hosted-sandbox'). */
+const sandboxIdentityJS =
+  'window.COMPOSE_BUILD = ' + JSON.stringify({
+    id: 'hosted-sandbox', role: 'instructor', preload: 'none',
+    label: 'COMPOSE — Editor sandbox', version: COMPOSE_VERSION, date: COMPOSE_DATE,
+  }) + ';\n' +
+  'window.COMPOSE_CONFIG = ' + JSON.stringify({ role: 'instructor', assignment: null }) + ';';
+
+const sandboxPage = assemblePage(parts, {
+  title: 'COMPOSE — Editor sandbox',
+  identityJS: sandboxIdentityJS,
+  libraryJS: '',
+});
+
 /* ---- 3b · Curated library entry points (S13) ----------------------------
    Stable, linkable, static pages: whole textbook bundles and per-chapter
    pages, each family sharing ONE progress island so /cc and /cc/ch7 keep
@@ -185,6 +204,7 @@ ${CC_CHAPTERS.map(([pfx]) => '<a href="/cc/' + pfx + '/">/cc/' + pfx + '</a>').j
 <li><a href="/hk/">/hk</a> — the Heim &amp; Kratzer companion; per chapter:
 ${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk/' + pfx.replace('hk', 'ch') + '</a>').join(' · ')}</li>
 <li><a href="/papers/">/papers</a> — classic papers: <a href="/papers/partee/">/papers/partee</a> · <a href="/papers/ptq/">/papers/ptq</a></li>
+<li><a href="/editor/">/editor</a> — the editor sandbox: author worksheets and export them as JSON, no account needed (to host worksheets for students, instructors use <a href="/dash/">/dash</a>)</li>
 </ul>
 <h2>Credits and lineage</h2>
 <p>The bundled worksheet library tracks Elizabeth Coppock &amp; Lucas
@@ -286,6 +306,7 @@ const dashPage = [
 fs.mkdirSync(path.join(OUT, 'pb_public', 'dash'), { recursive: true });
 fs.mkdirSync(path.join(OUT, 'pb_public', 'about'), { recursive: true });
 const write = (rel, html) => {
+  fs.mkdirSync(path.dirname(path.join(OUT, rel)), { recursive: true });
   fs.writeFileSync(path.join(OUT, rel), html);
   console.log('  ' + rel.padEnd(32) + ' ' + (Buffer.byteLength(html) / 1024).toFixed(0) + ' KB');
 };
@@ -302,6 +323,7 @@ write('library.json', JSON.stringify(libraryMap(SRC)));
 write(path.join('pb_public', 'index.html'), rootPage);
 write(path.join('pb_public', 'dash', 'index.html'), dashPage);
 write(path.join('pb_public', 'about', 'index.html'), aboutPage);
+write(path.join('pb_public', 'editor', 'index.html'), sandboxPage);
 for (const entry of CURATED) {
   fs.mkdirSync(path.join(OUT, 'pb_public', ...entry.path.split('/')), { recursive: true });
   write(path.join('pb_public', ...entry.path.split('/'), 'index.html'), curatedPage(entry));

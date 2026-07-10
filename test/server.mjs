@@ -247,6 +247,11 @@ async function main() {
   lacks('root is the bare starter (no full library inlined)', r.text, '"ch7.1-adj":{');
   contains('root still identifies as hosted-root', r.text, 'hosted-root');
   contains('root build requests the demo sample for students', r.text, '"sample":true');
+  r = await req('GET', '/editor/', { raw: true });
+  contains('/editor identifies as the sandbox', r.text, '"id":"hosted-sandbox"');
+  contains('/editor is an instructor surface', r.text, '"role":"instructor"');
+  lacks('/editor has no hosted-version context', r.text, 'window.COMPOSE_HOSTED = ');
+  lacks('/editor does not ship the PocketBase SDK', r.text, 'class ClientResponseError');
   r = await req('GET', '/cc/', { raw: true });
   contains('/cc carries §7 content', r.text, '"ch7.1-adj":{');
   contains('/cc carries §13 content', r.text, '"ch13.1-worlds":{');

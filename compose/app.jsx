@@ -180,7 +180,7 @@ function App() {
   const [allowedMap, setAllowedMap] = useState(() => sanitizeAllowedMap(load('lc2-allowed', {})));
   // Hosted editor pages (/edit/:id) open IN teacher mode — that's what the
   // instructor came for; the toggle preference still persists per build.
-  const [teacherMode, setTeacherMode] = useState(() => isStudentBuild ? false : load('lc2-teacher', String((window.COMPOSE_BUILD || {}).id || '') === 'hosted-teacher'));
+  const [teacherMode, setTeacherMode] = useState(() => isStudentBuild ? false : load('lc2-teacher', ['hosted-teacher', 'hosted-sandbox'].includes(String((window.COMPOSE_BUILD || {}).id || ''))));
   const [darkMode, setDarkMode] = useState(() => load('lc2-dark', false));
   const [rightTab, setRightTab] = useState('lexicon'); // right sidebar: 'lexicon' | 'reading'
   const isMobile = useIsMobile(760);
@@ -258,7 +258,7 @@ function App() {
   const [netNotice, setNetNotice] = useState(null);
   useEffect(() => {
     const b = window.COMPOSE_BUILD || {};
-    const hosted = String(b.id || '').indexOf('hosted') === 0 && b.id !== 'hosted-teacher';
+    const hosted = String(b.id || '').indexOf('hosted') === 0 && b.id !== 'hosted-teacher' && b.id !== 'hosted-sandbox';
     if (!hosted || !('serviceWorker' in navigator) || window.location.protocol !== 'https:') return;
     try {
       navigator.serviceWorker.register('/sw.js').catch(() => {});
@@ -774,7 +774,7 @@ function App() {
               <input ref={progressFileInput} type="file" accept=".json,application/json" style={{ display: 'none' }}
                 onChange={(e) => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) composeImportProgress(f); }} />
               <div className="tools-sep" />
-              {!(window.COMPOSE_BUILD && String(window.COMPOSE_BUILD.id || '').indexOf('hosted') === 0) && (
+              {!(window.COMPOSE_BUILD && String(window.COMPOSE_BUILD.id || '').indexOf('hosted') === 0 && window.COMPOSE_BUILD.id !== 'hosted-sandbox') && (
 <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; setModal('export'); }}>
                 <span>Export assignment</span><span className="tool-ico">↓</span>
               </button>
