@@ -45,7 +45,15 @@ jobs:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
         run: |
           mkdir -p ~/.ssh
-          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          # The secret is BASE64-encoded (single line survives terminal
+          # copy-paste intact — a raw multi-line key pasted from PowerShell
+          # arrives mangled: 'error in libcrypto'). Raw keys still accepted.
+          if printf '%s' "$DEPLOY_SSH_KEY" | base64 -d > ~/.ssh/deploy_key 2>/dev/null \
+             && grep -q 'BEGIN OPENSSH PRIVATE KEY' ~/.ssh/deploy_key; then
+            :
+          else
+            printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          fi
           chmod 600 ~/.ssh/deploy_key
           ssh -i ~/.ssh/deploy_key \
               -o StrictHostKeyChecking=accept-new \

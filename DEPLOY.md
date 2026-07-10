@@ -175,12 +175,12 @@ Generate a dedicated keypair for Actions→server:
 ssh-keygen -t ed25519 -N '' -f /tmp/actions_key
 cat /tmp/actions_key.pub | sudo -u compose tee -a /srv/compose/.ssh/authorized_keys
 mkdir -p /home/compose 2>/dev/null || true
-cat /tmp/actions_key        # ← copy EVERYTHING printed, including BEGIN/END lines
+base64 -w0 /tmp/actions_key; echo   # ← copy the ONE long line it prints
 shred -u /tmp/actions_key /tmp/actions_key.pub
 ```
 
 GitHub repo → **Settings → Secrets and variables → Actions → New repository
-secret** → name `DEPLOY_SSH_KEY`, value = the private key you just copied.
+secret** → name `DEPLOY_SSH_KEY`, value = the single base64 line you just copied (the workflow decodes it).
 
 From now on every push to `main` runs the full test suite (including the
 46-check live-PocketBase suite) and, only if green, deploys. Verify: repo →
