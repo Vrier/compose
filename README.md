@@ -2,148 +2,69 @@
 
 **Compositional Meaning Practice · Online Semantics Engine**
 
-COMPOSE is a browser-based engine and problem-set builder for teaching
-compositional semantics. Every exercise is a syntactic tree; the task is to
-compose its meaning from the bottom up — choosing the right rule at each node
-until the root yields a truth condition. Denotations are genuine typed
-λ-terms: the engine infers types, applies functions, β-reduces, and recognises
-α-equivalent answers, so it grades *meaning*, not surface string.
+COMPOSE is a browser-based companion for learning compositional formal
+semantics in the Heim & Kratzer / Coppock & Champollion tradition. Every
+exercise is a syntactic tree; the task is to compose its meaning from the
+bottom up — choosing the right rule at each node until the root yields a truth
+condition. Denotations are genuine typed λ-terms: the engine infers types,
+β-reduces, and recognises α-equivalent answers, so it grades *meaning*, not
+surface strings.
 
-It ships with a library tracking Coppock & Champollion's *Invitation to Formal
-Semantics* (§6–§13), plus Heim & Kratzer and two classic capstones (Partee
-1986, Montague PTQ), and a built-in editor for authoring your own sets.
+**Use it now: [compose.tstephen.com](https://compose.tstephen.com)** — the
+hosted instance with the full built-in library tracking Coppock &
+Champollion's *Invitation to Formal Semantics* (§6–§13), Heim & Kratzer
+material, and capstones after Partee 1986 and Montague's PTQ. No login, no
+install; student progress lives in the browser.
 
----
+## For instructors
 
-## Running it
+Ask the administrator for an invite code, then register at
+[compose.tstephen.com/dash](https://compose.tstephen.com/dash/). From the
+dashboard you can create a **version** (your own hosted worksheet collection),
+fork built-in worksheets in the in-app editor, edit denotations and trees with
+live validation, attach lingdown **notes** students see alongside the
+exercises, flip a version between **practice** and **assessment** mode, and
+share one stable URL — with a QR code and printable A4 handout. Links are
+live: mid-semester fixes update what students see at the same address.
 
-### Production builds (recommended)
+Everything an instructor saves is validated server-side by the real engine:
+broken denotations, unparseable targets, and malformed trees are rejected
+with messages naming the exact location.
 
-The `dist/` folder holds **self-contained, single-file** builds. Each one
-inlines production React, the compiled interface, all styles, and (for the
-"cc" builds) the full exercise library. Just open any of them directly in a
-browser — no server, no install, no internet (apart from optional web fonts):
+## Offline / single-file builds
 
-```
-dist/COMPOSE-teacher-cc.html     instructor, full Coppock & Champollion library
-dist/COMPOSE-teacher.html        instructor, clean (sample only)
-dist/COMPOSE-student-cc.html     student, Coppock & Champollion library
-dist/COMPOSE-student.html        student, clean (loads an assignment)
-```
+The original distribution survives as a fallback: `npm run build` produces
+four self-contained HTML files in `dist/` (teacher/student × with/without the
+built-in library) that run from a double-click with no server at all.
 
-To regenerate them: `npm install && npm run build` (writes `dist/*.html` via
-`build.mjs`, which transpiles the `.jsx` with esbuild and inlines everything —
-no in-browser Babel, no CDN dependency).
+## Repository tour
 
-### Developing (source tree)
+    compose/            the app: engine.js (λ-calculus core), lcformat.js
+                        (format/solver), *.jsx UI, lingdown.js (reading autoformat),
+                        exercises/ (40 built-in worksheets), reading/, bundles/
+    build/              page assembler + server-artifact builder
+    server/             PocketBase: migrations, hooks (serving, validation), pin script
+    deploy/             Caddyfile, systemd unit, provision/deploy/backup scripts
+    schemas/            JSON Schemas for the worksheet & companion formats
+    test/               golden regression suite, schema checker, live server suite
+    FORMAT.md           the worksheet/companion file format (compose/FORMAT.md)
+    DEPLOY.md           how the hosted service is provisioned and operated
 
-For iterating on the source, serve the `compose/` directory over HTTP — the
-dev/teacher source build loads its library by fetching `compose/exercises/`,
-which browsers block under `file://`:
+## Development
 
-```bash
-cd compose && python3 -m http.server 8000   # then open http://localhost:8000/index.html
-```
+    npm install
+    npm test              # golden regression + schema check (+ server suite if the
+                          # PocketBase binary is present: bash server/get-pocketbase.sh)
+    npm run build         # offline single-file builds → dist/
+    npm run build:server  # server templates, root instance, dash, about → server/
 
-> The source HTML entries still load React + an in-browser JSX transpiler from a
-> CDN — convenient for editing without a build. The shippable artifacts are the
-> `dist/` files.
+Pushes to `main` run the full test suite in CI and auto-deploy to the live
+service. The architecture and multi-session build history live in `PLAN.md`
+and `IMPLEMENTATION.md`.
 
-### Testing
+## Citation & credits
 
-```bash
-npm test            # solve every tree in all 40 sets, check against golden
-npm run test:update # regenerate the golden snapshot (for intended changes)
-```
-
-`test/regression.mjs` loads the real engine, solves every tree, and checks each
-result against the set's targets using the *same* equivalence logic the app uses
-to grade students, plus every node's `candidateRules` output — compared to
-`test/golden.txt`, failing on any difference. Pure Node, no dependencies.
-
-## Builds
-
-The app ships in four flavours that differ only in a small build-identity block
-at the top of each HTML file:
-
-| File | Role | Library |
-|---|---|---|
-| `index.html` | Instructor (dev) | Full Coppock & Champollion |
-| `teacher-coppock-champollion.html` | Instructor | Full Coppock & Champollion |
-| `teacher.html` | Instructor | Clean (sample only) |
-| `student-coppock-champollion.html` | Student | Coppock & Champollion |
-| `student.html` | Student | Clean (loads an assignment) |
-
-Teacher mode unlocks every composition rule, the editor, and answer reveals.
-Student builds hand out a fixed assignment with progress tracking. The marketing
-site lives separately in `compose/website/`.
-
-## Authoring exercises
-
-Exercise sets are plain JSON (`.compose.json`). Author them by hand or with the
-in-app editor (teacher mode → File picker → ✎ Create a new exercise) and
-**Export**. Multiple sets can be grouped under a textbook as a
-`.compose-bundle.json`. The full format reference is in
-[`compose/FORMAT.md`](compose/FORMAT.md).
-
-Ready-made bundles live in `compose/bundles/`:
-`coppock-champollion.compose-bundle.json` (regenerate from the `ch*` sets with
-`npm run bundle:cc`) and `heim-kratzer.compose-bundle.json`. Drop either onto a
-clean build to load that textbook's whole library.
-
-## Project layout
-
-```
-build.mjs                                    self-contained production build
-package.json                                 build/test scripts + deps
-test/regression.mjs, test/golden.txt         engine regression harness (npm test)
-scripts/make-cc-bundle.mjs                   regenerates the C&C bundle
-dist/                                        generated single-file builds (npm run build)
-compose/                                     ← the source app
-  index.html, teacher*.html, student*.html   source build entry points
-  engine.js                                  λ-calculus / type engine (core)
-  lcformat.js, exercise-files.js, exercises.js   data layer
-  *.jsx                                       React views (transpiled at build time)
-  themes.css, lingdown.css, ...              styling
-  exercises/*.compose.json                   the exercise library (40 sets)
-  reading/*.md                               notes companions (lingdown markup)
-  bundles/*.compose-bundle.json              loadable textbook bundles (C&C, H&K)
-  website/                                   marketing landing page + demo
-  FORMAT.md                                   exercise file-format reference
-  docs/                                       internal planning docs (not shipped)
-```
-
-## Credits
-
-COMPOSE owes its design to the [Lambda Calculator](http://lambdacalculator.com/)
-of Lucas Champollion, Joshua Tauberer and Maribel Romero, and its preloaded
-library to Elizabeth Coppock and Lucas Champollion's open-access textbook,
-[*Invitation to Formal Semantics*](https://eecoppock.info/bootcamp/semantics-boot-camp.pdf).
-
-## Licence and copyright
-
-The COMPOSE source code is released under the [MIT License](LICENSE).
-
-The bundled exercise sets and notes companions are **original material** written
-for COMPOSE. They follow the structure and examples of the textbooks they
-accompany but paraphrase rather than reproduce them. COMPOSE does **not**
-distribute any copyrighted source texts — links point to the publishers' or
-authors' own open-access copies. Please respect the copyright of the underlying
-textbooks when using or extending the library.
-
----
-
-## Release checklist (in progress)
-
-- [x] Remove bundled copyrighted texts from the working copy
-- [x] Add README + LICENSE (MIT)
-- [x] Remove scratch material; move planning docs to `compose/docs/`
-- [x] Build step — `build.mjs` → self-contained `dist/` (no CDN/Babel)
-- [x] Engine regression harness — `npm test` (golden file, all 40 sets)
-- [x] Tidy structure — `compose/bundles/`, `compose/website/`
-- [ ] Update the in-app **assignment export** (`export.jsx`) — it still re-fetches
-      sibling source files and embeds CDN React + Babel, so it won't work from a build
-- [ ] Verify the latest `dist/` builds in a real browser
-- [ ] Fill missing notes companions (ch6, ch10–ch13) or scope the claim
-- [ ] Reconcile set count / version numbers across the site and builds
-```
+See [compose.tstephen.com/about](https://compose.tstephen.com/about/) for
+citation formats. COMPOSE is written in homage to the Lambda Calculator
+(Champollion, Tauberer & Romero). The bundled content is original paraphrase
+tracking the cited textbooks — nothing is reproduced from them. MIT licensed.

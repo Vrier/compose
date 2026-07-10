@@ -17,6 +17,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { buildParts, assemblePage, inlineLibraryJS } from './build/assemble.mjs';
+import { createRequire } from 'node:module';
+const { COMPOSE_VERSION, COMPOSE_DATE } = createRequire(import.meta.url)('./compose/version.js');
 
 const SRC = process.env.COMPOSE_SRC || 'compose';
 const OUT = process.env.COMPOSE_OUT || 'dist';
@@ -33,7 +35,7 @@ const BUILDS = [
 ];
 
 function identity(b) {
-  const buildObj = { id: b.id, role: b.role, preload: b.preload, label: b.label, version: '1.0', date: '2026' };
+  const buildObj = { id: b.id, role: b.role, preload: b.preload, label: b.label, version: COMPOSE_VERSION, date: COMPOSE_DATE };
   const configObj = { role: b.role, assignment: null };
   return 'window.COMPOSE_BUILD = ' + JSON.stringify(buildObj) + ';\n'
        + 'window.COMPOSE_CONFIG = ' + JSON.stringify(configObj) + ';';

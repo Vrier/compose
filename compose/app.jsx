@@ -166,7 +166,19 @@ function App() {
 
   // The Reading panel (lingdown) provides in-app readings. Available whenever the
   // current set carries an embedded reading.
-  const hasReading = !!(set && set.reading && set.reading.markdown && set.reading.markdown.trim());
+  // W10: a hosted version can carry instructor notes (window.COMPOSE_NOTES).
+  // When the current worksheet has no embedded reading of its own, render the
+  // version notes through the same ReaderPanel via a synthetic set.
+  const readingSet = React.useMemo(() => {
+    if (set && set.reading && set.reading.markdown && set.reading.markdown.trim()) return set;
+    const vn = typeof window !== 'undefined' && window.COMPOSE_NOTES;
+    if (vn && String(vn).trim()) {
+      const title = (window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment && window.COMPOSE_CONFIG.assignment.title) || 'Notes';
+      return { key: '__version-notes', title, reading: { format: 'lingdown', markdown: String(vn) } };
+    }
+    return null;
+  }, [set]);
+  const hasReading = !!readingSet;
 
   // First time a built-in set is opened in student mode, surface its rules
   useEffect(() => {
@@ -271,7 +283,7 @@ function App() {
   }
 
   // ---- created / loaded exercise management -----------------------------
-  // Commit a created problem set into the library. If a DIFFERENT entry already
+  // Commit a created worksheet into the library. If a DIFFERENT entry already
   // carries the same title, warn and overwrite it (so re-loading the same set
   // replaces it instead of piling up duplicates).
   function commitUserExercise({ title, text, editKey }) {
@@ -280,7 +292,7 @@ function App() {
     let targetKey = editKey || null;
     const clash = userFiles.find((f) => f.key !== editKey && norm(f.title) === norm(t));
     if (clash) {
-      if (!window.confirm('A problem set titled “' + t + '” is already loaded.\n\nReplace it with this version?')) return null;
+      if (!window.confirm('A worksheet titled “' + t + '” is already loaded.\n\nReplace it with this version?')) return null;
       targetKey = clash.key;
     }
     const key = targetKey || ('user-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6));
@@ -305,7 +317,7 @@ function App() {
   }
   function clearAllUserExercises() {
     if (!userFiles.length) return;
-    if (!window.confirm('Remove all ' + userFiles.length + ' created/loaded exercise' + (userFiles.length !== 1 ? 's' : '') + '? This cannot be undone.')) return;
+    if (!window.confirm('Remove all ' + userFiles.length + ' created/loaded worksheet' + (userFiles.length !== 1 ? 's' : '') + '? This cannot be undone.')) return;
     const keys = new Set(userFiles.map((f) => f.key));
     setUserFiles([]);
     if (keys.has(fileKey)) { setFileKey(BUILTIN[0] ? BUILTIN[0].key : null); setSel({ gi: 0, pi: 0 }); }
@@ -428,13 +440,13 @@ function App() {
         <div className="empty-stage">
           <div className="empty-stage-card">
             <div className="empty-stage-glyph">λ</div>
-            <h2>{isStudentBuild ? 'No problem set loaded yet' : 'No problem set open'}</h2>
+            <h2>{isStudentBuild ? 'No worksheet loaded yet' : 'No worksheet open'}</h2>
             <p>{isStudentBuild
-              ? 'Load the problem set your instructor shared with you — a .compose.json, an exported .html, or a bundle — to begin.'
-              : 'Author a problem set in the exercise editor, or import one to begin.'}</p>
+              ? 'Load the worksheet your instructor shared with you — a .compose.json, an exported .html, or a bundle — to begin.'
+              : 'Author a worksheet in the exercise editor, or import one to begin.'}</p>
             <div className="empty-stage-actions">
-              <button className="btn btn-primary" onClick={() => { setLoadErr(null); if (fileInput.current) fileInput.current.click(); }}>⤓ Load a problem set</button>
-              {!isStudentBuild && <button className="btn-ghost" onClick={newUserExercise}>✎ New problem set</button>}
+              <button className="btn btn-primary" onClick={() => { setLoadErr(null); if (fileInput.current) fileInput.current.click(); }}>⤓ Load a worksheet</button>
+              {!isStudentBuild && <button className="btn-ghost" onClick={newUserExercise}>✎ New worksheet</button>}
             </div>
             <div className="empty-stage-hint">You can also drag a file anywhere onto this window.</div>
           </div>
@@ -495,7 +507,7 @@ function App() {
           </div>
         ))}
         <div style={{ height: 16 }} />
-        {!custom && <button className="btn-ghost reset-all-btn" title="Clear all progress for this problem set" onClick={() => { if (window.confirm('Reset all exercise progress for this problem set?')) { const keys = new Set(); groups.forEach(g => g.problems.forEach(p => keys.add(keyOf(g,p)))); setWork(w => Object.fromEntries(Object.entries(w).filter(([k]) => !keys.has(k)))); setProgress(pr => Object.fromEntries(Object.entries(pr).filter(([k]) => !keys.has(k)))); } }}>↺ Reset all exercises</button>}
+        {!custom && <button className="btn-ghost reset-all-btn" title="Clear all progress for this worksheet" onClick={() => { if (window.confirm('Reset all derivation progress for this worksheet?')) { const keys = new Set(); groups.forEach(g => g.problems.forEach(p => keys.add(keyOf(g,p)))); setWork(w => Object.fromEntries(Object.entries(w).filter(([k]) => !keys.has(k)))); setProgress(pr => Object.fromEntries(Object.entries(pr).filter(([k]) => !keys.has(k)))); } }}>↺ Reset all derivations</button>}
         <div style={{ height: 8 }} />
       </div>
     );
@@ -533,9 +545,9 @@ function App() {
         onChange={(e) => { importFiles(e.target.files); e.target.value = ''; }} />
       {isMobile && (
         <header className="topbar topbar-mobile">
-          <button className="mtop-set" onClick={() => setModal('files')} title="Choose a problem set">
+          <button className="mtop-set" onClick={() => setModal('files')} title="Choose a worksheet">
             <span className="mtop-glyph">λ</span>
-            <span className="mtop-set-name">{custom ? 'Custom exercise' : (lib ? lib.title : 'No problem set')}</span>
+            <span className="mtop-set-name">{custom ? 'Custom exercise' : (lib ? lib.title : 'No worksheet')}</span>
             <span className="mtop-caret">▾</span>
           </button>
           <div className="spacer" />
@@ -560,7 +572,7 @@ function App() {
           </span>
         </div>
         <button className="file" onClick={() => setModal('files')}>
-          <span className="dot" /> {custom ? 'Custom exercise' : (lib ? lib.title : 'No problem set')}
+          <span className="dot" /> {custom ? 'Custom exercise' : (lib ? lib.title : 'No worksheet')}
         </button>
         {hasContent && <button className="file ghost" onClick={() => setModal('rules')} title="View rules for this exercise">☰ Rules</button>}
         {hasContent && hasReading && !isMobile && <button className={'file ghost' + (rightTab === 'reading' ? ' on' : '')} onClick={() => setRightTab(t => t === 'reading' ? 'lexicon' : 'reading')} title="Show the notes in the side panel">📝 Notes</button>}
@@ -591,8 +603,13 @@ function App() {
                 <span>Notes</span><span className="tool-ico">📝</span>
               </button>
               <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; setLoadErr(null); if (fileInput.current) fileInput.current.click(); }}>
-                <span>Import problem set…</span><span className="tool-ico">↑</span>
+                <span>Import worksheet…</span><span className="tool-ico">↑</span>
               </button>
+              {String((window.COMPOSE_BUILD || {}).id || '').indexOf('hosted') === 0 && (
+                <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; window.open('/about/', '_blank'); }}>
+                  <span>About & how to cite</span><span className="tool-ico">ⓘ</span>
+                </button>
+              )}
               <div className="tools-sep" />
               {!(window.COMPOSE_BUILD && String(window.COMPOSE_BUILD.id || '').indexOf('hosted') === 0) && (
 <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; setModal('export'); }}>
@@ -661,14 +678,14 @@ function App() {
               <div className="panel-head">Lexicon <span className="count">{filteredLex.length}</span></div>
             )}
             {hasReading && rightTab === 'reading' && window.ReaderPanel
-              ? (() => { const RP = window.ReaderPanel; return <RP set={set} section={problem && problem.section} embedded />; })()
+              ? (() => { const RP = window.ReaderPanel; return <RP set={readingSet} section={problem && problem.section} embedded />; })()
               : renderLexiconScroll()}
           </aside>
         )}
 
         {isMobile && rightTab === 'reading' && hasReading && window.ReaderPanel && (() => {
           const RP = window.ReaderPanel;
-          return <RP set={set} section={problem && problem.section} onClose={() => setRightTab('lexicon')} />;
+          return <RP set={readingSet} section={problem && problem.section} onClose={() => setRightTab('lexicon')} />;
         })()}
       </div>
 
@@ -741,8 +758,8 @@ function App() {
           onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add('modal-drop-over'); }}
           onDragLeave={(e) => { if (e.target === e.currentTarget) e.currentTarget.classList.remove('modal-drop-over'); }}
           onDrop={(e) => { e.preventDefault(); e.currentTarget.classList.remove('modal-drop-over'); importFiles(e.dataTransfer.files); }}>
-            <h3>Problem sets</h3>
-            <div className="sub">Choose a problem set to open.</div>
+            <h3>Worksheets</h3>
+            <div className="sub">Choose a worksheet to open.</div>
             <div className="list">
               {(() => {
                 const CHAPTERS = window.LCData.CHAPTERS || [];
@@ -757,7 +774,7 @@ function App() {
                       <details key={ch.prefix} className="fc-chapter" open={chActive || undefined}>
                         <summary className="fc-chapter-head">
                           <span className="fc-ch-label">{ch.label}</span>{ch.title}
-                          <span className="fc-ch-count">{chLibs.length} problem sets</span>
+                          <span className="fc-ch-count">{chLibs.length} worksheets</span>
                         </summary>
                         {chLibs.map(l => {
                           const counts = l.set.groups.reduce((a, g) => a + g.problems.length, 0);
@@ -767,7 +784,7 @@ function App() {
                               onClick={() => { setCustom(null); setFileKey(l.key); setSel({ gi: 0, pi: 0 }); setModal(null); }}>
                               <span className="fc-icon">{active ? '📖' : '📘'}</span>
                               <div style={{ flex: 1 }}><div className="fc-title">{l.title}</div>
-                                <div className="fc-meta">{counts} exercises · {l.set.lexList.length} entries</div></div>
+                                <div className="fc-meta">{counts} derivations · {l.set.lexList.length} entries</div></div>
                               {window.COMPOSE_HOSTED && !isStudentBuild && (
                                 (window.COMPOSE_HOSTED.keys || []).includes(l.key)
                                   ? <button className="fc-remove" title="Edit this worksheet (saved on the server)" onClick={(e) => { e.stopPropagation(); hostedEdit(l.key); }}>✎</button>
@@ -786,7 +803,7 @@ function App() {
                       <details key={b.id} className="fc-chapter" open={bActive||undefined}>
                         <summary className="fc-chapter-head">
                           <span className="fc-ch-label">📚</span>{b.title}
-                          <span className="fc-ch-count">{bSets.length} problem sets</span>
+                          <span className="fc-ch-count">{bSets.length} worksheets</span>
                           <button className="fc-remove" title="Remove bundle" onClick={(e)=>removeBundle(b.id,e)}>✕</button>
                         </summary>
                         {b.authors && <div className="fc-bundle-authors">{b.authors}</div>}
@@ -798,7 +815,7 @@ function App() {
                               onClick={()=>{setCustom(null);setFileKey(l.key);setSel({gi:0,pi:0});setModal(null);}}>
                               <span className="fc-icon">{active?'📖':'📘'}</span>
                               <div style={{flex:1}}><div className="fc-title">{l.title}</div>
-                                <div className="fc-meta">{counts} exercises · {l.set.lexList.length} entries</div></div>
+                                <div className="fc-meta">{counts} derivations · {l.set.lexList.length} entries</div></div>
                             </div>
                           );
                         })}
@@ -825,8 +842,8 @@ function App() {
               {loadErr
                 ? <span className="ffs-err">{loadErr}</span>
                 : isStudentBuild
-                  ? <span>Drag a problem set onto this panel, or <button className="ffs-load-btn" onClick={() => { setLoadErr(null); if (fileInput.current) fileInput.current.click(); }}>choose a file…</button></span>
-                  : <span>Drag a <code className="mono">.compose.json</code>, exported <code className="mono">.html</code>, or <code className="mono">.compose-bundle.json</code> onto this panel to load it — or use <b>Tools → Import problem set</b>.</span>}
+                  ? <span>Drag a worksheet onto this panel, or <button className="ffs-load-btn" onClick={() => { setLoadErr(null); if (fileInput.current) fileInput.current.click(); }}>choose a file…</button></span>
+                  : <span>Drag a <code className="mono">.compose.json</code>, exported <code className="mono">.html</code>, or <code className="mono">.compose-bundle.json</code> onto this panel to load it — or use <b>Tools → Import worksheet</b>.</span>}
             </div>
           </div>
         </div>

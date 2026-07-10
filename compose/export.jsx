@@ -55,7 +55,7 @@ async function buildStudentHtml({ title, sets, island, extraFiles, onProgress })
 '<!DOCTYPE html>\n<html lang="en" data-theme="parchment">\n<head>\n' +
 '<meta charset="UTF-8" />\n<meta name="viewport" content="width=device-width, initial-scale=1.0" />\n' +
 '<title>' + exEsc(title) + ' — COMPOSE</title>\n' +
-'<script>window.COMPOSE_BUILD = { id: "export", role: "student", preload: "none", label: "COMPOSE", version: "1.0" };</' + 'script>\n' +
+'<script>window.COMPOSE_BUILD = { id: "export", role: "student", preload: "none", label: "COMPOSE", version: "' + (window.COMPOSE_VERSION || '1.0.0') + '" };</' + 'script>\n' +
 '<script>window.COMPOSE_CONFIG = ' + exEsc(JSON.stringify(config)) + ';</' + 'script>\n' +
 '<link rel="preconnect" href="https://fonts.googleapis.com" />\n' +
 '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />\n' +
@@ -68,7 +68,7 @@ async function buildStudentHtml({ title, sets, island, extraFiles, onProgress })
 '<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></' + 'script>\n' +
 // Inlined exercise library
 '<script>window.LC_FILES_INLINE = ' + exEsc(JSON.stringify(inlineFiles)) + ';</' + 'script>\n' +
-'<script>window.__USER_SETS = ' + exEsc(JSON.stringify(userKeys)) + '; window.__USER_CHAPTER = ' + exEsc(JSON.stringify(title || 'Your exercises')) + ';</' + 'script>\n' +
+'<script>window.__USER_SETS = ' + exEsc(JSON.stringify(userKeys)) + '; window.__USER_CHAPTER = ' + exEsc(JSON.stringify(title || 'Your worksheets')) + ';</' + 'script>\n' +
 // Core engine + data
 '<script>' + exEsc(plainJs['engine.js']) + '</' + 'script>\n' +
 '<script>' + exEsc(plainJs['lcformat.js']) + '</' + 'script>\n' +
@@ -76,7 +76,7 @@ async function buildStudentHtml({ title, sets, island, extraFiles, onProgress })
 '<script>' + exEsc(plainJs['exercise-files.js']) + '</' + 'script>\n' +
 '<script>' + exEsc(plainJs['exercises.js']) + '</' + 'script>\n' +
 // Splice instructor-authored sets into the library (they aren't in the built-in ORDER)
-'<script>(function(){var F=window.LCFormat,D=window.LCData,FILES=window.LC_FILES;if(!D||!F)return;var U=window.__USER_SETS||[];if(!U.length)return;U.forEach(function(key){if(D.SETS[key]||!FILES[key])return;try{var set=F.parseFile(FILES[key].text,FILES[key].title);set.key=key;D.SETS[key]=set;D.LIBRARY.push({key:key,title:FILES[key].title,set:set});if(D.ORDER.indexOf(key)<0)D.ORDER.push(key);}catch(e){console.warn("COMPOSE: could not parse authored set",key,e);}});if(D.CHAPTERS&&!D.CHAPTERS.some(function(c){return c.prefix==="user";}))D.CHAPTERS.push({prefix:"user",label:"\u2605",title:window.__USER_CHAPTER||"Your exercises"});})();</' + 'script>\n' +
+'<script>(function(){var F=window.LCFormat,D=window.LCData,FILES=window.LC_FILES;if(!D||!F)return;var U=window.__USER_SETS||[];if(!U.length)return;U.forEach(function(key){if(D.SETS[key]||!FILES[key])return;try{var set=F.parseFile(FILES[key].text,FILES[key].title);set.key=key;D.SETS[key]=set;D.LIBRARY.push({key:key,title:FILES[key].title,set:set});if(D.ORDER.indexOf(key)<0)D.ORDER.push(key);}catch(e){console.warn("COMPOSE: could not parse authored set",key,e);}});if(D.CHAPTERS&&!D.CHAPTERS.some(function(c){return c.prefix==="user";}))D.CHAPTERS.push({prefix:"user",label:"\u2605",title:window.__USER_CHAPTER||"Your worksheets"});})();</' + 'script>\n' +
 // React UI (Babel-compiled in the browser)
 '<script type="text/babel">' + exEsc(babelJs['components.jsx']) + '</' + 'script>\n' +
 '<script type="text/babel">' + exEsc(babelJs['mobile.jsx']) + '</' + 'script>\n' +
@@ -134,14 +134,14 @@ function ExportModal({ library, userSets, onClose }) {
   function setText(l) { return (l.user && l.text) ? l.text : (window.LC_FILES && window.LC_FILES[l.key] && window.LC_FILES[l.key].text) || null; }
 
   async function build() {
-    if (!selectedKeys.length) { setErr('Choose at least one problem set.'); return; }
+    if (!selectedKeys.length) { setErr('Choose at least one worksheet.'); return; }
     setErr(null); setBuilding(true);
     try {
       const safe = (title.trim() || 'compose-set').replace(/[^a-z0-9]+/gi, '-').toLowerCase();
       if (format === 'json') {
         if (selectedSets.length === 1) {
           const t = setText(selectedSets[0]);
-          if (!t) throw new Error('Could not read that problem set.');
+          if (!t) throw new Error('Could not read that worksheet.');
           window.composeDownload(safe + '.compose.json', t, 'application/json');
           setStatus('Done — ' + safe + '.compose.json saved.');
         } else {
@@ -228,7 +228,7 @@ function ExportModal({ library, userSets, onClose }) {
               })}
               {userList.length > 0 && (
                 <div className="export-ch-group export-user-group">
-                  <div className="export-user-head"><span className="export-ch-label">✎ My exercises</span></div>
+                  <div className="export-user-head"><span className="export-ch-label">✎ My worksheets</span></div>
                   {userGroups.map(([gname, list]) => {
                     const keys = list.map(l => l.key);
                     const onN = keys.filter(k => chosen[k]).length;
@@ -260,7 +260,7 @@ function ExportModal({ library, userSets, onClose }) {
             <div className="fe-section-head">Assignment preview</div>
             <div className="export-summary-title">{title || <span className="fe-placeholder">Unnamed assignment</span>}</div>
             {selectedSets.length === 0
-              ? <div className="export-empty-hint">No exercises selected yet.<br/>Tick problem sets on the left to add them.</div>
+              ? <div className="export-empty-hint">No exercises selected yet.<br/>Tick worksheets on the left to add them.</div>
               : <div className="export-summary-list">
                   {selectedSets.map(l => (
                     <div className="export-summary-row" key={l.key}>
@@ -280,7 +280,7 @@ function ExportModal({ library, userSets, onClose }) {
                 </div>
               </div>
               <div className="export-summary-meta">
-                {selectedKeys.length} problem set{selectedKeys.length !== 1 ? 's' : ''} · {selectedSets.reduce((s,l)=>s+countEx(l),0)} exercises{format === 'html' ? ' · self-contained' : (selectedSets.length > 1 ? ' · .compose-bundle.json' : ' · .compose.json')}
+                {selectedKeys.length} worksheet{selectedKeys.length !== 1 ? 's' : ''} · {selectedSets.reduce((s,l)=>s+countEx(l),0)} exercises{format === 'html' ? ' · self-contained' : (selectedSets.length > 1 ? ' · .compose-bundle.json' : ' · .compose.json')}
               </div>
               {format === 'html' && <div className="export-lock-note">🔒 Locked to student mode — the exported file opens in student view with no way to switch to teacher mode or authoring tools.</div>}
               {err && <div className="export-err">{err}</div>}

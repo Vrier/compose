@@ -5,6 +5,11 @@
    Only .pb.js files auto-register; this plain .js file is a passive module.
    =========================================================================== */
 module.exports = {
+  version: function () {
+    try { return require(__hooks + '/vendor/version.js'); }
+    catch (e) { return { COMPOSE_VERSION: '1.0.0', COMPOSE_DATE: '2026' }; }
+  },
+
   /* v.get('bundle') on a json field returns RAW JSON bytes in the goja VM,
      not a parsed object (S4 finding — iterating .worksheets silently yields
      nothing). Always go through this. */
@@ -52,12 +57,18 @@ Check the URL with your instructor, or try the <a href="/">main COMPOSE library<
     }
 
     const identity =
-      'window.COMPOSE_BUILD = ' + JSON.stringify({ id: 'hosted-v', role: 'student', preload: 'inline', label: v.getString('title'), version: '1.0', date: '2026' }) + ';\n' +
+      'window.COMPOSE_BUILD = ' + JSON.stringify({ id: 'hosted-v', role: 'student', preload: 'inline', label: v.getString('title'), version: module.exports.version().COMPOSE_VERSION, date: module.exports.version().COMPOSE_DATE }) + ';\n' +
       'window.COMPOSE_CONFIG = ' + JSON.stringify({ role: 'student', assignment: { title: v.getString('title'), sets: keys, island: v.getString('slug'), mode: v.getString('mode') || 'practice' } }) + ';\n' +
       'window.COMPOSE_CHAPTERS_EXTRA = ' + JSON.stringify(chapters) + ';';
+    // W10: instructor notes (lingdown) ride along; the app renders them via
+    // the existing ReaderPanel pipeline (escaping audited in S5).
+    const notes = v.getString('notes');
+    const identityFull = (notes && notes.trim())
+      ? identity + '\n' + 'window.COMPOSE_NOTES = ' + JSON.stringify(notes) + ';'
+      : identity;
     const library = 'window.LC_FILES_INLINE = ' + JSON.stringify(files) + ';';
 
-    let html = substitute(template, '/*__COMPOSE_IDENTITY__*/', identity);
+    let html = substitute(template, '/*__COMPOSE_IDENTITY__*/', identityFull);
     html = substitute(html, '/*__COMPOSE_LIBRARY__*/', library);
     return html;
   },
@@ -82,7 +93,7 @@ Check the URL with your instructor, or try the <a href="/">main COMPOSE library<
     }
 
     const identity =
-      'window.COMPOSE_BUILD = ' + JSON.stringify({ id: 'hosted-teacher', role: 'instructor', preload: 'inline', label: 'COMPOSE — ' + v.getString('title'), version: '1.0', date: '2026' }) + ';\n' +
+      'window.COMPOSE_BUILD = ' + JSON.stringify({ id: 'hosted-teacher', role: 'instructor', preload: 'inline', label: 'COMPOSE — ' + v.getString('title'), version: module.exports.version().COMPOSE_VERSION, date: module.exports.version().COMPOSE_DATE }) + ';\n' +
       'window.COMPOSE_CONFIG = ' + JSON.stringify({ role: 'instructor', assignment: null }) + ';\n' +
       'window.COMPOSE_CHAPTERS_EXTRA = ' + JSON.stringify(chapters) + ';';
     const hosted =

@@ -204,6 +204,24 @@ async function main() {
   r = await req('DELETE', `/api/collections/versions/records/${VID}`, { token: TB });
   expect('second account cannot delete', r.status === 404 || r.status === 403, r.status);
 
+  // W10 — instructor notes injection (S8)
+  r = await req('PATCH', `/api/collections/versions/records/${VID}`, { token: TA,
+    body: { notes: '## Week 1\nRead §6.1 before attempting these. $λx.run(x)$' } });
+  expect('notes PATCH accepted', r.status === 200, r.text.slice(0, 120));
+  page = (await req('GET', `/v/${SLUG}`, { raw: true })).text;
+  contains('version notes injected into the student page', page, 'window.COMPOSE_NOTES = ');
+  contains('notes carry the lingdown source', page, 'Read §6.1 before attempting');
+  r = await req('PATCH', `/api/collections/versions/records/${VID}`, { token: TA, body: { notes: '' } });
+  expect('notes clearing PATCH accepted', r.status === 200, r.status + ' ' + r.text.slice(0, 160));
+  expect('notes actually cleared in the record', r.json && !(r.json.notes || '').trim(), JSON.stringify(r.json && r.json.notes));
+  page = (await req('GET', `/v/${SLUG}`, { raw: true })).text;
+  lacks('cleared notes disappear from the page', page, 'window.COMPOSE_NOTES = ');
+
+  // W9 — about page (S8)
+  r = await req('GET', '/about/', { raw: true });
+  contains('about page serves', r.text, 'How to cite');
+  contains('about page carries the canonical version', r.text, 'version 1.0.0');
+
   // W3 — unpublish
   await req('PATCH', `/api/collections/versions/records/${VID}`, { token: TA, body: { published: false } });
   r = await req('GET', `/v/${SLUG}`, { raw: true });

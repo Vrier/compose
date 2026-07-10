@@ -173,11 +173,53 @@
     );
   }
 
+  /* ---- notes modal (S8/W10): lingdown editor for versions.notes ---------- */
+  function NotesModal({ v, onClose, onSaved, onErr }) {
+    const [md, setMd] = useState(v.notes || '');
+    const [busy, setBusy] = useState(false);
+    const previewRef = useRef(null);
+
+    useEffect(() => {
+      if (previewRef.current && window.Lingdown) {
+        previewRef.current.innerHTML = '';
+        try { window.Lingdown.renderInto(md, previewRef.current); }
+        catch (e) { previewRef.current.textContent = 'Preview error: ' + e.message; }
+      }
+    }, [md]);
+
+    async function save() {
+      setBusy(true);
+      try { await pb.collection('versions').update(v.id, { notes: md }); onSaved(); onClose(); }
+      catch (e) { onErr('Saving notes failed: ' + errMsg(e)); }
+      setBusy(false);
+    }
+
+    return (
+      <div className="dash-modal-back" onClick={onClose}>
+        <div className="dash-modal dash-notes-modal" onClick={(e) => e.stopPropagation()}>
+          <h2 className="dash-modal-title">📖 Notes — {v.title}</h2>
+          <div className="dash-notes-cols">
+            <textarea className="dash-notes-ta" value={md} spellCheck={false}
+              placeholder={'Lingdown markdown: ## sections, $λ-terms$, (1) example lines, tree blocks…\nStudents see this as a 📝 Notes panel on the worksheet page.'}
+              onChange={(e) => setMd(e.target.value)} />
+            <div className="dash-notes-preview ld-scope" ref={previewRef} />
+          </div>
+          <div className="dash-share-actions">
+            <button className="btn-primary" onClick={save} disabled={busy}>{busy ? '⟳ Saving…' : 'Save notes'}</button>
+            <button className="btn-ghost" onClick={onClose}>Cancel</button>
+          </div>
+          <div className="dash-note">Notes go live immediately at /v/{v.slug}. Delete all text and save to remove the panel.</div>
+        </div>
+      </div>
+    );
+  }
+
   /* ---- one version row --------------------------------------------------- */
   function VersionRow({ v, onChanged, onErr }) {
     const [title, setTitle] = useState(v.title);
     const [copied, setCopied] = useState(false);
     const [sharing, setSharing] = useState(false);
+    const [noting, setNoting] = useState(false);
     const fileRef = useRef(null);
     const url = window.location.origin + '/v/' + v.slug;
     const wsCount = (() => { const b = v.bundle || {}; const l = b.worksheets || b.exercises || []; return l.length; })();
@@ -235,7 +277,9 @@
           </button>
           <a className="btn-primary dash-edit-btn" href={'/edit/' + v.id}>✎ Open editor</a>
           <button className="btn-ghost dash-mini" title="Share: QR code, link, printable handout" onClick={() => setSharing(true)}>▤ Share</button>
+          <button className="btn-ghost dash-mini" title="Instructor notes shown to students on this version (lingdown)" onClick={() => setNoting(true)}>📖 Notes{(v.notes || '').trim() ? ' ●' : ''}</button>
           {sharing && <ShareModal v={v} onClose={() => setSharing(false)} />}
+          {noting && <NotesModal v={v} onClose={() => setNoting(false)} onSaved={onChanged} onErr={onErr} />}
           <button className="btn-ghost dash-mini" title="Download the companion bundle as a file" onClick={() => downloadJson((v.slug || 'version') + '.compose-bundle.json', v.bundle)}>⬇ bundle</button>
           <button className="btn-ghost dash-mini" title="Import a companion bundle file (replaces this version's worksheets)" onClick={() => fileRef.current && fileRef.current.click()}>⬆ import</button>
           <input ref={fileRef} type="file" accept=".json,application/json" style={{ display: 'none' }} onChange={importBundle} />
@@ -297,6 +341,7 @@
         {versions === null ? <div className="dash-empty">Loading…</div>
           : versions.length === 0 ? <div className="dash-empty">No versions yet. Create one, then fork a built-in worksheet in the editor to get started.</div>
           : versions.map(v => <VersionRow key={v.id} v={v} onChanged={refresh} onErr={setErr} />)}
+        <div className="dash-foot"><a href="/about/">About COMPOSE & how to cite</a> · v{window.COMPOSE_VERSION || '1.0.0'} · <a href="/">student app</a></div>
       </div>
     );
   }
@@ -345,6 +390,12 @@
     .dash-qr { border-radius: 8px; background: #fff; }
     .dash-share-url { font-family: 'IBM Plex Mono', monospace; font-size: 13px; margin: 12px 0; word-break: break-all; color: var(--ink-soft); }
     .dash-share-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 10px; }
+    .dash-notes-modal { max-width: 980px; width: 94vw; text-align: left; }
+    .dash-notes-cols { display: flex; gap: 14px; min-height: 380px; }
+    .dash-notes-ta { flex: 1; min-height: 380px; resize: vertical; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.55; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
+    .dash-notes-preview { flex: 1; overflow: auto; max-height: 60vh; border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; background: var(--panel); }
+    .dash-foot { margin-top: 34px; text-align: center; font-size: 12.5px; color: var(--ink-soft); }
+    .dash-foot a { color: inherit; }
   `;
   document.head.appendChild(style);
 

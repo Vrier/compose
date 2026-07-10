@@ -22,6 +22,26 @@ Champollion's *Invitation to Formal Semantics*.
   into the `.compose.json` when it changes.
 - The textbook is copyrighted — condense and paraphrase, never paste prose verbatim.
 
+## Architecture (hosted V1 — LIVE at compose.tstephen.com)
+
+One Hetzner VPS (167.233.233.109) runs PocketBase (pinned, `server/get-pocketbase.sh`)
+behind Caddy (auto-TLS). `/` = hosted root app (full C&C library baked in);
+`/v/:slug` = per-version student pages (server-side template substitution,
+isolated localStorage via `island`); `/dash/` = instructor dashboard;
+`/edit/:id` = hosted editor; `/about/` = citation page; `/_/` = PB admin.
+Instructor content lives in the `versions` collection (bundle JSON), validated
+on save by the real engine running inside PB's goja VM. Deploys: push to
+`main` → GitHub Actions runs all three test suites → SSH → `deploy/deploy.sh`
+(pull, build, restart). PB data lives in `/srv/compose-data`, never touched by
+deploys; nightly backups + off-box copy. See DEPLOY.md for operations.
+
+Key gotchas (hard-won; see PLAN.md §8 session log for details): PB hook
+handlers run in isolated VMs (require() shared code INSIDE handlers); goja
+returns raw bytes for json fields (`parseBundle()`) and struct copies for
+nested settings (assign whole objects); always pass explicit
+`--hooksDir/--migrationsDir/--publicDir`; substitute template tokens with
+split/join, never String.replace.
+
 ## Hosted V1 build (multi-session)
 
 The repo is being taken to a hosted service across multiple sessions:

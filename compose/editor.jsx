@@ -1,6 +1,6 @@
 /* ===========================================================================
    COMPOSE — Exercise File Editor
-   Structured GUI for authoring exercise sets:
+   Structured GUI for authoring worksheets:
      • Left:   composition rules + type shifts + behaviour toggles
      • Centre: lexicon entries with live type inference
      • Right:  exercise groups with bracketed trees
@@ -577,19 +577,19 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
     <div className="fe-ex-panel">
       <div className="fe-panel-head">
         <span>Exercises</span>
-        <button className="fe-add-btn" onClick={addGroup}>+ Add group</button>
+        <button className="fe-add-btn" onClick={addGroup}>+ Add exercise</button>
       </div>
       <div className="fe-groups">
         {groups.map((g, i) => (
           <div key={i} className="fe-group">
             <div className="fe-group-hdr">
-              <input className="fe-group-title" value={g.title} placeholder="Group title…"
+              <input className="fe-group-title" value={g.title} placeholder="Exercise title…"
                 onChange={e => updGroup(i, { title: e.target.value })} />
               <div className="fe-group-tools">
-                <button className="fe-gt-btn" disabled={i === 0} onClick={() => moveGroup(i, -1)} title="Move group up">↑</button>
-                <button className="fe-gt-btn" disabled={i === groups.length - 1} onClick={() => moveGroup(i, 1)} title="Move group down">↓</button>
-                <button className="fe-gt-btn" onClick={() => dupGroup(i)} title="Duplicate group">⧉</button>
-                <button className="fe-gt-btn fe-gt-del" onClick={() => delGroup(i)} title="Remove group">×</button>
+                <button className="fe-gt-btn" disabled={i === 0} onClick={() => moveGroup(i, -1)} title="Move exercise up">↑</button>
+                <button className="fe-gt-btn" disabled={i === groups.length - 1} onClick={() => moveGroup(i, 1)} title="Move exercise down">↓</button>
+                <button className="fe-gt-btn" onClick={() => dupGroup(i)} title="Duplicate exercise">⧉</button>
+                <button className="fe-gt-btn fe-gt-del" onClick={() => delGroup(i)} title="Remove exercise">×</button>
               </div>
             </div>
             <div className="fe-trees">
@@ -622,7 +622,7 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
                         {preview && !preview.ok && !preview.err && <span className="fe-tree-note" title="Won't auto-derive — student will reach the mismatch">⚠ mismatch</span>}
                         {preview && preview.err && <span className="fe-type-err" title="Tree parse error">⊘ parse error</span>}
                         <button className="fe-test-btn" disabled={!item.tree.trim() || !trialSet} onClick={() => onTest(item.tree, trialSet)} title="Test in workspace">▶ Test</button>
-                        <button className="fe-del-btn" onClick={() => delTree(i, k)} title="Remove tree">×</button>
+                        <button className="fe-del-btn" onClick={() => delTree(i, k)} title="Remove derivation">×</button>
                       </div>
                     </div>
                     <textarea className="fe-tree-input mono" value={item.tree} rows={2}
@@ -659,7 +659,7 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
                 );
               })}
             </div>
-            <button className="fe-add-tree-btn" onClick={() => addTree(i)}>+ Add tree</button>
+            <button className="fe-add-tree-btn" onClick={() => addTree(i)}>+ Add derivation</button>
           </div>
         ))}
       </div>
@@ -710,7 +710,7 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
 
   const trialSet = React.useMemo(() => buildSet(lex, vars, consts), [lex, vars, consts]);
 
-  // Save into the in-app library (My exercises)
+  // Save into the in-app library (My worksheets)
   function saveToLibrary() {
     if (!onSaveToLibrary) return;
     const text = generateJSON(state);
@@ -823,18 +823,18 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
         {/* Header */}
         <div className="fe-header">
           <div className="fe-header-left">
-            <input className="fe-title-input" value={title} placeholder="Problem set title…"
+            <input className="fe-title-input" value={title} placeholder="Worksheet title…"
               onChange={e => set({ title: e.target.value })} />
           </div>
           <div className="fe-header-right">
             <button className={'btn-ghost fe-save-lib-btn' + (savedFlash ? ' saved' : '')} onClick={saveToLibrary}
               disabled={!trialSet || groups.every(g => g.trees.every(t => !t.tree.trim()))}
-              title="Save into My exercises so you can name, group, reuse and export it">
+              title="Save into My worksheets so you can name, group, reuse and export it">
               {savedFlash ? '✓ Saved' : (editKey ? '↺ Update in library' : '⤓ Save to library')}
             </button>
             <button className="btn btn-primary fe-load-app-btn" onClick={loadIntoApp}
               disabled={!trialSet || groups.every(g => g.trees.every(t => !t.tree.trim()))}
-              title="Load this problem set into the app as a selectable exercise and open it for testing">▶ Load into app</button>
+              title="Load this worksheet into the app as a selectable exercise and open it for testing">▶ Load into app</button>
             <button className="btn-ghost" onClick={() => setShowReading(true)} title="Attach or edit notes (Markdown) and link sections to exercises">📝 Notes{reading.markdown && reading.markdown.trim() ? <span className="fe-reading-dot" /> : null}</button>
             <button className="btn-ghost fe-import-btn" onClick={doImport}>⬆ Import</button>
             <button className="btn-ghost fe-export-btn" onClick={doExport}>⬇ .json</button>
@@ -964,11 +964,11 @@ function UserExerciseManager({ items, fileKey, custom, instructor, onOpen, onRen
   return (
     <div className="fc-chapter ue-chapter">
       <div className="ue-head">
-        <span className="fc-ch-label">✎</span>My exercises
+        <span className="fc-ch-label">✎</span>My worksheets
         <span className="fc-ch-count">{items.length}</span>
         {instructor && <span className="ue-head-actions">
-          <button className="ue-new-btn" title="Author a new problem set" onClick={onNew}>+ New</button>
-          {items.length > 0 && <button className="ue-clear-btn" title="Remove all created/loaded exercises" onClick={onClearAll}>Clear all</button>}
+          <button className="ue-new-btn" title="Author a new worksheet" onClick={onNew}>+ New</button>
+          {items.length > 0 && <button className="ue-clear-btn" title="Remove all created/loaded worksheets" onClick={onClearAll}>Clear all</button>}
         </span>}
       </div>
       {items.length === 0 && instructor && (
