@@ -63,9 +63,13 @@ const templateEdit = assemblePage(parts, {
 });
 
 /* ---- 3 · The hosted root instance (full C&C companion) ----------------- */
+// S13: the root is the bare starter — just the bundled "Getting Started"
+// sample (injected client-side by exercise-files.js when preload==='none'),
+// nothing preloaded, normal file loading. The full libraries live at the
+// curated /cc, /hk and /papers entry points below.
 const rootIdentityJS =
   'window.COMPOSE_BUILD = ' + JSON.stringify({
-    id: 'hosted-root', role: 'student', preload: 'inline',
+    id: 'hosted-root', role: 'student', preload: 'none',
     label: 'COMPOSE', version: COMPOSE_VERSION, date: COMPOSE_DATE,
   }) + ';\n' +
   'window.COMPOSE_CONFIG = ' + JSON.stringify({ role: 'student', assignment: null }) + ';';
@@ -73,8 +77,59 @@ const rootIdentityJS =
 const rootPage = assemblePage(parts, {
   title: 'COMPOSE',
   identityJS: rootIdentityJS,
-  libraryJS: inlineLibraryJS(SRC),
+  libraryJS: '',
 });
+
+/* ---- 3b · Curated library entry points (S13) ----------------------------
+   Stable, linkable, static pages: whole textbook bundles and per-chapter
+   pages, each family sharing ONE progress island so /cc and /cc/ch7 keep
+   the same ticks. Generated from the table below — adding an entry point
+   is one line. */
+const LIB = libraryMap(SRC);
+const pick = (prefixes) => {
+  const ks = Object.keys(LIB).filter((k) => prefixes.some((p) => k === p || k.startsWith(p + '.') || k.startsWith(p + '-')));
+  return ks.sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+};
+
+const CC_CHAPTERS = [
+  ['ch6', '§6 Function Application & Quantifiers'], ['ch7', '§7 Adjectives, Relatives & Pronouns'],
+  ['ch8', '§8 Definites & Possessives'], ['ch10', '§10 Coordination & Plurals'],
+  ['ch11', '§11 Event Semantics'], ['ch12', '§12 Tense & Aspect'], ['ch13', '§13 Intensional Semantics'],
+];
+const HK_CHAPTERS = [
+  ['hk1', 'ch. 1 Conventions'], ['hk2', 'ch. 2 Function Application'], ['hk4', 'ch. 4 Definites'],
+  ['hk5', 'ch. 5 Relative Clauses'], ['hk6', 'ch. 6 Quantifiers'], ['hk7', 'ch. 7 Quantification'],
+  ['hk9', 'ch. 9 Pronouns'], ['hk12', 'ch. 12 Intensions'],
+];
+
+const CURATED = [
+  { path: 'cc', island: 'lib-cc', title: 'Coppock & Champollion — Invitation to Formal Semantics', keys: pick(CC_CHAPTERS.map(([p]) => p)) },
+  ...CC_CHAPTERS.map(([pfx, label]) => ({ path: 'cc/' + pfx, island: 'lib-cc', title: 'C&C ' + label, keys: pick([pfx]) })),
+  { path: 'hk', island: 'lib-hk', title: 'Heim & Kratzer — Semantics in Generative Grammar', keys: pick(HK_CHAPTERS.map(([p]) => p)) },
+  ...HK_CHAPTERS.map(([pfx, label]) => ({ path: 'hk/' + pfx.replace('hk', 'ch'), island: 'lib-hk', title: 'H&K ' + label, keys: pick([pfx]) })),
+  { path: 'papers', island: 'lib-papers', title: 'Classic Papers', keys: pick(['partee', 'montague']) },
+  { path: 'papers/partee', island: 'lib-papers', title: 'Partee 1986 — NP Type-Shifting', keys: pick(['partee']) },
+  { path: 'papers/ptq', island: 'lib-papers', title: 'Montague 1973 — PTQ', keys: pick(['montague']) },
+];
+
+function curatedPage(entry) {
+  const files = {};
+  for (const k of entry.keys) files[k] = LIB[k];
+  const identity =
+    'window.COMPOSE_BUILD = ' + JSON.stringify({
+      id: 'hosted-lib-' + entry.path.replace(/\//g, '-'), role: 'student', preload: 'inline',
+      label: entry.title, version: COMPOSE_VERSION, date: COMPOSE_DATE,
+    }) + ';\n' +
+    'window.COMPOSE_CONFIG = ' + JSON.stringify({
+      role: 'student',
+      assignment: { title: entry.title, sets: entry.keys, island: entry.island, mode: 'practice' },
+    }) + ';';
+  return assemblePage(parts, {
+    title: 'COMPOSE — ' + entry.title,
+    identityJS: identity,
+    libraryJS: 'window.LC_FILES_INLINE = ' + JSON.stringify(files) + ';',
+  });
+}
 
 /* ---- 4 · The dashboard (standalone page, own script chain) ------------- */
 const dashJs = esbuild.transformSync(fs.readFileSync(path.join(SRC, 'dash.jsx'), 'utf8'), {
@@ -121,6 +176,16 @@ answers are graded by <em>meaning</em> (α/β/η-equivalence), not surface form.
   note   = {Version ${COMPOSE_VERSION}},
   url    = {https://compose.tstephen.com}
 }</div>
+<h2>The library</h2>
+<p>Stable entry points, each remembering your progress in the browser:</p>
+<ul>
+<li><a href="/">compose.tstephen.com</a> — the starter: one sample worksheet, load anything else from file</li>
+<li><a href="/cc/">/cc</a> — the full Coppock &amp; Champollion companion (§6–§13); per chapter:
+${CC_CHAPTERS.map(([pfx]) => '<a href="/cc/' + pfx + '/">/cc/' + pfx + '</a>').join(' · ')}</li>
+<li><a href="/hk/">/hk</a> — the Heim &amp; Kratzer companion; per chapter:
+${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk/' + pfx.replace('hk', 'ch') + '</a>').join(' · ')}</li>
+<li><a href="/papers/">/papers</a> — classic papers: <a href="/papers/partee/">/papers/partee</a> · <a href="/papers/ptq/">/papers/ptq</a></li>
+</ul>
 <h2>Credits and lineage</h2>
 <p>The bundled worksheet library tracks Elizabeth Coppock &amp; Lucas
 Champollion's <em>Invitation to Formal Semantics</em> (§6–§13) and Irene Heim &amp;
@@ -161,7 +226,7 @@ self.addEventListener('fetch', (e) => {
   if (url.origin !== self.location.origin) return;
   const p = url.pathname;
   if (p.startsWith('/dash') || p.startsWith('/edit') || p.startsWith('/_') || p.startsWith('/api')) return;
-  const cacheable = p === '/' || p === '/index.html' || p.startsWith('/v/') || p.startsWith('/about') || p === '/manifest.json' || p === '/icon.svg';
+  const cacheable = p === '/' || p === '/index.html' || p.startsWith('/v/') || p.startsWith('/about') || p.startsWith('/cc') || p.startsWith('/hk') || p.startsWith('/papers') || p === '/manifest.json' || p === '/icon.svg';
   if (!cacheable) return;
   e.respondWith((async () => {
     const cache = await caches.open(CACHE);
@@ -237,6 +302,10 @@ write('library.json', JSON.stringify(libraryMap(SRC)));
 write(path.join('pb_public', 'index.html'), rootPage);
 write(path.join('pb_public', 'dash', 'index.html'), dashPage);
 write(path.join('pb_public', 'about', 'index.html'), aboutPage);
+for (const entry of CURATED) {
+  fs.mkdirSync(path.join(OUT, 'pb_public', ...entry.path.split('/')), { recursive: true });
+  write(path.join('pb_public', ...entry.path.split('/'), 'index.html'), curatedPage(entry));
+}
 write(path.join('pb_public', 'sw.js'), swJs);
 write(path.join('pb_public', 'manifest.json'), manifestJson);
 write(path.join('pb_public', 'icon.svg'), iconSvg);

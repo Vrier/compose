@@ -50,13 +50,14 @@ const contains = (desc, hay, needle) =>
 const lacks = (desc, hay, needle) =>
   expect(desc, !(typeof hay === 'string' && hay.includes(needle)), `expected NO …${needle}…`);
 
-async function req(method, p, { body, token, raw } = {}) {
+async function req(method, p, { body, token, raw, noRedirect } = {}) {
   const headers = {};
   if (body !== undefined) headers['Content-Type'] = 'application/json';
   if (token) headers['Authorization'] = token;
-  const res = await fetch(B + p, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
+  const res = await fetch(B + p, { method, headers, body: body === undefined ? undefined : JSON.stringify(body),
+    redirect: noRedirect ? 'manual' : 'follow' });
   const text = await res.text();
-  if (raw) return { status: res.status, text };
+  if (raw) return { status: res.status, text, headers: res.headers };
   let json = null; try { json = JSON.parse(text); } catch {}
   return { status: res.status, text, json };
 }
@@ -237,6 +238,36 @@ async function main() {
   expect('icon served', r.status === 200 && r.text.includes('svg'), r.status);
   r = await req('GET', '/dash/', { raw: true });
   lacks('dash page does NOT register the service worker', r.text, "serviceWorker.register");
+
+  // S13 — curated library entry points
+  // NB: assert the inline-map entry syntax "key":{ — the app bundle itself
+  // names every key in LC_ORDER, so bare-name checks false-positive (same
+  // lesson as the S8 COMPOSE_NOTES marker).
+  r = await req('GET', '/', { raw: true });
+  lacks('root is the bare starter (no full library inlined)', r.text, '"ch7.1-adj":{');
+  contains('root still identifies as hosted-root', r.text, 'hosted-root');
+  r = await req('GET', '/cc/', { raw: true });
+  contains('/cc carries §7 content', r.text, '"ch7.1-adj":{');
+  contains('/cc carries §13 content', r.text, '"ch13.1-worlds":{');
+  contains('/cc shares the lib-cc island', r.text, '"island":"lib-cc"');
+  r = await req('GET', '/cc/ch7/', { raw: true });
+  contains('/cc/ch7 carries §7', r.text, '"ch7.1-adj":{');
+  lacks('/cc/ch7 does NOT carry §6', r.text, '"ch6.1-fa":{');
+  contains('/cc/ch7 shares the lib-cc island', r.text, '"island":"lib-cc"');
+  r = await req('GET', '/hk/ch2/', { raw: true });
+  contains('/hk/ch2 carries H&K ch2', r.text, '"hk2-fa":{');
+  lacks('/hk/ch2 does NOT carry ch4', r.text, '"hk4-definites":{');
+  r = await req('GET', '/papers/partee/', { raw: true });
+  contains('/papers/partee carries Partee', r.text, '"partee-triangle":{');
+  lacks('/papers/partee does NOT carry PTQ', r.text, '"montague-ptq":{');
+  r = await req('GET', '/CC', { raw: true, noRedirect: true });
+  ok('uppercase /CC redirects', r.status === 302 && r.headers.get('location') === '/cc/',
+    `expected 302 -> /cc/, got ${r.status} -> ${r.headers.get('location')}`);
+  r = await req('GET', '/HK/ch2', { raw: true, noRedirect: true });
+  ok('uppercase /HK/ch2 redirects', r.status === 302 && r.headers.get('location') === '/hk/ch2',
+    `expected 302 -> /hk/ch2, got ${r.status} -> ${r.headers.get('location')}`);
+  r = await req('GET', '/sw.js', { raw: true });
+  contains('sw caches the curated families', r.text, "p.startsWith('/cc')");
 
   // W9 — about page (S8)
   r = await req('GET', '/about/', { raw: true });

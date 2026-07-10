@@ -10,11 +10,22 @@ condition. Denotations are genuine typed λ-terms: the engine infers types,
 β-reduces, and recognises α-equivalent answers, so it grades *meaning*, not
 surface strings.
 
-**Use it now: [compose.tstephen.com](https://compose.tstephen.com)** — the
-hosted instance with the full built-in library tracking Coppock &
-Champollion's *Invitation to Formal Semantics* (§6–§13), Heim & Kratzer
-material, and capstones after Partee 1986 and Montague's PTQ. No login, no
-install; student progress lives in the browser.
+**Use it now: [compose.tstephen.com](https://compose.tstephen.com)** — a
+bare starter with a sample worksheet (load any worksheet or bundle file as
+usual). The built-in library lives at stable curated URLs — no login, no
+install; progress lives in the browser and is shared within each family:
+
+| Entry point | Contents |
+|---|---|
+| [/cc](https://compose.tstephen.com/cc/) | Coppock & Champollion, *Invitation to Formal Semantics* — all worksheets |
+| /cc/ch6 … /cc/ch13 | single C&C chapters (§6–§8, §10–§13) |
+| [/hk](https://compose.tstephen.com/hk/) | Heim & Kratzer, *Semantics in Generative Grammar* — all worksheets |
+| /hk/ch1, ch2, ch4, ch5, ch6, ch7, ch9, ch12 | single H&K chapters |
+| [/papers](https://compose.tstephen.com/papers/) | classic papers — Partee 1986 + Montague's PTQ |
+| /papers/partee, /papers/ptq | one paper each |
+
+The full catalogue is listed on
+[compose.tstephen.com/about](https://compose.tstephen.com/about/).
 
 ## For instructors
 
