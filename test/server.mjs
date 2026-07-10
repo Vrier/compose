@@ -223,6 +223,21 @@ async function main() {
   contains('progress export shipped to students', page, 'Save progress to a file');
   contains('phone interstitial shipped to students', page, 'phone-gate');
 
+  // W16 — scratchpad + PWA (S11)
+  page = (await req('GET', `/v/${SLUG}`, { raw: true })).text;
+  contains('scratchpad shipped to students', page, 'Scratchpad');
+  contains('service-worker registration shipped', page, 'serviceWorker.register');
+  r = await req('GET', '/sw.js', { raw: true });
+  expect('sw.js served', r.status === 200, r.status);
+  contains('sw cache name is versioned', r.text, "CACHE = 'compose-v1.0.0'");
+  contains('sw never touches dash/edit/admin/api', r.text, "p.startsWith('/dash') || p.startsWith('/edit') || p.startsWith('/_') || p.startsWith('/api')");
+  r = await req('GET', '/manifest.json', { raw: true });
+  contains('web manifest served', r.text, '"short_name": "COMPOSE"');
+  r = await req('GET', '/icon.svg', { raw: true });
+  expect('icon served', r.status === 200 && r.text.includes('svg'), r.status);
+  r = await req('GET', '/dash/', { raw: true });
+  lacks('dash page does NOT register the service worker', r.text, "serviceWorker.register");
+
   // W9 — about page (S8)
   r = await req('GET', '/about/', { raw: true });
   contains('about page serves', r.text, 'How to cite');

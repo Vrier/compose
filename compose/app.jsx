@@ -250,6 +250,28 @@ function App() {
   useEffect(() => { save('lc2-allowed', allowedMap); }, [allowedMap]);
   useEffect(() => { save('lc2-teacher', teacherMode); }, [teacherMode]);
 
+  // ---- S11/W16: PWA — register the service worker on hosted STUDENT pages
+  // only (root + /v/*; never the editor), inject the manifest link, and show
+  // a notice when running from the offline cache.
+  const [netNotice, setNetNotice] = useState(null);
+  useEffect(() => {
+    const b = window.COMPOSE_BUILD || {};
+    const hosted = String(b.id || '').indexOf('hosted') === 0 && b.id !== 'hosted-teacher';
+    if (!hosted || !('serviceWorker' in navigator) || window.location.protocol !== 'https:') return;
+    try {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+      const link = document.createElement('link');
+      link.rel = 'manifest'; link.href = '/manifest.json';
+      document.head.appendChild(link);
+    } catch (e) {}
+    const onOffline = () => setNetNotice('Offline — you are working from your saved copy. Progress still saves on this device.');
+    const onOnline = () => { setNetNotice('Back online.'); setTimeout(() => setNetNotice(null), 3000); };
+    window.addEventListener('offline', onOffline);
+    window.addEventListener('online', onOnline);
+    if (navigator.onLine === false) onOffline();
+    return () => { window.removeEventListener('offline', onOffline); window.removeEventListener('online', onOnline); };
+  }, []);
+
   const lib = LIB.find((l) => l.key === fileKey) || LIB[0] || null;
   const set = custom ? custom.set : (lib ? lib.set : null);
   const hasContent = !!set;
@@ -460,6 +482,7 @@ function App() {
 
   // ---- S10/W15: deep links — #gid.pid (optionally #setKey/gid.pid) --------
   const applyHash = useCallback((hash) => {
+    if (hash === '#scratchpad') { setModal('scratch'); return; }
     const m = /^#(?:([^\/]+)\/)?([^.\/]+)\.(.+)$/.exec(hash || '');
     if (!m) return;
     const [, hkey, gid, pid] = m;
@@ -728,6 +751,9 @@ function App() {
               </button>
               <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; setLoadErr(null); if (fileInput.current) fileInput.current.click(); }}>
                 <span>Import worksheet…</span><span className="tool-ico">↑</span>
+              </button>
+              <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; setModal('scratch'); }}>
+                <span>Scratchpad — free composition</span><span className="tool-ico">♪</span>
               </button>
               {String((window.COMPOSE_BUILD || {}).id || '').indexOf('hosted') === 0 && (
                 <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; window.open('/about/', '_blank'); }}>
@@ -1007,7 +1033,20 @@ function App() {
           }} />
       )}
 
+      {modal === 'scratch' && window.ScratchpadPanel && (() => {
+        const SP = window.ScratchpadPanel;
+        return <SP onClose={() => setModal(null)}
+          onLaunch={({ set: cset, problem: cprob, allowed: callowed }) => {
+            setCustom({ set: cset, problem: cprob });
+            if (callowed) setAllowedMap((m) => ({ ...m, [cset.id || 'scratchpad']: callowed }));
+            setSel({ gi: 0, pi: 0 }); setModal(null);
+          }}
+          onPromote={(window.COMPOSE_HOSTED || !isStudentBuild) ? ((text) => { setEditorInit({ text, key: null }); setModal('editor'); }) : null} />;
+      })()}
+
       {modal === 'summary' && <SummaryModal lib={LIB} progress={progress} onClose={() => setModal(null)} />}
+
+      {netNotice && <div className="net-notice">{netNotice}</div>}
 
       {isMobile && !phoneOk && window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment && (
         <PhoneInterstitial onContinue={() => { setPhoneOk(true); save('lc2-phone-ok', true); }} />

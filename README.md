@@ -31,6 +31,13 @@ Everything an instructor saves is validated server-side by the real engine:
 broken denotations, unparseable targets, and malformed trees are rejected
 with messages naming the exact location.
 
+## Offline use
+
+Hosted pages are a PWA: a version you have visited keeps working without
+connectivity (conference wifi, trains), and live edits still propagate the
+next time you are online. There is also a **Scratchpad** (Tools menu) for free
+composition with an ad-hoc lexicon — no worksheet, no target.
+
 ## Offline / single-file builds
 
 The original distribution survives as a fallback: `npm run build` produces

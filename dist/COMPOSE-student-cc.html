@@ -1624,6 +1624,26 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .hint-list { margin: 8px 0 4px; display: flex; flex-direction: column; gap: 6px; }
 .hint-item { font-size: 13.5px; }
 
+/* S11 (W16): scratchpad */
+.scratch-modal { max-width: 640px; }
+.scratch-lex-head { display: grid; grid-template-columns: 130px 1fr 90px 26px; gap: 8px; font-size: 11.5px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .06em; margin: 14px 0 4px; }
+.scratch-lex { display: flex; flex-direction: column; gap: 6px; }
+.scratch-row { display: grid; grid-template-columns: 130px 1fr 90px 26px; gap: 8px; align-items: center; }
+.scratch-word, .scratch-den { padding: 7px 9px; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); color: var(--ink); font: inherit; font-size: 13.5px; }
+.scratch-type { font-size: 12px; font-family: 'IBM Plex Mono', monospace; color: var(--ink-soft); }
+.scratch-add { margin: 8px 0 4px; }
+.scratch-tree-head { margin: 14px 0 4px; font-weight: 600; font-size: 14px; }
+.scratch-hint { font-weight: 400; font-size: 12px; color: var(--ink-soft); margin-left: 8px; }
+.scratch-tree { width: 100%; box-sizing: border-box; padding: 9px 10px; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); color: var(--ink); font-size: 13.5px; resize: vertical; }
+.scratch-status { margin-top: 6px; font-size: 13px; }
+.scratch-status.ok { color: var(--good); }
+.scratch-status.open { color: var(--ink-soft); }
+.scratch-status.err { color: var(--bad); }
+.scratch-actions { display: flex; gap: 8px; align-items: center; margin-top: 16px; }
+
+/* S11 (W16): offline notice */
+.net-notice { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); z-index: 350; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 8px 18px; font-size: 13px; color: var(--ink-soft); box-shadow: 0 4px 18px rgba(0,0,0,.12); }
+
 
 /* ===========================================================================
    lingdown.css — typesetting for the lingdown engine. Themable via --ld-*
@@ -8493,6 +8513,114 @@ Object.assign(window, {
 
 </script>
 <script>
+const SCRATCH_STARTER = [
+  { word: "Frodo", den: "f" },
+  { word: "runs", den: "Lx.run(x)" },
+  { word: "every", den: "LX.LY.Ax[X(x) -> Y(x)]" },
+  { word: "hobbit", den: "Lx.hobbit(x)" }
+];
+function ScratchpadPanel({ onClose, onLaunch, onPromote }) {
+  const [lex, setLex] = React.useState(() => SCRATCH_STARTER.map((r) => ({ ...r })));
+  const [treeSrc, setTreeSrc] = React.useState("[.S [.DP every hobbit ] [.VP runs ] ]");
+  const trial = React.useMemo(() => {
+    try {
+      return window.__composeBuildSet(lex.map((r) => ({ word: r.word, den: r.den })), window.__composeDefaultVars(), []);
+    } catch (e) {
+      return null;
+    }
+  }, [lex]);
+  const rowStatus = (r) => {
+    if (!r.word.trim() || !r.den.trim()) return null;
+    const pr = E.tryParse(r.den);
+    if (!pr.ok) return { kind: "err", msg: pr.error };
+    const entry = trial && trial.lex[r.word.trim().split(",")[0].trim()];
+    if (entry && entry.err) return { kind: "err", msg: entry.err };
+    if (entry && entry.type) return { kind: "ok", type: entry.type };
+    return { kind: "ok" };
+  };
+  const treeStatus = React.useMemo(() => {
+    if (!treeSrc.trim() || !trial) return null;
+    try {
+      const root = F.parseTree(treeSrc);
+      const sol = F.solveTree(root, trial);
+      return sol[root.id] ? { kind: "ok", term: sol[root.id].term, type: sol[root.id].type } : { kind: "open", msg: "Won\u2019t auto-derive \u2014 you\u2019ll compose it by hand (that may be the point)." };
+    } catch (e) {
+      return { kind: "err", msg: e.message };
+    }
+  }, [treeSrc, trial]);
+  function scratchJSON() {
+    const varObj = {};
+    for (const { letters, type } of window.__composeDefaultVars()) varObj[type] = letters;
+    return JSON.stringify({
+      compose: 1,
+      title: "Scratchpad",
+      domain: { multiLetterNames: true, constants: {}, variables: varObj },
+      lexicon: lex.filter((r) => r.word.trim() && r.den.trim()).map((r) => ({ words: r.word.split(",").map((w) => w.trim()).filter(Boolean), denotation: r.den.trim() })),
+      rules: {
+        composition: { functionApplication: true, predicateModification: true, nonBranchingNodes: true, predicateAbstraction: true, intensionalFunctionApplication: true },
+        typeShifts: F.SHIFTERS.map((s) => s.key),
+        quantifierRaising: true
+      },
+      exercises: [{ id: "s", title: "Scratchpad", items: [{ id: "d1", tree: treeSrc.trim() }] }]
+    }, null, 2);
+  }
+  function compose() {
+    if (!trial || !treeSrc.trim()) return;
+    let root;
+    try {
+      root = F.parseTree(treeSrc);
+    } catch (e) {
+      window.alert("Tree does not parse: " + e.message);
+      return;
+    }
+    const problem = { id: "scratch", kind: "tree", tree: treeSrc.trim(), gloss: "Scratchpad" };
+    const allOn = Object.fromEntries(F.SHIFTERS.map((s) => [s.key, true]));
+    const allowed = {
+      fa: true,
+      pm: true,
+      nn: true,
+      pa: true,
+      ifa: true,
+      qr: true,
+      autoNN: false,
+      autoCompose: false,
+      collapseResolved: false,
+      showSpans: true,
+      faHint: false,
+      shift: allOn,
+      ops: void 0
+    };
+    trial.id = "scratchpad";
+    trial.title = "Scratchpad";
+    onLaunch({ set: trial, problem, allowed });
+  }
+  return /* @__PURE__ */ React.createElement("div", { className: "modal-back", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal scratch-modal", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h3", null, "\u266A Scratchpad"), /* @__PURE__ */ React.createElement("div", { className: "sub" }, "Free composition: type a quick lexicon, sketch a tree, compose. Nothing is saved."), /* @__PURE__ */ React.createElement("div", { className: "scratch-lex-head" }, /* @__PURE__ */ React.createElement("span", null, "Word(s)"), /* @__PURE__ */ React.createElement("span", null, "Denotation"), /* @__PURE__ */ React.createElement("span", { className: "scratch-type-col" }, "Type"), /* @__PURE__ */ React.createElement("span", null)), /* @__PURE__ */ React.createElement("div", { className: "scratch-lex" }, lex.map((r, i) => {
+    const st = rowStatus(r);
+    return /* @__PURE__ */ React.createElement("div", { key: i, className: "scratch-row" }, /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        className: "scratch-word",
+        value: r.word,
+        placeholder: "word",
+        onChange: (e) => setLex((L) => L.map((x, j) => j === i ? { ...x, word: e.target.value } : x)),
+        spellCheck: false
+      }
+    ), /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        className: "scratch-den mono",
+        value: r.den,
+        placeholder: "Lx.\u2026  (L\u2192\u03BB, A\u2192\u2200, E\u2192\u2203)",
+        onChange: (e) => setLex((L) => L.map((x, j) => j === i ? { ...x, den: e.target.value } : x)),
+        spellCheck: false
+      }
+    ), /* @__PURE__ */ React.createElement("span", { className: "scratch-type-col" }, st && st.kind === "ok" && st.type != null && /* @__PURE__ */ React.createElement("span", { className: "scratch-type" }, E.typeToStr(st.type)), st && st.kind === "err" && /* @__PURE__ */ React.createElement("span", { className: "fe-type-err", title: st.msg }, "\u2715")), /* @__PURE__ */ React.createElement("button", { className: "fe-del-btn", title: "Remove row", onClick: () => setLex((L) => L.filter((_, j) => j !== i)) }, "\xD7"));
+  })), /* @__PURE__ */ React.createElement("button", { className: "fe-add-btn scratch-add", onClick: () => setLex((L) => [...L, { word: "", den: "" }]) }, "+ Add entry"), /* @__PURE__ */ React.createElement("div", { className: "scratch-tree-head" }, "Tree ", /* @__PURE__ */ React.createElement("span", { className: "scratch-hint" }, "bracket notation: [.S [.DP \u2026] [.VP \u2026]]")), /* @__PURE__ */ React.createElement("textarea", { className: "scratch-tree mono", rows: 2, value: treeSrc, onChange: (e) => setTreeSrc(e.target.value), spellCheck: false }), treeStatus && treeStatus.kind === "ok" && /* @__PURE__ */ React.createElement("div", { className: "scratch-status ok" }, "auto-derives: ", /* @__PURE__ */ React.createElement(Notation, { ast: treeStatus.term }), " : ", /* @__PURE__ */ React.createElement(TypeBadge, { type: treeStatus.type })), treeStatus && treeStatus.kind === "open" && /* @__PURE__ */ React.createElement("div", { className: "scratch-status open" }, treeStatus.msg), treeStatus && treeStatus.kind === "err" && /* @__PURE__ */ React.createElement("div", { className: "scratch-status err" }, "\u2298 ", treeStatus.msg), /* @__PURE__ */ React.createElement("div", { className: "scratch-actions" }, /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", disabled: !trial || !treeSrc.trim() || treeStatus && treeStatus.kind === "err", onClick: compose }, "Compose \u25B6"), /* @__PURE__ */ React.createElement("span", { style: { flex: 1 } }), onPromote && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", title: "Open this scratchpad as a worksheet in the editor", onClick: () => onPromote(scratchJSON()) }, "\u270E Promote to worksheet"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", title: "Download as a .compose.json worksheet", onClick: () => window.composeDownload("scratchpad.compose.json", scratchJSON(), "application/json") }, "\u2B07 .json"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: onClose }, "Close"))));
+}
+window.ScratchpadPanel = ScratchpadPanel;
+
+</script>
+<script>
 const REF_KEYS = [
   { g: "\u03BB", k: "L", n: "lambda" },
   { g: "\u2200", k: "A", n: "for all" },
@@ -8737,6 +8865,33 @@ function App() {
   useEffect(() => {
     save("lc2-teacher", teacherMode);
   }, [teacherMode]);
+  const [netNotice, setNetNotice] = useState(null);
+  useEffect(() => {
+    const b = window.COMPOSE_BUILD || {};
+    const hosted = String(b.id || "").indexOf("hosted") === 0 && b.id !== "hosted-teacher";
+    if (!hosted || !("serviceWorker" in navigator) || window.location.protocol !== "https:") return;
+    try {
+      navigator.serviceWorker.register("/sw.js").catch(() => {
+      });
+      const link = document.createElement("link");
+      link.rel = "manifest";
+      link.href = "/manifest.json";
+      document.head.appendChild(link);
+    } catch (e) {
+    }
+    const onOffline = () => setNetNotice("Offline \u2014 you are working from your saved copy. Progress still saves on this device.");
+    const onOnline = () => {
+      setNetNotice("Back online.");
+      setTimeout(() => setNetNotice(null), 3e3);
+    };
+    window.addEventListener("offline", onOffline);
+    window.addEventListener("online", onOnline);
+    if (navigator.onLine === false) onOffline();
+    return () => {
+      window.removeEventListener("offline", onOffline);
+      window.removeEventListener("online", onOnline);
+    };
+  }, []);
   const lib = LIB.find((l) => l.key === fileKey) || LIB[0] || null;
   const set = custom ? custom.set : lib ? lib.set : null;
   const hasContent = !!set;
@@ -8983,6 +9138,10 @@ function App() {
   }
   const groups = (custom ? [{ id: "custom", kind: "tree", title: "Custom", problems: [custom.problem] }] : set ? set.groups : []).filter((g) => g.kind === "tree");
   const applyHash = useCallback((hash) => {
+    if (hash === "#scratchpad") {
+      setModal("scratch");
+      return;
+    }
     const m = /^#(?:([^\/]+)\/)?([^.\/]+)\.(.+)$/.exec(hash || "");
     if (!m) return;
     const [, hkey, gid, pid] = m;
@@ -9216,7 +9375,10 @@ function App() {
       if (toolsRef.current) toolsRef.current.open = false;
       setLoadErr(null);
       if (fileInput.current) fileInput.current.click();
-    } }, /* @__PURE__ */ React.createElement("span", null, "Import worksheet\u2026"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u2191")), String((window.COMPOSE_BUILD || {}).id || "").indexOf("hosted") === 0 && /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
+    } }, /* @__PURE__ */ React.createElement("span", null, "Import worksheet\u2026"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u2191")), /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
+      if (toolsRef.current) toolsRef.current.open = false;
+      setModal("scratch");
+    } }, /* @__PURE__ */ React.createElement("span", null, "Scratchpad \u2014 free composition"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u266A")), String((window.COMPOSE_BUILD || {}).id || "").indexOf("hosted") === 0 && /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
       if (toolsRef.current) toolsRef.current.open = false;
       window.open("/about/", "_blank");
     } }, /* @__PURE__ */ React.createElement("span", null, "About & how to cite"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u24D8")), /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
@@ -9458,7 +9620,27 @@ function App() {
         }
       }
     ),
+    modal === "scratch" && window.ScratchpadPanel && (() => {
+      const SP = window.ScratchpadPanel;
+      return /* @__PURE__ */ React.createElement(
+        SP,
+        {
+          onClose: () => setModal(null),
+          onLaunch: ({ set: cset, problem: cprob, allowed: callowed }) => {
+            setCustom({ set: cset, problem: cprob });
+            if (callowed) setAllowedMap((m) => ({ ...m, [cset.id || "scratchpad"]: callowed }));
+            setSel({ gi: 0, pi: 0 });
+            setModal(null);
+          },
+          onPromote: window.COMPOSE_HOSTED || !isStudentBuild ? (text) => {
+            setEditorInit({ text, key: null });
+            setModal("editor");
+          } : null
+        }
+      );
+    })(),
     modal === "summary" && /* @__PURE__ */ React.createElement(SummaryModal, { lib: LIB, progress, onClose: () => setModal(null) }),
+    netNotice && /* @__PURE__ */ React.createElement("div", { className: "net-notice" }, netNotice),
     isMobile && !phoneOk && window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment && /* @__PURE__ */ React.createElement(PhoneInterstitial, { onContinue: () => {
       setPhoneOk(true);
       save("lc2-phone-ok", true);

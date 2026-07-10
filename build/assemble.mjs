@@ -51,7 +51,7 @@ const ORDER = [
   'engine.js', 'lcformat.js', 'sample-exercise.js', 'exercise-files.js', 'exercises.js',
   'components.jsx', 'mobile.jsx', 'views.jsx', 'editor.jsx',
   'lingdown.js',
-  'reading-editor.jsx', 'reader.jsx', 'modals.jsx', 'export.jsx', 'tweaks-panel.jsx', 'app.jsx',
+  'reading-editor.jsx', 'reader.jsx', 'modals.jsx', 'export.jsx', 'tweaks-panel.jsx', 'scratchpad.jsx', 'app.jsx',
 ];
 
 /* ---- Head boilerplate --------------------------------------------------- */
