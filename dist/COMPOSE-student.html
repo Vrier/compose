@@ -1597,6 +1597,29 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .fe-srv-ok { color: var(--good); font-size: 12.5px; cursor: pointer; }
 .fe-srv-err { color: var(--bad); font-size: 12.5px; cursor: pointer; max-width: 340px; }
 
+/* W11 (S9): progress summary */
+.sum-modal { max-width: 560px; }
+.sum-table { width: 100%; border-collapse: collapse; margin: 14px 0 8px; }
+.sum-table td { padding: 7px 8px; border-bottom: 1px solid var(--line); font-size: 14px; vertical-align: middle; }
+.sum-title { max-width: 260px; }
+.sum-count { white-space: nowrap; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; text-align: right; }
+.sum-bar { width: 34%; }
+.sum-bar-track { height: 7px; border-radius: 99px; background: var(--panel-2); overflow: hidden; }
+.sum-bar-fill { height: 100%; border-radius: 99px; background: var(--good); }
+.sum-done .sum-title::after { content: ' ✓'; color: var(--good); }
+.sum-grand td { font-weight: 600; border-bottom: none; padding-top: 10px; }
+.sum-hint { font-size: 12.5px; color: var(--ink-soft); margin: 4px 0 12px; }
+.sum-actions { display: flex; justify-content: flex-end; }
+
+/* W11 (S9): phone interstitial */
+.phone-gate { position: fixed; inset: 0; z-index: 400; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 24px; }
+.phone-gate-card { max-width: 360px; text-align: center; }
+.phone-gate-glyph { font-family: Georgia, serif; font-size: 54px; color: #b5532f; margin-bottom: 6px; }
+.phone-gate-card h2 { margin: 0 0 12px; font-size: 22px; }
+.phone-gate-card p { font-size: 14.5px; line-height: 1.55; color: var(--ink-soft); }
+.phone-gate-btn { display: block; width: 100%; box-sizing: border-box; margin: 10px 0 0; padding: 12px; text-decoration: none; }
+.phone-gate-continue { margin-top: 22px; font-size: 13px; color: var(--ink-soft); background: none; border: none; cursor: pointer; }
+
 
 /* ===========================================================================
    lingdown.css — typesetting for the lingdown engine. Themable via --ld-*
@@ -8349,6 +8372,72 @@ const TWEAK_DEFAULTS = (
     "leaves": true
   }
 );
+function composeExportProgress() {
+  const entries = {};
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (LC_NS ? k.indexOf(LC_NS) === 0 : k.indexOf("lc2-") === 0) {
+        entries[LC_NS ? k.slice(LC_NS.length) : k] = localStorage.getItem(k);
+      }
+    }
+  } catch (e) {
+  }
+  const a = window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment || {};
+  const payload = { composeProgress: 1, island: a.island || null, title: a.title || window.COMPOSE_BUILD && window.COMPOSE_BUILD.label || "COMPOSE", exportedAt: (/* @__PURE__ */ new Date()).toISOString(), entries };
+  const name = "compose-progress-" + (a.island || "local") + "-" + (/* @__PURE__ */ new Date()).toISOString().slice(0, 10) + ".json";
+  window.composeDownload(name, JSON.stringify(payload, null, 2), "application/json");
+}
+function composeImportProgress(file, onDone) {
+  file.text().then((text) => {
+    let obj = null;
+    try {
+      obj = JSON.parse(text);
+    } catch (e) {
+      window.alert("That file is not valid JSON.");
+      return;
+    }
+    if (!obj || obj.composeProgress !== 1 || !obj.entries || typeof obj.entries !== "object") {
+      window.alert("That file is not a COMPOSE progress export.");
+      return;
+    }
+    const n = Object.keys(obj.entries).length;
+    if (!window.confirm("Restore " + n + " saved item(s) from " + (obj.exportedAt || "an earlier export") + "? Current progress on this page will be overwritten.")) return;
+    try {
+      for (const k in obj.entries) localStorage.setItem(LC_NS + k, obj.entries[k]);
+    } catch (e) {
+    }
+    onDone && onDone();
+    window.location.reload();
+  });
+}
+function SummaryModal({ lib, progress, onClose }) {
+  const a = window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment || {};
+  const rows = (lib || []).map((l) => {
+    let total = 0, solved = 0;
+    (l.set.groups || []).forEach((g) => {
+      if (g.kind !== "tree") return;
+      (g.problems || []).forEach((pb) => {
+        total++;
+        if (progress[l.key + "/" + g.id + "/" + pb.id]) solved++;
+      });
+    });
+    return { key: l.key, title: l.title, total, solved };
+  }).filter((r) => r.total > 0);
+  const grand = rows.reduce((acc, r) => ({ t: acc.t + r.total, s: acc.s + r.solved }), { t: 0, s: 0 });
+  return /* @__PURE__ */ React.createElement("div", { className: "modal-back", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal sum-modal", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h3", null, "\u2713 Progress summary"), /* @__PURE__ */ React.createElement("div", { className: "sub" }, a.title || window.COMPOSE_BUILD && window.COMPOSE_BUILD.label || "COMPOSE", " \xB7 ", (/* @__PURE__ */ new Date()).toLocaleDateString()), /* @__PURE__ */ React.createElement("table", { className: "sum-table" }, /* @__PURE__ */ React.createElement("tbody", null, rows.map((r) => /* @__PURE__ */ React.createElement("tr", { key: r.key, className: r.solved >= r.total ? "sum-done" : "" }, /* @__PURE__ */ React.createElement("td", { className: "sum-title" }, r.title), /* @__PURE__ */ React.createElement("td", { className: "sum-count" }, r.solved, " / ", r.total), /* @__PURE__ */ React.createElement("td", { className: "sum-bar" }, /* @__PURE__ */ React.createElement("div", { className: "sum-bar-track" }, /* @__PURE__ */ React.createElement("div", { className: "sum-bar-fill", style: { width: (r.total ? Math.round(100 * r.solved / r.total) : 0) + "%" } }))))), /* @__PURE__ */ React.createElement("tr", { className: "sum-grand" }, /* @__PURE__ */ React.createElement("td", { className: "sum-title" }, "All worksheets"), /* @__PURE__ */ React.createElement("td", { className: "sum-count" }, grand.s, " / ", grand.t), /* @__PURE__ */ React.createElement("td", { className: "sum-bar" })))), /* @__PURE__ */ React.createElement("div", { className: "sum-hint" }, "Derivations solved per worksheet \u2014 screenshot this page for your records or your tutor."), /* @__PURE__ */ React.createElement("div", { className: "sum-actions" }, /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: onClose }, "Close"))));
+}
+function PhoneInterstitial({ onContinue }) {
+  const url = window.location.href;
+  const a = window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment || {};
+  const [copied, setCopied] = useState(false);
+  return /* @__PURE__ */ React.createElement("div", { className: "phone-gate" }, /* @__PURE__ */ React.createElement("div", { className: "phone-gate-card" }, /* @__PURE__ */ React.createElement("div", { className: "phone-gate-glyph" }, "\u03BB"), /* @__PURE__ */ React.createElement("h2", null, a.title || "COMPOSE"), /* @__PURE__ */ React.createElement("p", null, "Composing derivation trees works best on a ", /* @__PURE__ */ React.createElement("b", null, "laptop or tablet"), " \u2014 the trees get cramped on a phone screen."), /* @__PURE__ */ React.createElement("p", null, "Your progress stays in the browser you use, so open this link on the machine where you plan to work:"), /* @__PURE__ */ React.createElement("a", { className: "btn btn-primary phone-gate-btn", href: "mailto:?subject=" + encodeURIComponent("COMPOSE: " + (a.title || "worksheets")) + "&body=" + encodeURIComponent(url) }, "\u2709 Email this link to yourself"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost phone-gate-btn", onClick: () => {
+    navigator.clipboard && navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1600);
+    });
+  } }, copied ? "\u2713 Copied" : "\u29C9 Copy the link"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost phone-gate-continue", onClick: onContinue }, "Continue on this phone anyway \u2192")));
+}
 function App() {
   const ROLE = window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.role || "instructor";
   const ASSIGNMENT = window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment || null;
@@ -8411,6 +8500,8 @@ function App() {
   }, [darkMode]);
   const [loadErr, setLoadErr] = useState(null);
   const fileInput = useRef(null);
+  const progressFileInput = useRef(null);
+  const [phoneOk, setPhoneOk] = useState(() => load("lc2-phone-ok", false));
   const settingsRef = useRef(null);
   const toolsRef = useRef(null);
   useEffect(() => {
@@ -8935,7 +9026,29 @@ function App() {
     } }, /* @__PURE__ */ React.createElement("span", null, "Import worksheet\u2026"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u2191")), String((window.COMPOSE_BUILD || {}).id || "").indexOf("hosted") === 0 && /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
       if (toolsRef.current) toolsRef.current.open = false;
       window.open("/about/", "_blank");
-    } }, /* @__PURE__ */ React.createElement("span", null, "About & how to cite"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u24D8")), /* @__PURE__ */ React.createElement("div", { className: "tools-sep" }), !(window.COMPOSE_BUILD && String(window.COMPOSE_BUILD.id || "").indexOf("hosted") === 0) && /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
+    } }, /* @__PURE__ */ React.createElement("span", null, "About & how to cite"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u24D8")), /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
+      if (toolsRef.current) toolsRef.current.open = false;
+      setModal("summary");
+    } }, /* @__PURE__ */ React.createElement("span", null, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u2713")), /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
+      if (toolsRef.current) toolsRef.current.open = false;
+      composeExportProgress();
+    } }, /* @__PURE__ */ React.createElement("span", null, "Save progress to a file"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u2913")), /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
+      if (toolsRef.current) toolsRef.current.open = false;
+      if (progressFileInput.current) progressFileInput.current.click();
+    } }, /* @__PURE__ */ React.createElement("span", null, "Restore progress from a file\u2026"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u2912")), /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        ref: progressFileInput,
+        type: "file",
+        accept: ".json,application/json",
+        style: { display: "none" },
+        onChange: (e) => {
+          const f = e.target.files && e.target.files[0];
+          e.target.value = "";
+          if (f) composeImportProgress(f);
+        }
+      }
+    ), /* @__PURE__ */ React.createElement("div", { className: "tools-sep" }), !(window.COMPOSE_BUILD && String(window.COMPOSE_BUILD.id || "").indexOf("hosted") === 0) && /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
       if (toolsRef.current) toolsRef.current.open = false;
       setModal("export");
     } }, /* @__PURE__ */ React.createElement("span", null, "Export assignment"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u2193")), /* @__PURE__ */ React.createElement("button", { className: "tool-btn", disabled: exporting, onClick: exportDerivation }, /* @__PURE__ */ React.createElement("span", null, exporting ? "Rendering\u2026" : "Export derivation (PNG)"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u29C9"))))), /* @__PURE__ */ React.createElement("div", { className: "settings-menu" }, /* @__PURE__ */ React.createElement("details", { className: "settings-details", ref: settingsRef }, /* @__PURE__ */ React.createElement("summary", { className: "file ghost settings-btn", title: "Settings" }, "\u2699 Settings"), /* @__PURE__ */ React.createElement("div", { className: "settings-dropdown" }, /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Dark mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (darkMode ? " on" : ""), role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode((d) => !d) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-resolve non-branching"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoNN ? " on" : ""), role: "switch", "aria-checked": autoNN, onClick: () => setAutoNN((s) => !s) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), !isStudentBuild && /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-apply composition rules"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoCompose ? " on" : ""), role: "switch", "aria-checked": autoCompose, onClick: () => setAutoCompose((s) => !s) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Collapse resolved subtrees"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (collapseResolved ? " on" : ""), role: "switch", "aria-checked": collapseResolved, onClick: () => setCollapseResolved((s) => !s) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("div", { className: "settings-row settings-layout-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Layout"), /* @__PURE__ */ React.createElement("div", { className: "seg-mini" }, /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() == null ? " on" : ""), onClick: () => setForceLayout(null) }, "Auto"), /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() === "mobile" ? " on" : ""), onClick: () => setForceLayout("mobile") }, "Mobile"))), /* @__PURE__ */ React.createElement("div", { className: "settings-stamp" }, BUILD.label || "COMPOSE", BUILD.version ? " \xB7 v" + BUILD.version : "", BUILD.date ? " \xB7 " + BUILD.date : ""))))),
@@ -8995,7 +9108,10 @@ function App() {
       /* @__PURE__ */ React.createElement("div", { className: "msheet-actions" }, hasContent && hasReading && /* @__PURE__ */ React.createElement("button", { className: "msheet-btn", onClick: () => {
         setSheet(null);
         setRightTab("reading");
-      } }, /* @__PURE__ */ React.createElement("span", { className: "msheet-ico" }, "\u{1F4DD}"), /* @__PURE__ */ React.createElement("span", null, "Notes"))),
+      } }, /* @__PURE__ */ React.createElement("span", { className: "msheet-ico" }, "\u{1F4DD}"), /* @__PURE__ */ React.createElement("span", null, "Notes")), /* @__PURE__ */ React.createElement("button", { className: "msheet-btn", onClick: () => {
+        setSheet(null);
+        setModal("summary");
+      } }, /* @__PURE__ */ React.createElement("span", { className: "msheet-ico" }, "\u2713"), /* @__PURE__ */ React.createElement("span", null, "Progress summary"))),
       /* @__PURE__ */ React.createElement("div", { className: "msheet-settings" }, !isStudentBuild && /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Teacher mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (teacherMode ? " on" : ""), role: "switch", "aria-checked": teacherMode, onClick: () => setTeacherMode((m) => {
         const next = !m;
         if (next) {
@@ -9149,6 +9265,11 @@ function App() {
         }
       }
     ),
+    modal === "summary" && /* @__PURE__ */ React.createElement(SummaryModal, { lib: LIB, progress, onClose: () => setModal(null) }),
+    isMobile && !phoneOk && window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment && /* @__PURE__ */ React.createElement(PhoneInterstitial, { onContinue: () => {
+      setPhoneOk(true);
+      save("lc2-phone-ok", true);
+    } }),
     modal === "reading" && window.ReadingEditorStandalone && (() => {
       const ReadingStandalone = window.ReadingEditorStandalone;
       return /* @__PURE__ */ React.createElement(

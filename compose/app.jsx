@@ -57,6 +57,98 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "leaves": true
 }/*EDITMODE-END*/;
 
+/* ===========================================================================
+   W11 (S9) — student-side resilience: progress export/import, completion
+   summary, phone interstitial. All storage goes through the island-namespaced
+   load/save helpers (LC_NS, components.jsx).
+   =========================================================================== */
+function composeExportProgress() {
+  const entries = {};
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (LC_NS ? k.indexOf(LC_NS) === 0 : k.indexOf('lc2-') === 0) {
+        entries[LC_NS ? k.slice(LC_NS.length) : k] = localStorage.getItem(k);
+      }
+    }
+  } catch (e) {}
+  const a = (window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment) || {};
+  const payload = { composeProgress: 1, island: a.island || null, title: a.title || (window.COMPOSE_BUILD && window.COMPOSE_BUILD.label) || 'COMPOSE', exportedAt: new Date().toISOString(), entries };
+  const name = 'compose-progress-' + (a.island || 'local') + '-' + new Date().toISOString().slice(0, 10) + '.json';
+  window.composeDownload(name, JSON.stringify(payload, null, 2), 'application/json');
+}
+
+function composeImportProgress(file, onDone) {
+  file.text().then((text) => {
+    let obj = null;
+    try { obj = JSON.parse(text); } catch (e) { window.alert('That file is not valid JSON.'); return; }
+    if (!obj || obj.composeProgress !== 1 || !obj.entries || typeof obj.entries !== 'object') {
+      window.alert('That file is not a COMPOSE progress export.'); return;
+    }
+    const n = Object.keys(obj.entries).length;
+    if (!window.confirm('Restore ' + n + ' saved item(s) from ' + (obj.exportedAt || 'an earlier export') + '? Current progress on this page will be overwritten.')) return;
+    try { for (const k in obj.entries) localStorage.setItem(LC_NS + k, obj.entries[k]); } catch (e) {}
+    onDone && onDone();
+    window.location.reload();
+  });
+}
+
+function SummaryModal({ lib, progress, onClose }) {
+  const a = (window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment) || {};
+  const rows = (lib || []).map((l) => {
+    let total = 0, solved = 0;
+    (l.set.groups || []).forEach((g) => {
+      if (g.kind !== 'tree') return;
+      (g.problems || []).forEach((pb) => { total++; if (progress[l.key + '/' + g.id + '/' + pb.id]) solved++; });
+    });
+    return { key: l.key, title: l.title, total, solved };
+  }).filter((r) => r.total > 0);
+  const grand = rows.reduce((acc, r) => ({ t: acc.t + r.total, s: acc.s + r.solved }), { t: 0, s: 0 });
+  return (
+    <div className="modal-back" onClick={onClose}>
+      <div className="modal sum-modal" onClick={(e) => e.stopPropagation()}>
+        <h3>✓ Progress summary</h3>
+        <div className="sub">{a.title || (window.COMPOSE_BUILD && window.COMPOSE_BUILD.label) || 'COMPOSE'} · {new Date().toLocaleDateString()}</div>
+        <table className="sum-table">
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.key} className={r.solved >= r.total ? 'sum-done' : ''}>
+                <td className="sum-title">{r.title}</td>
+                <td className="sum-count">{r.solved} / {r.total}</td>
+                <td className="sum-bar"><div className="sum-bar-track"><div className="sum-bar-fill" style={{ width: (r.total ? Math.round(100 * r.solved / r.total) : 0) + '%' }} /></div></td>
+              </tr>
+            ))}
+            <tr className="sum-grand"><td className="sum-title">All worksheets</td><td className="sum-count">{grand.s} / {grand.t}</td><td className="sum-bar" /></tr>
+          </tbody>
+        </table>
+        <div className="sum-hint">Derivations solved per worksheet — screenshot this page for your records or your tutor.</div>
+        <div className="sum-actions"><button className="btn-ghost" onClick={onClose}>Close</button></div>
+      </div>
+    </div>
+  );
+}
+
+function PhoneInterstitial({ onContinue }) {
+  const url = window.location.href;
+  const a = (window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment) || {};
+  const [copied, setCopied] = useState(false);
+  return (
+    <div className="phone-gate">
+      <div className="phone-gate-card">
+        <div className="phone-gate-glyph">λ</div>
+        <h2>{a.title || 'COMPOSE'}</h2>
+        <p>Composing derivation trees works best on a <b>laptop or tablet</b> —
+        the trees get cramped on a phone screen.</p>
+        <p>Your progress stays in the browser you use, so open this link on the
+        machine where you plan to work:</p>
+        <a className="btn btn-primary phone-gate-btn" href={'mailto:?subject=' + encodeURIComponent('COMPOSE: ' + (a.title || 'worksheets')) + '&body=' + encodeURIComponent(url)}>✉ Email this link to yourself</a>
+        <button className="btn-ghost phone-gate-btn" onClick={() => { navigator.clipboard && navigator.clipboard.writeText(url).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1600); }); }}>{copied ? '✓ Copied' : '⧉ Copy the link'}</button>
+        <button className="btn-ghost phone-gate-continue" onClick={onContinue}>Continue on this phone anyway →</button>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const ROLE = (window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.role) || 'instructor';
   const ASSIGNMENT = (window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment) || null;
@@ -108,6 +200,8 @@ function App() {
   useEffect(() => { document.documentElement.setAttribute('data-dark', darkMode ? 'true' : 'false'); save('lc2-dark', darkMode); }, [darkMode]);
   const [loadErr, setLoadErr] = useState(null);
   const fileInput = useRef(null);
+  const progressFileInput = useRef(null);            // W11: restore-progress picker
+  const [phoneOk, setPhoneOk] = useState(() => load('lc2-phone-ok', false));  // W11 interstitial
   const settingsRef = useRef(null);
   const toolsRef = useRef(null);
   useEffect(() => {
@@ -610,6 +704,17 @@ function App() {
                   <span>About & how to cite</span><span className="tool-ico">ⓘ</span>
                 </button>
               )}
+              <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; setModal('summary'); }}>
+                <span>Progress summary</span><span className="tool-ico">✓</span>
+              </button>
+              <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; composeExportProgress(); }}>
+                <span>Save progress to a file</span><span className="tool-ico">⤓</span>
+              </button>
+              <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; if (progressFileInput.current) progressFileInput.current.click(); }}>
+                <span>Restore progress from a file…</span><span className="tool-ico">⤒</span>
+              </button>
+              <input ref={progressFileInput} type="file" accept=".json,application/json" style={{ display: 'none' }}
+                onChange={(e) => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) composeImportProgress(f); }} />
               <div className="tools-sep" />
               {!(window.COMPOSE_BUILD && String(window.COMPOSE_BUILD.id || '').indexOf('hosted') === 0) && (
 <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; setModal('export'); }}>
@@ -726,6 +831,8 @@ function App() {
           <div className="msheet-actions">
             {hasContent && hasReading && <button className="msheet-btn" onClick={() => { setSheet(null); setRightTab('reading'); }}>
               <span className="msheet-ico">📝</span><span>Notes</span></button>}
+            <button className="msheet-btn" onClick={() => { setSheet(null); setModal('summary'); }}>
+              <span className="msheet-ico">✓</span><span>Progress summary</span></button>
           </div>
           <div className="msheet-settings">
             {!isStudentBuild && (
@@ -868,6 +975,12 @@ function App() {
             if (callowed) setAllowedMap(m => ({ ...m, [cset.id || 'editor']: callowed }));
             setSel({ gi: 0, pi: 0 }); setModal(null);
           }} />
+      )}
+
+      {modal === 'summary' && <SummaryModal lib={LIB} progress={progress} onClose={() => setModal(null)} />}
+
+      {isMobile && !phoneOk && window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment && (
+        <PhoneInterstitial onContinue={() => { setPhoneOk(true); save('lc2-phone-ok', true); }} />
       )}
 
       {modal === 'reading' && window.ReadingEditorStandalone && (() => {

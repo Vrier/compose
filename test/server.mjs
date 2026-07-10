@@ -217,6 +217,12 @@ async function main() {
   page = (await req('GET', `/v/${SLUG}`, { raw: true })).text;
   lacks('cleared notes disappear from the page', page, 'window.COMPOSE_NOTES = ');
 
+  // W11 — student resilience surfaces compiled into served pages (S9)
+  page = (await req('GET', `/v/${SLUG}`, { raw: true })).text;
+  contains('progress summary shipped to students', page, 'Progress summary');
+  contains('progress export shipped to students', page, 'Save progress to a file');
+  contains('phone interstitial shipped to students', page, 'phone-gate');
+
   // W9 — about page (S8)
   r = await req('GET', '/about/', { raw: true });
   contains('about page serves', r.text, 'How to cite');
