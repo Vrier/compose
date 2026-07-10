@@ -35,3 +35,15 @@ The repo is being taken to a hosted service across multiple sessions:
 - **The session protocol in IMPLEMENTATION.md §0 is mandatory**: start green
   (`npm test`), stay in scope, end green, update PLAN.md §8, commit.
 - PROMPTS.md holds the bootstrap/session/resume prompts used to run each session.
+
+## Pushing to GitHub (Cowork sessions)
+
+Remote: `git@github.com:Vrier/compose.git` (repo is public; pushes authenticate
+with the write deploy key `.github-deploy-key` in the repo root — gitignored,
+added to GitHub 2026-07-09). Push with:
+
+    GIT_SSH_COMMAND="ssh -i .github-deploy-key -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new" git push origin HEAD:main
+
+Every push to `main` triggers `.github/workflows/deploy.yml`: full test suite,
+then SSH deploy to the VPS (167.233.233.109 → compose.tstephen.com). Do not
+push red: CI failing means no deploy, but keep main green regardless.

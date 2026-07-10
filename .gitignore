@@ -22,6 +22,10 @@ server/pb_public/*
 server/pocketbase
 server/pb_data/
 
+# --- Cowork push credential (write deploy key for Vrier/compose) ---
+.github-deploy-key
+.github-deploy-key.pub
+
 # --- Misc ---
 .thumbnail
 .DS_Store

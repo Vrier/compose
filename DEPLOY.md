@@ -64,29 +64,21 @@ chown -R compose:compose /srv/compose /srv/compose-data
 printf '<!DOCTYPE html><title>tstephen.com</title><p>Coming soon.</p>\n' > /srv/site/index.html
 ```
 
-## 4 · Clone the repo (server → GitHub read access)
+## 4 · Clone the repo
 
-The repo is private, so the server needs a read-only **deploy key**.
-
-**[server]**
-
-```
-sudo -u compose ssh-keygen -t ed25519 -N '' -f /srv/compose/.ssh/id_ed25519 <<< y >/dev/null 2>&1 || sudo -u compose sh -c 'mkdir -p /srv/compose/.ssh && ssh-keygen -t ed25519 -N "" -f /srv/compose/.ssh/id_ed25519'
-cat /srv/compose/.ssh/id_ed25519.pub
-```
-
-Copy the printed line → GitHub repo → **Settings → Deploy keys → Add deploy
-key** → title "vps read", paste, leave *write access* UNticked. Then:
+The repo (`Vrier/compose`) is public — plain HTTPS clone, no keys needed:
 
 **[server]**
 
 ```
-sudo -u compose sh -c 'cd /srv && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new" git clone git@github.com:YOUR-GITHUB-USERNAME/compose.git compose-tmp && cp -rT compose-tmp compose && rm -rf compose-tmp' 2>/dev/null || \
-sudo -u compose sh -c 'cd /srv/compose && git init -q 2>/dev/null; cd /srv/compose && git remote add origin git@github.com:YOUR-GITHUB-USERNAME/compose.git 2>/dev/null; GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new" git fetch origin main && git checkout -f -B main origin/main'
+sudo -u compose git clone https://github.com/Vrier/compose.git /srv/compose-clone
+sudo -u compose cp -rT /srv/compose-clone /srv/compose
+rm -rf /srv/compose-clone
 ```
 
-(Replace `YOUR-GITHUB-USERNAME`. The fallback branch handles /srv/compose
-already existing as the user's home directory.)
+(The copy dance is because /srv/compose already exists as the user's home
+directory. If it errors, the direct route works too:
+`sudo -u compose sh -c 'cd /srv/compose && git init -q && git remote add origin https://github.com/Vrier/compose.git && git fetch origin main && git checkout -f -B main origin/main'`)
 
 ## 5 · First build
 
