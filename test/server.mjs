@@ -246,6 +246,7 @@ async function main() {
   r = await req('GET', '/', { raw: true });
   lacks('root is the bare starter (no full library inlined)', r.text, '"ch7.1-adj":{');
   contains('root still identifies as hosted-root', r.text, 'hosted-root');
+  contains('root build requests the demo sample for students', r.text, '"sample":true');
   r = await req('GET', '/cc/', { raw: true });
   contains('/cc carries §7 content', r.text, '"ch7.1-adj":{');
   contains('/cc carries §13 content', r.text, '"ch13.1-worlds":{');

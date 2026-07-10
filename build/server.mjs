@@ -69,7 +69,7 @@ const templateEdit = assemblePage(parts, {
 // curated /cc, /hk and /papers entry points below.
 const rootIdentityJS =
   'window.COMPOSE_BUILD = ' + JSON.stringify({
-    id: 'hosted-root', role: 'student', preload: 'none',
+    id: 'hosted-root', role: 'student', preload: 'none', sample: true,
     label: 'COMPOSE', version: COMPOSE_VERSION, date: COMPOSE_DATE,
   }) + ';\n' +
   'window.COMPOSE_CONFIG = ' + JSON.stringify({ role: 'student', assignment: null }) + ';';

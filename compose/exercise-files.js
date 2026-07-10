@@ -67,9 +67,10 @@
   // "Clean" builds bake in NO textbook content.
   //  • Teacher (authoring) builds get a small sample to open & learn from.
   //  • Student clean builds start empty and prompt to load a problem set.
+  //  • BUILD.sample forces the sample in student builds too (hosted root).
   if (preload !== 'cc') {
     var files = {};
-    if (BUILD.role !== 'student' && window.COMPOSE_SAMPLE) {
+    if ((BUILD.role !== 'student' || BUILD.sample) && window.COMPOSE_SAMPLE) {
       files[window.COMPOSE_SAMPLE.key] = {
         title: window.COMPOSE_SAMPLE.title, text: window.COMPOSE_SAMPLE.text, sample: true,
       };
