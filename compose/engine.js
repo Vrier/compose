@@ -773,13 +773,36 @@
   // collect application spine: returns {head, args}
   function spine(e) { const args = []; let h = e; while (h.t === 'app') { args.unshift(h.arg); h = h.fn; } return { head: h, args }; }
 
+  /**
+   * AST node shapes (W14 documentation; no runtime effect):
+   * @typedef {{t:'sym', name:string}} Sym
+   * @typedef {{t:'lam', v:string, body:Node, dom?:Node}} Lam    dom = partial-λ domain condition
+   * @typedef {{t:'app', fn:Node, arg:Node}} App
+   * @typedef {{t:'not', e:Node}} Not
+   * @typedef {{t:'bin', op:'∧'|'∨'|'→'|'↔'|'='|'≠'|'<'|'>'|'⊆'|'≤'|'⊕', l:Node, r:Node}} Bin
+   * @typedef {{t:'quant', q:'∀'|'∃'|'ι', v:string, body:Node}} Quant
+   * @typedef {{t:'partial', e:Node}} Partial   ∂-presupposition
+   * @typedef {{t:'def', cond:Node, e:Node}} Def   definedness (H&K colon / C&C ∂∧)
+   * @typedef {{t:'star', e:Node}} Star  ·  @typedef {{t:'gsum', e:Node}} Gsum  ·  @typedef {{t:'card', e:Node}} Card
+   * @typedef {Sym|Lam|App|Not|Bin|Quant|Partial|Def|Star|Gsum|Card} Node
+   * Types: string base ('e','t','v','i','s','n') | {var} display var | {from,to} | {prod:[a,b]}
+   */
   let _disp = 'cc';   // notation mode for Def rendering: 'cc' (∂∧) or 'hk' (colon)
+  // setNotation remains the DEFAULT-setter; the printers below save/restore the
+  // mode when given an explicit one, so batch rendering in two notations can
+  // no longer cross-contaminate (W14, review 1.5).
   function setNotation(mode) { if (typeof mode === 'string') _disp = mode; }
+  function withNotation(mode, fn) {
+    if (typeof mode !== 'string') return fn();
+    const prev = _disp; _disp = mode;
+    try { return fn(); } finally { _disp = prev; }
+  }
   function toHTML(e, parentPrec = -1, mode) {
-    if (typeof mode === 'string') _disp = mode;
-    let s = render(e);
-    if (prec(e) < parentPrec) s = '<span class="lx-paren">(</span>' + s + '<span class="lx-paren">)</span>';
-    return s;
+    return withNotation(mode, () => {
+      let s = render(e);
+      if (prec(e) < parentPrec) s = '<span class="lx-paren">(</span>' + s + '<span class="lx-paren">)</span>';
+      return s;
+    });
   }
   function render(e) {
     switch (e.t) {
@@ -834,7 +857,7 @@
 
   // plain unicode string (for inputs / comparison display)
   function toStr(e, parentPrec = -1, mode) {
-    if (typeof mode === 'string') _disp = mode;
+    if (typeof mode === 'string') return withNotation(mode, () => toStr(e, parentPrec));
     let s;
     switch (e.t) {
       case 'sym': s = (_disp === 'hk' && e.name === 'w0') ? 'w' : e.name; break;
@@ -880,7 +903,7 @@
   const LATEX_OPS = { '∧': '\\land', '∨': '\\lor', '→': '\\rightarrow', '↔': '\\leftrightarrow',
     '=': '=', '≠': '\\neq', '<': '<', '>': '>', '⊆': '\\subseteq', '≤': '\\leq', '⊕': '\\oplus' };
   function toLaTeX(e, parentPrec = -1, mode) {
-    if (typeof mode === 'string') _disp = mode;
+    if (typeof mode === 'string') return withNotation(mode, () => toLaTeX(e, parentPrec));
     let s;
     switch (e.t) {
       case 'sym': s = symLaTeX(e.name); break;
@@ -1041,6 +1064,7 @@
 // Universal module footer (W13f): browsers get window.LC exactly as before;
 // Node (require) and PocketBase's embedded JS runtime get module.exports.
 const LC_API = {
+    VERSION: (typeof COMPOSE_VERSION !== 'undefined' ? COMPOSE_VERSION : '1.0.0'),
     Sym, Lam, App, Not, Bin, Quant, Partial, Gsum, Card, Def,
     parse, tokenize, tryParse, asciiToUnicode, setNotation,
     freeVars, subst, betaStep, normalize, normalizeInfo, simplifyBool, isNormal, findRedex, reduceAt, floatDef,

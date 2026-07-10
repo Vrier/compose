@@ -106,6 +106,19 @@ function checkBundle(b, file) {
   const list = b.worksheets !== undefined ? b.worksheets : b.exercises;
   if (list === undefined) return err(file, '', 'missing worksheets (or legacy exercises)');
   if (!Array.isArray(list)) return err(file, 'worksheets', 'must be an array');
+  // W14 (review 2.7): duplicate keys collide in the library AND in progress
+  // storage — error; keys no chapter prefix covers are invisible-adjacent in
+  // the picker (the hosted route synthesises entries, offline loads don't) — notice.
+  const seen = new Set();
+  const chapters = Array.isArray(b.chapters) ? b.chapters.filter((c) => c && typeof c.prefix === 'string') : [];
+  const covered = (k) => chapters.some((c) => k === c.prefix || k.startsWith(c.prefix + '.') || k.startsWith(c.prefix + '-'));
+  list.forEach((w, i) => {
+    if (w && typeof w.key === 'string') {
+      if (seen.has(w.key)) err(file, `worksheets[${i}].key`, `duplicate key "${w.key}"`);
+      seen.add(w.key);
+      if (chapters.length && !covered(w.key)) console.log(`  notice: ${file} worksheets[${i}] key "${w.key}" matches no chapter prefix`);
+    }
+  });
   list.forEach((s, i) => {
     const p = `worksheets[${i}]`;
     if (!isObj(s)) return err(file, p, 'must be an object');

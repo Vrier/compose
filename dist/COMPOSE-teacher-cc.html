@@ -1644,6 +1644,11 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 /* S11 (W16): offline notice */
 .net-notice { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); z-index: 350; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 8px 18px; font-size: 13px; color: var(--ink-soft); box-shadow: 0 4px 18px rgba(0,0,0,.12); }
 
+/* W14: hints authoring */
+.fe-hints-det { flex-basis: 100%; }
+.fe-hints-sum { font-size: 12px; color: var(--ink-soft); cursor: pointer; }
+.fe-hints-ta { width: 100%; box-sizing: border-box; margin-top: 4px; padding: 7px 9px; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); color: var(--ink); font-size: 12.5px; resize: vertical; }
+
 
 /* ===========================================================================
    lingdown.css — typesetting for the lingdown engine. Themable via --ld-*
@@ -3074,13 +3079,36 @@ if (typeof module !== 'undefined' && module.exports) module.exports = { COMPOSE_
   // collect application spine: returns {head, args}
   function spine(e) { const args = []; let h = e; while (h.t === 'app') { args.unshift(h.arg); h = h.fn; } return { head: h, args }; }
 
+  /**
+   * AST node shapes (W14 documentation; no runtime effect):
+   * @typedef {{t:'sym', name:string}} Sym
+   * @typedef {{t:'lam', v:string, body:Node, dom?:Node}} Lam    dom = partial-λ domain condition
+   * @typedef {{t:'app', fn:Node, arg:Node}} App
+   * @typedef {{t:'not', e:Node}} Not
+   * @typedef {{t:'bin', op:'∧'|'∨'|'→'|'↔'|'='|'≠'|'<'|'>'|'⊆'|'≤'|'⊕', l:Node, r:Node}} Bin
+   * @typedef {{t:'quant', q:'∀'|'∃'|'ι', v:string, body:Node}} Quant
+   * @typedef {{t:'partial', e:Node}} Partial   ∂-presupposition
+   * @typedef {{t:'def', cond:Node, e:Node}} Def   definedness (H&K colon / C&C ∂∧)
+   * @typedef {{t:'star', e:Node}} Star  ·  @typedef {{t:'gsum', e:Node}} Gsum  ·  @typedef {{t:'card', e:Node}} Card
+   * @typedef {Sym|Lam|App|Not|Bin|Quant|Partial|Def|Star|Gsum|Card} Node
+   * Types: string base ('e','t','v','i','s','n') | {var} display var | {from,to} | {prod:[a,b]}
+   */
   let _disp = 'cc';   // notation mode for Def rendering: 'cc' (∂∧) or 'hk' (colon)
+  // setNotation remains the DEFAULT-setter; the printers below save/restore the
+  // mode when given an explicit one, so batch rendering in two notations can
+  // no longer cross-contaminate (W14, review 1.5).
   function setNotation(mode) { if (typeof mode === 'string') _disp = mode; }
+  function withNotation(mode, fn) {
+    if (typeof mode !== 'string') return fn();
+    const prev = _disp; _disp = mode;
+    try { return fn(); } finally { _disp = prev; }
+  }
   function toHTML(e, parentPrec = -1, mode) {
-    if (typeof mode === 'string') _disp = mode;
-    let s = render(e);
-    if (prec(e) < parentPrec) s = '<span class="lx-paren">(</span>' + s + '<span class="lx-paren">)</span>';
-    return s;
+    return withNotation(mode, () => {
+      let s = render(e);
+      if (prec(e) < parentPrec) s = '<span class="lx-paren">(</span>' + s + '<span class="lx-paren">)</span>';
+      return s;
+    });
   }
   function render(e) {
     switch (e.t) {
@@ -3135,7 +3163,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = { COMPOSE_
 
   // plain unicode string (for inputs / comparison display)
   function toStr(e, parentPrec = -1, mode) {
-    if (typeof mode === 'string') _disp = mode;
+    if (typeof mode === 'string') return withNotation(mode, () => toStr(e, parentPrec));
     let s;
     switch (e.t) {
       case 'sym': s = (_disp === 'hk' && e.name === 'w0') ? 'w' : e.name; break;
@@ -3181,7 +3209,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = { COMPOSE_
   const LATEX_OPS = { '∧': '\\land', '∨': '\\lor', '→': '\\rightarrow', '↔': '\\leftrightarrow',
     '=': '=', '≠': '\\neq', '<': '<', '>': '>', '⊆': '\\subseteq', '≤': '\\leq', '⊕': '\\oplus' };
   function toLaTeX(e, parentPrec = -1, mode) {
-    if (typeof mode === 'string') _disp = mode;
+    if (typeof mode === 'string') return withNotation(mode, () => toLaTeX(e, parentPrec));
     let s;
     switch (e.t) {
       case 'sym': s = symLaTeX(e.name); break;
@@ -3342,6 +3370,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = { COMPOSE_
 // Universal module footer (W13f): browsers get window.LC exactly as before;
 // Node (require) and PocketBase's embedded JS runtime get module.exports.
 const LC_API = {
+    VERSION: (typeof COMPOSE_VERSION !== 'undefined' ? COMPOSE_VERSION : '1.0.0'),
     Sym, Lam, App, Not, Bin, Quant, Partial, Gsum, Card, Def,
     parse, tokenize, tryParse, asciiToUnicode, setNotation,
     freeVars, subst, betaStep, normalize, normalizeInfo, simplifyBool, isNormal, findRedex, reduceAt, floatDef,
@@ -3805,8 +3834,12 @@ if (typeof module !== 'undefined' && module.exports) module.exports = LC_API;
   }
 
   /* ---- tree parsing (labeled brackets) ---------------------------------- */
-  let _nid = 0;
+  // Node ids are LOCAL to each parse (k0, k1, … in traversal order), so the
+  // same tree always yields the same ids. The old module-global counter made
+  // ids depend on session parse ORDER — which silently orphaned persisted
+  // partial-derivation work across reloads (W14, review 1.5).
   function parseTree(src) {
+    let _nid = 0;
     let i = 0;
     const ws = () => { while (i < src.length && /\s/.test(src[i])) i++; };
     function node() {
@@ -3940,6 +3973,16 @@ if (typeof module !== 'undefined' && module.exports) module.exports = LC_API;
     };
   }
 
+  /**
+   * Parsed-set shape (W14 documentation):
+   * @typedef {{id:string, title:string, subtitle:string, notation:'cc'|'hk',
+   *   typeEnv:Object, constEnv:Object, lex:Object, lexList:Array, rules:string[],
+   *   multiLetter:boolean, groups:Group[], displayHints:Object, config?:Object,
+   *   reading?:{format:string, markdown:string}}} ParsedSet
+   * @typedef {{id:string, kind:'tree', title:string, directions:string, problems:Problem[]}} Group
+   * @typedef {{id:string, kind:'tree', tree:string, gloss:string, expected:string,
+   *   note:string, section:string, hints?:string[], targetsMode?:'any', targets?:string[]}} Problem
+   */
   // Native COMPOSE exercise format (JSON). See FORMAT.md and
   // schemas/compose.schema.json. Second use: opts = { collect: true } turns on
   // diagnostics mode (W13a) — the return value becomes { set, diagnostics }
@@ -4053,6 +4096,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = LC_API;
           expected: item.expected || '', note: item.note || '',
           section: (item.reading && item.reading.section) || item.section || '',
           hints: Array.isArray(item.hints) ? item.hints.filter((h) => typeof h === 'string' && h.trim()) : undefined,
+          targetsMode: item.targetsMode === 'any' ? 'any' : undefined,
           targets: tgts.length ? tgts : undefined });
       });
       set.groups.push(group);
@@ -4861,8 +4905,9 @@ function leafToken(word) {
   return { word };
 }
 function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, showLeaves, allowed, onResetExercise, lf, onLfChange, teacherMode }) {
-  const hasScopes = !!(problem.targets && problem.targets.length > 1);
-  const hasSingleTarget = !!(problem.targets && problem.targets.length === 1);
+  const anyTargets = problem.targetsMode === "any" && !!(problem.targets && problem.targets.length);
+  const hasScopes = !anyTargets && !!(problem.targets && problem.targets.length > 1);
+  const hasSingleTarget = anyTargets || !!(problem.targets && problem.targets.length === 1);
   const [activeTargetIdx, setActiveTargetIdx] = useState(0);
   const [singleFb, setSingleFb] = useState(null);
   const [zoom, setZoom] = useState(1);
@@ -5133,7 +5178,19 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
       return;
     }
     if (hasSingleTarget && !hasScopes) {
-      const matched2 = matchesTarget(rootMeaning, problem.targets[0]);
+      let matched2 = false;
+      if (anyTargets) {
+        for (const t of problem.targets) {
+          const m = matchesTarget(rootMeaning, t);
+          if (m === true) {
+            matched2 = true;
+            break;
+          }
+          if (m === "target-error") matched2 = "target-error";
+        }
+      } else {
+        matched2 = matchesTarget(rootMeaning, problem.targets[0]);
+      }
       if (matched2 === "target-error") {
         setSingleFb({ ok: true, targetError: true });
         onComplete && onComplete();
@@ -5880,6 +5937,7 @@ function generateJSON(state) {
         if ((it.note || "").trim()) o.note = it.note.trim();
         if (Array.isArray(it.targets) && it.targets.filter(Boolean).length) o.targets = it.targets.filter(Boolean);
         if (Array.isArray(it.hints) && it.hints.filter(Boolean).length) o.hints = it.hints.filter(Boolean);
+        if (it.targetsMode === "any") o.targetsMode = "any";
         if ((it.section || "").trim()) o.reading = { section: it.section.trim() };
         return o;
       })
@@ -5919,7 +5977,8 @@ function parseFromText(text) {
         expected: p.expected || "",
         note: p.note || "",
         targets: p.targets ? p.targets.slice() : void 0,
-        hints: Array.isArray(p.hints) && p.hints.length ? p.hints.slice() : void 0
+        hints: Array.isArray(p.hints) && p.hints.length ? p.hints.slice() : void 0,
+        targetsMode: p.targetsMode === "any" ? "any" : void 0
       }))
     }));
     let reading = { markdown: "" };
@@ -6341,7 +6400,17 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
         onChange: (e) => updTree(i, k, { note: e.target.value }),
         spellCheck: false
       }
-    ), Array.isArray(item.targets) && item.targets.filter(Boolean).map((t, ti) => {
+    ), /* @__PURE__ */ React.createElement("details", { className: "fe-hints-det" }, /* @__PURE__ */ React.createElement("summary", { className: "fe-hints-sum" }, "\u{1F4A1} Hints", Array.isArray(item.hints) && item.hints.filter(Boolean).length ? " (" + item.hints.filter(Boolean).length + ")" : ""), /* @__PURE__ */ React.createElement(
+      "textarea",
+      {
+        className: "fe-hints-ta mono",
+        rows: 3,
+        spellCheck: false,
+        placeholder: 'One hint per line, revealed in order.\nThe final stage always offers "Show answer" (practice mode).',
+        value: (item.hints || []).join("\n"),
+        onChange: (e) => updTree(i, k, { hints: e.target.value.split("\n") })
+      }
+    )), Array.isArray(item.targets) && item.targets.filter(Boolean).map((t, ti) => {
       const str = String(t);
       const c = str.indexOf(":");
       const ok = E.tryParse((c > -1 ? str.slice(c + 1) : str).trim()).ok;
@@ -6456,6 +6525,7 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
       const idx = list.findIndex((w) => w && w.key === key);
       if (idx >= 0) list[idx] = entry;
       else list.push(entry);
+      bundle.engineVersion = window.LC && window.LC.VERSION || void 0;
       await pb.collection("versions").update(H.versionId, { bundle });
       setEditKey(key);
       if (Array.isArray(H.keys) && H.keys.indexOf(key) < 0) H.keys.push(key);

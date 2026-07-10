@@ -85,7 +85,8 @@ to a worksheet file to get editor autocomplete and validation in VS Code.
 | `notation` | `"cc"` (Coppock & Champollion, default) or `"hk"` (Heim & Kratzer) rendering conventions. |
 | `reading` | Optional embedded reading companion: `{ "format": "lingdown", "markdown": "…" }`. Items anchor to its `##` sections via `"reading": { "section": "…" }`. |
 | `hints` | Per-derivation staged hints (array of strings). Students reveal them one at a time via a 💡 button; after the last hint, a final "Show answer" stage fills in the worked solution (practice mode only — in assessment mode the button is absent entirely). |
-| `targetsMode` | Reserved (schema-valid, not yet consumed): whether all targets are required (`"all"`, default) or any one suffices (`"any"`). |
+| `targetsMode` | Whether all targets are required (`"all"`, default — two targets mean both scope readings must be derived) or **any one suffices** (`"any"` — for equivalent formulations that don't normalize together, or either-scope-acceptable items). |
+| `meta` | Optional provenance block, ignored by the app: `{author, source, license, tags, difficulty}`. Use `source` like `"after Coppock & Champollion §7"` — it records the paraphrase-only posture in the data itself. Valid on worksheets and bundles. |
 
 **Deep links.** Every derivation is addressable as `#<exerciseId>.<derivationId>`
 (e.g. `https://…/v/ab3k9x2m#g2.i-d3`), using the stable ids above — "do

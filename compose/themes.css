@@ -1629,3 +1629,8 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 
 /* S11 (W16): offline notice */
 .net-notice { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); z-index: 350; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 8px 18px; font-size: 13px; color: var(--ink-soft); box-shadow: 0 4px 18px rgba(0,0,0,.12); }
+
+/* W14: hints authoring */
+.fe-hints-det { flex-basis: 100%; }
+.fe-hints-sum { font-size: 12px; color: var(--ink-soft); cursor: pointer; }
+.fe-hints-ta { width: 100%; box-sizing: border-box; margin-top: 4px; padding: 7px 9px; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); color: var(--ink); font-size: 12.5px; resize: vertical; }

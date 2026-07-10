@@ -44,8 +44,13 @@ function leafToken(word) {
 /* ---- TreeView ---------------------------------------------------------- */
 function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, showLeaves, allowed, onResetExercise, lf, onLfChange, teacherMode }) {
   // ---- scope-target support (declared first so the working tree can key off it) ----
-  const hasScopes = !!(problem.targets && problem.targets.length > 1);
-  const hasSingleTarget = !!(problem.targets && problem.targets.length === 1);
+  // W14 (review 2.5): targetsMode 'any' means any one target completes the
+  // derivation (equivalent formulations / either scope acceptable) — graded
+  // like a single target against the whole list. Default 'all' keeps the
+  // two-targets-⇒-both-readings checkbox flow.
+  const anyTargets = problem.targetsMode === 'any' && !!(problem.targets && problem.targets.length);
+  const hasScopes = !anyTargets && !!(problem.targets && problem.targets.length > 1);
+  const hasSingleTarget = anyTargets || !!(problem.targets && problem.targets.length === 1);
   const [activeTargetIdx, setActiveTargetIdx] = useState(0);
   const [singleFb, setSingleFb] = useState(null); // {ok, msg} for single-target check
   const [zoom, setZoom] = useState(1);
@@ -319,7 +324,11 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
       if (E.alphaEqualAC(normD, normT)) return true;
       // αβη + AC: also accept η-variants, e.g. ∗(λx.hobbit(x))(x) ≡ ∗hobbit(x)
       if (E.equivACη(meaning.term, term)) return true;
-      // Fallback: compare canonical string forms (handles prettification differences)
+      // Fallback: compare canonical string forms (handles prettification
+      // differences). LOAD-BEARING (W14, review 1.6): some equivalences are
+      // caught ONLY here, so grading correctness is coupled to printer output
+      // — any toStr/prettifyVars change can flip grades. The golden suite
+      // regresses this; retiring it requires extending equivACη first.
       const sD = E.toStr(E.prettifyVars(normD));
       const sT = E.toStr(E.prettifyVars(normT));
       return sD === sT;
@@ -345,7 +354,16 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
     if (!hasScopes && !hasSingleTarget) { onComplete && onComplete(); return; }
     if (hasSingleTarget && !hasScopes) {
       // Single-target: check derivation matches
-      const matched = matchesTarget(rootMeaning, problem.targets[0]);
+      let matched = false;
+      if (anyTargets) {
+        for (const t of problem.targets) {
+          const m = matchesTarget(rootMeaning, t);
+          if (m === true) { matched = true; break; }
+          if (m === 'target-error') matched = 'target-error';
+        }
+      } else {
+        matched = matchesTarget(rootMeaning, problem.targets[0]);
+      }
       if (matched === 'target-error') {
         setSingleFb({ ok: true, targetError: true });
         onComplete && onComplete();

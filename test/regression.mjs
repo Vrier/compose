@@ -113,6 +113,34 @@ if (UPDATE) {
 if (!fs.existsSync(GOLDEN)) { console.error('No golden.txt — run `npm run test:update` first.'); process.exit(2); }
 
 const golden = fs.readFileSync(GOLDEN, 'utf8');
+/* Round-trip property (W14, review 1.8): parsing a printed term must give
+   back an α-equal term — locks the parser and printer together. Runs over
+   every solved root term in the corpus. */
+function roundTripCheck() {
+  const dir = path.join(SRC, 'exercises');
+  let checked = 0; const fails = [];
+  for (const file of fs.readdirSync(dir).filter((f) => f.endsWith('.compose.json')).sort()) {
+    const set = F.parseFile(fs.readFileSync(path.join(dir, file), 'utf8'), file);
+    for (const g of (set.groups || [])) for (const p of (g.problems || [])) {
+      if (p.kind !== 'tree' || !p.tree) continue;
+      let r; try { const root = F.parseTree(p.tree); r = F.solveTree(root, set)[root.id]; } catch { continue; }
+      if (!r) continue;
+      checked++;
+      try {
+        const back = E.parse(E.asciiToUnicode(E.toStr(r.term)));
+        if (!E.alphaEqual(back, r.term) && !E.alphaEqualAC(back, r.term)) fails.push(`${file}/${p.id}: ${E.toStr(r.term)}`);
+      } catch (e) { fails.push(`${file}/${p.id}: reparse threw — ${e.message}`); }
+    }
+  }
+  if (fails.length) {
+    console.error(`✗ ROUND-TRIP: ${fails.length}/${checked} solved terms do not survive parse∘print:`);
+    for (const f of fails.slice(0, 10)) console.error('  ' + f);
+    process.exit(1);
+  }
+  return checked;
+}
+const rtCount = roundTripCheck();
+
 /* Browser-style smoke load: window-attached globals must still work. */
 function vmSmokeLoad() {
   const ctx = vm.createContext({ console });
@@ -125,7 +153,7 @@ function vmSmokeLoad() {
 }
 vmSmokeLoad();
 
-if (snap === golden) { console.log(`✓ regression OK — ${count} snapshot lines match golden (require + vm smoke load)`); process.exit(0); }
+if (snap === golden) { console.log(`✓ regression OK — ${count} snapshot lines match golden, ${rtCount} terms round-trip parse∘print (require + vm smoke load)`); process.exit(0); }
 
 const a = golden.split('\n'), b = snap.split('\n');
 const diffs = [];

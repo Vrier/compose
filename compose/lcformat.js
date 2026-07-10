@@ -447,8 +447,12 @@
   }
 
   /* ---- tree parsing (labeled brackets) ---------------------------------- */
-  let _nid = 0;
+  // Node ids are LOCAL to each parse (k0, k1, … in traversal order), so the
+  // same tree always yields the same ids. The old module-global counter made
+  // ids depend on session parse ORDER — which silently orphaned persisted
+  // partial-derivation work across reloads (W14, review 1.5).
   function parseTree(src) {
+    let _nid = 0;
     let i = 0;
     const ws = () => { while (i < src.length && /\s/.test(src[i])) i++; };
     function node() {
@@ -582,6 +586,16 @@
     };
   }
 
+  /**
+   * Parsed-set shape (W14 documentation):
+   * @typedef {{id:string, title:string, subtitle:string, notation:'cc'|'hk',
+   *   typeEnv:Object, constEnv:Object, lex:Object, lexList:Array, rules:string[],
+   *   multiLetter:boolean, groups:Group[], displayHints:Object, config?:Object,
+   *   reading?:{format:string, markdown:string}}} ParsedSet
+   * @typedef {{id:string, kind:'tree', title:string, directions:string, problems:Problem[]}} Group
+   * @typedef {{id:string, kind:'tree', tree:string, gloss:string, expected:string,
+   *   note:string, section:string, hints?:string[], targetsMode?:'any', targets?:string[]}} Problem
+   */
   // Native COMPOSE exercise format (JSON). See FORMAT.md and
   // schemas/compose.schema.json. Second use: opts = { collect: true } turns on
   // diagnostics mode (W13a) — the return value becomes { set, diagnostics }
@@ -695,6 +709,7 @@
           expected: item.expected || '', note: item.note || '',
           section: (item.reading && item.reading.section) || item.section || '',
           hints: Array.isArray(item.hints) ? item.hints.filter((h) => typeof h === 'string' && h.trim()) : undefined,
+          targetsMode: item.targetsMode === 'any' ? 'any' : undefined,
           targets: tgts.length ? tgts : undefined });
       });
       set.groups.push(group);

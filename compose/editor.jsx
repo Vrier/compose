@@ -193,6 +193,7 @@ function generateJSON(state) {
           if ((it.note || '').trim()) o.note = it.note.trim();
           if (Array.isArray(it.targets) && it.targets.filter(Boolean).length) o.targets = it.targets.filter(Boolean);
           if (Array.isArray(it.hints) && it.hints.filter(Boolean).length) o.hints = it.hints.filter(Boolean);
+          if (it.targetsMode === 'any') o.targetsMode = 'any';
           if ((it.section || '').trim()) o.reading = { section: it.section.trim() };
           return o;
         }),
@@ -237,6 +238,7 @@ function parseFromText(text) {
         expected: p.expected || '', note: p.note || '',
         targets: p.targets ? p.targets.slice() : undefined,
         hints: Array.isArray(p.hints) && p.hints.length ? p.hints.slice() : undefined,
+        targetsMode: p.targetsMode === 'any' ? 'any' : undefined,
       })),
     }));
     // Recover the reading companion + per-exercise section anchors (native JSON only).
@@ -641,6 +643,13 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
                       </div>
                       <input className="fe-note-input" value={item.note || ''} placeholder="Teacher note (optional)…"
                         onChange={e => updTree(i, k, { note: e.target.value })} spellCheck={false} />
+                      <details className="fe-hints-det">
+                        <summary className="fe-hints-sum">💡 Hints{Array.isArray(item.hints) && item.hints.filter(Boolean).length ? ' (' + item.hints.filter(Boolean).length + ')' : ''}</summary>
+                        <textarea className="fe-hints-ta mono" rows={3} spellCheck={false}
+                          placeholder={'One hint per line, revealed in order.\nThe final stage always offers "Show answer" (practice mode).'}
+                          value={(item.hints || []).join('\n')}
+                          onChange={e => updTree(i, k, { hints: e.target.value.split('\n') })} />
+                      </details>
                       {Array.isArray(item.targets) && item.targets.filter(Boolean).map((t, ti) => {
                         const str = String(t); const c = str.indexOf(':');
                         const ok = E.tryParse((c > -1 ? str.slice(c + 1) : str).trim()).ok;
@@ -760,6 +769,7 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
       const entry = { key, title: obj.title || key, content: obj };
       const idx = list.findIndex((w) => w && w.key === key);
       if (idx >= 0) list[idx] = entry; else list.push(entry);
+      bundle.engineVersion = (window.LC && window.LC.VERSION) || undefined; // W14: grader-version provenance
       await pb.collection('versions').update(H.versionId, { bundle });
       setEditKey(key);
       if (Array.isArray(H.keys) && H.keys.indexOf(key) < 0) H.keys.push(key);

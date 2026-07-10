@@ -4,24 +4,54 @@
   "title": "COMPOSE worksheet (.compose.json)",
   "description": "A self-contained COMPOSE worksheet: domain, lexicon, rule inventory, and exercises (each exercise is a titled cluster of derivations; each derivation is one tree to compose). Canonical field names are documented here; deprecated aliases are accepted by the app but should not be written by new tools. Version policy: additive changes keep compose: 1; breaking changes bump the number and ship a migration.",
   "type": "object",
-  "required": ["compose", "title", "exercises"],
+  "required": [
+    "compose",
+    "title",
+    "exercises"
+  ],
   "properties": {
-    "compose": { "const": 1, "description": "Format version. Must be 1." },
-    "id": { "type": "string", "description": "Optional worksheet identifier (informational)." },
-    "title": { "type": "string", "minLength": 1 },
-    "subtitle": { "type": "string" },
-    "notation": { "enum": ["cc", "hk"], "description": "Rendering notation: Coppock & Champollion (default) or Heim & Kratzer." },
+    "compose": {
+      "const": 1,
+      "description": "Format version. Must be 1."
+    },
+    "id": {
+      "type": "string",
+      "description": "Optional worksheet identifier (informational)."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "notation": {
+      "enum": [
+        "cc",
+        "hk"
+      ],
+      "description": "Rendering notation: Coppock & Champollion (default) or Heim & Kratzer."
+    },
     "domain": {
       "type": "object",
       "properties": {
-        "multiLetterNames": { "type": "boolean", "default": true },
-        "constants": { "$ref": "#/$defs/typeMap" },
-        "variables": { "$ref": "#/$defs/typeMap" }
+        "multiLetterNames": {
+          "type": "boolean",
+          "default": true
+        },
+        "constants": {
+          "$ref": "#/$defs/typeMap"
+        },
+        "variables": {
+          "$ref": "#/$defs/typeMap"
+        }
       }
     },
     "lexicon": {
       "type": "array",
-      "items": { "$ref": "#/$defs/lexEntry" }
+      "items": {
+        "$ref": "#/$defs/lexEntry"
+      }
     },
     "rules": {
       "type": "object",
@@ -29,34 +59,112 @@
         "composition": {
           "type": "object",
           "properties": {
-            "functionApplication": { "type": "boolean", "default": true },
-            "predicateModification": { "type": "boolean", "default": false },
-            "nonBranchingNodes": { "type": "boolean", "default": true },
-            "predicateAbstraction": { "type": "boolean", "default": false },
-            "intensionalFunctionApplication": { "type": "boolean", "default": false }
+            "functionApplication": {
+              "type": "boolean",
+              "default": true
+            },
+            "predicateModification": {
+              "type": "boolean",
+              "default": false
+            },
+            "nonBranchingNodes": {
+              "type": "boolean",
+              "default": true
+            },
+            "predicateAbstraction": {
+              "type": "boolean",
+              "default": false
+            },
+            "intensionalFunctionApplication": {
+              "type": "boolean",
+              "default": false
+            }
           }
         },
-        "typeShifts": { "type": "array", "items": { "type": "string" } },
-        "quantifierRaising": { "type": "boolean" },
-        "autoResolveNonBranching": { "type": "boolean" },
-        "operators": { "type": "object", "additionalProperties": { "type": "boolean" } },
-        "mereologyOperators": { "type": "boolean", "deprecated": true, "description": "Deprecated grouped flag — use rules.operators." },
-        "presuppositionOperators": { "type": "boolean", "deprecated": true, "description": "Deprecated grouped flag — use rules.operators." }
+        "typeShifts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "quantifierRaising": {
+          "type": "boolean"
+        },
+        "autoResolveNonBranching": {
+          "type": "boolean"
+        },
+        "operators": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "boolean"
+          }
+        },
+        "mereologyOperators": {
+          "type": "boolean",
+          "deprecated": true,
+          "description": "Deprecated grouped flag — use rules.operators."
+        },
+        "presuppositionOperators": {
+          "type": "boolean",
+          "deprecated": true,
+          "description": "Deprecated grouped flag — use rules.operators."
+        }
       }
     },
     "exercises": {
       "type": "array",
       "minItems": 1,
-      "items": { "$ref": "#/$defs/exercise" }
+      "items": {
+        "$ref": "#/$defs/exercise"
+      }
     },
     "reading": {
       "type": "object",
       "description": "Optional reading companion embedded in the worksheet (lingdown Markdown). Derivations anchor to its ## sections via reading.section.",
-      "required": ["markdown"],
+      "required": [
+        "markdown"
+      ],
       "properties": {
-        "format": { "const": "lingdown", "default": "lingdown" },
-        "markdown": { "type": "string" }
+        "format": {
+          "const": "lingdown",
+          "default": "lingdown"
+        },
+        "markdown": {
+          "type": "string"
+        }
       }
+    },
+    "meta": {
+      "type": "object",
+      "description": "Optional provenance block, ignored by the app (W14): who wrote this, what it tracks, under what terms. source like \"after Coppock & Champollion §7\" operationalises the paraphrase-only copyright posture.",
+      "properties": {
+        "author": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "license": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "difficulty": {
+          "enum": [
+            "intro",
+            "core",
+            "challenge"
+          ]
+        }
+      }
+    },
+    "engineVersion": {
+      "type": "string",
+      "description": "Grader version that authored/saved this content (informational; stamped by the hosted editor)."
     }
   },
   "$defs": {
@@ -68,72 +176,201 @@
     "typeMap": {
       "type": "object",
       "description": "Maps a type string (e, t, v, i, s, n, or a function type like <e,t> / ⟨e,t⟩) to a space-separated list of symbols; single-letter ranges like a-s expand.",
-      "additionalProperties": { "type": "string" }
+      "additionalProperties": {
+        "type": "string"
+      }
     },
     "lexEntry": {
       "type": "object",
       "anyOf": [
-        { "required": ["words"] },
-        { "required": ["word"] }
+        {
+          "required": [
+            "words"
+          ]
+        },
+        {
+          "required": [
+            "word"
+          ]
+        }
       ],
       "properties": {
         "words": {
           "anyOf": [
-            { "type": "array", "items": { "type": "string" }, "minItems": 1 },
-            { "type": "string", "description": "Comma-separated string form (accepted; prefer the array form)." }
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            },
+            {
+              "type": "string",
+              "description": "Comma-separated string form (accepted; prefer the array form)."
+            }
           ],
           "description": "Surface word(s) sharing this denotation."
         },
-        "word": { "type": "string", "deprecated": true, "description": "Deprecated alias — use words." },
-        "denotation": { "type": "string", "description": "A λ-term. ASCII shortcuts (L→λ, A→∀, E→∃) are accepted." },
-        "den": { "type": "string", "deprecated": true, "description": "Deprecated alias — use denotation." },
-        "displayAs": { "type": "string", "description": "Optional display override for the symbol in trees." },
-        "display": { "type": "string", "deprecated": true, "description": "Deprecated alias — use displayAs." }
+        "word": {
+          "type": "string",
+          "deprecated": true,
+          "description": "Deprecated alias — use words."
+        },
+        "denotation": {
+          "type": "string",
+          "description": "A λ-term. ASCII shortcuts (L→λ, A→∀, E→∃) are accepted."
+        },
+        "den": {
+          "type": "string",
+          "deprecated": true,
+          "description": "Deprecated alias — use denotation."
+        },
+        "displayAs": {
+          "type": "string",
+          "description": "Optional display override for the symbol in trees."
+        },
+        "display": {
+          "type": "string",
+          "deprecated": true,
+          "description": "Deprecated alias — use displayAs."
+        }
       }
     },
     "exercise": {
       "type": "object",
       "description": "A titled cluster of derivations (e.g. \"A. Intransitive verbs\").",
       "anyOf": [
-        { "required": ["derivations"] },
-        { "required": ["items"] },
-        { "required": ["trees"] }
+        {
+          "required": [
+            "derivations"
+          ]
+        },
+        {
+          "required": [
+            "items"
+          ]
+        },
+        {
+          "required": [
+            "trees"
+          ]
+        }
       ],
       "properties": {
-        "id": { "$ref": "#/$defs/stableId" },
-        "title": { "type": "string" },
-        "instructions": { "type": "string", "description": "Directions shown under the title." },
-        "directions": { "type": "string", "deprecated": true, "description": "Deprecated alias — use instructions." },
-        "derivations": { "type": "array", "items": { "$ref": "#/$defs/derivation" }, "description": "Canonical name for the item list." },
-        "items": { "type": "array", "items": { "$ref": "#/$defs/derivation" }, "description": "Accepted alias for derivations (widely used; will be deprecated in a future version)." },
-        "trees": { "type": "array", "items": { "$ref": "#/$defs/derivation" }, "deprecated": true, "description": "Deprecated alias — use derivations." }
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "title": {
+          "type": "string"
+        },
+        "instructions": {
+          "type": "string",
+          "description": "Directions shown under the title."
+        },
+        "directions": {
+          "type": "string",
+          "deprecated": true,
+          "description": "Deprecated alias — use instructions."
+        },
+        "derivations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/derivation"
+          },
+          "description": "Canonical name for the item list."
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/derivation"
+          },
+          "description": "Accepted alias for derivations (widely used; will be deprecated in a future version)."
+        },
+        "trees": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/derivation"
+          },
+          "deprecated": true,
+          "description": "Deprecated alias — use derivations."
+        }
       }
     },
     "derivation": {
       "type": "object",
       "description": "One tree to compose — the atomic unit of student work.",
-      "required": ["tree"],
+      "required": [
+        "tree"
+      ],
       "properties": {
-        "id": { "$ref": "#/$defs/stableId" },
-        "tree": { "type": "string", "minLength": 1, "description": "Labeled-bracket tree: [.Label child child]. A leaf is a lexicon word, a trace is t_1, an index leaf is a bare number." },
-        "sentence": { "type": "string", "description": "The sentence / caption shown to the student." },
-        "instructions": { "type": "string", "description": "Accepted alias for sentence." },
-        "gloss": { "type": "string", "description": "Accepted alias for sentence." },
-        "expected": { "type": "string", "description": "Author convenience: intended root denotation, checked in the editor preview." },
-        "note": { "type": "string", "description": "Teacher-only note." },
+        "id": {
+          "$ref": "#/$defs/stableId"
+        },
+        "tree": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Labeled-bracket tree: [.Label child child]. A leaf is a lexicon word, a trace is t_1, an index leaf is a bare number."
+        },
+        "sentence": {
+          "type": "string",
+          "description": "The sentence / caption shown to the student."
+        },
+        "instructions": {
+          "type": "string",
+          "description": "Accepted alias for sentence."
+        },
+        "gloss": {
+          "type": "string",
+          "description": "Accepted alias for sentence."
+        },
+        "expected": {
+          "type": "string",
+          "description": "Author convenience: intended root denotation, checked in the editor preview."
+        },
+        "note": {
+          "type": "string",
+          "description": "Teacher-only note."
+        },
         "targets": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "Accepted goal denotations, each optionally prefixed \"label: formula\". Two targets on one derivation mean a scope-ambiguous item requiring both readings (see targetsMode)."
         },
-        "target": { "type": "string", "deprecated": true, "description": "Deprecated alias — use targets (array)." },
-        "targetsMode": { "enum": ["all", "any"], "description": "Reserved: whether all targets are required (default) or any single one suffices. Not yet consumed by the app." },
-        "hints": { "type": "array", "items": { "type": "string" }, "description": "Reserved: staged hints revealed one at a time (final stage may reveal the answer in practice mode). Not yet consumed by the app." },
+        "target": {
+          "type": "string",
+          "deprecated": true,
+          "description": "Deprecated alias — use targets (array)."
+        },
+        "targetsMode": {
+          "enum": [
+            "all",
+            "any"
+          ],
+          "description": "Whether all targets are required (\"all\", default — two targets mean both scope readings) or any single one suffices (\"any\" — equivalent formulations / either scope acceptable)."
+        },
+        "hints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Reserved: staged hints revealed one at a time (final stage may reveal the answer in practice mode). Not yet consumed by the app."
+        },
         "reading": {
           "type": "object",
-          "properties": { "section": { "type": "string", "description": "Anchor into the worksheet's reading companion (## section key)." } }
+          "properties": {
+            "section": {
+              "type": "string",
+              "description": "Anchor into the worksheet's reading companion (## section key)."
+            }
+          }
         },
-        "section": { "type": "string", "deprecated": true, "description": "Deprecated alias — use reading.section." }
+        "section": {
+          "type": "string",
+          "deprecated": true,
+          "description": "Deprecated alias — use reading.section."
+        }
       }
     }
   }
