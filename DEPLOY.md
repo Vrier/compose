@@ -228,7 +228,9 @@ https://www.tstephen.com; the apex redirects to www. Setup:
 - The SITE repo carries its own `.github/workflows/deploy.yml`: every push
   to its main SSHes in as `compose` and fast-forwards `/srv/www`. It uses
   the same `DEPLOY_SSH_KEY` secret as this repo (add it to the site repo's
-  Actions secrets), plus the shared write deploy key for pushes from Cowork.
+  Actions secrets), plus its own write deploy key for pushes from Cowork
+  (`.site-deploy-key` beside `.github-deploy-key` — GitHub deploy keys are
+  unique per repo, so the compose key could not be reused).
 - No build step, no service restart — Caddy serves the files directly.
 
 ## 12 · Troubleshooting

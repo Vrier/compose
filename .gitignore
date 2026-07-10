@@ -31,3 +31,4 @@ server/pb_data/
 .DS_Store
 Thumbs.db
 *.log
+.site-deploy-key*
