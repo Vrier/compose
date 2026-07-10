@@ -3,10 +3,23 @@
 One-sitting paste-along for the Hetzner VPS at **167.233.233.109** (Ubuntu 24.04).
 Everything is numbered; run blocks top to bottom. Prerequisites already done:
 DNS A records for `tstephen.com` and `compose.tstephen.com` → 167.233.233.109
-(verified 2026-07); this repo pushed to GitHub as `compose` (private).
+(verified 2026-07); this repo pushed to GitHub as `Vrier/compose` (public).
 
 Conventions: blocks marked **[laptop]** run in PowerShell on your machine;
 blocks marked **[server]** run in the SSH session on the VPS.
+
+> **Fast path (recommended).** Sections 2–6 and the server side of §9 are
+> automated by `deploy/provision.sh` (idempotent — safe to re-run). After
+> logging in (§1), the whole deployment is:
+>
+> ```
+> curl -fsSL https://raw.githubusercontent.com/Vrier/compose/main/deploy/provision.sh | bash
+> ```
+>
+> …then follow the three numbered items it prints at the end (admin
+> password, GitHub `DEPLOY_SSH_KEY` secret, off-box backups). The manual
+> sections below remain as the reference for what the script does, for
+> §8/§10 (backups target, restore drill), and for troubleshooting.
 
 ---
 
