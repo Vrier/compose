@@ -4,15 +4,17 @@
 # certificates automatically for every site listed here.
 # ===========================================================================
 
-# Personal site (placeholder until it has content)
+# Personal site — static clone of github.com/Vrier/vrier.github.io at
+# /srv/www (owned by `compose`; that repo's own Actions workflow
+# fast-forwards it on every push). Apex redirects to www.
 tstephen.com {
-	root * /srv/site
-	file_server
-	encode gzip
+	redir https://www.tstephen.com{uri} permanent
 }
 
 www.tstephen.com {
-	redir https://tstephen.com{uri} permanent
+	root * /srv/www
+	file_server
+	encode gzip
 }
 
 # COMPOSE — reverse proxy to PocketBase (systemd unit `compose`)

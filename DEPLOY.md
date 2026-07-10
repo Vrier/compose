@@ -216,6 +216,21 @@ Cowork session → tests run in CI against the new pin → push. The deploy
 script notices the pin change and fetches the new binary. Never update
 mid-term.
 
+## 11b · Personal site at www.tstephen.com (added 2026-07-10)
+
+The same VPS serves the personal site (github.com/Vrier/vrier.github.io) at
+https://www.tstephen.com; the apex redirects to www. Setup:
+
+- DNS (Porkbun): A record `www` → 167.233.233.109.
+- `/srv/www` is a clone of the site repo, owned by `compose`.
+- `/etc/caddy/Caddyfile` matches `deploy/Caddyfile` in this repo (apex
+  redirect + www file_server + compose reverse-proxy).
+- The SITE repo carries its own `.github/workflows/deploy.yml`: every push
+  to its main SSHes in as `compose` and fast-forwards `/srv/www`. It uses
+  the same `DEPLOY_SSH_KEY` secret as this repo (add it to the site repo's
+  Actions secrets), plus the shared write deploy key for pushes from Cowork.
+- No build step, no service restart — Caddy serves the files directly.
+
 ## 12 · Troubleshooting
 
 Service logs: `journalctl -u compose -f` · Caddy logs: `journalctl -u caddy -f`
