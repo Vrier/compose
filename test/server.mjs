@@ -247,6 +247,8 @@ async function main() {
   lacks('root is the bare starter (no full library inlined)', r.text, '"ch7.1-adj":{');
   contains('root still identifies as hosted-root', r.text, 'hosted-root');
   contains('root build requests the demo sample for students', r.text, '"sample":true');
+  contains('derivation surface is SR-announcing (S13.5)', r.text, 'aria-live');
+  contains('tree nodes carry focus anchors (S13.5)', r.text, 'data-nodeid');
   r = await req('GET', '/editor/', { raw: true });
   contains('/editor identifies as the sandbox', r.text, '"id":"hosted-sandbox"');
   contains('/editor is an instructor surface', r.text, '"role":"instructor"');

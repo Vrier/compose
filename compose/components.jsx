@@ -120,6 +120,7 @@ function ExpressionInput({ value, onChange, onSubmit, placeholder, status, apiRe
     <div className={'entry ' + (status || '')}>
       <input
         ref={inputRef} value={value} placeholder={placeholder || 'Enter an expression…'}
+        aria-label={placeholder || 'Enter an expression'}
         spellCheck={false} autoCapitalize="off" autoComplete="off"
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKey}

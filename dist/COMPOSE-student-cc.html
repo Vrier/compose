@@ -1649,6 +1649,18 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .fe-hints-sum { font-size: 12px; color: var(--ink-soft); cursor: pointer; }
 .fe-hints-ta { width: 100%; box-sizing: border-box; margin-top: 4px; padding: 7px 9px; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); color: var(--ink); font-size: 12.5px; resize: vertical; }
 
+/* ---- a11y (S13.5): keyboard + screen-reader access ---------------------- */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.node-box:focus-visible, .rule-card:focus-visible, .shift-card:focus-visible,
+.btn:focus-visible, .btn-ghost:focus-visible, .zoom-btn:focus-visible,
+.sym-key:focus-visible, .entry input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 
 /* ===========================================================================
    lingdown.css — typesetting for the lingdown engine. Themable via --ld-*
@@ -4766,6 +4778,7 @@ function ExpressionInput({ value, onChange, onSubmit, placeholder, status, apiRe
       ref: inputRef,
       value,
       placeholder: placeholder || "Enter an expression\u2026",
+      "aria-label": placeholder || "Enter an expression",
       spellCheck: false,
       autoCapitalize: "off",
       autoComplete: "off",
@@ -4963,6 +4976,8 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
   const api = useRef(null);
   const canvasRef = useRef(null);
   const wrapRef = useRef(null);
+  const dockRef = useRef(null);
+  const lastPickedRef = useRef(null);
   const [qrDrag, setQrDrag] = useState(null);
   const LC_ASSESSMENT = (() => {
     try {
@@ -4973,6 +4988,32 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
     }
   })();
   const [showTC, setShowTC] = useState(false);
+  useEffect(() => {
+    if (selected && !chosen && dockRef.current) {
+      const el = dockRef.current.querySelector("button, input");
+      if (el) el.focus();
+    } else if (!selected && lastPickedRef.current) {
+      const back = document.querySelector('[data-nodeid="' + lastPickedRef.current + '"]');
+      lastPickedRef.current = null;
+      if (back && back.focus) back.focus();
+    }
+  }, [selected, chosen]);
+  function nodeA11yLabel(node, m, leaf, avail, shiftable, tok) {
+    const name = leaf ? tok.trace ? "trace t" + tok.trace : tok.index ? "index " + tok.index : String(node.word || "") : node.label || "phrase";
+    const bits = [(leaf ? "Leaf " : "Node ") + name];
+    if (m) {
+      try {
+        bits.push("denotation " + E.toStr(m.term) + ", type " + E.typeToStr(m.type));
+      } catch (e) {
+      }
+      if (m.rule && m.rule !== "lex") bits.push("resolved by " + m.rule);
+      if (m.shifted) bits.push("type-shifted");
+    } else if (!leaf) {
+      bits.push(avail ? "ready to compose, press Enter to choose a rule" : "awaiting children");
+    }
+    if (shiftable) bits.push("type-shiftable");
+    return bits.join(". ");
+  }
   useEffect(() => {
     setShowTC(false);
   }, [problem.id]);
@@ -5622,7 +5663,7 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
       layout.nodes.forEach((n) => nodeById[n.node.id] = n);
       const adjPy = (id, base) => base + (nodeExtraY[id] || 0);
       const extraHTotal = Object.values(nodeExtraY).reduce((a, b) => Math.max(a, b), 0);
-      return /* @__PURE__ */ React.createElement("div", { className: "tree-zoom", style: { width: layout.width * zoom, height: (layout.height + extraHTotal) * zoom } }, /* @__PURE__ */ React.createElement("div", { className: "tree-wrap", ref: wrapRef, style: { width: layout.width, height: layout.height + extraHTotal, transform: "scale(" + zoom + ")", transformOrigin: "top left" } }, /* @__PURE__ */ React.createElement("svg", { className: "tree-svg", width: layout.width, height: layout.height + extraHTotal }, layout.edges.map((e, i) => {
+      return /* @__PURE__ */ React.createElement("div", { className: "tree-zoom", style: { width: layout.width * zoom, height: (layout.height + extraHTotal) * zoom } }, /* @__PURE__ */ React.createElement("div", { className: "tree-wrap", role: "group", "aria-label": "Derivation tree" + (problem && problem.sentence ? " for: " + problem.sentence : ""), ref: wrapRef, style: { width: layout.width, height: layout.height + extraHTotal, transform: "scale(" + zoom + ")", transformOrigin: "top left" } }, /* @__PURE__ */ React.createElement("svg", { className: "tree-svg", "aria-hidden": "true", width: layout.width, height: layout.height + extraHTotal }, layout.edges.map((e, i) => {
         const pn = nodeById[e.parentId], cn = nodeById[e.childId];
         const y1 = pn ? adjPy(e.parentId, pn.py) + 30 : e.y1;
         const y2 = cn ? adjPy(e.childId, cn.py) - 4 : e.y2;
@@ -5665,12 +5706,36 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
             style: { left: px, top: py + extraY, opacity: isCollapsed ? 0.16 : 1, pointerEvents: isCollapsed ? "none" : void 0, transition: "opacity 0.35s" }
           },
           m && m.shifted && m.baseMeaning && !leaf && extraY > 0 && /* @__PURE__ */ React.createElement("div", { className: "shift-above-box", style: { position: "absolute", bottom: "100%", left: "50%", transform: "translateX(-50%)", marginBottom: 4 } }, (m.shiftChain && m.shiftChain.length > 1 ? [...m.shiftChain].reverse() : [{ term: m.term, type: m.type, rule: m.rule }]).map((step, si) => /* @__PURE__ */ React.createElement(React.Fragment, { key: si }, /* @__PURE__ */ React.createElement("span", { className: "node-meaning shift-top" }, /* @__PURE__ */ React.createElement(Notation, { ast: step.term })), /* @__PURE__ */ React.createElement("span", { className: "node-type-badge shift-top-type" }, /* @__PURE__ */ React.createElement(TypeBadge, { type: step.type })), /* @__PURE__ */ React.createElement("div", { className: "shift-uparrow" }, "\u21D1", /* @__PURE__ */ React.createElement("span", { className: "shift-op-name" }, step.rule))))),
-          /* @__PURE__ */ React.createElement("div", { className: cls.join(" "), onClick: (e) => {
-            if (clickable) {
-              e.stopPropagation();
-              pickNode(node);
-            }
-          } }, m && !m.shifted && !leaf && m.rule && m.rule !== "lex" && /* @__PURE__ */ React.createElement("span", { className: "node-rule-tag" }, m.rule), isRaisable(node) && !qrDrag && /* @__PURE__ */ React.createElement("button", { className: "qr-handle", title: "Drag to raise (QR)", onPointerDown: (e) => startQRDrag(e, node), onClick: (e) => e.stopPropagation() }, "\u2912"), shiftable && !sel && /* @__PURE__ */ React.createElement("span", { className: "shift-dot", title: "Type-shiftable" }, "\u21C5"), leaf ? tok.trace ? /* @__PURE__ */ React.createElement("span", { className: "node-word" }, /* @__PURE__ */ React.createElement("i", null, "t"), /* @__PURE__ */ React.createElement("sub", null, tok.trace)) : isIndex ? /* @__PURE__ */ React.createElement("span", { className: `node-word node-index${node.id.startsWith("qridx-") ? " qr-index" : ""}` }, tok.index) : /* @__PURE__ */ React.createElement("span", { className: "node-word" }, /* @__PURE__ */ React.createElement(Notation, { src: node.word })) : qrDrag && qrDrag.nodeId === node.id ? /* @__PURE__ */ React.createElement("span", { className: "node-label qr-trace-preview" }, "t", /* @__PURE__ */ React.createElement("sub", null, qrDrag.bindIdx != null ? qrDrag.bindIdx : (root.__qrIndex || 0) + 1)) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: "node-label" }, node.label || "\u2022"), allow.showSpans && !m && /* @__PURE__ */ React.createElement("span", { className: "node-span-label" }, spanOf(node, 4)))),
+          /* @__PURE__ */ React.createElement(
+            "div",
+            {
+              className: cls.join(" "),
+              role: clickable ? "button" : void 0,
+              tabIndex: clickable ? 0 : void 0,
+              "data-nodeid": node.id,
+              "aria-label": nodeA11yLabel(node, m, leaf, avail, shiftable, tok),
+              "aria-pressed": clickable ? !!sel : void 0,
+              onKeyDown: (e) => {
+                if (clickable && (e.key === "Enter" || e.key === " ")) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  lastPickedRef.current = node.id;
+                  pickNode(node);
+                }
+              },
+              onClick: (e) => {
+                if (clickable) {
+                  e.stopPropagation();
+                  lastPickedRef.current = node.id;
+                  pickNode(node);
+                }
+              }
+            },
+            m && !m.shifted && !leaf && m.rule && m.rule !== "lex" && /* @__PURE__ */ React.createElement("span", { className: "node-rule-tag" }, m.rule),
+            isRaisable(node) && !qrDrag && /* @__PURE__ */ React.createElement("button", { className: "qr-handle", title: "Drag to raise (QR)", onPointerDown: (e) => startQRDrag(e, node), onClick: (e) => e.stopPropagation() }, "\u2912"),
+            shiftable && !sel && /* @__PURE__ */ React.createElement("span", { className: "shift-dot", title: "Type-shiftable" }, "\u21C5"),
+            leaf ? tok.trace ? /* @__PURE__ */ React.createElement("span", { className: "node-word" }, /* @__PURE__ */ React.createElement("i", null, "t"), /* @__PURE__ */ React.createElement("sub", null, tok.trace)) : isIndex ? /* @__PURE__ */ React.createElement("span", { className: `node-word node-index${node.id.startsWith("qridx-") ? " qr-index" : ""}` }, tok.index) : /* @__PURE__ */ React.createElement("span", { className: "node-word" }, /* @__PURE__ */ React.createElement(Notation, { src: node.word })) : qrDrag && qrDrag.nodeId === node.id ? /* @__PURE__ */ React.createElement("span", { className: "node-label qr-trace-preview" }, "t", /* @__PURE__ */ React.createElement("sub", null, qrDrag.bindIdx != null ? qrDrag.bindIdx : (root.__qrIndex || 0) + 1)) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: "node-label" }, node.label || "\u2022"), allow.showSpans && !m && /* @__PURE__ */ React.createElement("span", { className: "node-span-label" }, spanOf(node, 4)))
+          ),
           (() => {
             if (isIndex) return null;
             if (m && (!leaf || showLeaves !== false)) {
@@ -5685,42 +5750,75 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
         );
       })));
     })()
-  )), /* @__PURE__ */ React.createElement("div", { className: "dock" }, !selected && !allDone && /* @__PURE__ */ React.createElement("div", { className: "dock-hint" }, availCount > 0 ? "Select a highlighted node to compute its meaning." : "Work bottom-up \u2014 the next node lights up once its children are resolved."), allDone && !hasScopes && !hasSingleTarget && /* @__PURE__ */ React.createElement(Feedback, { kind: "good" }, "Derivation complete \u2014 the root meaning is computed. Pick the next exercise on the left."), allDone && hasSingleTarget && !hasScopes && singleFb && singleFb.ok && !singleFb.targetError && /* @__PURE__ */ React.createElement(Feedback, { kind: "good" }, "\u2713 Correct derivation \u2014 the meaning matches the target."), allDone && hasSingleTarget && !hasScopes && singleFb && singleFb.ok && singleFb.targetError && /* @__PURE__ */ React.createElement(Feedback, { kind: "info" }, "\u26A0 Derivation complete, but the target could not be checked \u2014 tell your instructor."), allDone && hasSingleTarget && !hasScopes && singleFb && !singleFb.ok && /* @__PURE__ */ React.createElement(Feedback, { kind: "bad" }, singleFb.msg), allDone && hasScopes && scopeFb && scopeFb.kind === "good" && scopeFb.targetError && /* @__PURE__ */ React.createElement(Feedback, { kind: "info" }, "\u26A0 Derivation complete, but this target could not be checked \u2014 tell your instructor."), allDone && hasScopes && scopeFb && scopeFb.kind === "good" && !scopeFb.targetError && /* @__PURE__ */ React.createElement(Feedback, { kind: "good" }, "\u2713 ", parseScopeTarget(problem.targets[scopeFb.idx]).label, " scope reading confirmed!", completedTargets.size === problem.targets.length ? " Both readings derived \u2014 well done." : " Select the other checkbox to derive the second reading."), allDone && hasScopes && scopeFb && scopeFb.kind !== "good" && /* @__PURE__ */ React.createElement(Feedback, { kind: "bad" }, scopeFb.msg), allNodesDone && !rootDone && rootMeaning && /* @__PURE__ */ React.createElement(Feedback, { kind: "info" }, "All nodes resolved, but the root is type ", /* @__PURE__ */ React.createElement(TypeBadge, { type: rootMeaning.type }), " \u2014 apply Existential Closure (EC) or another operation to reach type ", /* @__PURE__ */ React.createElement("span", { className: "lx" }, "t"), " before the exercise completes."), selected && selected.mode === "view" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "dock-label" }, "\u27E8", selected.node.label || selected.node.word || "\u2022", "\u27E9 \xB7 resolved by ", /* @__PURE__ */ React.createElement("span", { style: { color: "var(--good)", fontWeight: 600 } }, selected.m.rule)), /* @__PURE__ */ React.createElement("div", { className: "compose-line", style: { fontSize: 18 } }, /* @__PURE__ */ React.createElement(Notation, { ast: selected.m.term }), /* @__PURE__ */ React.createElement(TypeBadge, { type: selected.m.type })), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 10 } }, /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => resetNode(selected.node) }, "\u21BA Reset this node"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => {
-    setSelected(null);
-    setFb(null);
-  } }, "Close"))), selected && selected.mode === "shift" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "dock-label" }, "Type-shift \u27E8", selected.node.label || selected.node.word || "\u2022", "\u27E9 ", /* @__PURE__ */ React.createElement("span", { className: "dock-sub" }, "current type ", /* @__PURE__ */ React.createElement(TypeBadge, { type: selected.m.type }))), /* @__PURE__ */ React.createElement("div", { className: "rule-row" }, selected.shifts.length === 0 && /* @__PURE__ */ React.createElement(Feedback, { kind: "info" }, "No type-shifting operations are enabled for a node of this type."), selected.shifts.map((op) => /* @__PURE__ */ React.createElement("button", { key: op.key, className: "rule-card shift-card", onClick: () => applyShift(op) }, /* @__PURE__ */ React.createElement("span", { className: "rc-name" }, op.name, " ", /* @__PURE__ */ React.createElement("span", { className: "rc-abbr shift-abbr" }, shiftArrow(op, selected.m && selected.m.type))), /* @__PURE__ */ React.createElement("span", { className: "rc-desc" }, op.desc))), selected.m.shifted && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", style: { alignSelf: "center" }, onClick: revertShift }, "Undo shift"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", style: { alignSelf: "center" }, onClick: () => {
-    setSelected(null);
-    setFb(null);
-  } }, "Cancel")), /* @__PURE__ */ React.createElement("div", { className: "dock-hint", style: { fontSize: 13 } }, "A type-shift rewrites this node\u2019s denotation in place, so it can combine with its sister.")), selected && selected.mode === "compose" && !chosen && (() => {
-    const rules = rulesFor(selected.node);
-    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "dock-label" }, "Choose a composition rule for \u27E8", selected.node.label || "\u2022", "\u27E9"), /* @__PURE__ */ React.createElement("div", { className: "rule-row" }, rules.map((entry) => {
-      const rej = rejected[entry.key];
-      return /* @__PURE__ */ React.createElement("button", { key: entry.key, className: "rule-card" + (rej ? " rejected" : ""), onClick: () => pickRule(entry) }, /* @__PURE__ */ React.createElement("span", { className: "rc-name" }, /* @__PURE__ */ React.createElement("span", { className: "rc-mark" }, rej ? "\u2715" : ""), entry.name, " ", /* @__PURE__ */ React.createElement("span", { className: "rc-abbr" }, entry.abbr)), /* @__PURE__ */ React.createElement("span", { className: "rc-desc" }, rej || entry.desc));
-    }), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", style: { alignSelf: "center" }, onClick: () => {
+  )), /* @__PURE__ */ React.createElement(
+    "div",
+    {
+      className: "dock",
+      ref: dockRef,
+      onKeyDown: (e) => {
+        if (e.key !== "Escape") return;
+        e.stopPropagation();
+        if (chosen) {
+          if (selected && selected.pa) setSelected(null);
+          setChosen(null);
+          setFb(null);
+        } else if (selected) {
+          setSelected(null);
+          setFb(null);
+          setRejected({});
+        }
+      }
+    },
+    /* @__PURE__ */ React.createElement("div", { className: "sr-only", role: "status", "aria-live": "polite" }, fb ? (fb.kind === "good" ? "Correct. " : fb.kind === "bad" ? "Not accepted. " : "") + (typeof fb.msg === "string" ? fb.msg : "") : allDone ? "Derivation complete." : selected ? "" : ""),
+    !selected && !allDone && /* @__PURE__ */ React.createElement("div", { className: "dock-hint" }, availCount > 0 ? "Select a highlighted node to compute its meaning." : "Work bottom-up \u2014 the next node lights up once its children are resolved."),
+    allDone && !hasScopes && !hasSingleTarget && /* @__PURE__ */ React.createElement(Feedback, { kind: "good" }, "Derivation complete \u2014 the root meaning is computed. Pick the next exercise on the left."),
+    allDone && hasSingleTarget && !hasScopes && singleFb && singleFb.ok && !singleFb.targetError && /* @__PURE__ */ React.createElement(Feedback, { kind: "good" }, "\u2713 Correct derivation \u2014 the meaning matches the target."),
+    allDone && hasSingleTarget && !hasScopes && singleFb && singleFb.ok && singleFb.targetError && /* @__PURE__ */ React.createElement(Feedback, { kind: "info" }, "\u26A0 Derivation complete, but the target could not be checked \u2014 tell your instructor."),
+    allDone && hasSingleTarget && !hasScopes && singleFb && !singleFb.ok && /* @__PURE__ */ React.createElement(Feedback, { kind: "bad" }, singleFb.msg),
+    allDone && hasScopes && scopeFb && scopeFb.kind === "good" && scopeFb.targetError && /* @__PURE__ */ React.createElement(Feedback, { kind: "info" }, "\u26A0 Derivation complete, but this target could not be checked \u2014 tell your instructor."),
+    allDone && hasScopes && scopeFb && scopeFb.kind === "good" && !scopeFb.targetError && /* @__PURE__ */ React.createElement(Feedback, { kind: "good" }, "\u2713 ", parseScopeTarget(problem.targets[scopeFb.idx]).label, " scope reading confirmed!", completedTargets.size === problem.targets.length ? " Both readings derived \u2014 well done." : " Select the other checkbox to derive the second reading."),
+    allDone && hasScopes && scopeFb && scopeFb.kind !== "good" && /* @__PURE__ */ React.createElement(Feedback, { kind: "bad" }, scopeFb.msg),
+    allNodesDone && !rootDone && rootMeaning && /* @__PURE__ */ React.createElement(Feedback, { kind: "info" }, "All nodes resolved, but the root is type ", /* @__PURE__ */ React.createElement(TypeBadge, { type: rootMeaning.type }), " \u2014 apply Existential Closure (EC) or another operation to reach type ", /* @__PURE__ */ React.createElement("span", { className: "lx" }, "t"), " before the exercise completes."),
+    selected && selected.mode === "view" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "dock-label" }, "\u27E8", selected.node.label || selected.node.word || "\u2022", "\u27E9 \xB7 resolved by ", /* @__PURE__ */ React.createElement("span", { style: { color: "var(--good)", fontWeight: 600 } }, selected.m.rule)), /* @__PURE__ */ React.createElement("div", { className: "compose-line", style: { fontSize: 18 } }, /* @__PURE__ */ React.createElement(Notation, { ast: selected.m.term }), /* @__PURE__ */ React.createElement(TypeBadge, { type: selected.m.type })), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 10 } }, /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => resetNode(selected.node) }, "\u21BA Reset this node"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => {
       setSelected(null);
       setFb(null);
-      setRejected({});
-    } }, "Cancel")), /* @__PURE__ */ React.createElement("div", { className: "dock-hint", style: { fontSize: 13 } }, "Pick the rule you think applies \u2014 invalid choices are marked in red with the reason."), fb && /* @__PURE__ */ React.createElement(Feedback, { kind: fb.kind }, fb.msg));
-  })(), selected && chosen && (() => {
-    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "dock-label" }, chosen.rule.name, " \u2014 ", chosen.isPA ? "enter the \u03BB-abstraction over x\u2080" + chosen.idx : chosen.isPM ? "write the modified predicate" : "apply \u03B2-reduction"), /* @__PURE__ */ React.createElement("div", { className: "compose-line" }, chosen.isPM ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: "lead" }, "conjoin the sisters \u2192"), /* @__PURE__ */ React.createElement("span", { className: "pm-sisters" }, /* @__PURE__ */ React.createElement(Notation, { ast: chosen.sisters[0].term }), /* @__PURE__ */ React.createElement("span", { className: "pm-op" }, "\u2293"), /* @__PURE__ */ React.createElement(Notation, { ast: chosen.sisters[1].term }))) : chosen.isPA ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: "lead" }, "abstract over the index ", /* @__PURE__ */ React.createElement("b", null, chosen.idx), " in \u2192"), /* @__PURE__ */ React.createElement(Notation, { ast: chosen.result.inner }), /* @__PURE__ */ React.createElement("span", { className: "lead", style: { marginLeft: 6 } }, "i.e. bind x\u2080", chosen.idx, " with \u03BB")) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: "lead" }, "combine \u2192"), /* @__PURE__ */ React.createElement(Notation, { ast: chosen.raw || chosen.result.term }))), /* @__PURE__ */ React.createElement("div", { className: "entry-row" }, /* @__PURE__ */ React.createElement(
-      ExpressionInput,
-      {
-        value: val,
-        onChange: setVal,
-        onSubmit: check,
-        apiRef: api,
-        autoFocus: true,
-        placeholder: chosen.isPA ? "Enter \u03BBx\u2080" + chosen.idx + ".[\u2026]" : chosen.isPM ? "Enter the modified predicate \u03BBx.[ \u2026 ]" : "Enter the \u03B2-reduced result\u2026",
-        status: fb ? fb.kind === "good" ? "ok" : "err" : ""
-      }
-    ), /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", onClick: check }, "Check answer")), /* @__PURE__ */ React.createElement("div", { className: "dock-tools" }, /* @__PURE__ */ React.createElement(SymbolPalette, { enabledOps: allowed && allowed.ops, onInsert: (t) => api.current && api.current.insert(t) }), /* @__PURE__ */ React.createElement("span", { style: { flex: 1 } }), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => {
-      if (selected.pa) {
-        setSelected(null);
-      }
-      setChosen(null);
+    } }, "Close"))),
+    selected && selected.mode === "shift" && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "dock-label" }, "Type-shift \u27E8", selected.node.label || selected.node.word || "\u2022", "\u27E9 ", /* @__PURE__ */ React.createElement("span", { className: "dock-sub" }, "current type ", /* @__PURE__ */ React.createElement(TypeBadge, { type: selected.m.type }))), /* @__PURE__ */ React.createElement("div", { className: "rule-row" }, selected.shifts.length === 0 && /* @__PURE__ */ React.createElement(Feedback, { kind: "info" }, "No type-shifting operations are enabled for a node of this type."), selected.shifts.map((op) => /* @__PURE__ */ React.createElement("button", { key: op.key, className: "rule-card shift-card", onClick: () => applyShift(op) }, /* @__PURE__ */ React.createElement("span", { className: "rc-name" }, op.name, " ", /* @__PURE__ */ React.createElement("span", { className: "rc-abbr shift-abbr" }, shiftArrow(op, selected.m && selected.m.type))), /* @__PURE__ */ React.createElement("span", { className: "rc-desc" }, op.desc))), selected.m.shifted && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", style: { alignSelf: "center" }, onClick: revertShift }, "Undo shift"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", style: { alignSelf: "center" }, onClick: () => {
+      setSelected(null);
       setFb(null);
-    } }, "Back")), fb && /* @__PURE__ */ React.createElement(Feedback, { kind: fb.kind }, fb.msg));
-  })()));
+    } }, "Cancel")), /* @__PURE__ */ React.createElement("div", { className: "dock-hint", style: { fontSize: 13 } }, "A type-shift rewrites this node\u2019s denotation in place, so it can combine with its sister.")),
+    selected && selected.mode === "compose" && !chosen && (() => {
+      const rules = rulesFor(selected.node);
+      return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "dock-label" }, "Choose a composition rule for \u27E8", selected.node.label || "\u2022", "\u27E9"), /* @__PURE__ */ React.createElement("div", { className: "rule-row" }, rules.map((entry) => {
+        const rej = rejected[entry.key];
+        return /* @__PURE__ */ React.createElement("button", { key: entry.key, className: "rule-card" + (rej ? " rejected" : ""), onClick: () => pickRule(entry) }, /* @__PURE__ */ React.createElement("span", { className: "rc-name" }, /* @__PURE__ */ React.createElement("span", { className: "rc-mark" }, rej ? "\u2715" : ""), entry.name, " ", /* @__PURE__ */ React.createElement("span", { className: "rc-abbr" }, entry.abbr)), /* @__PURE__ */ React.createElement("span", { className: "rc-desc" }, rej || entry.desc));
+      }), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", style: { alignSelf: "center" }, onClick: () => {
+        setSelected(null);
+        setFb(null);
+        setRejected({});
+      } }, "Cancel")), /* @__PURE__ */ React.createElement("div", { className: "dock-hint", style: { fontSize: 13 } }, "Pick the rule you think applies \u2014 invalid choices are marked in red with the reason."), fb && /* @__PURE__ */ React.createElement(Feedback, { kind: fb.kind }, fb.msg));
+    })(),
+    selected && chosen && (() => {
+      return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "dock-label" }, chosen.rule.name, " \u2014 ", chosen.isPA ? "enter the \u03BB-abstraction over x\u2080" + chosen.idx : chosen.isPM ? "write the modified predicate" : "apply \u03B2-reduction"), /* @__PURE__ */ React.createElement("div", { className: "compose-line" }, chosen.isPM ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: "lead" }, "conjoin the sisters \u2192"), /* @__PURE__ */ React.createElement("span", { className: "pm-sisters" }, /* @__PURE__ */ React.createElement(Notation, { ast: chosen.sisters[0].term }), /* @__PURE__ */ React.createElement("span", { className: "pm-op" }, "\u2293"), /* @__PURE__ */ React.createElement(Notation, { ast: chosen.sisters[1].term }))) : chosen.isPA ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: "lead" }, "abstract over the index ", /* @__PURE__ */ React.createElement("b", null, chosen.idx), " in \u2192"), /* @__PURE__ */ React.createElement(Notation, { ast: chosen.result.inner }), /* @__PURE__ */ React.createElement("span", { className: "lead", style: { marginLeft: 6 } }, "i.e. bind x\u2080", chosen.idx, " with \u03BB")) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: "lead" }, "combine \u2192"), /* @__PURE__ */ React.createElement(Notation, { ast: chosen.raw || chosen.result.term }))), /* @__PURE__ */ React.createElement("div", { className: "entry-row" }, /* @__PURE__ */ React.createElement(
+        ExpressionInput,
+        {
+          value: val,
+          onChange: setVal,
+          onSubmit: check,
+          apiRef: api,
+          autoFocus: true,
+          placeholder: chosen.isPA ? "Enter \u03BBx\u2080" + chosen.idx + ".[\u2026]" : chosen.isPM ? "Enter the modified predicate \u03BBx.[ \u2026 ]" : "Enter the \u03B2-reduced result\u2026",
+          status: fb ? fb.kind === "good" ? "ok" : "err" : ""
+        }
+      ), /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", onClick: check }, "Check answer")), /* @__PURE__ */ React.createElement("div", { className: "dock-tools" }, /* @__PURE__ */ React.createElement(SymbolPalette, { enabledOps: allowed && allowed.ops, onInsert: (t) => api.current && api.current.insert(t) }), /* @__PURE__ */ React.createElement("span", { style: { flex: 1 } }), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => {
+        if (selected.pa) {
+          setSelected(null);
+        }
+        setChosen(null);
+        setFb(null);
+      } }, "Back")), fb && /* @__PURE__ */ React.createElement(Feedback, { kind: fb.kind }, fb.msg));
+    })()
+  ));
 }
 Object.assign(window, { TreeView, layoutTree });
 function spanOf(node, maxWords) {

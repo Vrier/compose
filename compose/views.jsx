@@ -102,12 +102,46 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
   const api = useRef(null);
   const canvasRef = useRef(null);
   const wrapRef = useRef(null);
+  const dockRef = useRef(null);          // a11y (S13.5): dock focus target
+  const lastPickedRef = useRef(null);    // a11y: node to refocus when the dock closes
   const [qrDrag, setQrDrag] = useState(null); // {nodeId, label, x, y, dropTarget}
   // Assessment mode (W3): a hosted version can be served with
   // assignment.mode === 'assessment' — every reveal-the-answer affordance
   // (the target truth conditions) must disappear for students.
   const LC_ASSESSMENT = (() => { try { const a = window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment; return !!(a && a.mode === 'assessment'); } catch (err) { return false; } })();
   const [showTC, setShowTC] = useState(false);
+
+  // ---- a11y (S13.5): focus follows the interaction -----------------------
+  // Selecting a node moves focus to the dock's first control; closing the
+  // dock returns it to the originating node (matched by data-nodeid). When
+  // a rule is chosen the ExpressionInput's own autoFocus takes over.
+  useEffect(() => {
+    if (selected && !chosen && dockRef.current) {
+      const el = dockRef.current.querySelector('button, input');
+      if (el) el.focus();
+    } else if (!selected && lastPickedRef.current) {
+      const back = document.querySelector('[data-nodeid="' + lastPickedRef.current + '"]');
+      lastPickedRef.current = null;
+      if (back && back.focus) back.focus();
+    }
+  }, [selected, chosen]);
+
+  // Plain-text description of a node for screen readers.
+  function nodeA11yLabel(node, m, leaf, avail, shiftable, tok) {
+    const name = leaf
+      ? (tok.trace ? 'trace t' + tok.trace : tok.index ? 'index ' + tok.index : String(node.word || ''))
+      : (node.label || 'phrase');
+    const bits = [(leaf ? 'Leaf ' : 'Node ') + name];
+    if (m) {
+      try { bits.push('denotation ' + E.toStr(m.term) + ', type ' + E.typeToStr(m.type)); } catch (e) { /* leave visual only */ }
+      if (m.rule && m.rule !== 'lex') bits.push('resolved by ' + m.rule);
+      if (m.shifted) bits.push('type-shifted');
+    } else if (!leaf) {
+      bits.push(avail ? 'ready to compose, press Enter to choose a rule' : 'awaiting children');
+    }
+    if (shiftable) bits.push('type-shiftable');
+    return bits.join('. ');
+  }
   useEffect(() => { setShowTC(false); }, [problem.id]);
 
   // Is type <<e,t>,t>?
@@ -808,8 +842,8 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
 
           return (
         <div className="tree-zoom" style={{ width: layout.width * zoom, height: (layout.height + extraHTotal) * zoom }}>
-        <div className="tree-wrap" ref={wrapRef} style={{ width: layout.width, height: layout.height + extraHTotal, transform: 'scale(' + zoom + ')', transformOrigin: 'top left' }}>
-          <svg className="tree-svg" width={layout.width} height={layout.height + extraHTotal}>
+        <div className="tree-wrap" role="group" aria-label={'Derivation tree' + (problem && problem.sentence ? ' for: ' + problem.sentence : '')} ref={wrapRef} style={{ width: layout.width, height: layout.height + extraHTotal, transform: 'scale(' + zoom + ')', transformOrigin: 'top left' }}>
+          <svg className="tree-svg" aria-hidden="true" width={layout.width} height={layout.height + extraHTotal}>
             {layout.edges.map((e, i) => {
               const pn = nodeById[e.parentId], cn = nodeById[e.childId];
               const y1 = pn ? adjPy(e.parentId, pn.py) + 30 : e.y1;
@@ -855,7 +889,14 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
                     ))}
                   </div>
                 )}
-                <div className={cls.join(' ')} onClick={(e) => { if (clickable) { e.stopPropagation(); pickNode(node); } }}>
+                <div className={cls.join(' ')}
+                  role={clickable ? 'button' : undefined}
+                  tabIndex={clickable ? 0 : undefined}
+                  data-nodeid={node.id}
+                  aria-label={nodeA11yLabel(node, m, leaf, avail, shiftable, tok)}
+                  aria-pressed={clickable ? !!sel : undefined}
+                  onKeyDown={(e) => { if (clickable && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); e.stopPropagation(); lastPickedRef.current = node.id; pickNode(node); } }}
+                  onClick={(e) => { if (clickable) { e.stopPropagation(); lastPickedRef.current = node.id; pickNode(node); } }}>
                   {m && !m.shifted && !leaf && m.rule && m.rule !== 'lex' && <span className="node-rule-tag">{m.rule}</span>}
                   {isRaisable(node) && !qrDrag && <button className="qr-handle" title="Drag to raise (QR)" onPointerDown={e => startQRDrag(e, node)} onClick={e=>e.stopPropagation()}>&#x2912;</button>}
                   {shiftable && !sel && <span className="shift-dot" title="Type-shiftable">⇅</span>}
@@ -895,7 +936,19 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
       </div>
       </div>
 
-      <div className="dock">
+      <div className="dock" ref={dockRef}
+        onKeyDown={(e) => {
+          if (e.key !== 'Escape') return;
+          e.stopPropagation();
+          if (chosen) { if (selected && selected.pa) setSelected(null); setChosen(null); setFb(null); }
+          else if (selected) { setSelected(null); setFb(null); setRejected({}); }
+        }}>
+        <div className="sr-only" role="status" aria-live="polite">
+          {fb
+            ? ((fb.kind === 'good' ? 'Correct. ' : fb.kind === 'bad' ? 'Not accepted. ' : '') + (typeof fb.msg === 'string' ? fb.msg : ''))
+            : allDone ? 'Derivation complete.'
+            : selected ? '' : ''}
+        </div>
         {!selected && !allDone && (
           <div className="dock-hint">
             {availCount > 0 ? 'Select a highlighted node to compute its meaning.'
