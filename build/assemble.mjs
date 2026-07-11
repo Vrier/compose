@@ -34,6 +34,14 @@ import path from 'node:path';
 
 const NM = 'node_modules';
 
+/* Substitution tokens shared by the server template (build/server.mjs), the
+   offline instructor builds (build.mjs embeds the tokenized template so
+   "Export assignment" works offline), and export.jsx at runtime. Substitute
+   with split/join, never String.replace (S1: `$`-sequences mangle). */
+export const IDENTITY_TOKEN = '/*__COMPOSE_IDENTITY__*/';
+export const LIBRARY_TOKEN  = '/*__COMPOSE_LIBRARY__*/';
+export const HOSTED_TOKEN   = '/*__COMPOSE_HOSTED__*/';
+
 const read = (p) => fs.readFileSync(p, 'utf8');
 /* Prevent inlined JS/CSS from prematurely closing its <script>/<style> host. */
 export const safe = (s) => s.replace(/<\/(script|style)>/gi, '<\\/$1>');

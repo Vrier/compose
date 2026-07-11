@@ -16,7 +16,7 @@
    =========================================================================== */
 import fs from 'node:fs';
 import path from 'node:path';
-import { buildParts, assemblePage, inlineLibraryJS } from './build/assemble.mjs';
+import { buildParts, assemblePage, inlineLibraryJS, IDENTITY_TOKEN, LIBRARY_TOKEN } from './build/assemble.mjs';
 import { createRequire } from 'node:module';
 const { COMPOSE_VERSION, COMPOSE_DATE } = createRequire(import.meta.url)('./compose/version.js');
 
@@ -41,6 +41,18 @@ function identity(b) {
        + 'window.COMPOSE_CONFIG = ' + JSON.stringify(configObj) + ';';
 }
 
+/* Tokenized page template embedded into INSTRUCTOR builds so "Export
+   assignment" produces a fully self-contained, precompiled student file
+   offline (S13.3) — same template the server substitutes for /v/:slug.
+   JSON-encode and break "</script>" so it survives inline embedding. */
+const exportTemplate = assemblePage(parts, {
+  title: 'COMPOSE',
+  identityJS: IDENTITY_TOKEN,
+  libraryJS: LIBRARY_TOKEN,
+});
+const exportTemplateJS =
+  'window.COMPOSE_TEMPLATE = ' + JSON.stringify(exportTemplate).replace(/<\//g, '<\\/') + ';';
+
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 for (const b of BUILDS) {
@@ -48,6 +60,7 @@ for (const b of BUILDS) {
     title: b.title,
     identityJS: identity(b),
     libraryJS: b.preload === 'cc' ? LIBRARY : '',
+    extraHeadJS: b.role === 'instructor' ? exportTemplateJS : '',
   });
   fs.writeFileSync(path.join(OUT, b.file), html);
   const kb = (Buffer.byteLength(html) / 1024).toFixed(0);

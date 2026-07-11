@@ -25,16 +25,14 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import esbuild from 'esbuild';
-import { buildParts, assemblePage, inlineLibraryJS, libraryMap, safe } from './assemble.mjs';
+import { buildParts, assemblePage, inlineLibraryJS, libraryMap, safe, IDENTITY_TOKEN, LIBRARY_TOKEN, HOSTED_TOKEN } from './assemble.mjs';
 import { createRequire } from 'node:module';
 const { COMPOSE_VERSION, COMPOSE_DATE } = createRequire(import.meta.url)('../compose/version.js');
 
 const SRC = process.env.COMPOSE_SRC || 'compose';
 const OUT = process.env.COMPOSE_SERVER_OUT || 'server';
 
-export const IDENTITY_TOKEN = '/*__COMPOSE_IDENTITY__*/';
-export const LIBRARY_TOKEN  = '/*__COMPOSE_LIBRARY__*/';
-export const HOSTED_TOKEN   = '/*__COMPOSE_HOSTED__*/';
+export { IDENTITY_TOKEN, LIBRARY_TOKEN, HOSTED_TOKEN };
 
 const parts = buildParts(SRC);
 const sdk = fs.readFileSync('node_modules/pocketbase/dist/pocketbase.umd.js', 'utf8');
@@ -318,6 +316,7 @@ for (const f of ['version.js', 'engine.js', 'lcformat.js']) {
   console.log('  ' + ('pb_hooks/vendor/' + f).padEnd(32) + ' (vendored for goja validation)');
 }
 write('template.html', template);
+write(path.join('pb_public', 'template.html'), template); // hosted export (S13.3): /editor fetches + substitutes it client-side
 write('template-edit.html', templateEdit);
 write('library.json', JSON.stringify(libraryMap(SRC)));
 write(path.join('pb_public', 'index.html'), rootPage);

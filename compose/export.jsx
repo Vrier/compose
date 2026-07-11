@@ -2,93 +2,85 @@
    COMPOSE — student-assignment exporter (instructor/teacher mode only)
 
    Produces a single self-contained HTML file locked to a chosen set of
-   exercises (role:'student'), with an
-   isolated localStorage namespace ("its own island"). Distributed by the
-   instructor; opened by students as a plain HTML file.
+   exercises (role:'student'), with an isolated localStorage namespace
+   ("its own island"). Distributed by the instructor; opened by students as
+   a plain HTML file — no network, no CDN, no in-browser transpilation.
 
-   The build is done entirely in the browser: we fetch the app's own source
-   files, inline them, embed the chosen exercise JSON, and keep React / Babel
-   on their CDNs (cached after first load). Readings travel inside the exercise
-   JSON. JSX stays as <script type="text/babel"> exactly as in the live app.
+   S13.3: the export is the PRECOMPILED page template with two tokens
+   substituted — exactly the mechanism the server uses for /v/:slug
+   (contract C1/C2). The template comes from window.COMPOSE_TEMPLATE
+   (embedded at build time in offline instructor builds) or, on hosted
+   pages, from GET /template.html. Substitution is split/join, never
+   String.replace (S1: `$`-sequences in worksheet JSON mangle).
    =========================================================================== */
 
-/* Fetch a same-origin asset as text. */
-async function exFetchText(path) {
-  const res = await fetch(path, { cache: 'no-store' });
-  if (!res.ok) throw new Error('Could not load ' + path + ' (' + res.status + ')');
-  return await res.text();
-}
+var EX_IDENTITY_TOKEN = '/*__COMPOSE_IDENTITY__*/';
+var EX_LIBRARY_TOKEN = '/*__COMPOSE_LIBRARY__*/';
 
-function exEsc(s) { return String(s).replace(/<\/script>/gi, '<\\/script>'); }
+/* Keep inline payloads from closing their host <script>/<style>. */
+function exEsc(s) { return String(s).replace(/<\/(script|style)/gi, '<\\/$1'); }
+
+/* The tokenized page template: embedded (offline builds) or fetched (hosted). */
+async function exGetTemplate() {
+  if (window.COMPOSE_TEMPLATE) return window.COMPOSE_TEMPLATE;
+  let res = null;
+  try { res = await fetch('/template.html', { cache: 'no-store' }); } catch (e) { /* fall through */ }
+  if (!res || !res.ok) throw new Error('This build cannot export assignments (no page template available).');
+  const t = await res.text();
+  // The SPA fallback answers 200 with the root page for unknown paths —
+  // a real template MUST still carry both substitution tokens.
+  if (t.indexOf(EX_IDENTITY_TOKEN) < 0 || t.indexOf(EX_LIBRARY_TOKEN) < 0) {
+    throw new Error('This build cannot export assignments (page template not published).');
+  }
+  return t;
+}
 
 /* Build the full standalone student HTML string. */
 async function buildStudentHtml({ title, sets, island, extraFiles, onProgress }) {
   const prog = onProgress || (() => {});
 
-  prog('Reading stylesheet…');
-  const css = await exFetchText('themes.css');
-
-  prog('Reading engine…');
-  const plainJs = {};
-  for (const f of ['engine.js', 'lcformat.js', 'lingdown.js', 'exercise-files.js', 'exercises.js']) plainJs[f] = await exFetchText(f);
-
-  prog('Reading interface…');
-  const babelJs = {};
-  for (const f of ['components.jsx', 'mobile.jsx', 'views.jsx', 'editor.jsx', 'reading-editor.jsx', 'reader.jsx', 'modals.jsx', 'tweaks-panel.jsx', 'app.jsx']) babelJs[f] = await exFetchText(f);
+  prog('Loading page template…');
+  const template = await exGetTemplate();
 
   prog('Bundling exercises…');
   const FILES = window.LC_FILES || {};
   const extra = extraFiles || {};
   const inlineFiles = {};
-  const userKeys = [];
   for (const key of sets) {
     if (FILES[key]) inlineFiles[key] = { title: FILES[key].title, text: FILES[key].text };
-    else if (extra[key]) { inlineFiles[key] = { title: extra[key].title, text: extra[key].text }; userKeys.push(key); }
+    else if (extra[key]) inlineFiles[key] = { title: extra[key].title, text: extra[key].text };
+  }
+
+  // Worksheets no built-in chapter claims need their own picker entries —
+  // same rule the server applies for instructor bundles (S3, PLAN §8).
+  const builtinChapters = (window.LCData && window.LCData.CHAPTERS) || [];
+  const covered = (key) => builtinChapters.some((c) => c && c.prefix && (key === c.prefix || key.indexOf(c.prefix + '.') === 0 || key.indexOf(c.prefix + '-') === 0));
+  const chaptersExtra = [];
+  for (const key of sets) {
+    if (inlineFiles[key] && !covered(key)) chaptersExtra.push({ prefix: key, label: '★', title: inlineFiles[key].title || key });
   }
 
   prog('Assembling file…');
-  const config = { role: 'student', assignment: { title, sets, island } };
+  const identity =
+    'window.COMPOSE_BUILD = ' + JSON.stringify({
+      id: 'export', role: 'student', preload: 'inline',
+      label: title || 'COMPOSE', version: window.COMPOSE_VERSION || '', date: window.COMPOSE_DATE || '',
+    }) + ';\n' +
+    'window.COMPOSE_CONFIG = ' + JSON.stringify({
+      role: 'student',
+      assignment: { title: title || 'Assignment', sets: sets, island: island, mode: 'practice' },
+    }) + ';\n' +
+    'window.COMPOSE_CHAPTERS_EXTRA = ' + JSON.stringify(chaptersExtra) + ';';
+  const library = 'window.LC_FILES_INLINE = ' + JSON.stringify(inlineFiles) + ';';
 
-  const fontLink = 'https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap';
-
-  const html =
-'<!DOCTYPE html>\n<html lang="en" data-theme="parchment">\n<head>\n' +
-'<meta charset="UTF-8" />\n<meta name="viewport" content="width=device-width, initial-scale=1.0" />\n' +
-'<title>' + exEsc(title) + ' — COMPOSE</title>\n' +
-'<script>window.COMPOSE_BUILD = { id: "export", role: "student", preload: "none", label: "COMPOSE", version: "' + (window.COMPOSE_VERSION || '1.0.0') + '" };</' + 'script>\n' +
-'<script>window.COMPOSE_CONFIG = ' + exEsc(JSON.stringify(config)) + ';</' + 'script>\n' +
-'<link rel="preconnect" href="https://fonts.googleapis.com" />\n' +
-'<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />\n' +
-'<link href="' + fontLink + '" rel="stylesheet" />\n' +
-'<style>\n' + css + '\n</style>\n' +
-'</head>\n<body>\n<div class="app-grain"></div>\n<div id="root"></div>\n' +
-// CDN dependencies (cached after first online load)
-'<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></' + 'script>\n' +
-'<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></' + 'script>\n' +
-'<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></' + 'script>\n' +
-// Inlined exercise library
-'<script>window.LC_FILES_INLINE = ' + exEsc(JSON.stringify(inlineFiles)) + ';</' + 'script>\n' +
-'<script>window.__USER_SETS = ' + exEsc(JSON.stringify(userKeys)) + '; window.__USER_CHAPTER = ' + exEsc(JSON.stringify(title || 'Your worksheets')) + ';</' + 'script>\n' +
-// Core engine + data
-'<script>' + exEsc(plainJs['engine.js']) + '</' + 'script>\n' +
-'<script>' + exEsc(plainJs['lcformat.js']) + '</' + 'script>\n' +
-'<script>' + exEsc(plainJs['lingdown.js']) + '</' + 'script>\n' +
-'<script>' + exEsc(plainJs['exercise-files.js']) + '</' + 'script>\n' +
-'<script>' + exEsc(plainJs['exercises.js']) + '</' + 'script>\n' +
-// Splice instructor-authored sets into the library (they aren't in the built-in ORDER)
-'<script>(function(){var F=window.LCFormat,D=window.LCData,FILES=window.LC_FILES;if(!D||!F)return;var U=window.__USER_SETS||[];if(!U.length)return;U.forEach(function(key){if(D.SETS[key]||!FILES[key])return;try{var set=F.parseFile(FILES[key].text,FILES[key].title);set.key=key;D.SETS[key]=set;D.LIBRARY.push({key:key,title:FILES[key].title,set:set});if(D.ORDER.indexOf(key)<0)D.ORDER.push(key);}catch(e){console.warn("COMPOSE: could not parse authored set",key,e);}});if(D.CHAPTERS&&!D.CHAPTERS.some(function(c){return c.prefix==="user";}))D.CHAPTERS.push({prefix:"user",label:"\u2605",title:window.__USER_CHAPTER||"Your worksheets"});})();</' + 'script>\n' +
-// React UI (Babel-compiled in the browser)
-'<script type="text/babel">' + exEsc(babelJs['components.jsx']) + '</' + 'script>\n' +
-'<script type="text/babel">' + exEsc(babelJs['mobile.jsx']) + '</' + 'script>\n' +
-'<script type="text/babel">' + exEsc(babelJs['views.jsx']) + '</' + 'script>\n' +
-'<script type="text/babel">' + exEsc(babelJs['editor.jsx']) + '</' + 'script>\n' +
-'<script type="text/babel">' + exEsc(babelJs['reading-editor.jsx']) + '</' + 'script>\n' +
-'<script type="text/babel">' + exEsc(babelJs['reader.jsx']) + '</' + 'script>\n' +
-'<script type="text/babel">' + exEsc(babelJs['modals.jsx']) + '</' + 'script>\n' +
-'<script type="text/babel">' + exEsc(babelJs['tweaks-panel.jsx']) + '</' + 'script>\n' +
-'<script type="text/babel">' + exEsc(babelJs['app.jsx']) + '</' + 'script>\n' +
-'</body>\n</html>';
-
+  let html = template.split(EX_IDENTITY_TOKEN).join(exEsc(identity));
+  html = html.split(EX_LIBRARY_TOKEN).join(exEsc(library));
+  // Cosmetic: name the browser tab after the assignment (guarded — skip if
+  // the template's title tag ever changes shape).
+  const esc = (x) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  if (html.indexOf('<title>COMPOSE</title>') >= 0 && title) {
+    html = html.split('<title>COMPOSE</title>').join('<title>' + esc(title) + ' — COMPOSE</title>');
+  }
   return html;
 }
 

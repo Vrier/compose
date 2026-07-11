@@ -252,6 +252,19 @@ async function main() {
   contains('/editor is an instructor surface', r.text, '"role":"instructor"');
   lacks('/editor has no hosted-version context', r.text, 'window.COMPOSE_HOSTED = ');
   lacks('/editor does not ship the PocketBase SDK', r.text, 'class ClientResponseError');
+  // S13.3 — self-contained exports: published template + embedded dist copy
+  r = await req('GET', '/template.html', { raw: true });
+  contains('template published for hosted export', r.text, '/*__COMPOSE_IDENTITY__*/');
+  contains('template carries the library token', r.text, '/*__COMPOSE_LIBRARY__*/');
+  lacks('template pulls nothing from unpkg', r.text, 'unpkg.com');
+  {
+    const distDir = path.join(HERE, '..', 'dist');
+    const t = fs.readFileSync(path.join(distDir, 'COMPOSE-teacher.html'), 'utf8');
+    const st = fs.readFileSync(path.join(distDir, 'COMPOSE-student.html'), 'utf8');
+    ok('teacher dist embeds the export template', t.includes('window.COMPOSE_TEMPLATE = '), 'missing COMPOSE_TEMPLATE embed');
+    ok('student dist stays lean (no export template)', !st.includes('window.COMPOSE_TEMPLATE = '), 'unexpected COMPOSE_TEMPLATE embed');
+  }
+
   r = await req('GET', '/cc/', { raw: true });
   contains('/cc carries §7 content', r.text, '"ch7.1-adj":{');
   contains('/cc carries §13 content', r.text, '"ch13.1-worlds":{');
