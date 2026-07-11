@@ -149,7 +149,7 @@ async function main() {
   contains('edit page: COMPOSE_HOSTED context', page, `"versionId":"${VID}"`);
   contains('edit page: version worksheets in hosted keys', page, '"keys":["suitews"]');
   contains('edit page: SDK vendored', page, 'PocketBase');
-  contains('edit page: built-in library merged (fork source)', page, 'ch7.1-adj');
+  lacks('edit page: built-ins NOT preloaded (S13.4)', page, '"ch7.1-adj":{');
   contains('edit page: version worksheet gets ★ chapter', page, '"label":"★"');
   r = await req('GET', '/edit/nonexistent12345', { raw: true });
   expect('edit page for unknown id 404s', r.status === 404, r.status);

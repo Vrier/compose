@@ -21,8 +21,9 @@ routerAdd('GET', '/edit/{id}', (e) => {
   if (!v) return e.html(404, lib.NOT_FOUND_HTML);
 
   const template = toString($os.readFile(__hooks + '/../template-edit.html'));
-  const builtins = JSON.parse(toString($os.readFile(__hooks + '/../library.json')));
-  const html = lib.buildEditPage(v, template, builtins);
+  // S13.4: no built-in library on /edit — the editor carries only the
+  // version's own worksheets (library.json is no longer read here).
+  const html = lib.buildEditPage(v, template);
 
   e.response.header().set('Cache-Control', 'no-cache');
   return e.html(200, html);

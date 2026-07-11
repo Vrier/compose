@@ -76,12 +76,16 @@ Check the URL with your instructor, or try the <a href="/">main COMPOSE library<
   /* Instructor editor page (S4): built-in library merged with the version's
      own worksheets; COMPOSE_HOSTED context substituted into the edit template. */
   buildEditPage: function (v, template, builtins) {
+    // `builtins` intentionally UNUSED since S13.4: the editor opens with
+    // ONLY the version's own worksheets (Thomas: instructors may want to
+    // author from scratch, not wade through the preloaded library). An
+    // empty version serves preload:'none' so the Getting Started sample
+    // appears, matching the clean offline teacher build.
     const esc = module.exports.escapeForScript;
     const substitute = (tpl, token, payload) => tpl.split(token).join(esc(payload));
 
     const bundle = module.exports.parseBundle(v);
     const files = {};
-    for (const k in builtins) files[k] = builtins[k];
     const keys = [];
     const chapters = [];
     for (const w of (bundle.worksheets || bundle.exercises || [])) {
@@ -93,12 +97,12 @@ Check the URL with your instructor, or try the <a href="/">main COMPOSE library<
     }
 
     const identity =
-      'window.COMPOSE_BUILD = ' + JSON.stringify({ id: 'hosted-teacher', role: 'instructor', preload: 'inline', label: 'COMPOSE — ' + v.getString('title'), version: module.exports.version().COMPOSE_VERSION, date: module.exports.version().COMPOSE_DATE }) + ';\n' +
+      'window.COMPOSE_BUILD = ' + JSON.stringify({ id: 'hosted-teacher', role: 'instructor', preload: keys.length ? 'inline' : 'none', label: 'COMPOSE — ' + v.getString('title'), version: module.exports.version().COMPOSE_VERSION, date: module.exports.version().COMPOSE_DATE }) + ';\n' +
       'window.COMPOSE_CONFIG = ' + JSON.stringify({ role: 'instructor', assignment: null }) + ';\n' +
       'window.COMPOSE_CHAPTERS_EXTRA = ' + JSON.stringify(chapters) + ';';
     const hosted =
       'window.COMPOSE_HOSTED = ' + JSON.stringify({ versionId: v.id, slug: v.getString('slug'), mode: v.getString('mode') || 'practice', title: v.getString('title'), keys: keys }) + ';';
-    const library = 'window.LC_FILES_INLINE = ' + JSON.stringify(files) + ';';
+    const library = keys.length ? ('window.LC_FILES_INLINE = ' + JSON.stringify(files) + ';') : '';
 
     let html = substitute(template, '/*__COMPOSE_IDENTITY__*/', identity);
     html = substitute(html, '/*__COMPOSE_HOSTED__*/', hosted);

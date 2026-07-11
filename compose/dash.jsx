@@ -5,7 +5,10 @@
    by build/server.mjs, so it does not share the app's global scope.
 
    Views: login / register-with-invite-code, then "my versions": create,
-   rename, delete, practice/assessment toggle, publish toggle, open editor,
+   rename, delete, publish toggle, open editor,
+   (practice/assessment toggle removed from the UI 2026-07-10 — the mode
+   field and server plumbing remain; re-expose when the distinction is
+   fully built out),
    student link, bundle download, bundle import (structurally validated).
    =========================================================================== */
 (function () {
@@ -265,11 +268,6 @@
           </div>
         </div>
         <div className="dash-row-actions">
-          <button className={'dash-mode' + (v.mode === 'assessment' ? ' assess' : '')}
-            title={v.mode === 'assessment' ? 'Assessment mode: students cannot reveal targets. Click for practice mode.' : 'Practice mode: students can view target truth conditions. Click for assessment mode.'}
-            onClick={() => patch({ mode: v.mode === 'assessment' ? 'practice' : 'assessment' })}>
-            {v.mode === 'assessment' ? '🔒 assessment' : '📖 practice'}
-          </button>
           <button className={'dash-mode' + (v.published ? '' : ' off')}
             title={v.published ? 'Published — students can open the link. Click to unpublish.' : 'Unpublished — the student link returns 404. Click to publish.'}
             onClick={() => patch({ published: !v.published })}>
