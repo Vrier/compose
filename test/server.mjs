@@ -306,6 +306,7 @@ async function main() {
   r = await req('GET', '/guide/', { raw: true });
   contains('/guide serves the instructor guide (S17)', r.text, 'Instructor guide');
   contains('/guide embeds screenshots', r.text, '/guide/student-view.jpg');
+  contains('/guide is scrollable (S17.2 fix)', r.text, 'height: auto !important');
   r = await req('GET', '/guide/student-view.jpg', { raw: true });
   expect('guide screenshot serves', r.status === 200, r.status);
   r = await req('GET', '/sitemap.xml', { raw: true });

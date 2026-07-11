@@ -185,6 +185,10 @@ const aboutPage = `<!DOCTYPE html>
 <link rel="icon" href="/icon.svg" type="image/svg+xml" />
 <style>
 ${safe(parts.css)}
+/* doc pages are normal scrolling documents — undo the app's fixed-viewport
+   body (themes.css sets html,body{height:100%} + body{overflow:hidden},
+   which made long doc pages unscrollable — S17.2) */
+html, body { height: auto !important; overflow: auto !important; }
 .about-wrap { max-width: 680px; margin: 0 auto; padding: 40px 22px 60px; line-height: 1.65; }
 .about-wrap h1 { font-size: 32px; letter-spacing: .03em; margin-bottom: 4px; }
 .about-sub { color: var(--ink-soft); margin-bottom: 28px; }
@@ -372,6 +376,10 @@ const filesPage = `<!DOCTYPE html>
 <link rel="icon" href="/icon.svg" type="image/svg+xml" />
 <style>
 ${safe(parts.css)}
+/* doc pages are normal scrolling documents — undo the app's fixed-viewport
+   body (themes.css sets html,body{height:100%} + body{overflow:hidden},
+   which made long doc pages unscrollable — S17.2) */
+html, body { height: auto !important; overflow: auto !important; }
 .about-wrap { max-width: 760px; margin: 0 auto; padding: 40px 22px 60px; line-height: 1.65; }
 .about-wrap h1 { font-size: 32px; letter-spacing: .03em; margin-bottom: 4px; }
 .about-sub { color: var(--ink-soft); margin-bottom: 28px; }
@@ -444,6 +452,10 @@ const guidePage = `<!DOCTYPE html>
 <title>Instructor guide — COMPOSE</title>
 <style>
 ${safe(parts.css)}
+/* doc pages are normal scrolling documents — undo the app's fixed-viewport
+   body (themes.css sets html,body{height:100%} + body{overflow:hidden},
+   which made long doc pages unscrollable — S17.2) */
+html, body { height: auto !important; overflow: auto !important; }
 .about-wrap { max-width: 820px; margin: 0 auto; padding: 40px 22px 60px; line-height: 1.65; }
 .about-wrap h1 { font-size: 32px; letter-spacing: .03em; margin-bottom: 4px; }
 .about-sub { color: var(--ink-soft); margin-bottom: 20px; }
