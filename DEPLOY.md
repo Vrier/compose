@@ -222,7 +222,7 @@ curl -s http://127.0.0.1:8190/api/health && echo ' ← RESTORE DRILL OK'
 kill %1 && cd / && rm -rf /tmp/restore-drill
 ```
 
-Record the date it was performed here: **____-__-__**. A real restore is the
+Record the date it was performed here: **2026-07-11** (scripted drill, ✓ RESTORE DRILL OK; Hetzner Backups enabled the same day). A real restore is the
 same unzip pointed at /srv/compose-data (with the service stopped).
 
 ## 10b · SSH hygiene (one-time, from the provisioning era)
