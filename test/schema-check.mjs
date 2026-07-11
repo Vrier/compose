@@ -88,7 +88,7 @@ function checkWorksheet(w, file, p = '') {
   else w.exercises.forEach((g, i) => checkExercise(g, file, `${p}exercises[${i}]`));
   if (w.reading !== undefined) {
     if (!isObj(w.reading) || !isStr(w.reading.markdown)) err(file, `${p}reading`, 'must be an object with a markdown string');
-    else if (w.reading.format !== undefined && w.reading.format !== 'lingdown') err(file, `${p}reading.format`, 'must be "lingdown"');
+    else if (w.reading.format !== undefined && w.reading.format !== 'latex' && w.reading.format !== 'lingdown') err(file, `${p}reading.format`, 'must be "latex" (or legacy "lingdown")');
   }
 }
 

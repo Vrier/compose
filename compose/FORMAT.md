@@ -83,7 +83,7 @@ to a worksheet file to get editor autocomplete and validation in VS Code.
 | `exercises[].items[]` | Each item is one tree (a **derivation**; `derivations` is the forward-looking spelling of the list and is accepted today). `tree` uses bracket notation `[.Label child child]`; a leaf is a lexicon word, a trace is `t_1`, an index leaf is a bare number. `sentence` is the title shown to the student; `targets` (optional) are the accepted goal denotations — give two for a scope-ambiguous item to require both readings. |
 | `id` (on exercises and items) | Optional **stable id** (1–32 chars of `A–Z a–z 0–9 _ -`). Student progress is keyed by these ids. **Without stable ids, inserting or reordering content silently re-attaches every student's saved progress to the wrong derivations** — critical for hosted worksheets, where links are live. The editor generates ids automatically. |
 | `notation` | `"cc"` (Coppock & Champollion, default) or `"hk"` (Heim & Kratzer) rendering conventions. |
-| `reading` | Optional embedded reading companion: `{ "format": "lingdown", "markdown": "…" }`. Items anchor to its `##` sections via `"reading": { "section": "…" }`. |
+| `reading` | Optional embedded reading companion: `{ "format": "latex", "markdown": "…" }` — a Markdown skeleton with LaTeX linguistics content (expex/linguex/gb4e examples, qtree/forest trees, `\llbracket…\rrbracket`, `$…$` math, tipa; see `docs/SKILL-chapters-to-notes.md` §3). `"lingdown"` is accepted as a legacy format value. Items anchor to its `##` sections via `"reading": { "section": "…" }`. |
 | `hints` | Per-derivation staged hints (array of strings). Students reveal them one at a time via a 💡 button; after the last hint, a final "Show answer" stage fills in the worked solution (practice mode only — in assessment mode the button is absent entirely). |
 | `targetsMode` | Whether all targets are required (`"all"`, default — two targets mean both scope readings must be derived) or **any one suffices** (`"any"` — for equivalent formulations that don't normalize together, or either-scope-acceptable items). |
 | `meta` | Optional provenance block, ignored by the app: `{author, source, license, tags, difficulty}`. Use `source` like `"after Coppock & Champollion §7"` — it records the paraphrase-only posture in the data itself. Valid on worksheets and bundles. |
@@ -92,7 +92,7 @@ to a worksheet file to get editor autocomplete and validation in VS Code.
 (e.g. `https://…/v/ab3k9x2m#g2.i-d3`), using the stable ids above — "do
 derivation 3 tonight" can be a hyperlink. An optional worksheet prefix
 `#<worksheetKey>/<exerciseId>.<derivationId>` also switches worksheet. In
-lingdown readings, `[[derivation:g2.i-d3|derivation 3]]` renders a same-page
+readings, `\href{#g2.i-d3}{derivation 3}` renders a same-page
 link.
 
 **LaTeX export.** A solved derivation's "⎘ Copy LaTeX" button emits a

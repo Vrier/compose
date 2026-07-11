@@ -12,10 +12,10 @@ A sentence denotes a **truth value**, `1` or `0` — type `t`. An intransitive v
 like *smokes* is *unsaturated*: it denotes the **characteristic function** of the set
 of smokers, a function from individuals to truth values, type `⟨e,t⟩`:
 
-```deriv
+\begin{derivation}
 [[Ann]]      = a                       : e
 [[smokes]]   = λx . x smokes  =  λx . smoke(x)=1    : <e,t>
-```
+\end{derivation}
 
 We abbreviate *the function mapping each x to 1 iff x smokes* as `λx . smoke(x)=1`.
 
@@ -26,17 +26,18 @@ Plus a rule for the vacuous N/V/VP layers:
 
 **Non-branching Nodes (NN).** If α has a single daughter β, then `⟦α⟧ = ⟦β⟧`.
 
-So *Ann smokes* (@smokes) composes by feeding the subject to the verb's
+So *Ann smokes* (\ref{smokes}) composes by feeding the subject to the verb's
 characteristic function — the sentence is `1` iff Ann smokes.
 
-```deriv
+\begin{derivation}
 [[Ann smokes]]  = [[smokes]]([[Ann]])  =  smoke(a)=1    : t
-```
+\end{derivation}
 
-```ex {#smokes}
-Ann smokes.
-Ann is boring.
-```
+\ex<smokes> Ann smokes.
+\xe
+
+\ex Ann is boring.
+\xe
 
 ## 2.3 Transitive verbs and Schönfinkelization
 
@@ -45,43 +46,41 @@ pair, H&K use a **Schönfinkeled** (curried) function — one that takes its arg
 one at a time. `⟦likes⟧` takes the **object** first, returning a `⟨e,t⟩` function
 that still wants the subject:
 
-```deriv
+\begin{derivation}
 [[likes]]      = λy . λx . x likes y           : <e,<e,t>>
 [[likes Jan]]  = λx . x likes Jan  =  λx . like(x,jn)=1    : <e,t>   (FA)
-```
+\end{derivation}
 
-So in *Ann likes Jan* (@likes), FA applies twice: *likes* combines with the object
+So in *Ann likes Jan* (\ref{likes}), FA applies twice: *likes* combines with the object
 *Jan*, and the resulting VP combines with the subject *Ann*.
 
-```deriv
+\begin{derivation}
 [[Ann likes Jan]]  = like(a,jn)=1    : t
-```
+\end{derivation}
 
-```ex {#likes}
-Ann likes Jan.
-```
+\ex<likes> Ann likes Jan.
+\xe
 
 ## 2.4 Sentential connectives
 
 Negation and conjunction operate on truth values. *It is not the case that* is a
 function of type `⟨t,t⟩`, and sentential *and* is of type `⟨t,⟨t,t⟩⟩`:
 
-```deriv
+\begin{derivation}
 [[it is not the case that]]  = λp . p = 0   =  λp . ¬p    : <t,t>
 [[and]]                      = λp . λq . q = 1 and p = 1  =  λp . λq . q ∧ p    : <t,<t,t>>
-```
+\end{derivation}
 
 These compose with whole sentences, so *Jan works, and it is not the case that Jan
-smokes* (@conj) is true iff Jan works and Jan does not smoke.
+smokes* (\ref{conj}) is true iff Jan works and Jan does not smoke.
 
-```deriv
+\begin{derivation}
 [[it is not the case that Jan smokes]]  = ¬smoke(jn)=1    : t
 [[Jan works and ... Jan smokes]]        = work(jn)=1 and ¬smoke(jn)=1    : t
-```
+\end{derivation}
 
-```ex {#conj}
-Jan works, and it is not the case that Jan smokes.
-```
+\ex<conj> Jan works, and it is not the case that Jan smokes.
+\xe
 
 ---
 

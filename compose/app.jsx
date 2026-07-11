@@ -282,7 +282,7 @@ function App() {
   // so child renders (Lambda → toHTML) read the right mode this paint.
   if (window.LC && window.LC.setNotation) window.LC.setNotation((set && set.notation) || 'cc');
 
-  // The Reading panel (lingdown) provides in-app readings. Available whenever the
+  // The Reading panel (LaTeX notes) provides in-app readings. Available whenever the
   // current set carries an embedded reading.
   // W10: a hosted version can carry instructor notes (window.COMPOSE_NOTES).
   // When the current worksheet has no embedded reading of its own, render the
@@ -292,7 +292,7 @@ function App() {
     const vn = typeof window !== 'undefined' && window.COMPOSE_NOTES;
     if (vn && String(vn).trim()) {
       const title = (window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment && window.COMPOSE_CONFIG.assignment.title) || 'Notes';
-      return { key: '__version-notes', title, reading: { format: 'lingdown', markdown: String(vn) } };
+      return { key: '__version-notes', title, reading: { format: 'latex', markdown: String(vn) } };
     }
     return null;
   }, [set]);

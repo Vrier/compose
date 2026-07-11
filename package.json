@@ -9,7 +9,7 @@
   "scripts": {
     "build": "node build.mjs",
     "build:server": "node build/server.mjs",
-    "test": "node test/regression.mjs && node test/schema-check.mjs && node test/latex.mjs && node test/server.mjs",
+    "test": "node test/regression.mjs && node test/schema-check.mjs && node test/latex.mjs && node test/notes.mjs && node test/server.mjs",
     "test:update": "node test/regression.mjs --update && node test/latex.mjs --update",
     "bundle:cc": "node scripts/make-cc-bundle.mjs"
   },

@@ -1,24 +1,32 @@
 /* ============================================================================
-   lingdown.js — a tiny "linguistics Markdown" engine for COMPOSE readings.
-   Framework-agnostic, no deps. window.Lingdown.{render, renderInto, layoutWithin}.
+   lingdown.js — the COMPOSE notes renderer. (Internal name only; the input
+   format is NOT a dialect — it is the LaTeX formal semanticists already
+   write, S14.)
 
-   Fenced blocks (```lang … ```):
-     tree   — bracket notation → typeset syntax tree (à la forest / tikz-qtree)
-     ex     — numbered examples + grammaticality judgments (à la gb4e / linguex)
-     gloss  — interlinear glossed text, Leipzig style (à la leipzig)
-     deriv  — type-driven denotation steps, right-aligned type column
-     avm    — attribute-value matrix / feature structure (à la avm)
+   INPUT = a Markdown skeleton (# headings, blank-line paragraphs, *em*,
+   **strong**, - lists, [^a] footnotes) with all linguistics content in LaTeX:
 
-   Inline math ($…$, and ⟦…⟧ anywhere) auto-converts logic notation:
-     lambda→λ  forall→∀  exists→∃  ->→→  <e,t>→⟨e,t⟩  /\→∧  \/→∨  ~→¬
-     [[x]]→⟦x⟧  _i→subscript  ^n→superscript  + many \greek and \symbols
+     Examples    \ex … \xe   ·   \pex … \a … \xe        (expex)
+                 \ex. … \a. …                             (linguex)
+                 \begin{exe} \ex … \begin{xlist} …        (gb4e)
+                 judgments as leading tokens: * ? ?? # % ✓
+                 labels \ex<lab> / \label{lab}; refs \ref{lab}, (\ref{lab})
+     Glosses     \begingl \gla … // \glb … // \glft '…' // \endgl
+     Trees       \Tree [.S [.NP …]]                        (qtree)
+                 \begin{forest} [S{den} [NP …]] \end{forest}
+     Denotation  \llbracket dog \rrbracket, \den{…}, \sv{…}, ⟦…⟧ (stmaryrd)
+     Math        $…$, \(…\), $$…$$, \[…\] — \lambda, \forall, ⟨e,t⟩ …
+     Derivations \begin{derivation}  ⟦expr⟧ = term : type  \end{derivation}
+     AVMs        \begin{avm} attr: val (or attr & val \\) \end{avm}
+     IPA         \textipa{…} (common tipa subset)
+     Prose LaTeX \section{…}, \emph/\textit/\textbf/\textsc/\texttt,
+                 itemize/enumerate, \footnote{…}, \href{#g.p}{label}
 
-   Document features (resolved across the whole reading, both directions):
-     • Cross-references — label an example  ```ex {#neg}  or a line  …text {#negb}
-       then refer to it with  (@neg) → "(3)"  or bare  @neg → "3" (clickable).
-     • Footnotes — marker  [^a]  with a definition line  [^a]: text  (collected
-       into a notes list), or an inline footnote  ^[text here].
-     • Leipzig tooltips — gloss small-caps (NEG, 3SG…) get hover expansions.
+   Rendering is native (no KaTeX/MathJax): trees, examples, glosses and math
+   reuse the same typesetting the app itself uses. Unknown commands degrade
+   to visible source. All author text passes through escapeHtml (S5 audit).
+   window.Lingdown = { render, renderInto, layoutWithin, mathHtml, inlineMd,
+   parseDoc } — parseDoc is DOM-free and exported for node tests.
    ========================================================================== */
 (function () {
   const SVGNS = 'http://www.w3.org/2000/svg';
@@ -47,7 +55,20 @@
       '\\subset': '⊂', '\\cup': '∪', '\\cap': '∩', '\\emptyset': '∅', '\\top': '⊤',
       '\\bot': '⊥', '\\equiv': '≡', '\\circ': '∘', '\\cdot': '·', '\\times': '×',
       '\\langle': '⟨', '\\rangle': '⟩', '\\sqsubseteq': '⊑', '\\leq': '≤', '\\geq': '≥',
+      '\\llbracket': '⟦', '\\rrbracket': '⟧', '\\rightarrow': '→', '\\leftrightarrow': '↔',
+      '\\Rightarrow': '⇒', '\\Leftrightarrow': '⇔', '\\land': '∧', '\\lor': '∨',
+      '\\sqcap': '⊓', '\\sqcup': '⊔', '\\oplus': '⊕', '\\otimes': '⊗', '\\ast': '∗',
+      '\\star': '∗', '\\partial': '∂', '\\varnothing': '∅', '\\setminus': '∖',
+      '\\mu': 'μ', '\\nu': 'ν', '\\tau': 'τ', '\\kappa': 'κ', '\\omega': 'ω',
+      '\\Omega': 'Ω', '\\Sigma': 'Σ', '\\Pi': 'Π', '\\Delta': 'Δ', '\\Gamma': 'Γ',
+      '\\neq': '≠', '\\approx': '≈', '\\sim': '∼', '\\mid': '|', '\\colon': ':',
+      '\\ldots': '…', '\\dots': '…', '\\cdots': '⋯', '\\prime': '′',
+      '\\qquad': '  ', '\\quad': ' ',
     };
+    // \text{…} / \mathrm{…} / \mathit{…} / \mathbf{…} unwrap to their content
+    s = s.replace(/\\(?:text|mathrm|mathit|mathbf|textit|textrm)\{([^{}]*)\}/g, '$1');
+    // thin/negative spaces + escaped braces
+    s = s.replace(/\\[,;:!]/g, ' ').replace(/\\\{/g, '{').replace(/\\\}/g, '}');
     for (const k in cmd) s = s.split(k).join(cmd[k]);
     // bare word forms (word boundaries)
     s = s.replace(/\blambda\b/g, 'λ').replace(/\bforall\b/g, '∀').replace(/\bexists\b/g, '∃')
@@ -62,6 +83,20 @@
     s = s.replace(/\^\{([^}]*)\}/g, '<sup>$1</sup>').replace(/\^([A-Za-z0-9'])/g, '<sup>$1</sup>');
     s = s.replace(/'/g, '′');
     return s;
+  }
+
+  /* ---- tipa → IPA (common subset; unknown characters pass through) ------- */
+  const TIPA = {
+    '@': 'ə', 'A': 'ɑ', 'E': 'ɛ', 'I': 'ɪ', 'O': 'ɔ', 'U': 'ʊ', 'V': 'ʌ', 'Y': 'ʏ',
+    '&': 'æ', '9': 'œ', '2': 'ø', '7': 'ɤ', '1': 'ɨ', '0': 'ɵ', '6': 'ɐ', '3': 'ɜ',
+    'S': 'ʃ', 'Z': 'ʒ', 'T': 'θ', 'D': 'ð', 'N': 'ŋ', 'R': 'ʁ', 'G': 'ɣ', 'B': 'β',
+    'P': 'ʔ', '?': 'ʔ', 'H': 'ɥ', 'L': 'ʎ', 'M': 'ɱ', 'J': 'ɲ', 'W': 'ʍ', 'X': 'χ',
+    ':': 'ː', '"': 'ˈ', '%': 'ˌ',
+  };
+  function tipaHtml(src) {
+    let out = '';
+    for (const ch of String(src)) out += TIPA[ch] !== undefined ? TIPA[ch] : ch;
+    return '<span class="ld-ipa">' + escapeHtml(out) + '</span>';
   }
 
   /* ---- Leipzig glossing abbreviations (common subset) --------------------- */
@@ -125,36 +160,47 @@
     };
   }
 
-  /* ---- inline markdown (bold / em / code / $math$ / refs / footnotes) ----- */
+  /* ---- inline layer: Markdown skeleton + LaTeX text commands (S14) -------- */
   function inlineMd(text, ctx) {
     const stash = [];
     const hold = (html) => { stash.push(html); return '\u0000' + (stash.length - 1) + '\u0000'; };
     let s = String(text);
     // protected spans first, so their contents are never reinterpreted
     s = s.replace(/\$([^$]+)\$/g, (m, c) => hold('<span class="ld-math">' + mathHtml(c) + '</span>'));
+    s = s.replace(/\\\(([\s\S]+?)\\\)/g, (m, c) => hold('<span class="ld-math">' + mathHtml(c) + '</span>'));
+    s = s.replace(/\\llbracket([\s\S]+?)\\rrbracket/g, (m, c) => hold('<span class="ld-math">⟦' + mathHtml(c.trim()) + '⟧</span>'));
+    s = s.replace(/\\(?:den|sv)\{([^{}]*)\}/g, (m, c) => hold('<span class="ld-math">⟦' + mathHtml(c.trim()) + '⟧</span>'));
+    s = s.replace(/\\textipa\{([^{}]*)\}/g, (m, c) => hold(tipaHtml(c)));
     s = s.replace(/`([^`]+)`/g, (m, c) => hold('<code>' + escapeHtml(c) + '</code>'));
-    // derivation deep link (S10):  [[derivation:g.p|label]]  →  #g.p anchor
-    s = s.replace(/\[\[derivation:([\w.\/-]+)(?:\|([^\]]*))?\]\]/g, (m, tgt, label) =>
+    // \href{#g.p}{label} — deep link into a derivation (S10 anchors)
+    s = s.replace(/\\href\{#([^}]*)\}\{([^}]*)\}/g, (m, tgt, label) =>
       hold('<a class="ld-deriv-link" href="#' + escapeHtml(tgt) + '">' + escapeHtml(label || tgt) + '</a>'));
-    s = s.replace(/\[\[([^\]]*)\]\]/g, (m, c) => hold('⟦' + escapeHtml(c) + '⟧'));
+    // one-level text commands
+    s = s.replace(/\\(?:emph|textit)\{([^{}]*)\}/g, (m, c) => hold('<em>' + escapeHtml(c) + '</em>'));
+    s = s.replace(/\\textbf\{([^{}]*)\}/g, (m, c) => hold('<strong>' + escapeHtml(c) + '</strong>'));
+    s = s.replace(/\\textsc\{([^{}]*)\}/g, (m, c) => hold('<span class="ld-sc">' + escapeHtml(c) + '</span>'));
+    s = s.replace(/\\texttt\{([^{}]*)\}/g, (m, c) => hold('<code>' + escapeHtml(c) + '</code>'));
     if (ctx && !ctx.noFn) {
-      // inline footnote  ^[text]
+      // \footnote{…} (LaTeX) and ^[…] / [^id] (skeleton)
+      s = s.replace(/\\footnote\{([^{}]*)\}/g, (m, t) => {
+        const num = ctx.fnInline(t.trim());
+        return hold('<sup class="ld-fn-ref"><a id="' + ctx.uid + '-fnref-' + num + '" data-target="' + ctx.uid + '-fn-' + num + '">' + num + '</a></sup>');
+      });
       s = s.replace(/\^\[([^\]]+)\]/g, (m, t) => {
         const num = ctx.fnInline(t.trim());
         return hold('<sup class="ld-fn-ref"><a id="' + ctx.uid + '-fnref-' + num + '" data-target="' + ctx.uid + '-fn-' + num + '">' + num + '</a></sup>');
       });
-      // footnote reference  [^id]
       s = s.replace(/\[\^([\w-]+)\]/g, (m, id) => {
         const num = ctx.fnRef(id, ctx.fnDefs[id] || '');
         return hold('<sup class="ld-fn-ref"><a id="' + ctx.uid + '-fnref-' + num + '" data-target="' + ctx.uid + '-fn-' + num + '">' + num + '</a></sup>');
       });
     }
     if (ctx) {
-      // cross-reference  (@label) → "(3)"  ·  bare @label → "3"
-      s = s.replace(/\(@([\w-]+)\)/g, (m, lab) => ctx.labels[lab]
+      // \getfullref{lab} → "(3)" · \ref{lab} / \getref{lab} → "3"
+      s = s.replace(/\\getfullref\{([\w:.-]+)\}/g, (m, lab) => ctx.labels[lab]
         ? hold('<a class="ld-xref" data-target="' + ctx.labels[lab].anchor + '">(' + ctx.labels[lab].display + ')</a>') : m);
-      s = s.replace(/(^|[^\w@`\u0000])@([\w-]+)/g, (m, pre, lab) => ctx.labels[lab]
-        ? pre + hold('<a class="ld-xref" data-target="' + ctx.labels[lab].anchor + '">' + ctx.labels[lab].display + '</a>') : m);
+      s = s.replace(/\\(?:ref|getref)\{([\w:.-]+)\}/g, (m, lab) => ctx.labels[lab]
+        ? hold('<a class="ld-xref" data-target="' + ctx.labels[lab].anchor + '">' + ctx.labels[lab].display + '</a>') : m);
     }
     s = escapeHtml(s);
     s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
@@ -163,7 +209,7 @@
     return s;
   }
 
-  /* ======================== TREES ======================================== */
+  /* ======================== TREES ======================================== */  /* ======================== TREES ======================================== */
   function parseBracket(src) {
     let i = 0; const n = src.length;
     const ws = () => { while (i < n && /\s/.test(src[i])) i++; };
@@ -171,6 +217,7 @@
       ws(); if (src[i] !== '[') return null; i++; ws();
       let label = '';
       while (i < n && !/[\s\[\]{]/.test(src[i])) label += src[i++];
+      if (label.charAt(0) === '.') label = label.slice(1); // qtree \Tree [.S …] form
       let den = null;
       if (src[i] === '{') { i++; den = ''; let d = 1; while (i < n && d > 0) { const ch = src[i]; if (ch === '{') d++; else if (ch === '}') { d--; if (d === 0) { i++; break; } } den += ch; i++; } }
       const node = { label, den, children: [], terminal: null, roof: false };
@@ -265,51 +312,40 @@
 
   /* ======================== EXAMPLES ===================================== */
   // Prescan: assign continuous numbers + labels + anchors, return a model.
-  function prescanExamples(src, ctx, blockLabel) {
-    const model = []; let first = true;
-    src.split('\n').forEach((raw) => {
-      if (!raw.trim()) return;
-      const indented = /^(\s{2,}|\t|\s*-\s)/.test(raw);
-      let line = raw.replace(/^\s*-\s?/, '').trim();
-      let lineLabel = null;
-      const lm = line.match(/\s*\{#([\w-]+)\}\s*$/);
-      if (lm) { lineLabel = lm[1]; line = line.slice(0, lm.index).trim(); }
-      let judge = '';
-      const jm = line.match(/^(\*\?|\?\*|\?\?|\*|\?|#|%|✓|!)\s+/);
-      if (jm) { judge = jm[1]; line = line.slice(jm[0].length); }
-      let shown, display;
-      if (indented) { ctx.subLetter += 1; const L = String.fromCharCode(96 + ctx.subLetter); shown = L + '.'; display = (ctx.parentNum || ctx.exNum) + L; }
-      else { ctx.exNum += 1; ctx.parentNum = ctx.exNum; ctx.subLetter = 0; shown = '(' + ctx.exNum + ')'; display = '' + ctx.exNum; }
-      const anchor = ctx.uid + '-ex-' + (++ctx.exSeq);
-      if (lineLabel) ctx.labels[lineLabel] = { display, anchor };
-      if (first && blockLabel) ctx.labels[blockLabel] = { display, anchor };
-      first = false;
-      model.push({ indented, shown, judge, text: line, anchor });
+  /* ---- example numbering (pass 1) + rendering --------------------------- */
+  function numberExamples(items, ctx) {
+    items.forEach((it) => {
+      if (it.sub) {
+        ctx.subLetter += 1;
+        const L = String.fromCharCode(96 + ctx.subLetter);
+        it.shown = L + '.'; it.display = (ctx.parentNum || ctx.exNum) + L;
+      } else {
+        ctx.exNum += 1; ctx.parentNum = ctx.exNum; ctx.subLetter = 0;
+        it.shown = '(' + ctx.exNum + ')'; it.display = '' + ctx.exNum;
+      }
+      it.anchor = ctx.uid + '-ex-' + (++ctx.exSeq);
+      if (it.label) ctx.labels[it.label] = { display: it.display, anchor: it.anchor };
     });
-    return model;
   }
-  function renderExamplesModel(model, ctx) {
+  function renderExamplesModel(items, ctx) {
     const wrap = document.createElement('div'); wrap.className = 'ld-ex';
-    model.forEach((it) => {
-      const row = document.createElement('div'); row.className = 'ld-ex-row' + (it.indented ? ' sub' : '');
+    items.forEach((it) => {
+      const row = document.createElement('div'); row.className = 'ld-ex-row' + (it.sub ? ' sub' : '');
       row.id = it.anchor;
       row.innerHTML = '<span class="ld-ex-num">' + it.shown + '</span>' +
         '<span class="ld-ex-judge">' + escapeHtml(it.judge) + '</span>' +
         '<span class="ld-ex-txt">' + inlineMd(it.text, ctx) + '</span>';
+      if (it.gloss) row.querySelector('.ld-ex-txt').appendChild(renderGlossModel(it.gloss));
       wrap.appendChild(row);
     });
     return wrap;
   }
 
   /* ======================== GLOSSES ====================================== */
-  function renderGloss(src) {
-    let lines = src.split('\n').filter((l) => l.trim().length);
+  function renderGlossModel(g) {
     const wrap = document.createElement('div'); wrap.className = 'ld-gloss';
-    let trans = null;
-    const last = lines.length ? lines[lines.length - 1].trim() : '';
-    if (/^['"‘’“”].*['"‘’“”]$/.test(last)) { trans = last.replace(/^['"‘’“”]+|['"‘’“”]+$/g, ''); lines = lines.slice(0, -1); }
-    const srcToks = (lines[0] || '').trim().split(/\s+/);
-    const glToks = (lines[1] || '').trim().split(/\s+/);
+    const srcToks = String(g.src || '').trim().split(/\s+/);
+    const glToks = String(g.gl || '').trim().split(/\s+/);
     const cols = Math.max(srcToks.length, glToks.length);
     const grid = document.createElement('div'); grid.className = 'ld-gloss-grid';
     for (let c = 0; c < cols; c++) {
@@ -319,7 +355,7 @@
       grid.appendChild(cell);
     }
     wrap.appendChild(grid);
-    if (trans) { const t = document.createElement('div'); t.className = 'ld-gloss-t'; t.innerHTML = '‘' + inlineMd(trans) + '’'; wrap.appendChild(t); }
+    if (g.trans) { const t = document.createElement('div'); t.className = 'ld-gloss-t'; t.innerHTML = '‘' + inlineMd(g.trans) + '’'; wrap.appendChild(t); }
     return wrap;
   }
 
@@ -377,15 +413,28 @@
   }
 
   /* ======================== BLOCK DISPATCH + MARKDOWN ==================== */
-  function renderBlock(lang, body, ctx, model) {
+  function renderBlock(p, ctx) {
     try {
-      if (lang === 'tree') return renderTree(body);
-      if (lang === 'ex' || lang === 'examples') return renderExamplesModel(model || prescanExamples(body, ctx, null), ctx);
-      if (lang === 'gloss' || lang === 'igt') return renderGloss(body);
-      if (lang === 'deriv' || lang === 'derivation' || lang === 'den' || lang === 'denotation') return renderDeriv(body);
-      if (lang === 'avm' || lang === 'fs') { const w = document.createElement('div'); w.className = 'ld-avm-wrap'; w.appendChild(avmDom(parseAvm(body))); return w; }
-    } catch (e) { /* fall through to code */ }
-    const pre = document.createElement('pre'); pre.className = 'ld-code'; pre.textContent = body; return pre;
+      if (p.type === 'tree') return renderTree(p.body);
+      if (p.type === 'ex') return renderExamplesModel(p.items, ctx);
+      if (p.type === 'gloss') return renderGlossModel(p.gl);
+      if (p.type === 'deriv') return renderDeriv(p.body);
+      if (p.type === 'avm') { const w = document.createElement('div'); w.className = 'ld-avm-wrap'; w.appendChild(avmDom(parseAvm(p.body))); return w; }
+      if (p.type === 'mathblock') { const d = document.createElement('div'); d.className = 'ld-math ld-math-display'; d.innerHTML = mathHtml(p.body); return d; }
+    } catch (e) { /* fall through to visible source */ }
+    const pre = document.createElement('pre'); pre.className = 'ld-code'; pre.textContent = p.body || ''; return pre;
+  }
+
+  // LaTeX prose niceties → the Markdown skeleton renderMarkdown understands.
+  function preprocessProse(text) {
+    return String(text)
+      .replace(/^\s*\\section\*?\{([^}]*)\}\s*$/gm, '# $1')
+      .replace(/^\s*\\subsection\*?\{([^}]*)\}\s*$/gm, '## $1')
+      .replace(/^\s*\\subsubsection\*?\{([^}]*)\}\s*$/gm, '### $1')
+      .replace(/^\s*\\begin\{(itemize|enumerate)\}\s*$/gm, '')
+      .replace(/^\s*\\end\{(itemize|enumerate)\}\s*$/gm, '')
+      .replace(/^\s*\\item\s+/gm, '- ')
+      .replace(/^\s*\\noindent\s*/gm, '');
   }
 
   function renderMarkdown(text, root, ctx) {
@@ -429,35 +478,169 @@
     return wrap;
   }
 
-  function parseParts(md) {
-    const parts = []; const segs = String(md).split(/```/);
-    segs.forEach((seg, idx) => {
-      if (idx % 2 === 1) {
-        const nl = seg.indexOf('\n');
-        const head = (nl < 0 ? seg : seg.slice(0, nl)).trim();
-        const body = (nl < 0 ? '' : seg.slice(nl + 1)).replace(/\s+$/, '');
-        const langTok = (head.split(/\s+/)[0] || '');
-        const labM = head.match(/\{#([\w-]+)\}/);
-        parts.push({ type: 'fence', lang: langTok.toLowerCase(), label: labM ? labM[1] : null, body });
-      } else parts.push({ type: 'prose', text: seg });
-    });
-    return parts;
+  /* ============= LaTeX-aware document scanner (S14, DOM-free) ============ */
+  // judgments may be glued to the text (*Every hobbit sleep) — real expex
+  // habit; single * guards against ** so bold markup can't be eaten
+  const EX_JUDGE = /^(\*\?|\?\*|\?\?|\*(?!\*)|\?|#|%|✓|!)\s*(?=\S)/;
+  function exItem(sub, raw) {
+    const item = { sub: !!sub, judge: '', text: '', label: null, gloss: null };
+    let t = String(raw || '').trim();
+    const lm = t.match(/^<([\w:.-]+)>\s*/);
+    if (lm) { item.label = lm[1]; t = t.slice(lm[0].length); }
+    t = t.replace(/\\label\{([\w:.-]+)\}\s*/g, (m, l) => { if (!item.label) item.label = l; return ''; });
+    const jm = t.match(EX_JUDGE);
+    if (jm) { item.judge = jm[1]; t = t.slice(jm[0].length); }
+    item.text = t.trim();
+    return item;
+  }
+  function parseGl(body) {
+    const g = { src: '', gl: '', trans: null };
+    let m;
+    if ((m = body.match(/\\gla\s+([\s\S]*?)\/\//))) g.src = m[1].trim();
+    if ((m = body.match(/\\glb\s+([\s\S]*?)\/\//))) g.gl = m[1].trim();
+    if ((m = body.match(/\\glft\s+([\s\S]*?)\/\//))) g.trans = m[1].trim().replace(/^['"‘’“”]+|['"‘’“”]+$/g, '');
+    return g;
+  }
+  function glossFromChunk(item, chunk) {
+    const gm = chunk.match(/\\begingl([\s\S]*?)\\endgl/);
+    if (gm) item.gloss = parseGl(gm[1]);
+    return item;
+  }
+  function parseDoc(md) {
+    const out = [];
+    const lines = String(md).replace(/\r\n?/g, '\n').split('\n');
+    let prose = [];
+    const flush = () => { if (prose.join('\n').trim()) out.push({ type: 'prose', text: prose.join('\n') }); prose = []; };
+    let i = 0; const n = lines.length;
+    const until = (endRe) => { const buf = []; while (i < n && !endRe.test(lines[i])) buf.push(lines[i++]); i++; return buf.join('\n'); };
+    const bracketDepth = (str) => { let d = 0; for (const ch of str) { if (ch === '[') d++; else if (ch === ']') d--; } return d; };
+    while (i < n) {
+      const line = lines[i]; const t = line.trim(); let m;
+      // ---- expex \pex … \a … \xe -----------------------------------------
+      if ((m = t.match(/^\\pex(?:<([\w:.-]+)>)?\s*(.*)$/))) {
+        flush(); i++;
+        const body = until(/^\s*\\xe\b/);
+        const items = [];
+        const chunks = ('\n' + body).split(/\n\s*\\a(?![A-Za-z])\s*/);
+        const main = exItem(false, (m[1] ? '<' + m[1] + '> ' : '') + ((m[2] || '') + ' ' + chunks[0]).trim());
+        glossFromChunk(main, chunks[0] || '');
+        if (main.gloss) main.text = main.text.replace(/\\begingl[\s\S]*$/, '').trim();
+        items.push(main);
+        for (let k = 1; k < chunks.length; k++) {
+          const it = exItem(true, chunks[k].replace(/\\begingl[\s\S]*?\\endgl/, '').trim());
+          glossFromChunk(it, chunks[k]);
+          items.push(it);
+        }
+        out.push({ type: 'ex', items });
+        continue;
+      }
+      // ---- expex \ex … \xe (NOT linguex "\ex.") ----------------------------
+      if ((m = t.match(/^\\ex(?:<([\w:.-]+)>)?(?![a-zA-Z.])\s*(.*)$/))) {
+        flush(); i++;
+        const body = ((m[2] || '') + '\n' + until(/^\s*\\xe\b/)).trim();
+        const item = exItem(false, (m[1] ? '<' + m[1] + '> ' : '') + body.replace(/\\begingl[\s\S]*?\\endgl/, '').replace(/\n+/g, ' ').trim());
+        glossFromChunk(item, body);
+        out.push({ type: 'ex', items: [item] });
+        continue;
+      }
+      // ---- linguex \ex. … \a. … --------------------------------------------
+      if (/^\\ex\./.test(t)) {
+        flush();
+        const items = [exItem(false, t.replace(/^\\ex\.\s*/, ''))];
+        i++;
+        while (i < n && /^\s*\\[a-z]\.\s/.test(lines[i])) { items.push(exItem(true, lines[i].trim().replace(/^\\[a-z]\.\s*/, ''))); i++; }
+        out.push({ type: 'ex', items });
+        continue;
+      }
+      // ---- gb4e \begin{exe} … \end{exe} -------------------------------------
+      if (/^\\begin\{exe\}/.test(t)) {
+        flush(); i++;
+        const body = until(/^\s*\\end\{exe\}/);
+        const items = []; let sub = false;
+        body.split('\n').forEach((l) => {
+          const s2 = l.trim();
+          if (/^\\begin\{xlist\}/.test(s2)) { sub = true; return; }
+          if (/^\\end\{xlist\}/.test(s2)) { sub = false; return; }
+          const em = s2.match(/^\\ex\s+(.*)$/);
+          if (em) items.push(exItem(sub, em[1]));
+          else if (s2 && items.length) items[items.length - 1].text += ' ' + s2;
+        });
+        if (items.length) out.push({ type: 'ex', items });
+        continue;
+      }
+      // ---- standalone gloss --------------------------------------------------
+      if (/^\\begingl\b/.test(t)) {
+        flush(); i++;
+        out.push({ type: 'gloss', gl: parseGl(until(/^\s*\\endgl\b/)) });
+        continue;
+      }
+      // ---- trees: qtree \Tree [.S …] and forest ------------------------------
+      if (/^\\Tree\b/.test(t)) {
+        flush();
+        let buf = line.replace(/^\s*\\Tree\s*/, ''); i++;
+        while (i < n && (bracketDepth(buf) > 0 || !buf.trim())) { buf += '\n' + lines[i]; i++; }
+        out.push({ type: 'tree', body: buf });
+        continue;
+      }
+      if (/^\\begin\{forest\}/.test(t)) {
+        flush(); i++;
+        let body = until(/^\s*\\end\{forest\}/);
+        const first = body.indexOf('[');
+        if (first > 0) body = body.slice(first); // strip forest option preamble
+        out.push({ type: 'tree', body });
+        continue;
+      }
+      // ---- derivations / avm / display math ----------------------------------
+      if (/^\\begin\{(derivation|deriv)\}/.test(t)) {
+        flush(); i++;
+        out.push({ type: 'deriv', body: until(/^\s*\\end\{(derivation|deriv)\}/) });
+        continue;
+      }
+      if (/^\\begin\{avm\}/.test(t)) {
+        flush(); i++;
+        let body = until(/^\s*\\end\{avm\}/);
+        body = body.split('\n').map((l) => l.replace(/\\\\\s*$/, '')).map((l) => (l.includes('&') && !l.includes(':')) ? l.replace('&', ': ') : l).join('\n');
+        out.push({ type: 'avm', body });
+        continue;
+      }
+      if (/^\$\$/.test(t)) {
+        flush();
+        let rest = t.replace(/^\$\$\s*/, '');
+        if (/\$\$\s*$/.test(rest) && rest.replace(/\$\$\s*$/, '').trim()) { out.push({ type: 'mathblock', body: rest.replace(/\$\$\s*$/, '').trim() }); i++; continue; }
+        i++;
+        const body = (rest ? rest + '\n' : '') + until(/\$\$\s*$/);
+        out.push({ type: 'mathblock', body: body.trim() });
+        continue;
+      }
+      if (/^\\\[/.test(t)) {
+        flush();
+        let rest = t.replace(/^\\\[\s*/, '');
+        if (/\\\]\s*$/.test(rest)) { out.push({ type: 'mathblock', body: rest.replace(/\\\]\s*$/, '').trim() }); i++; continue; }
+        i++;
+        const body = (rest ? rest + '\n' : '') + until(/\\\]\s*$/);
+        out.push({ type: 'mathblock', body: body.trim() });
+        continue;
+      }
+      prose.push(line); i++;
+    }
+    flush();
+    return out;
   }
 
   function render(md) {
     const ctx = newCtx();
     const root = document.createElement('div'); root.className = 'ld-doc';
     root.dataset.uid = ctx.uid;
-    const parts = parseParts(md);
+    const parts = parseDoc(md);
     // pass 1 — number examples (fills labels both ways) + pull footnote defs
     parts.forEach((p) => {
-      if (p.type === 'fence' && (p.lang === 'ex' || p.lang === 'examples')) p.model = prescanExamples(p.body, ctx, p.label);
+      if (p.type === 'ex') numberExamples(p.items, ctx);
       else if (p.type === 'prose') p.text = stripFnDefs(p.text, ctx);
     });
     // pass 2 — render
     parts.forEach((p) => {
-      if (p.type === 'fence') root.appendChild(renderBlock(p.lang, p.body, ctx, p.model));
-      else renderMarkdown(p.text, root, ctx);
+      if (p.type === 'prose') renderMarkdown(preprocessProse(p.text), root, ctx);
+      else root.appendChild(renderBlock(p, ctx));
     });
     if (ctx.footnotes.length) root.appendChild(renderFootnotes(ctx));
     return root;
@@ -495,11 +678,16 @@
     return el;
   }
 
-  let raf;
-  window.addEventListener('resize', () => {
-    cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(() => document.querySelectorAll('.ld-tree').forEach(layoutTree));
-  });
-
-  window.Lingdown = { render, renderInto, layoutWithin, mathHtml, inlineMd };
+  if (typeof window !== 'undefined') {
+    let raf;
+    window.addEventListener('resize', () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => document.querySelectorAll('.ld-tree').forEach(layoutTree));
+    });
+    window.Lingdown = { render, renderInto, layoutWithin, mathHtml, inlineMd, parseDoc };
+  }
+  if (typeof module !== 'undefined' && module.exports) {
+    // DOM-free surface for node tests (W13-style footer)
+    module.exports = { parseDoc, mathHtml, tipaHtml };
+  }
 })();

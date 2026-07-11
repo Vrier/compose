@@ -1,4 +1,4 @@
-# Skill — Converting Coppock & Champollion chapters into lingdown
+# Skill — Converting Coppock & Champollion chapters into reading notes
 
 The recipe for turning a chapter of *Invitation to Formal Semantics* (Coppock &
 Champollion) into the **reading companion** that ships inside a COMPOSE exercise
@@ -87,76 +87,94 @@ Three things must line up between the reading and the rest of that `.compose.jso
 
 ---
 
-## 3 · Lingdown syntax reference
+## 3 · Notes syntax reference (S14 — LaTeX input)
 
-Authoritative against `lingdown.js`. Blocks are fenced with ```` ``` ````.
+Authoritative against `lingdown.js` (internal name only). A note is a
+**Markdown skeleton** — `#`/`##`/`###` headings (the `##` headings anchor
+exercises), blank-line paragraphs, `**bold**`, `*italic*`, `` `code` ``,
+`- ` lists — with all linguistics content written as the **LaTeX formal
+semanticists already use**. No custom fence syntax exists.
 
 ### Inline
-- **Math:** wrap in `$…$`, or use `[[ … ]]` / `⟦ … ⟧` anywhere. Notation
-  auto-converts (see §1).
-- **Emphasis:** `**bold**`, `*italic*`, `` `code` ``.
-- **Headings:** `#` chapter, `##` section (these anchor exercises), `###` subsection.
-- **Lists:** lines beginning `- ` or `* `.
+- **Math:** `$…$` or `\(…\)` — `\lambda`, `\forall`, `\exists`, `\iota`,
+  `<e,t>` → ⟨e,t⟩, `/\` → ∧, `->` → →, `_1`/`^n` sub/superscripts, and the
+  usual symbol commands (`\sqcap`, `\oplus`, `\partial`, …).
+- **Denotation brackets (stmaryrd):** `\llbracket dog \rrbracket`, `\den{…}`
+  or `\sv{…}` — or type `⟦…⟧` directly. Inside math/derivations, `[[…]]`
+  also renders as ⟦…⟧.
+- **Text commands:** `\emph{…}`/`\textit{…}`, `\textbf{…}`, `\textsc{…}`,
+  `\texttt{…}`, `\textipa{…}` (common tipa subset → IPA).
+- **Links into exercises:** `\href{#g1.d2}{see the derivation}` scrolls the
+  student to that derivation (S10 anchors).
+- **Prose LaTeX:** `\section{…}`/`\subsection{…}` work as headings;
+  `itemize`/`enumerate` with `\item` become lists — paste from handouts works.
 
-### `deriv` — denotation steps (the workhorse)
-One step per line, `expression : type`. The type right-aligns into a column.
+### Examples — expex / linguex / gb4e
+All three syntaxes render as auto-numbered example blocks; judgments
+(`*`, `?`, `??`, `?*`, `#`, `%`, `✓`) may be glued or spaced:
+
+    \pex<neg> 
+    \a Frodo doesn't fight.
+    \a *Fights not Frodo.
+    \xe
+
+    \ex. Sam gardens.
+    \a. *Gardens Sam.
+
+    \begin{exe} \ex … \begin{xlist} \ex … \end{xlist} \end{exe}
+
+Label with `<lab>` (expex style) or `\label{lab}`; refer with `\ref{lab}` →
+"3" and `(\ref{lab})` / `\getfullref{lab}` → "(3)" (clickable).
+
+### Glosses — expex `\begingl`
+
+    \begingl
+    \gla neko-ga neru //
+    \glb cat-NOM sleep //
+    \glft 'the cat sleeps' //
+    \endgl
+
+Leipzig small-caps tags (NEG, 3SG, …) get hover expansions automatically.
+A `\begingl` inside an `\ex…\xe` attaches the gloss to that example.
+
+### Trees — qtree / forest
+
+    \Tree [.S [.NP Frodo ] [.VP runs ] ]
+
+    \begin{forest}
+    [S{love(bi,f)}
+      [DP{bi} Bilbo]
+      [VP{lambda x.love(x,f)}
+        [V{lambda y.lambda x.love(x,y)} loves]
+        [DP{f} Frodo]]]
+    \end{forest}
+
+`{…}` after a label is that node's denotation (rendered under the category);
+a bare word is a leaf; wrap a terminal in `<…>` for a roof. Keep bracketing
+and denotations consistent with the exercise `tree` string for the same
+sentence, so the reading mirrors the answer key.
+
+### Denotation steps — `derivation` (the workhorse)
+One step per line, `expression : type`; the type right-aligns into a column.
 Indentation adds left padding; a blank line is a visual gap.
-````
-```deriv
-[[loves]]             = lambda y.lambda x.love(x,y) : <e,<e,t>>
-[[loves Frodo]]       = lambda x.love(x,f)          : <e,t>
-[[Bilbo loves Frodo]] = love(bi,f)                  : t
-```
-````
 
-### `tree` — typeset syntax tree
-Bracket notation `[Label{denotation} child child]`. `{…}` after a label is the
-node's denotation (rendered under the category). A bare word is a leaf. Wrap a
-terminal in `<…>` to draw it as a **roof** (triangle) instead of a line.
-````
-```tree
-[S{love(bi,f)}
-  [DP{bi} Bilbo]
-  [VP{lambda x.love(x,f)}
-    [V{lambda y.lambda x.love(x,y)} loves]
-    [DP{f} Frodo]]]
-```
-````
-Keep the bracketing and node denotations consistent with the exercise `tree`
-string for the same sentence, so the reading mirrors the answer key.
+    \begin{derivation}
+    [[loves]]             = lambda y.lambda x.love(x,y) : <e,<e,t>>
+    [[loves Frodo]]       = lambda x.love(x,f)          : <e,t>
+    [[Bilbo loves Frodo]] = love(bi,f)                  : t
+    \end{derivation}
 
-### `ex` — numbered examples
-One example per line, auto-numbered `(1)`, `(2)`… An indented line (≥2 spaces, a
-tab, or a leading `- `) becomes a sub-example `a`, `b`, `c`. A leading judgment
-marker is set in the accent colour: `*`, `?`, `??`, `?*`, `*?`, `#`, `%`, `✓`,
-`!`. Label the whole block with `{#id}` after the fence, or a single line with a
-trailing `{#id}`. Refer inline: `(@id)` → "(3)", bare `@id` → "3" (both clickable).
-````
-```ex {#neg}
-Frodo doesn't fight.
-Sauron is not a hobbit.
-* Fights not Frodo.
-```
-````
+### Display math
 
-### `gloss` — interlinear glossed text (Leipzig)
-Line 1 = source, line 2 = gloss (small-caps tags like `NEG`, `3SG` get hover
-expansions automatically), optional final quoted line = translation. Rarely
-needed for C&C, but available.
+    $$ \forall x. hobbit(x) \rightarrow sleep(x) $$      (or \[ … \])
 
-### `avm` — attribute-value matrix
-`[ATTR: value, ATTR2: [NESTED: v]]`. For feature structures; rarely needed here.
+### AVMs — `\begin{avm} … \end{avm}`
+`ATTR: value` per line (nested `[…]` allowed); `ATTR & value \\` rows are
+also accepted. Rarely needed for C&C.
 
 ### Footnotes
-Reference `[^id]` in the text, define on its own line `[^id]: explanation`.
-Inline form: `^[text here]`. All footnotes collect into a numbered list with
-back-links at the end of the reading.
-
-### `lexicon` (authoring aid)
-A `lexicon` block of `word = denotation` lines is read by **Auto-generate
-exercises** (Tools ▸ Lingdown) to scaffold the set's lexicon/items from the
-reading — handy when drafting a brand-new chapter, then refine the generated set.
-For display in the finished reading, prefer `deriv`.
+`\footnote{…}` inline, or Markdown style: reference `[^id]`, define on its
+own line `[^id]: explanation`. All collect into a numbered list at the end.
 
 ---
 
@@ -188,10 +206,10 @@ escaped as `\n`, quotes as `\"`. Two ways to produce it:
   ```js
   const md  = await readFile('reading/ch6.1-fa.md');
   const set = JSON.parse(await readFile('exercises/ch6.1-fa.compose.json'));
-  set.reading = { format: 'lingdown', markdown: md };
+  set.reading = { format: 'latex', markdown: md };
   await saveFile('exercises/ch6.1-fa.compose.json', JSON.stringify(set, null, 2));
   ```
-- **In-app:** Tools ▸ Lingdown editor — write/preview the markdown live; it is
+- **In-app:** Tools ▸ Notes editor — write/preview live; it is
   embedded when you save the set. The editor's **Sections** chips show exactly
   which `##` headings exist for exercises to anchor to.
 
@@ -208,5 +226,5 @@ Before considering a reading done:
 - [ ] Every λ-term in a `deriv`/`tree` block is α-equivalent and same-typed to the set's lexicon entry for that word.
 - [ ] Tree bracketings/denotations agree with the exercise `tree` strings for the same sentences.
 - [ ] Example sentences and section numbers are the book's, not invented.
-- [ ] Cross-refs `(@label)` resolve (the labelled `ex` block exists) and footnotes are defined for every `[^id]`.
+- [ ] Cross-refs `\ref{label}` resolve (the labelled example exists) and footnotes are defined for every `[^id]`.
 - [ ] Render check: open the set in COMPOSE, toggle the Reading panel, click each exercise item and confirm it scrolls to the right section and the trees/derivs typeset cleanly (no raw `lambda`/`[[…]]` showing through).

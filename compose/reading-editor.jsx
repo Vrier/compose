@@ -1,6 +1,7 @@
 /* ===========================================================================
    COMPOSE — Reading-companion editor  (instructor tool)
-   A Markdown editor (lingdown-flavoured) with live preview, openable from the
+   The notes editor (Markdown skeleton + LaTeX linguistics content, S14) with
+   live preview, openable from the
    exercise editor. Lets instructors write a reading, auto-detect ## sections
    (which exercises anchor to), optionally AUTO-GENERATE exercises from `tree`
    + `deriv`/`lexicon` blocks (built-in parsing — no LLM), and export the
@@ -11,7 +12,7 @@
    window.Lingdown (lingdown.js), window.composeDownload / composeSlug (app).
    =========================================================================== */
 
-/* ---- notation: lingdown λ-terms → COMPOSE ASCII denotations ------------- */
+/* ---- notation: notes λ-terms → COMPOSE ASCII denotations ---------------- */
 function lingToCompose(s) {
   if (!s) return '';
   let o = String(s);

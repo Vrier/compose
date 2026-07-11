@@ -18,9 +18,9 @@ if it is in the set, and to `0` otherwise. Sets and their characteristic functio
 are interchangeable, and **we use functions throughout**. So the meaning of *cat* is
 the function
 
-```deriv
+\begin{derivation}
 [[cat]] = λx . cat(x)=1
-```
+\end{derivation}
 
 — *the function mapping each `x` to `1` if `x` is a cat, and to `0` otherwise.* This
 is why, in every H&K set, a one-place predicate is written with the **`=1`**

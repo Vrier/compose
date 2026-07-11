@@ -715,9 +715,9 @@
       set.groups.push(group);
     });
 
-    // --- reading companion (lingdown markdown embedded in the set) ---
+    // --- reading companion (LaTeX-flavoured notes embedded in the set; S14) ---
     if (obj.reading && typeof obj.reading.markdown === 'string') {
-      set.reading = { format: obj.reading.format || 'lingdown', markdown: obj.reading.markdown };
+      set.reading = { format: obj.reading.format || 'latex', markdown: obj.reading.markdown };
     }
 
     if (!set.title) set.title = set.id || 'Exercise set';

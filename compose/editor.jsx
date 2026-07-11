@@ -199,10 +199,10 @@ function generateJSON(state) {
         }),
     })),
   };
-  // A reading companion (lingdown Markdown) travels inside the set JSON so it
+  // A reading companion (Markdown skeleton + LaTeX, S14) travels inside the set JSON so it
   // loads with the set and survives export + import. Exercises anchor to its
   // ## sections via each item's reading.section.
-  if (state.reading && (state.reading.markdown || '').trim()) out.reading = { format: 'lingdown', markdown: state.reading.markdown };
+  if (state.reading && (state.reading.markdown || '').trim()) out.reading = { format: 'latex', markdown: state.reading.markdown };
   return JSON.stringify(out, null, 2);
 }
 

@@ -120,14 +120,15 @@
     },
     "reading": {
       "type": "object",
-      "description": "Optional reading companion embedded in the worksheet (lingdown Markdown). Derivations anchor to its ## sections via reading.section.",
+      "description": "Optional reading companion embedded in the worksheet: a Markdown skeleton with LaTeX linguistics content (expex/linguex/gb4e examples, qtree/forest trees, stmaryrd denotation brackets, $ math, tipa). Derivations anchor to its ## sections via reading.section.",
       "required": [
         "markdown"
       ],
       "properties": {
         "format": {
-          "const": "lingdown",
-          "default": "lingdown"
+          "enum": ["latex", "lingdown"],
+          "default": "latex",
+          "description": "\"latex\" is the format; \"lingdown\" is accepted as a legacy value only."
         },
         "markdown": {
           "type": "string"

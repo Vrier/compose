@@ -6,22 +6,25 @@ When a transitive verb takes an individual (type e) as its object, FA applies cl
 
 **Quantifier Raising (QR).** The object DP moves covertly to adjoin at S-level, leaving a trace t_n of type e. A λ-phrase node (LP) hosts Predicate Abstraction over n, creating the ⟨e,t⟩ argument the quantifier needs.
 
-```ex {#qr-ex}
-Gandalf loves every hobbit.
-Elrond summons every good wise creature.
-Legolas doesn't trust some brave dwarf.
-```
+\ex<qr-ex> Gandalf loves every hobbit.
+\xe
 
-```deriv
+\ex Elrond summons every good wise creature.
+\xe
+
+\ex Legolas doesn't trust some brave dwarf.
+\xe
+
+\begin{derivation}
 [[loves]]                        = lambda y.lambda x.love(x,y)                  : <e,<e,t>>
 [[loves t1]]                     = lambda x.love(x,t_1)                         : <e,t>
 [[Gandalf loves t1]]             = love(g,t_1)                                  : t
 [[LP 1 [S Gandalf loves t1]]]    = lambda y.love(g,y)                           : <e,t>   (PA)
 [[every hobbit]]                 = lambda Y.forall x[hobbit(x) -> Y(x)]         : <<e,t>,t>
 [[every hobbit loves Gandalf]]   = forall x[hobbit(x) -> love(g,x)]             : t
-```
+\end{derivation}
 
-```tree
+\begin{forest}
 [S{forall x[hobbit(x) -> love(g,x)]}
   [DP{lambda Y.forall x[hobbit(x) -> Y(x)]}
     [D{lambda X.lambda Y.forall x[X(x) -> Y(x)]} every]
@@ -32,24 +35,27 @@ Legolas doesn't trust some brave dwarf.
       [VP{lambda x.love(x,t_1)}
         [V{lambda y.lambda x.love(x,y)} loves]
         [DP{t_1} t_1]]]]]
-```
+\end{forest}
 
 ## 7.4.1 Two quantifiers and scope
 
 When both subject and object are quantifiers, QR can apply to either or both, generating different **scope orderings**. Raising the object above the subject yields object-wide scope; the base order (subject above raised object) yields subject-wide scope.
 
-```ex {#scope-ex}
-No elf trusts every human.
-Some elf councils every good wise creature.
-Every hobbit who travels fears some evil creature.
-```
+\ex<scope-ex> No elf trusts every human.
+\xe
+
+\ex Some elf councils every good wise creature.
+\xe
+
+\ex Every hobbit who travels fears some evil creature.
+\xe
 
 **Subject wide scope** (no > every): the object is QR'd, the subject remains in situ.
 
-```deriv
+\begin{derivation}
 [[LP 1 [S no-elf [VP trusts t1]]]] = lambda y.~exists x[elf(x) /\ trust(x,y)] : <e,t>   (PA)
 [[every human applied]]            = forall y[human(y) -> ~exists x[elf(x) /\ trust(x,y)]] : t
-```
+\end{derivation}
 
 **Object wide scope** (every > no): the object LP is embedded *within* a second LP that abstracts over the subject trace.
 

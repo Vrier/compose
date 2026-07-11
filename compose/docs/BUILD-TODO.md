@@ -79,7 +79,7 @@ overlaps existing C&C sets, so this is library breadth, not a gap:
 ## 5 · Doc hygiene (related, not from the maps)
 
 - [x] Move planning docs out of the shipped build into `compose/docs/`:
-      these three maps, `BUILD-TODO.md`, `SKILL-chapters-to-lingdown.md`, `MOBILE.md`.
+      these three maps, `BUILD-TODO.md`, `SKILL-chapters-to-notes.md`, `MOBILE.md`.
       (`CLAUDE.md` left at repo root — standard agent-tooling location, already
       outside the served `compose/` app dir; `FORMAT.md` left in `compose/` —
       user-facing authoring reference linked from the README.)

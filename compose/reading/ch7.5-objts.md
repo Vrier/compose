@@ -10,21 +10,24 @@ $$\text{RaiseO} = \lambda H.\lambda Q.\lambda x.\, Q(\lambda y.\, H(y)(x))$$
 
 RaiseO appears as an explicit node in the syntactic tree, sistering the verb. The shifted verb–phrase then takes the object GQ directly by FA, and the subject individual applies to the result.
 
-```ex {#raiseo-ex}
-Gandalf loves every hobbit.
-Elrond summons every good wise creature.
-Legolas doesn't trust some brave dwarf.
-```
+\ex<raiseo-ex> Gandalf loves every hobbit.
+\xe
 
-```deriv
+\ex Elrond summons every good wise creature.
+\xe
+
+\ex Legolas doesn't trust some brave dwarf.
+\xe
+
+\begin{derivation}
 [[loves]]                  = lambda y.lambda x.love(x,y)                    : <e,<e,t>>
 [[RaiseO loves]]           = lambda Q.lambda x.Q(lambda y.love(x,y))        : <<<e,t>,t>,<e,t>>
 [[every hobbit]]           = lambda Y.forall x[hobbit(x) -> Y(x)]           : <<e,t>,t>
 [[RaiseO loves every hobbit]] = lambda x.forall y[hobbit(y) -> love(x,y)]   : <e,t>
 [[Gandalf loves every hobbit]] = forall y[hobbit(y) -> love(g,y)]            : t
-```
+\end{derivation}
 
-```tree
+\begin{forest}
 [S{forall y[hobbit(y) -> love(g,y)]}
   [DP{g} Gandalf]
   [VP{lambda x.forall y[hobbit(y) -> love(x,y)]}
@@ -34,7 +37,7 @@ Legolas doesn't trust some brave dwarf.
     [DP{lambda Y.forall x[hobbit(x) -> Y(x)]}
       [D{lambda X.lambda Y.forall x[X(x) -> Y(x)]} every]
       [NP{lambda x.hobbit(x)} hobbit]]]]
-```
+\end{forest}
 
 ## 7.4.3 RaiseS: subject type-shifting
 
@@ -44,13 +47,16 @@ $$\text{RaiseS} = \lambda H.\lambda Q.\lambda y.\, Q(\lambda x.\, H(y)(x))$$
 
 The RaiseS-shifted verb takes the **subject GQ** as its first argument and the object individual as its second, yielding the *inverse scope* reading (object GQ takes wide scope; subject GQ is bound inside).
 
-```ex {#raises-ex}
-No elf trusts every human.
-Some elf councils every good wise creature.
-Every hobbit who travels fears some evil creature.
-```
+\ex<raises-ex> No elf trusts every human.
+\xe
 
-```deriv
+\ex Some elf councils every good wise creature.
+\xe
+
+\ex Every hobbit who travels fears some evil creature.
+\xe
+
+\begin{derivation}
 [[trusts]]                      = lambda y.lambda x.trust(x,y)                    : <e,<e,t>>
 [[RaiseO trusts]]               = lambda Q.lambda x.Q(lambda y.trust(x,y))        : <<<e,t>,t>,<e,t>>
 [[RaiseO trusts every human]]   = lambda x.forall y[human(y) -> trust(x,y)]       : <e,t>
@@ -59,7 +65,7 @@ Every hobbit who travels fears some evil creature.
 [[RaiseS trusts]]               = lambda Q.lambda y.Q(lambda x.trust(x,y))        : <<<e,t>,t>,<e,t>>
 [[RaiseS trusts no elf]]        = lambda y.~exists x[elf(x) /\ trust(x,y)]        : <e,t>
 [[every human]] applied to VP   = forall y[human(y) -> ~exists x[elf(x) /\ trust(x,y)]] : t
-```
+\end{derivation}
 
 The two trees yield logically equivalent results for *no*/*every*; the difference is vivid for *some*/*every* — the RaiseO tree gives ∃ > ∀ scope and the RaiseS tree gives ∀ > ∃ scope.[^raiseSvsO]
 

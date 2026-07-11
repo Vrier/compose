@@ -6,12 +6,13 @@ Champollion's *Invitation to Formal Semantics*.
 
 ## Skills
 
-- **Converting chapters → lingdown.** When asked to turn a textbook chapter into a
+- **Converting chapters → reading notes.** When asked to turn a textbook chapter into a
   reading, or to author/revise the `reading` attached to a `chX.*.compose.json`
-  set, follow `compose/docs/SKILL-chapters-to-lingdown.md` in full. It is the canonical
-  procedure: the chapter/exercise pairing contract, the lingdown syntax reference,
-  faithfulness rules, the embed-via-`run_script` step, and the QA checklist. Read
-  it before starting that kind of work.
+  set, follow `compose/docs/SKILL-chapters-to-notes.md` in full. It is the canonical
+  procedure: the chapter/exercise pairing contract, the notes syntax reference
+  (Markdown skeleton + LaTeX: expex, forest/qtree, stmaryrd, S14), faithfulness
+  rules, the embed-via-`run_script` step, and the QA checklist. Read it before
+  starting that kind of work.
 
 ## Conventions
 

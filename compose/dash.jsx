@@ -176,7 +176,7 @@
     );
   }
 
-  /* ---- notes modal (S8/W10): lingdown editor for versions.notes ---------- */
+  /* ---- notes modal (S8/W10, reworded S14): LaTeX notes editor for versions.notes ---- */
   function NotesModal({ v, onClose, onSaved, onErr }) {
     const [md, setMd] = useState(v.notes || '');
     const [busy, setBusy] = useState(false);
@@ -203,7 +203,7 @@
           <h2 className="dash-modal-title">📖 Notes — {v.title}</h2>
           <div className="dash-notes-cols">
             <textarea className="dash-notes-ta" value={md} spellCheck={false}
-              placeholder={'Lingdown markdown: ## sections, $λ-terms$, (1) example lines, tree blocks…\nStudents see this as a 📝 Notes panel on the worksheet page.'}
+              placeholder={'## sections and prose, with LaTeX for the linguistics:\n$\\lambda x. dog(x)$ · \\llbracket dog \\rrbracket · \\ex … \\xe · \\Tree [.S …] · \\begin{forest}…\nStudents see this as a 📝 Notes panel on the worksheet page.'}
               onChange={(e) => setMd(e.target.value)} />
             <div className="dash-notes-preview ld-scope" ref={previewRef} />
           </div>
@@ -275,7 +275,7 @@
           </button>
           <a className="btn-primary dash-edit-btn" href={'/edit/' + v.id}>✎ Open editor</a>
           <button className="btn-ghost dash-mini" title="Share: QR code, link, printable handout" onClick={() => setSharing(true)}>▤ Share</button>
-          <button className="btn-ghost dash-mini" title="Instructor notes shown to students on this version (lingdown)" onClick={() => setNoting(true)}>📖 Notes{(v.notes || '').trim() ? ' ●' : ''}</button>
+          <button className="btn-ghost dash-mini" title="Instructor notes shown to students on this version — Markdown skeleton + LaTeX (expex, forest, \\llbracket…)" onClick={() => setNoting(true)}>📖 Notes{(v.notes || '').trim() ? ' ●' : ''}</button>
           {sharing && <ShareModal v={v} onClose={() => setSharing(false)} />}
           {noting && <NotesModal v={v} onClose={() => setNoting(false)} onSaved={onChanged} onErr={onErr} />}
           <button className="btn-ghost dash-mini" title="Download the companion bundle as a file" onClick={() => downloadJson((v.slug || 'version') + '.compose-bundle.json', v.bundle)}>⬇ bundle</button>
