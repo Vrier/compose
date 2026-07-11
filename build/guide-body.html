@@ -1,0 +1,136 @@
+<main class="about-wrap guide-wrap">
+<h1>Instructor guide</h1>
+<p class="about-sub">Where everything is, what students see, and how to run your own course on COMPOSE.</p>
+
+<nav class="guide-toc">
+<a href="#map">The site at a glance</a> ·
+<a href="#student">What students see</a> ·
+<a href="#sending">Sending students to material</a> ·
+<a href="#authoring">Authoring worksheets</a> ·
+<a href="#hosting">Hosting for your class</a> ·
+<a href="#files">Files &amp; offline</a>
+</nav>
+
+<h2 id="map">The site at a glance</h2>
+<table class="files-table">
+<thead><tr><th>Page</th><th>What it is</th></tr></thead>
+<tbody>
+<tr><td><a href="/">compose.tstephen.com</a></td><td>The bare starter — one demo worksheet, load any <code>.compose.json</code> from file. Nothing else preloaded.</td></tr>
+<tr><td><a href="/cc/">/cc</a> · <a href="/hk/">/hk</a> · <a href="/papers/">/papers</a></td><td>The curated library: whole-book pages for Coppock &amp; Champollion and Heim &amp; Kratzer, plus classic papers. Single chapters live at <a href="/cc/ch7/">/cc/ch7</a>, <a href="/hk/ch2/">/hk/ch2</a>, <a href="/papers/partee/">/papers/partee</a>, and so on.</td></tr>
+<tr><td><a href="/editor/">/editor</a></td><td>The editor sandbox — author worksheets with no account, export as JSON or a self-contained student HTML.</td></tr>
+<tr><td><a href="/dash/">/dash</a></td><td>The instructor dashboard — register with an invite code, host your own versions with stable student links and QR handouts.</td></tr>
+<tr><td><a href="/files/">/files</a></td><td>Every built-in worksheet and bundle as downloadable <code>.compose.json</code>, plus the full site map.</td></tr>
+<tr><td><a href="/about/">/about</a></td><td>What COMPOSE is, credits, and how to cite it.</td></tr>
+</tbody>
+</table>
+
+<figure class="guide-fig"><img src="/guide/root-starter.jpg" alt="The starter page with the Getting Started demo worksheet loaded" loading="lazy" />
+<figcaption>The starter at <a href="/">compose.tstephen.com</a>: the Getting Started demo set, ready to derive — students need no login and nothing installs.</figcaption></figure>
+
+<h2 id="student">What students see</h2>
+<p>Every worksheet page has the same three-panel layout: the exercise list on the
+left, the derivation tree in the middle, and the lexicon (with a symbol
+reference) on the right. Students work bottom-up: click a highlighted node,
+pick the composition rule they think applies, type the β-reduced result, and
+the grader checks it against the target meaning — α-equivalent answers in any
+notation are accepted.</p>
+
+<figure class="guide-fig"><img src="/guide/student-view.jpg" alt="A worksheet page: exercise list, derivation tree, lexicon" loading="lazy" />
+<figcaption>A §7 worksheet on <a href="/cc/ch7/">/cc/ch7</a>. Green nodes are resolved; “ready — select” nodes are the frontier. The whole loop is keyboard- and screen-reader-accessible.</figcaption></figure>
+
+<p>The first time a worksheet is opened, a card lists exactly the rules
+available in that exercise, with a one-line “how to use” for each — it shows
+once per worksheet, and stays available behind the <b>☰ Rules</b> button.</p>
+
+<figure class="guide-fig"><img src="/guide/rules-modal.jpg" alt="The rules-available card listing FA, PM and NN" loading="lazy" />
+<figcaption>The rules card. Worksheets only offer the rules (and only the operator symbols) their chapter actually uses.</figcaption></figure>
+
+<figure class="guide-fig"><img src="/guide/rule-dock.jpg" alt="The rule chooser dock under the tree" loading="lazy" />
+<figcaption>Selecting a node opens the rule chooser. Wrong choices are refused with the type-theoretic reason, which is half the pedagogy.</figcaption></figure>
+
+<p>Two supports sit alongside the exercises. <b>Hints</b> reveal in stages —
+first the strategy, then the sisters’ denotations. <b>Notes</b> open a reading
+companion beside the tree: condensed chapter notes with numbered examples,
+typeset trees and step-by-step denotation tables, cross-linked so each exercise
+scrolls the reading to its section. (Notes are written in ordinary LaTeX —
+expex, forest, stmaryrd — see the <a href="#authoring">authoring section</a>.)</p>
+
+<figure class="guide-fig"><img src="/guide/hint.jpg" alt="A staged hint above the derivation" loading="lazy" />
+<figcaption>Hint 1 of 2 on an entry worksheet — the strategy first; the second hint gives the sisters’ denotations.</figcaption></figure>
+
+<figure class="guide-fig"><img src="/guide/notes-panel.jpg" alt="The notes panel open next to a derivation" loading="lazy" />
+<figcaption>The 📝 Notes panel: chapter reading with numbered examples and denotation steps, anchored to the current exercise.</figcaption></figure>
+
+<p>Progress saves automatically in the student’s browser, per site area — work
+on <a href="/cc/">/cc</a> and the per-chapter pages shares one record, and each
+hosted class version keeps its own. Students can save progress to a file and
+restore it elsewhere (Tools menu), and a completion summary gives a
+screenshot-friendly per-worksheet tally. Curated pages also work offline once
+visited (they install as a lightweight web app).</p>
+
+<h2 id="sending">Sending students to material</h2>
+<p>For self-study or homework from the textbooks, just link a curated page —
+<a href="/cc/ch7/">compose.tstephen.com/cc/ch7</a> in the syllabus is enough;
+there is nothing to set up. Deep links address a single derivation
+(<code>/cc/ch7/#g1.d2</code>), handy in handouts or Moodle. For material you
+control — your own selection, your own worksheets, live edits mid-course — host
+a <b>version</b> from the <a href="#hosting">dashboard</a> instead: students get
+a stable <code>/v/your-slug</code> link and a printable QR handout.</p>
+
+<h2 id="authoring">Authoring worksheets</h2>
+<p>Try the full authoring surface at <a href="/editor/">/editor</a> — no
+account needed. A worksheet is a domain, a lexicon of λ-denotations, a rule
+inventory, and bracketed trees; the editor validates everything live against
+the real engine as you type, so a mistyped denotation or an unsolvable tree is
+flagged immediately.</p>
+
+<figure class="guide-fig"><img src="/guide/editor-sandbox.jpg" alt="The editor sandbox in teacher mode" loading="lazy" />
+<figcaption>The sandbox opens in teacher mode with the demo set as a working example to copy from.</figcaption></figure>
+
+<p>From the sandbox you can export two things: a re-importable
+<code>.compose.json</code> (load it anywhere, including into a dashboard
+version later), or a <b>self-contained student HTML</b> — one file, locked to
+student view, working entirely offline, that you can email or drop into a VLE.</p>
+
+<figure class="guide-fig"><img src="/guide/export-modal.jpg" alt="The export modal with HTML and JSON options" loading="lazy" />
+<figcaption>Export assignment: tick worksheets, choose HTML (self-contained student file) or JSON (re-importable source).</figcaption></figure>
+
+<p>The fastest way to author is to adapt an existing worksheet: download any
+built-in from <a href="/files/">/files</a>, edit, re-import. The JSON format is
+documented in
+<a href="https://github.com/Vrier/compose/blob/main/compose/FORMAT.md">FORMAT.md</a>.
+Reading companions and instructor notes are written as Markdown with ordinary
+LaTeX for the linguistics — <code>\ex…\xe</code> examples (expex, linguex and
+gb4e all work), <code>\begin{forest}</code>/<code>\Tree</code> trees,
+<code>\llbracket dog \rrbracket</code>, <code>$\lambda x.\,dog(x)$</code> — and
+render natively in the app.</p>
+
+<h2 id="hosting">Hosting for your class</h2>
+<p>The dashboard at <a href="/dash/">/dash</a> is where worksheets become a
+course. Registration needs an <b>invite code</b> — ask the administrator (see
+<a href="/about/">/about</a>). No email is required; remember your password.</p>
+
+<figure class="guide-fig"><img src="/guide/dash-login.jpg" alt="The dashboard login and registration screen" loading="lazy" />
+<figcaption>The dashboard gate: log in, or register with an invite code.</figcaption></figure>
+
+<p>A <b>version</b> is your hosted worksheet collection: create one, add
+worksheets (import a bundle, save from the editor, or author from scratch —
+the editor opens with only your own material), and publish. Students reach it
+at <code>compose.tstephen.com/v/your-slug</code> — the Share dialog gives a
+copyable link, a QR code, and a printable A4 handout. Edits go live
+immediately: fix a denotation mid-week and every student sees the correction on
+next load, no re-distribution. Each version can carry <b>instructor notes</b>
+(same LaTeX input) that students see as a 📝 panel, and the dashboard shows an
+opens counter per version. Saving to the server validates every worksheet with
+the same engine that grades students, so a broken file cannot be published.</p>
+
+<h2 id="files">Files &amp; offline</h2>
+<figure class="guide-fig"><img src="/guide/files-page.jpg" alt="The files page listing downloadable worksheets" loading="lazy" />
+<figcaption><a href="/files/">/files</a>: every worksheet and whole-book bundle as <code>.compose.json</code>, grouped by textbook, plus the site map.</figcaption></figure>
+<p>Everything students need works from the hosted pages, including offline
+after a first visit. For fully offline teaching, export self-contained HTML
+assignments from the <a href="/editor/">editor</a> — they run from a USB stick.</p>
+
+<p class="about-foot">Questions or an invite code: see <a href="/about/">/about</a> ·
+COMPOSE <a href="https://github.com/Vrier/compose">source on GitHub</a></p>
+</main>

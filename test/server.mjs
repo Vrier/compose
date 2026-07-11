@@ -303,6 +303,11 @@ async function main() {
   contains('worksheet file serves as JSON', r.text, '"compose": 1');
   r = await req('GET', '/files/heim-kratzer.compose-bundle.json', { raw: true });
   contains('bundle file serves', r.text, '"compose_bundle": 1');
+  r = await req('GET', '/guide/', { raw: true });
+  contains('/guide serves the instructor guide (S17)', r.text, 'Instructor guide');
+  contains('/guide embeds screenshots', r.text, '/guide/student-view.jpg');
+  r = await req('GET', '/guide/student-view.jpg', { raw: true });
+  expect('guide screenshot serves', r.status === 200, r.status);
   r = await req('GET', '/sitemap.xml', { raw: true });
   contains('sitemap lists curated pages', r.text, '<loc>https://compose.tstephen.com/cc/ch7/</loc>');
   r = await req('GET', '/robots.txt', { raw: true });

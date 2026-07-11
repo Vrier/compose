@@ -226,6 +226,7 @@ ${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk
 <li><a href="/papers/">/papers</a> — classic papers: <a href="/papers/partee/">/papers/partee</a> · <a href="/papers/ptq/">/papers/ptq</a></li>
 <li><a href="/editor/">/editor</a> — the editor sandbox: author worksheets and export them as JSON, no account needed (to host worksheets for students, instructors use <a href="/dash/">/dash</a>)</li>
 <li><a href="/files/">/files</a> — download every worksheet and bundle as .compose.json, plus the full site map</li>
+<li><a href="/guide/">/guide</a> — the instructor guide: what students see, authoring, and hosting your own course</li>
 </ul>
 <h2>Credits and lineage</h2>
 <p>The bundled worksheet library tracks Elizabeth Coppock &amp; Lucas
@@ -417,6 +418,7 @@ ${CC_CHAPTERS.map(([pfx]) => '<a href="/cc/' + pfx + '/">/cc/' + pfx + '</a>').j
 <li><a href="/hk/">/hk</a> — Heim &amp; Kratzer, whole book; chapters:
 ${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk/' + pfx.replace('hk', 'ch') + '</a>').join(' · ')}</li>
 <li><a href="/papers/">/papers</a> — <a href="/papers/partee/">/papers/partee</a> · <a href="/papers/ptq/">/papers/ptq</a></li>
+<li><a href="/guide/">/guide</a> — instructor guide with screenshots: navigation, authoring, hosting</li>
 <li><a href="/editor/">/editor</a> — author worksheets without an account; export JSON</li>
 <li><a href="/dash/">/dash</a> — instructor dashboard (invite-code registration): host your own versions</li>
 <li><a href="/about/">/about</a> — citation, credits, and how COMPOSE works</li>
@@ -429,9 +431,43 @@ ${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk
 </body>
 </html>`;
 
+/* ---- 4d · /guide — instructor guide with live screenshots (S17) -------- */
+const guideBody = fs.readFileSync(path.join('build', 'guide-body.html'), 'utf8');
+const guidePage = `<!DOCTYPE html>
+<html lang="en" data-theme="parchment">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Instructor guide to COMPOSE: what students see, authoring worksheets, and hosting your own course versions with QR handouts." />
+<link rel="canonical" href="https://compose.tstephen.com/guide/" />
+<link rel="icon" href="/icon.svg" type="image/svg+xml" />
+<title>Instructor guide — COMPOSE</title>
+<style>
+${safe(parts.css)}
+.about-wrap { max-width: 820px; margin: 0 auto; padding: 40px 22px 60px; line-height: 1.65; }
+.about-wrap h1 { font-size: 32px; letter-spacing: .03em; margin-bottom: 4px; }
+.about-sub { color: var(--ink-soft); margin-bottom: 20px; }
+.about-wrap h2 { font-size: 20px; margin: 38px 0 10px; padding-top: 8px; border-top: 1px solid var(--line); }
+.about-wrap p, .about-wrap td, .about-wrap th { font-size: 15px; color: var(--ink); }
+.about-wrap a { color: #b5532f; }
+.guide-toc { font-size: 14px; color: var(--ink-soft); margin-bottom: 8px; }
+.files-table { width: 100%; border-collapse: collapse; margin: 6px 0 14px; }
+.files-table th, .files-table td { text-align: left; padding: 6px 12px 6px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.files-table th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); }
+.guide-fig { margin: 18px 0 26px; }
+.guide-fig img { width: 100%; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 2px 10px rgba(60,40,20,.07); }
+.guide-fig figcaption { font-size: 13px; color: var(--ink-soft); margin-top: 8px; line-height: 1.5; }
+.about-foot { margin-top: 40px; font-size: 12.5px; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+${guideBody}
+</body>
+</html>`;
+
 /* machine sitemap + robots (S14.1) */
 const SITE = 'https://compose.tstephen.com';
-const sitemapUrls = ['/', '/about/', '/files/', '/editor/', ...CURATED.map((e) => '/' + e.path + '/')];
+const sitemapUrls = ['/', '/about/', '/files/', '/guide/', '/editor/', ...CURATED.map((e) => '/' + e.path + '/')];
 const sitemapXml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
   + sitemapUrls.map((u) => '  <url><loc>' + SITE + u + '</loc></url>').join('\n') + '\n</urlset>\n';
 const robotsTxt = 'User-agent: *\nAllow: /\nDisallow: /dash/\nDisallow: /edit/\nDisallow: /_/\nSitemap: ' + SITE + '/sitemap.xml\n';
@@ -445,6 +481,11 @@ write(path.join('pb_public', 'dash', 'index.html'), dashPage);
 write(path.join('pb_public', 'about', 'index.html'), aboutPage);
 write(path.join('pb_public', 'editor', 'index.html'), sandboxPage);
 write(path.join('pb_public', 'files', 'index.html'), filesPage);
+write(path.join('pb_public', 'guide', 'index.html'), guidePage);
+for (const img of fs.readdirSync(path.join('server', 'guide-assets')).filter((f) => f.endsWith('.jpg'))) {
+  fs.copyFileSync(path.join('server', 'guide-assets', img), path.join(OUT, 'pb_public', 'guide', img));
+}
+console.log('  pb_public/guide/                    (guide + screenshots)');
 write(path.join('pb_public', 'sitemap.xml'), sitemapXml);
 write(path.join('pb_public', 'robots.txt'), robotsTxt);
 for (const b of ['coppock-champollion', 'heim-kratzer']) {
