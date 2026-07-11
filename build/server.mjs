@@ -203,6 +203,7 @@ ${CC_CHAPTERS.map(([pfx]) => '<a href="/cc/' + pfx + '/">/cc/' + pfx + '</a>').j
 ${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk/' + pfx.replace('hk', 'ch') + '</a>').join(' · ')}</li>
 <li><a href="/papers/">/papers</a> — classic papers: <a href="/papers/partee/">/papers/partee</a> · <a href="/papers/ptq/">/papers/ptq</a></li>
 <li><a href="/editor/">/editor</a> — the editor sandbox: author worksheets and export them as JSON, no account needed (to host worksheets for students, instructors use <a href="/dash/">/dash</a>)</li>
+<li><a href="/files/">/files</a> — download every worksheet and bundle as .compose.json, plus the full site map</li>
 </ul>
 <h2>Credits and lineage</h2>
 <p>The bundled worksheet library tracks Elizabeth Coppock &amp; Lucas
@@ -315,6 +316,102 @@ for (const f of ['version.js', 'engine.js', 'lcformat.js']) {
   fs.copyFileSync(path.join(SRC, f), path.join(OUT, 'pb_hooks', 'vendor', f));
   console.log('  ' + ('pb_hooks/vendor/' + f).padEnd(32) + ' (vendored for goja validation)');
 }
+/* ---- 4c · /files — downloads + human site map (S14.1) ------------------- */
+const CHAPTER_TABLES = { cc: CC_CHAPTERS, hk: HK_CHAPTERS };
+const wsMeta = (key) => {
+  try {
+    const obj = JSON.parse(LIB[key].text);
+    const n = (obj.exercises || []).reduce((a, g) => a + ((g.derivations || g.items || g.trees || []).length), 0);
+    return { title: obj.title || LIB[key].title, n };
+  } catch (e) { return { title: LIB[key].title, n: '?' }; }
+};
+const filesRows = (keys) => keys.map((k) => {
+  const m = wsMeta(k);
+  return '<tr><td><a href="/files/worksheets/' + k + '.compose.json" download>' + k + '.compose.json</a></td><td>' + safe(m.title) + '</td><td class="fnum">' + m.n + '</td></tr>';
+}).join('\n');
+const filesSection = (label, keys) =>
+  '<h3>' + label + '</h3>\n<table class="files-table"><thead><tr><th>File</th><th>Worksheet</th><th class="fnum">Derivations</th></tr></thead><tbody>' + filesRows(keys) + '</tbody></table>';
+
+const ALL_KEYS = Object.keys(LIB).sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+const CC_KEYS = pick(CC_CHAPTERS.map(([p2]) => p2));
+const HK_KEYS = pick(HK_CHAPTERS.map(([p2]) => p2));
+const PAPER_KEYS = pick(['partee', 'montague']);
+const OTHER_KEYS = ALL_KEYS.filter((k) => !CC_KEYS.includes(k) && !HK_KEYS.includes(k) && !PAPER_KEYS.includes(k));
+
+const filesPage = `<!DOCTYPE html>
+<html lang="en" data-theme="parchment">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Download COMPOSE worksheets and textbook bundles (.compose.json), and find every page on the site." />
+<title>Files &amp; site map — COMPOSE</title>
+<style>
+${safe(parts.css)}
+.about-wrap { max-width: 760px; margin: 0 auto; padding: 40px 22px 60px; line-height: 1.65; }
+.about-wrap h1 { font-size: 32px; letter-spacing: .03em; margin-bottom: 4px; }
+.about-sub { color: var(--ink-soft); margin-bottom: 28px; }
+.about-wrap h2 { font-size: 19px; margin: 30px 0 8px; }
+.about-wrap h3 { font-size: 16px; margin: 22px 0 6px; }
+.about-wrap p, .about-wrap li, .about-wrap td, .about-wrap th { font-size: 14.5px; color: var(--ink); }
+.about-wrap a { color: #b5532f; }
+.files-table { width: 100%; border-collapse: collapse; margin: 6px 0 14px; }
+.files-table th, .files-table td { text-align: left; padding: 5px 10px 5px 0; border-bottom: 1px solid var(--line); }
+.files-table th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); }
+.files-table .fnum { text-align: right; padding-right: 0; }
+.about-foot { margin-top: 40px; font-size: 12.5px; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+<main class="about-wrap">
+<h1>Files &amp; site map</h1>
+<p class="about-sub">Everything COMPOSE publishes, in one place.</p>
+
+<h2>Worksheet files</h2>
+<p>Every built-in worksheet is a plain <code>.compose.json</code> file — a
+self-contained problem set (domain, lexicon, rules, trees, targets, and the
+reading notes). Load one on <a href="/">the starter page</a>, adapt it in the
+<a href="/editor/">editor sandbox</a> (no account needed), or use it as the
+template for your own set. The format is documented in
+<a href="https://github.com/Vrier/compose/blob/main/compose/FORMAT.md">FORMAT.md</a>.</p>
+
+<h3>Whole-book bundles</h3>
+<table class="files-table"><thead><tr><th>File</th><th>Contents</th></tr></thead><tbody>
+<tr><td><a href="/files/coppock-champollion.compose-bundle.json" download>coppock-champollion.compose-bundle.json</a></td><td>All Coppock &amp; Champollion worksheets (§6–§13) in one bundle</td></tr>
+<tr><td><a href="/files/heim-kratzer.compose-bundle.json" download>heim-kratzer.compose-bundle.json</a></td><td>All Heim &amp; Kratzer worksheets in one bundle</td></tr>
+</tbody></table>
+
+${filesSection('Coppock &amp; Champollion — <em>Invitation to Formal Semantics</em>', CC_KEYS)}
+${filesSection('Heim &amp; Kratzer — <em>Semantics in Generative Grammar</em>', HK_KEYS)}
+${filesSection('Classic papers', PAPER_KEYS)}
+${OTHER_KEYS.length ? filesSection('Other worksheets', OTHER_KEYS) : ''}
+
+<h2>Site map</h2>
+<ul>
+<li><a href="/">/</a> — the starter: one sample worksheet, load any file</li>
+<li><a href="/cc/">/cc</a> — Coppock &amp; Champollion, whole book; chapters:
+${CC_CHAPTERS.map(([pfx]) => '<a href="/cc/' + pfx + '/">/cc/' + pfx + '</a>').join(' · ')}</li>
+<li><a href="/hk/">/hk</a> — Heim &amp; Kratzer, whole book; chapters:
+${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk/' + pfx.replace('hk', 'ch') + '</a>').join(' · ')}</li>
+<li><a href="/papers/">/papers</a> — <a href="/papers/partee/">/papers/partee</a> · <a href="/papers/ptq/">/papers/ptq</a></li>
+<li><a href="/editor/">/editor</a> — author worksheets without an account; export JSON</li>
+<li><a href="/dash/">/dash</a> — instructor dashboard (invite-code registration): host your own versions</li>
+<li><a href="/about/">/about</a> — citation, credits, and how COMPOSE works</li>
+<li><a href="/files/">/files</a> — this page</li>
+</ul>
+
+<p class="about-foot">COMPOSE v${COMPOSE_VERSION} · <a href="/about/">how to cite</a> ·
+<a href="https://github.com/Vrier/compose">source on GitHub</a></p>
+</main>
+</body>
+</html>`;
+
+/* machine sitemap + robots (S14.1) */
+const SITE = 'https://compose.tstephen.com';
+const sitemapUrls = ['/', '/about/', '/files/', '/editor/', ...CURATED.map((e) => '/' + e.path + '/')];
+const sitemapXml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+  + sitemapUrls.map((u) => '  <url><loc>' + SITE + u + '</loc></url>').join('\n') + '\n</urlset>\n';
+const robotsTxt = 'User-agent: *\nAllow: /\nDisallow: /dash/\nDisallow: /edit/\nDisallow: /_/\nSitemap: ' + SITE + '/sitemap.xml\n';
+
 write('template.html', template);
 write(path.join('pb_public', 'template.html'), template); // hosted export (S13.3): /editor fetches + substitutes it client-side
 write('template-edit.html', templateEdit);
@@ -323,6 +420,18 @@ write(path.join('pb_public', 'index.html'), rootPage);
 write(path.join('pb_public', 'dash', 'index.html'), dashPage);
 write(path.join('pb_public', 'about', 'index.html'), aboutPage);
 write(path.join('pb_public', 'editor', 'index.html'), sandboxPage);
+write(path.join('pb_public', 'files', 'index.html'), filesPage);
+write(path.join('pb_public', 'sitemap.xml'), sitemapXml);
+write(path.join('pb_public', 'robots.txt'), robotsTxt);
+for (const b of ['coppock-champollion', 'heim-kratzer']) {
+  fs.copyFileSync(path.join(SRC, 'bundles', b + '.compose-bundle.json'), path.join(OUT, 'pb_public', 'files', b + '.compose-bundle.json'));
+  console.log('  ' + ('pb_public/files/' + b + '.compose-bundle.json').padEnd(32));
+}
+fs.mkdirSync(path.join(OUT, 'pb_public', 'files', 'worksheets'), { recursive: true });
+for (const k of Object.keys(LIB)) {
+  fs.copyFileSync(path.join(SRC, 'exercises', k + '.compose.json'), path.join(OUT, 'pb_public', 'files', 'worksheets', k + '.compose.json'));
+}
+console.log('  pb_public/files/worksheets/          (' + Object.keys(LIB).length + ' worksheets)');
 for (const entry of CURATED) {
   fs.mkdirSync(path.join(OUT, 'pb_public', ...entry.path.split('/')), { recursive: true });
   write(path.join('pb_public', ...entry.path.split('/'), 'index.html'), curatedPage(entry));

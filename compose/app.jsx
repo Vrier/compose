@@ -298,11 +298,14 @@ function App() {
   }, [set]);
   const hasReading = !!readingSet;
 
-  // First time a built-in set is opened in student mode, surface its rules
+  // First time a set is opened in student mode, surface its rules — ONCE.
+  // The dismissal is remembered per worksheet in lc2-seen-sets (island-
+  // namespaced localStorage), for students too (S14.1: previously students
+  // got the popup on every visit — the seen-check skipped student builds).
   useEffect(() => {
     if (teacherMode || custom || !set || !set.key) return;
-    if (!isStudentBuild && seenSets[set.key]) return; // instructor: show once
-    if (!isStudentBuild) setSeenSets((s) => ({ ...s, [set.key]: true }));
+    if (seenSets[set.key]) return;
+    setSeenSets((s) => ({ ...s, [set.key]: true }));
     setModal('rules');
   }, [set && set.key, teacherMode, custom]);
 

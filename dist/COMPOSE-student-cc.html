@@ -9296,8 +9296,8 @@ function App() {
   const hasReading = !!readingSet;
   useEffect(() => {
     if (teacherMode || custom || !set || !set.key) return;
-    if (!isStudentBuild && seenSets[set.key]) return;
-    if (!isStudentBuild) setSeenSets((s) => ({ ...s, [set.key]: true }));
+    if (seenSets[set.key]) return;
+    setSeenSets((s) => ({ ...s, [set.key]: true }));
     setModal("rules");
   }, [set && set.key, teacherMode, custom]);
   async function importBundle(file) {

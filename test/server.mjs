@@ -290,6 +290,21 @@ async function main() {
   r = await req('GET', '/sw.js', { raw: true });
   contains('sw caches the curated families', r.text, "p.startsWith('/cc')");
 
+  // S14.1 — files page, downloads, machine sitemap
+  r = await req('GET', '/files/', { raw: true });
+  contains('/files lists the CC bundle', r.text, 'coppock-champollion.compose-bundle.json');
+  contains('/files links worksheet downloads', r.text, '/files/worksheets/ch7.1-adj.compose.json');
+  contains('/files carries the site map', r.text, '<h2>Site map</h2>');
+  r = await req('GET', '/files/worksheets/ch7.1-adj.compose.json', { raw: true });
+  contains('worksheet file serves as JSON', r.text, '"compose": 1');
+  r = await req('GET', '/files/heim-kratzer.compose-bundle.json', { raw: true });
+  contains('bundle file serves', r.text, '"compose_bundle": 1');
+  r = await req('GET', '/sitemap.xml', { raw: true });
+  contains('sitemap lists curated pages', r.text, '<loc>https://compose.tstephen.com/cc/ch7/</loc>');
+  r = await req('GET', '/robots.txt', { raw: true });
+  contains('robots exists and points at the sitemap', r.text, 'Sitemap: https://compose.tstephen.com/sitemap.xml');
+  lacks('robots keeps crawlers out of the dash', r.text, 'Allow: /dash');
+
   // W9 — about page (S8)
   r = await req('GET', '/about/', { raw: true });
   contains('about page serves', r.text, 'How to cite');
