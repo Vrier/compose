@@ -86,7 +86,11 @@
       const allOff = () => Object.fromEntries(F.SHIFTERS.map(s => [s.key, false]));
       const only = (...keys) => Object.fromEntries(F.SHIFTERS.map(s => [s.key, keys.includes(s.key)]));
       const allOn  = () => Object.fromEntries(F.SHIFTERS.map(s => [s.key, true]));
-      const base = (extra={}) => ({ fa:true, pm:true, nn:true, pa:false, ifa:false, autoNN:false, autoCompose:false, collapseResolved:false, showSpans:true, qr:false, faHint:false, ...extra });
+      // ops always rides along from set.config (S14.2): explicit worksheet
+      // `rules.operators` if given, otherwise inferred from the content —
+      // this is what hides mereology/presup palette keys on sets that
+      // don't use them, INCLUDING the built-ins matched by id below.
+      const base = (extra={}) => ({ fa:true, pm:true, nn:true, pa:false, ifa:false, autoNN:false, autoCompose:false, collapseResolved:false, showSpans:true, qr:false, faHint:false, ...(set && set.config && set.config.ops ? { ops: set.config.ops } : {}), ...extra });
 
       // Per-exercise-set defaults — gated tightly, one mechanism at a time
       // Chapter 6

@@ -549,7 +549,11 @@
   }
 
   // Build a normalized "allowed"-style config object from a JSON `rules` block.
-  function rulesToConfig(r) {
+  // `contentHay` (S14.2) is a string of the worksheet's actual content
+  // (lexicon + exercises) used to INFER operator availability when the file
+  // does not configure it — so students only see mereology / presupposition
+  // palette keys on worksheets that actually use those symbols.
+  function rulesToConfig(r, contentHay) {
     r = r || {};
     const comp = r.composition || {};
     const shiftKeys = Array.isArray(r.typeShifts) ? r.typeShifts : [];
@@ -567,12 +571,21 @@
       mereology: r.mereologyOperators !== false,
       presup: r.presuppositionOperators !== false,
       ops: (function () {
-        // Per-operator gating. `operators:{…}` is authoritative; fall back to the
-        // legacy grouped flags (mereologyOperators / presuppositionOperators) so
-        // older exercise files keep working. Default: every operator enabled.
+        // Per-operator gating (S14.2 semantics). Priority:
+        //   1. `operators:{…}` — authoritative per key;
+        //   2. the legacy grouped flags (mereologyOperators /
+        //      presuppositionOperators) when EXPLICITLY set;
+        //   3. otherwise INFERRED: a group is on iff the worksheet's own
+        //      content (lexicon/exercises) uses one of its symbols, so bare
+        //      FA worksheets don't show ∗⊕≤ / ∂⊤⊥ palette keys to students.
         const o = (r.operators && typeof r.operators === 'object') ? r.operators : null;
-        const mer = r.mereologyOperators !== false;
-        const pre = r.presuppositionOperators !== false;
+        const hay = String(contentHay || '');
+        const merExplicit = r.mereologyOperators !== undefined;
+        const preExplicit = r.presuppositionOperators !== undefined;
+        const mer = merExplicit ? r.mereologyOperators !== false
+          : /[∗⊕≤]|\\star|\\oplus|\bleq\b/.test(hay);
+        const pre = preExplicit ? r.presuppositionOperators !== false
+          : /[∂⊤⊥]|\\partial|\\top|\\bot/.test(hay);
         const pick = (k, grp) => o && o[k] !== undefined ? o[k] !== false : grp;
         return {
           star:    pick('star', mer),
@@ -656,7 +669,7 @@
     });
 
     // --- rule configuration (composition rules, type-shifts, behaviour) ---
-    set.config = rulesToConfig(obj.rules);
+    set.config = rulesToConfig(obj.rules, JSON.stringify(obj.lexicon || []) + JSON.stringify(obj.exercises || []) + JSON.stringify(obj.domain || {}));
     // mirror the enabled composition rules into the legacy `rules` name list
     const comp = (obj.rules && obj.rules.composition) || {};
     if (comp.functionApplication !== false) set.rules.push('function application');
