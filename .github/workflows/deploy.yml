@@ -1,8 +1,9 @@
 # ===========================================================================
 # COMPOSE — test + deploy on every push to main (S7/W8).
 #
-# Runs the FULL test suite (regression + schema + the 46-check server suite
-# against a real PocketBase fetched by the pin script), and only then SSHes
+# Runs the FULL test suite (regression, schema, latex, notes, and the live
+# server suite against a real PocketBase fetched by the pin script), and
+# only then SSHes
 # to the VPS and runs deploy/deploy.sh (pull → build → restart).
 #
 # Required repository secret (Settings → Secrets and variables → Actions):

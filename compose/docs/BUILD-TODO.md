@@ -1,5 +1,9 @@
 # COMPOSE — consolidated build to-do
 
+> **Historical planning document** (pre-V1). The plan of record is PLAN.md;
+> current content roadmap is PLAN.md §10a. Kept for the per-worksheet build
+> maps it consolidates.
+
 Single source of truth merging the three build maps
 (`HK-adaptation-plan.md`, `PARTEE-build-map.md`, `PAPERS-adaptation-plan.md`).
 Status verified against `engine.js` and `compose/exercises/` on 2026-06-27.

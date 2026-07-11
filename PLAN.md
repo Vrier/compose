@@ -267,6 +267,7 @@ Sessions 0–7 are the minimum shippable path — a real, usable, deployed servi
 - **2026-07-11 — S17.1 (guide: sticky nav + editor walkthrough).** Per Thomas: (a) the guide now reads as one explicitly scrollable page — sticky left section-nav (collapses to inline chips under 860px), smooth scrolling, scroll-margins, back-to-top; (b) the authoring section became a five-step WALKTHROUGH of the editor with four new headless captures driven through the real UI (react-controlled inputs set via native value setters + input events): the Worksheets panel (+ New / drag-import), the full editor surface mid-authoring (live type badges computed for typed-in denotations, rules/shifts/behaviour/operators panels), a tested derivation (▶ Test result + ✓ against the expected root), and the notes editor rendering typed LaTeX live in the student preview. editor-sandbox.jpg retired (superseded). capture-guide.mjs remains the one canonical pipeline — gotchas encoded: the Constants section hides behind a .fe-vt-toggle; the picker button is "+ New". Suite unchanged at 107 checks (guide checks already cover page + images). All suites green; auto-deployed.
 - **2026-07-11 — S17.2 (BUGFIX: doc pages unscrollable).** Thomas: /guide wouldn't scroll by wheel or scrollbar. Cause: the static doc pages (about/files/guide) inject the FULL app stylesheet for visual consistency, and themes.css is a fixed-viewport APP layout — `html,body{height:100%}` + `body{overflow:hidden}` (the app scrolls in inner panels). Fine for the app, fatal for a long document; /files had the same latent bug. Fix: every doc page now appends `html,body{height:auto!important;overflow:auto!important}` right after the injected css; suite check asserts the override (→ 108 checks). Lesson for the log: reusing the app stylesheet on document pages imports the app's viewport regime — override it at the point of reuse. All suites green; auto-deployed.
 - **2026-07-11 — S17.3 (guide: factual rewrite + notes reference + dash captures).** Per Thomas: guide prose rewritten in plain factual register (no pitch language); NEW "Notes input reference" section documenting the exact supported constructs with input→rendered tables — Markdown structure, math with the full symbol-command inventory and ASCII conversions, stmaryrd denotation brackets, expex/linguex/gb4e example syntaxes with judgments and labels/refs, \\begingl glosses, qtree/forest trees, the COMPOSE-specific `derivation` env (explicitly flagged as non-standard), avm, tipa subset with its actual character map. Hosting section expanded to mechanics: registration facts (10-char password, no email, admin-only reset), the version card's full control set, the three content paths, server-side validation with exact error paths + caps, live-link semantics. THREE NEW CAPTURES of dash internals without real credentials: scripts/capture-dash.mjs boots a THROWAWAY local PB (same hooks/migrations/pb_public), registers an instructor via the seeded invite code, creates a two-worksheet version over the API, then photographs the version card, the Share/QR dialog, and the /v/slug student page — captions disclose the local-instance URLs. Process note: the guide body was corrupted once by using the host Write tool on an existing mounted file (truncated at 12.7KB — the documented gotcha, violated by me); rewritten via sandbox heredoc. Suite → **111 checks**. All suites green; auto-deployed.
+- **2026-07-11 — S18 (documentation audit + content roadmap).** Full staleness pass over repo docs and hosted pages. NEW PLAN §10a: the future-textbook roadmap agreed with Thomas (tier 1 engine-ready: von Fintel & Heim notes › Altshuler/Parsons/Schwarzschild › Zimmermann & Sternefeld; tier 2 papers as filler sessions: Davidson 67, Partee & Rooth 83, Barwise & Cooper 81, Kratzer modality; tier 3 one-package-away: Jacobson via a variable-free type-shift package, Winter; tier 4 gated on the model-checking module: C&McG, Gamut, de Swart, Kearns; tier 5 dynamics: Kamp & Reyle). Fixes: README (entry-point table gains /editor /files /guide; instructor section de-staled — fork-a-built-in and the practice/assessment toggle no longer claimed, notes described as Markdown+LaTeX, guide linked; repo tour and dev-suite lines corrected), CLAUDE.md (architecture paragraph rewritten: bare root, curated pages, sandbox, files/guide/template.html, five suites, Hetzner Backups + drill date), SKILL doc example format value lingdown→latex, deploy.yml + DEPLOY.md stale "46-check" comments, BUILD-TODO.md marked as historical. Verified already-current: /about (library list includes editor/files/guide), /files, DEPLOY.md §8/§10, FORMAT.md. All suites green; auto-deployed.
 
 ## 9. Decisions that must be made by the project owner (not by agents)
 
@@ -274,6 +275,29 @@ Sessions 0–7 are the minimum shippable path — a real, usable, deployed servi
 2. **Editor-page gating** — the S4 default is publicly served `/edit/:id` pages with authorization enforced at the API layer. If gated pages are preferred, state it in the Session 4 prompt.
 3. **Invite-code style** — one shared code at launch (default) vs. a tracked batch; the schema supports both, so this is administrative, not structural.
 4. **Root-instance role** — the plan assumes `/` is the clean student app and instructors enter via `/dash`. Confirm or adjust in Session 3.
+
+## 10a. Content roadmap — future textbook/paper implementations (added 2026-07-11)
+
+Ranked by engine fit; each tier's blocker is explicit.
+
+1. **Engine-ready now:** von Fintel & Heim, *Intensional Semantics* lecture notes
+   (natural /hk continuation; IFA + world/time machinery already exercised by
+   ch13; freely distributed notes suit the paraphrase posture) › Altshuler,
+   Parsons & Schwarzschild, *A Course in Semantics* (problem-set-driven,
+   near-mechanical conversion) › Zimmermann & Sternefeld, *Introduction to
+   Semantics* (strictly compositional).
+2. **Papers as filler sessions (existing machinery):** Davidson 1967 (ch11
+   events), Partee & Rooth 1983 (shift inventory), Barwise & Cooper 1981 (GQ
+   types), Kratzer 1977/1991 modality (after ch13 polish).
+3. **One package away:** Jacobson, *Compositional Semantics* — needs a
+   variable-free package (function composition + Geach/z as type-shift
+   entries); dovetails with the ESSLLI composition-universals course. Winter,
+   *Elements of Formal Semantics* — mostly fits, flexible typing in places.
+4. **Gated on the model-checking module (§10 backlog):** Chierchia &
+   McConnell-Ginet, Gamut vol. 2, de Swart, Kearns (truth-in-model exercises);
+   Gamut vol. 1 would additionally serve logic courses.
+5. **Long horizon (new machinery — dynamics):** Kamp & Reyle, *From Discourse
+   to Logic* (DRT).
 
 ## 10. V1.x backlog (recorded so ideas aren't lost; DO NOT build in V1)
 

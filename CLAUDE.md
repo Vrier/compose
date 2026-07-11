@@ -1,7 +1,8 @@
 # Project instructions — COMPOSE
 
 This project authors COMPOSE exercise sets (`compose/exercises/*.compose.json`)
-and their lingdown reading companions (`compose/reading/*.md`) for Coppock &
+and their reading companions (`compose/reading/*.md` — Markdown + LaTeX notes,
+S14) for Coppock &
 Champollion's *Invitation to Formal Semantics*.
 
 ## Skills
@@ -26,15 +27,22 @@ Champollion's *Invitation to Formal Semantics*.
 ## Architecture (hosted V1 — LIVE at compose.tstephen.com)
 
 One Hetzner VPS (167.233.233.109) runs PocketBase (pinned, `server/get-pocketbase.sh`)
-behind Caddy (auto-TLS). `/` = hosted root app (full C&C library baked in);
-`/v/:slug` = per-version student pages (server-side template substitution,
-isolated localStorage via `island`); `/dash/` = instructor dashboard;
-`/edit/:id` = hosted editor; `/about/` = citation page; `/_/` = PB admin.
+behind Caddy (auto-TLS). `/` = bare starter (demo worksheet only, S13);
+`/cc` `/hk` `/papers` (+ per-chapter pages) = curated library with shared
+per-family progress islands; `/v/:slug` = per-version student pages
+(server-side template substitution, isolated localStorage via `island`);
+`/dash/` = instructor dashboard; `/edit/:id` = hosted editor (version's own
+worksheets only, S13.4); `/editor/` = account-less editor sandbox;
+`/files/` = worksheet downloads + site map; `/guide/` = instructor guide
+(screenshots regenerate via scripts/capture-guide.mjs + capture-dash.mjs);
+`/about/` = citation page; `/_/` = PB admin; `/template.html` = public
+tokenized template (client-side export substitution, S13.3).
 Instructor content lives in the `versions` collection (bundle JSON), validated
 on save by the real engine running inside PB's goja VM. Deploys: push to
-`main` → GitHub Actions runs all three test suites → SSH → `deploy/deploy.sh`
+`main` → GitHub Actions runs all five test suites → SSH → `deploy/deploy.sh`
 (pull, build, restart). PB data lives in `/srv/compose-data`, never touched by
-deploys; nightly backups + off-box copy. See DEPLOY.md for operations.
+deploys; nightly PB zips + Hetzner Backups (restore drill passed 2026-07-11,
+`deploy/restore-drill.sh`). See DEPLOY.md for operations.
 
 Key gotchas (hard-won; see PLAN.md §8 session log for details): PB hook
 handlers run in isolated VMs (require() shared code INSIDE handlers); goja

@@ -34,7 +34,7 @@ meaning the COMPOSE solver computes for the trees they build).
 A reading lives in the exercise set as one field:
 
 ```json
-"reading": { "format": "lingdown", "markdown": "# Chapter 6 · …\n\n## 6.1 …" }
+"reading": { "format": "latex", "markdown": "# Chapter 6 · …\n\n## 6.1 …" }
 ```
 
 Three things must line up between the reading and the rest of that `.compose.json`:

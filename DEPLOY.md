@@ -187,7 +187,7 @@ GitHub repo → **Settings → Secrets and variables → Actions → New reposit
 secret** → name `DEPLOY_SSH_KEY`, value = the single base64 line you just copied (the workflow decodes it).
 
 From now on every push to `main` runs the full test suite (including the
-46-check live-PocketBase suite) and, only if green, deploys. Verify: repo →
+full live-PocketBase suite) and, only if green, deploys. Verify: repo →
 Actions tab → the next push shows *test-and-deploy* ending in
 `== live: {"message":"API is healthy.`…
 

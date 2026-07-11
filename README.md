@@ -23,20 +23,25 @@ install; progress lives in the browser and is shared within each family:
 | /hk/ch1, ch2, ch4, ch5, ch6, ch7, ch9, ch12 | single H&K chapters |
 | [/papers](https://compose.tstephen.com/papers/) | classic papers — Partee 1986 + Montague's PTQ |
 | /papers/partee, /papers/ptq | one paper each |
+| [/editor](https://compose.tstephen.com/editor/) | author worksheets without an account; export JSON or self-contained HTML |
+| [/files](https://compose.tstephen.com/files/) | every worksheet + bundle as downloadable .compose.json, plus the site map |
+| [/guide](https://compose.tstephen.com/guide/) | the instructor guide, with screenshots and the notes input reference |
 
 The full catalogue is listed on
 [compose.tstephen.com/about](https://compose.tstephen.com/about/).
 
 ## For instructors
 
+Start with the [instructor guide](https://compose.tstephen.com/guide/).
 Ask the administrator for an invite code, then register at
 [compose.tstephen.com/dash](https://compose.tstephen.com/dash/). From the
-dashboard you can create a **version** (your own hosted worksheet collection),
-fork built-in worksheets in the in-app editor, edit denotations and trees with
-live validation, attach lingdown **notes** students see alongside the
-exercises, flip a version between **practice** and **assessment** mode, and
-share one stable URL — with a QR code and printable A4 handout. Links are
-live: mid-semester fixes update what students see at the same address.
+dashboard you create a **version** (your own hosted worksheet collection):
+author or adapt worksheets in the editor with live validation (any built-in
+from [/files](https://compose.tstephen.com/files/) works as a template),
+attach **notes** students see alongside the exercises (Markdown + LaTeX:
+expex, forest/qtree, stmaryrd), and share one stable URL — with a QR code and
+printable A4 handout. Links are live: mid-semester fixes update what students
+see at the same address.
 
 Everything an instructor saves is validated server-side by the real engine:
 broken denotations, unparseable targets, and malformed trees are rejected
@@ -58,7 +63,8 @@ built-in library) that run from a double-click with no server at all.
 ## Repository tour
 
     compose/            the app: engine.js (λ-calculus core), lcformat.js
-                        (format/solver), *.jsx UI, lingdown.js (reading autoformat),
+                        (format/solver), *.jsx UI, lingdown.js (notes renderer:
+                        Markdown + LaTeX input — internal filename only),
                         exercises/ (40 built-in worksheets), reading/, bundles/
     build/              page assembler + server-artifact builder
     server/             PocketBase: migrations, hooks (serving, validation), pin script
@@ -71,8 +77,9 @@ built-in library) that run from a double-click with no server at all.
 ## Development
 
     npm install
-    npm test              # golden regression + schema check (+ server suite if the
-                          # PocketBase binary is present: bash server/get-pocketbase.sh)
+    npm test              # regression + schema + latex + notes suites (+ the live
+                          # server suite if the PocketBase binary is present:
+                          # bash server/get-pocketbase.sh)
     npm run build         # offline single-file builds → dist/
     npm run build:server  # server templates, root instance, dash, about → server/
 
