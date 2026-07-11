@@ -450,7 +450,23 @@ ${safe(parts.css)}
 .about-wrap h2 { font-size: 20px; margin: 38px 0 10px; padding-top: 8px; border-top: 1px solid var(--line); }
 .about-wrap p, .about-wrap td, .about-wrap th { font-size: 15px; color: var(--ink); }
 .about-wrap a { color: #b5532f; }
-.guide-toc { font-size: 14px; color: var(--ink-soft); margin-bottom: 8px; }
+html { scroll-behavior: smooth; }
+.guide-wrap { max-width: 1080px; }
+.guide-wrap h2 { scroll-margin-top: 24px; }
+.guide-wrap h3 { font-size: 16.5px; margin: 26px 0 8px; }
+.guide-layout { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 34px; align-items: start; }
+.guide-side { position: sticky; top: 18px; }
+.guide-toc { display: flex; flex-direction: column; gap: 7px; font-size: 13.5px; line-height: 1.35; border-left: 2px solid var(--line); padding-left: 14px; }
+.guide-toc-head { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-soft); margin-bottom: 2px; }
+.guide-toc a { text-decoration: none; }
+.guide-toc a:hover { text-decoration: underline; }
+.guide-toc .guide-top { margin-top: 10px; color: var(--ink-soft); }
+@media (max-width: 860px) {
+  .guide-layout { display: block; }
+  .guide-side { position: static; margin-bottom: 18px; }
+  .guide-toc { flex-direction: row; flex-wrap: wrap; gap: 6px 14px; border-left: 0; padding-left: 0; }
+  .guide-toc .guide-top { display: none; }
+}
 .files-table { width: 100%; border-collapse: collapse; margin: 6px 0 14px; }
 .files-table th, .files-table td { text-align: left; padding: 6px 12px 6px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
 .files-table th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); }

@@ -1,15 +1,19 @@
-<main class="about-wrap guide-wrap">
+<main class="about-wrap guide-wrap" id="top">
 <h1>Instructor guide</h1>
 <p class="about-sub">Where everything is, what students see, and how to run your own course on COMPOSE.</p>
 
-<nav class="guide-toc">
-<a href="#map">The site at a glance</a> ·
-<a href="#student">What students see</a> ·
-<a href="#sending">Sending students to material</a> ·
-<a href="#authoring">Authoring worksheets</a> ·
-<a href="#hosting">Hosting for your class</a> ·
+<div class="guide-layout">
+<aside class="guide-side"><nav class="guide-toc">
+<div class="guide-toc-head">On this page</div>
+<a href="#map">The site at a glance</a>
+<a href="#student">What students see</a>
+<a href="#sending">Sending students to material</a>
+<a href="#authoring">Authoring worksheets</a>
+<a href="#hosting">Hosting for your class</a>
 <a href="#files">Files &amp; offline</a>
-</nav>
+<a href="#top" class="guide-top">↑ Back to top</a>
+</nav></aside>
+<div class="guide-main">
 
 <h2 id="map">The site at a glance</h2>
 <table class="files-table">
@@ -77,33 +81,76 @@ control — your own selection, your own worksheets, live edits mid-course — h
 a <b>version</b> from the <a href="#hosting">dashboard</a> instead: students get
 a stable <code>/v/your-slug</code> link and a printable QR handout.</p>
 
-<h2 id="authoring">Authoring worksheets</h2>
+<h2 id="authoring">Authoring worksheets — a walkthrough</h2>
 <p>Try the full authoring surface at <a href="/editor/">/editor</a> — no
-account needed. A worksheet is a domain, a lexicon of λ-denotations, a rule
-inventory, and bracketed trees; the editor validates everything live against
-the real engine as you type, so a mistyped denotation or an unsolvable tree is
-flagged immediately.</p>
+account needed, nothing to install. This section walks the whole loop:
+create, define a lexicon, add derivations, attach notes, export.</p>
 
-<figure class="guide-fig"><img src="/guide/editor-sandbox.jpg" alt="The editor sandbox in teacher mode" loading="lazy" />
-<figcaption>The sandbox opens in teacher mode with the demo set as a working example to copy from.</figcaption></figure>
+<h3>1 · Open the editor</h3>
+<p>The sandbox opens in teacher mode with the demo set as a working example.
+Click the worksheet name in the header to open the <b>Worksheets</b> panel:
+your own worksheets live here, and this is also where you import — drop any
+<code>.compose.json</code> (for instance one downloaded from
+<a href="/files/">/files</a>) straight onto the panel. Click <b>+ New</b> to
+start from scratch.</p>
 
-<p>From the sandbox you can export two things: a re-importable
-<code>.compose.json</code> (load it anywhere, including into a dashboard
-version later), or a <b>self-contained student HTML</b> — one file, locked to
-student view, working entirely offline, that you can email or drop into a VLE.</p>
+<figure class="guide-fig"><img src="/guide/editor-files.jpg" alt="The worksheets panel with + New and drag-and-drop import" loading="lazy" />
+<figcaption>The Worksheets panel: <b>+ New</b> to author, or drop a <code>.compose.json</code> to import and adapt.</figcaption></figure>
+
+<h3>2 · The editor surface</h3>
+<p>Everything lives in one screen. Down the left: the <b>composition rules</b>
+this worksheet offers (FA on, PM, NN, PA, IFA…), <b>type-shifting</b> packs,
+<b>behaviour</b> (Quantifier Raising, auto-resolve non-branching), and
+<b>domain operators</b> — only operators enabled here appear in the students’
+symbol palette. The middle is the <b>lexicon</b>: words (synonyms
+comma-separated) and λ-denotations in plain ASCII — <code>Lx.run(x)</code>
+becomes λx.run(x) as you type, and the engine computes each entry’s <b>type
+live</b> (the ⟨e,t⟩ badges below; a parse error shows ✕ with the reason).
+Constants and variable-type declarations sit underneath, with one-click
+presets for events, worlds and times.</p>
+
+<figure class="guide-fig"><img src="/guide/editor-lexicon.jpg" alt="The editor: rules, live-typed lexicon, constants, variable types, exercise panel" loading="lazy" />
+<figcaption>The whole editor. Note the computed type badges next to each denotation — the same engine that grades students is checking your lexicon as you type.</figcaption></figure>
+
+<h3>3 · Add derivations</h3>
+<p>On the right, exercises group derivations. Each derivation is a bracketed
+tree — <code>[.S [.DP Frodo ] [.VP runs ] ]</code> — plus an optional sentence,
+an <b>expected</b> root denotation, a teacher note, and staged <b>hints</b>
+(one per line, revealed in order; practice mode always ends with “Show
+answer”). <b>▶ Test</b> solves the tree with the engine right there: the
+computed root meaning and type appear, and the expected field gets a ✓ when
+they match — so a broken exercise never reaches students.</p>
+
+<figure class="guide-fig"><img src="/guide/editor-derivation.jpg" alt="An exercise with a tested tree and validated expected denotation" loading="lazy" />
+<figcaption>▶ Test solves the tree live: <code>run(f) : t</code> computed, ✓ against the expected denotation. <b>Open first tree →</b> previews exactly what students will see.</figcaption></figure>
+
+<h3>4 · Attach notes (ordinary LaTeX)</h3>
+<p>📝 Notes opens a two-pane editor: Markdown structure with real LaTeX for
+the linguistics — <code>\ex…\xe</code> examples (expex, linguex and gb4e all
+work), <code>\begingl</code> glosses, <code>\Tree</code> /
+<code>\begin{forest}</code> trees, <code>\llbracket runs \rrbracket</code>,
+<code>$\lambda x.run(x)$</code>, and a <code>derivation</code> environment for
+step tables — rendered live in the student preview on the right. <code>##</code>
+sections become anchors that individual exercises can scroll to.</p>
+
+<figure class="guide-fig"><img src="/guide/editor-notes.jpg" alt="The notes editor: LaTeX source with live student preview" loading="lazy" />
+<figcaption>Notes in ordinary LaTeX, previewed live exactly as students will see them.</figcaption></figure>
+
+<h3>5 · Save and export</h3>
+<p>The header buttons cover the whole lifecycle: <b>Save to library</b> keeps
+the worksheet in this browser, <b>Load into app</b> opens it for solving,
+<b>.json</b> downloads the re-importable source, and <b>.html</b> — like
+Tools → Export assignment below — produces a <b>self-contained student
+file</b>: one HTML, locked to student view, fully offline, ready for email or
+a VLE.</p>
 
 <figure class="guide-fig"><img src="/guide/export-modal.jpg" alt="The export modal with HTML and JSON options" loading="lazy" />
 <figcaption>Export assignment: tick worksheets, choose HTML (self-contained student file) or JSON (re-importable source).</figcaption></figure>
 
-<p>The fastest way to author is to adapt an existing worksheet: download any
-built-in from <a href="/files/">/files</a>, edit, re-import. The JSON format is
-documented in
-<a href="https://github.com/Vrier/compose/blob/main/compose/FORMAT.md">FORMAT.md</a>.
-Reading companions and instructor notes are written as Markdown with ordinary
-LaTeX for the linguistics — <code>\ex…\xe</code> examples (expex, linguex and
-gb4e all work), <code>\begin{forest}</code>/<code>\Tree</code> trees,
-<code>\llbracket dog \rrbracket</code>, <code>$\lambda x.\,dog(x)$</code> — and
-render natively in the app.</p>
+<p>The JSON format is documented in
+<a href="https://github.com/Vrier/compose/blob/main/compose/FORMAT.md">FORMAT.md</a>;
+every built-in worksheet on <a href="/files/">/files</a> doubles as a
+template.</p>
 
 <h2 id="hosting">Hosting for your class</h2>
 <p>The dashboard at <a href="/dash/">/dash</a> is where worksheets become a
@@ -133,4 +180,6 @@ assignments from the <a href="/editor/">editor</a> — they run from a USB stick
 
 <p class="about-foot">Questions or an invite code: see <a href="/about/">/about</a> ·
 COMPOSE <a href="https://github.com/Vrier/compose">source on GitHub</a></p>
+</div>
+</div>
 </main>
