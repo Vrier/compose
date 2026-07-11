@@ -813,41 +813,41 @@ ch13.7-haveto | g1p0 | \partial(\mathit{deontic}(R)) \land (\forall w'.R(w_{0}, 
 ch13.7-haveto | g1p1 | \partial(\mathit{deontic}(R)) \land (\forall w'.R(w_{0}, w') \rightarrow \mathit{guard}(w', g, \iota x.\mathit{gate}(w', x)))
 ch13.7-haveto | g2p0 | \partial(\mathit{deontic}(R)) \land (\exists w'.R(w_{0}, w') \land \mathit{ride}(w', f))
 ch13.7-haveto | g2p1 | \partial(\mathit{deontic}(R)) \land (\exists w'.R(w_{0}, w') \land \mathit{guard}(w', s, \iota x.\mathit{gate}(w', x)))
-ch6.1-fa | g0p0 | \mathit{run}(f)
-ch6.1-fa | g0p0 | F | % ============================================================
-ch6.1-fa | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
-ch6.1-fa | g0p0 | F | % Requires in your document preamble:
-ch6.1-fa | g0p0 | F | %   \usepackage{forest}
-ch6.1-fa | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
-ch6.1-fa | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
-ch6.1-fa | g0p0 | F | % ============================================================
-ch6.1-fa | g0p0 | F | % "Frodo runs."
-ch6.1-fa | g0p0 | F | \begin{forest}
-ch6.1-fa | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
-ch6.1-fa | g0p0 | F |   [{\cnode{S} \\ {$\mathit{run}(f)$} \\ {\footnotesize $t$} \\ \crule{FA}}
-ch6.1-fa | g0p0 | F |     [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
-ch6.1-fa | g0p0 | F |       [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
-ch6.1-fa | g0p0 | F |     ]
-ch6.1-fa | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{run}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
-ch6.1-fa | g0p0 | F |       [{\textit{runs} \\ {$\lambda x.\mathit{run}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
-ch6.1-fa | g0p0 | F |     ]
-ch6.1-fa | g0p0 | F |   ]
-ch6.1-fa | g0p0 | F | \end{forest}
-ch6.1-fa | g0p0 | F | 
-ch6.1-fa | g0p1 | \mathit{hike}(\mathit{st})
-ch6.1-fa | g0p2 | \mathit{garden}(s)
-ch6.1-fa | g1p0 | \mathit{love}(\mathit{bi}, f)
-ch6.1-fa | g1p1 | \mathit{trust}(f, s)
-ch6.1-fa | g1p2 | \mathit{give}(g, s, f)
-ch6.1-fa | g2p0 | \mathit{hobbit}(f)
-ch6.1-fa | g2p1 | \mathit{wizard}(g)
-ch6.1-fa | g2p2 | \mathit{brave}(s)
-ch6.1-fa | g3p0 | \mathit{with}(s, f)
-ch6.1-fa | g3p1 | \mathit{in}(n, o)
-ch6.1-fa | g3p2 | \mathit{near}(g, w)
-ch6.1-fa | g4p0 | \lnot \mathit{fight}(f)
-ch6.1-fa | g4p1 | \lnot \mathit{hobbit}(n)
-ch6.1-fa | g4p2 | \lnot \mathit{in}(n, w)
+ch6.1-fa | i-d1 | \mathit{run}(f)
+ch6.1-fa | i-d1 | F | % ============================================================
+ch6.1-fa | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com
+ch6.1-fa | i-d1 | F | % Requires in your document preamble:
+ch6.1-fa | i-d1 | F | %   \usepackage{forest}
+ch6.1-fa | i-d1 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch6.1-fa | i-d1 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch6.1-fa | i-d1 | F | % ============================================================
+ch6.1-fa | i-d1 | F | % "Frodo runs."
+ch6.1-fa | i-d1 | F | \begin{forest}
+ch6.1-fa | i-d1 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch6.1-fa | i-d1 | F |   [{\cnode{S} \\ {$\mathit{run}(f)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch6.1-fa | i-d1 | F |     [{\cnode{DP} \\ {$f$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch6.1-fa | i-d1 | F |       [{\textit{Frodo} \\ {$f$} \\ {\footnotesize $e$}}]
+ch6.1-fa | i-d1 | F |     ]
+ch6.1-fa | i-d1 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{run}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch6.1-fa | i-d1 | F |       [{\textit{runs} \\ {$\lambda x.\mathit{run}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch6.1-fa | i-d1 | F |     ]
+ch6.1-fa | i-d1 | F |   ]
+ch6.1-fa | i-d1 | F | \end{forest}
+ch6.1-fa | i-d1 | F | 
+ch6.1-fa | i-d2 | \mathit{hike}(\mathit{st})
+ch6.1-fa | i-d3 | \mathit{garden}(s)
+ch6.1-fa | i-d1 | \mathit{love}(\mathit{bi}, f)
+ch6.1-fa | i-d2 | \mathit{trust}(f, s)
+ch6.1-fa | i-d3 | \mathit{give}(g, s, f)
+ch6.1-fa | i-d1 | \mathit{hobbit}(f)
+ch6.1-fa | i-d2 | \mathit{wizard}(g)
+ch6.1-fa | i-d3 | \mathit{brave}(s)
+ch6.1-fa | i-d1 | \mathit{with}(s, f)
+ch6.1-fa | i-d2 | \mathit{in}(n, o)
+ch6.1-fa | i-d3 | \mathit{near}(g, w)
+ch6.1-fa | i-d1 | \lnot \mathit{fight}(f)
+ch6.1-fa | i-d2 | \lnot \mathit{hobbit}(n)
+ch6.1-fa | i-d3 | \lnot \mathit{in}(n, w)
 ch6.2-quant | g0p0 | \forall x.\mathit{beautiful}(x)
 ch6.2-quant | g0p0 | F | % ============================================================
 ch6.2-quant | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
@@ -885,136 +885,136 @@ ch6.2-quant | g2p2 | \lnot (\exists x.\mathit{orc}(x) \land \mathit{ranger}(x))
 ch6.2-quant | g3p0 | UNSOLVED
 ch6.2-quant | g3p1 | \forall x.\mathit{hobbit}(x) \rightarrow \lnot \mathit{love}(x, g)
 ch6.2-quant | g3p2 | \exists x.\mathit{elf}(x) \land \lnot \mathit{trust}(x, n)
-ch7.1-adj | g0p0 | \mathit{mischievous}(\mathit{pi}) \land \mathit{hobbit}(\mathit{pi})
-ch7.1-adj | g0p0 | F | % ============================================================
-ch7.1-adj | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
-ch7.1-adj | g0p0 | F | % Requires in your document preamble:
-ch7.1-adj | g0p0 | F | %   \usepackage{forest}
-ch7.1-adj | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
-ch7.1-adj | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
-ch7.1-adj | g0p0 | F | % ============================================================
-ch7.1-adj | g0p0 | F | % "Pippin is a mischievous hobbit."
-ch7.1-adj | g0p0 | F | \begin{forest}
-ch7.1-adj | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
-ch7.1-adj | g0p0 | F |   [{\cnode{S} \\ {$\mathit{mischievous}(\mathit{pi}) \land \mathit{hobbit}(\mathit{pi})$} \\ {\footnotesize $t$} \\ \crule{FA}}
-ch7.1-adj | g0p0 | F |     [{\cnode{DP} \\ {$\mathit{pi}$} \\ {\footnotesize $e$} \\ \crule{NN}}
-ch7.1-adj | g0p0 | F |       [{\textit{Pippin} \\ {$\mathit{pi}$} \\ {\footnotesize $e$}}]
-ch7.1-adj | g0p0 | F |     ]
-ch7.1-adj | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{mischievous}(x) \land \mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
-ch7.1-adj | g0p0 | F |       [{\cnode{V} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
-ch7.1-adj | g0p0 | F |         [{\textit{is} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
-ch7.1-adj | g0p0 | F |       ]
-ch7.1-adj | g0p0 | F |       [{\cnode{NP} \\ {$\lambda x.\mathit{mischievous}(x) \land \mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
-ch7.1-adj | g0p0 | F |         [{\cnode{D} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
-ch7.1-adj | g0p0 | F |           [{\textit{a} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
-ch7.1-adj | g0p0 | F |         ]
-ch7.1-adj | g0p0 | F |         [{\cnode{NP} \\ {$\lambda x.\mathit{mischievous}(x) \land \mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PM}}
-ch7.1-adj | g0p0 | F |           [{\cnode{AP} \\ {$\lambda x.\mathit{mischievous}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
-ch7.1-adj | g0p0 | F |             [{\textit{mischievous} \\ {$\lambda x.\mathit{mischievous}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
-ch7.1-adj | g0p0 | F |           ]
-ch7.1-adj | g0p0 | F |           [{\cnode{NP} \\ {$\lambda x.\mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
-ch7.1-adj | g0p0 | F |             [{\textit{hobbit} \\ {$\lambda x.\mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
-ch7.1-adj | g0p0 | F |           ]
-ch7.1-adj | g0p0 | F |         ]
-ch7.1-adj | g0p0 | F |       ]
-ch7.1-adj | g0p0 | F |     ]
-ch7.1-adj | g0p0 | F |   ]
-ch7.1-adj | g0p0 | F | \end{forest}
-ch7.1-adj | g0p0 | F | 
-ch7.1-adj | g0p1 | \lnot (\mathit{mundane}(\mathit{tm}) \land \mathit{creature}(\mathit{tm}))
-ch7.1-adj | g0p2 | \forall x.\mathit{traveling}(x) \land \mathit{hobbit}(x) \rightarrow \mathit{brave}(x) \land \mathit{creature}(x)
-ch7.1-adj | g1p0 | \mathit{mischievous}(\mathit{tm}) \land \mathit{magical}(\mathit{tm}) \land \mathit{creature}(\mathit{tm})
-ch7.1-adj | g1p1 | \lnot (\mathit{human}(\mathit{st}) \land \mathit{ranger}(\mathit{st}))
-ch7.1-adj | g1p2 | \lnot (\exists x.\mathit{traveling}(x) \land \mathit{hobbit}(x) \land \mathit{mischievous}(x) \land \mathit{brave}(x) \land \mathit{creature}(x))
-ch7.1-adj | g2p0 | \mathit{alleged}(\lambda x.\mathit{king}(x), \mathit{st})
-ch7.1-adj | g2p1 | \mathit{former}(\lambda x.\mathit{traveling}(x) \land \mathit{hobbit}(x), \mathit{bi})
-ch7.1-adj | g2p2 | \exists x.\mathit{alleged}(\lambda x.\mathit{wise}(x) \land \mathit{wizard}(x), x) \land \mathit{see}(x, n)
-ch7.2-adjts | g0p0 | \mathit{mischievous}(\mathit{pi}) \land \mathit{hobbit}(\mathit{pi})
-ch7.2-adjts | g0p0 | F | % ============================================================
-ch7.2-adjts | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
-ch7.2-adjts | g0p0 | F | % Requires in your document preamble:
-ch7.2-adjts | g0p0 | F | %   \usepackage{forest}
-ch7.2-adjts | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
-ch7.2-adjts | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
-ch7.2-adjts | g0p0 | F | % ============================================================
-ch7.2-adjts | g0p0 | F | % "Pippin is a mischievous hobbit."
-ch7.2-adjts | g0p0 | F | \begin{forest}
-ch7.2-adjts | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
-ch7.2-adjts | g0p0 | F |   [{\cnode{S} \\ {$\mathit{mischievous}(\mathit{pi}) \land \mathit{hobbit}(\mathit{pi})$} \\ {\footnotesize $t$} \\ \crule{FA}}
-ch7.2-adjts | g0p0 | F |     [{\cnode{DP} \\ {$\mathit{pi}$} \\ {\footnotesize $e$} \\ \crule{NN}}
-ch7.2-adjts | g0p0 | F |       [{\textit{Pippin} \\ {$\mathit{pi}$} \\ {\footnotesize $e$}}]
-ch7.2-adjts | g0p0 | F |     ]
-ch7.2-adjts | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{mischievous}(x) \land \mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
-ch7.2-adjts | g0p0 | F |       [{\cnode{V} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
-ch7.2-adjts | g0p0 | F |         [{\textit{is} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
-ch7.2-adjts | g0p0 | F |       ]
-ch7.2-adjts | g0p0 | F |       [{\cnode{NP} \\ {$\lambda x.\mathit{mischievous}(x) \land \mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
-ch7.2-adjts | g0p0 | F |         [{\cnode{D} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
-ch7.2-adjts | g0p0 | F |           [{\textit{a} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
-ch7.2-adjts | g0p0 | F |         ]
-ch7.2-adjts | g0p0 | F |         [{\cnode{NP} \\ {$\lambda x.\mathit{mischievous}(x) \land \mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PM}}
-ch7.2-adjts | g0p0 | F |           [{\cnode{AP} \\ {$\lambda x.\mathit{mischievous}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
-ch7.2-adjts | g0p0 | F |             [{\textit{mischievous} \\ {$\lambda x.\mathit{mischievous}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
-ch7.2-adjts | g0p0 | F |           ]
-ch7.2-adjts | g0p0 | F |           [{\cnode{NP} \\ {$\lambda x.\mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
-ch7.2-adjts | g0p0 | F |             [{\textit{hobbit} \\ {$\lambda x.\mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
-ch7.2-adjts | g0p0 | F |           ]
-ch7.2-adjts | g0p0 | F |         ]
-ch7.2-adjts | g0p0 | F |       ]
-ch7.2-adjts | g0p0 | F |     ]
-ch7.2-adjts | g0p0 | F |   ]
-ch7.2-adjts | g0p0 | F | \end{forest}
-ch7.2-adjts | g0p0 | F | 
-ch7.2-adjts | g0p1 | \lnot (\mathit{mundane}(\mathit{tm}) \land \mathit{creature}(\mathit{tm}))
-ch7.2-adjts | g0p2 | \forall x.\mathit{traveling}(x) \land \mathit{hobbit}(x) \rightarrow \mathit{brave}(x) \land \mathit{creature}(x)
-ch7.2-adjts | g1p0 | \mathit{mischievous}(\mathit{tm}) \land \mathit{magical}(\mathit{tm}) \land \mathit{creature}(\mathit{tm})
-ch7.2-adjts | g1p1 | \lnot (\mathit{human}(\mathit{st}) \land \mathit{ranger}(\mathit{st}))
-ch7.2-adjts | g1p2 | \lnot (\exists x.\mathit{traveling}(x) \land \mathit{hobbit}(x) \land \mathit{mischievous}(x) \land \mathit{brave}(x) \land \mathit{creature}(x))
-ch7.2-adjts | g2p0 | \mathit{alleged}(\lambda x.\mathit{king}(x), \mathit{st})
-ch7.2-adjts | g2p1 | \mathit{former}(\lambda x.\mathit{traveling}(x) \land \mathit{hobbit}(x), \mathit{bi})
-ch7.2-adjts | g2p2 | \exists x.\mathit{alleged}(\lambda x.\mathit{wise}(x) \land \mathit{wizard}(x), x) \land \mathit{see}(x, n)
-ch7.3-relcl | g0p0 | \lambda x.\mathit{wizard}(x) \land \mathit{drink}(x)
-ch7.3-relcl | g0p0 | F | % ============================================================
-ch7.3-relcl | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
-ch7.3-relcl | g0p0 | F | % Requires in your document preamble:
-ch7.3-relcl | g0p0 | F | %   \usepackage{forest}
-ch7.3-relcl | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
-ch7.3-relcl | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
-ch7.3-relcl | g0p0 | F | % ============================================================
-ch7.3-relcl | g0p0 | F | % "wizard who drinks."
-ch7.3-relcl | g0p0 | F | \begin{forest}
-ch7.3-relcl | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
-ch7.3-relcl | g0p0 | F |   [{\cnode{NP} \\ {$\lambda x.\mathit{wizard}(x) \land \mathit{drink}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PM}}
-ch7.3-relcl | g0p0 | F |     [{\cnode{NP} \\ {$\lambda x.\mathit{wizard}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
-ch7.3-relcl | g0p0 | F |       [{\textit{wizard} \\ {$\lambda x.\mathit{wizard}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
-ch7.3-relcl | g0p0 | F |     ]
-ch7.3-relcl | g0p0 | F |     [{\cnode{CP} \\ {$\lambda x_{1}.\mathit{drink}(x_{1})$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
-ch7.3-relcl | g0p0 | F |       [{\cnode{C} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
-ch7.3-relcl | g0p0 | F |         [{\textit{who} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
-ch7.3-relcl | g0p0 | F |       ]
-ch7.3-relcl | g0p0 | F |       [{\cnode{LP} \\ {$\lambda x_{1}.\mathit{drink}(x_{1})$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PA}}
-ch7.3-relcl | g0p0 | F |         [{\textit{1}}]
-ch7.3-relcl | g0p0 | F |         [{\cnode{S} \\ {$\mathit{drink}(x_{1})$} \\ {\footnotesize $t$} \\ \crule{FA}}
-ch7.3-relcl | g0p0 | F |           [{\cnode{DP} \\ {$x_{1}$} \\ {\footnotesize $e$} \\ \crule{NN}}
-ch7.3-relcl | g0p0 | F |             [{\textit{t1} \\ {$x_{1}$} \\ {\footnotesize $e$}}]
-ch7.3-relcl | g0p0 | F |           ]
-ch7.3-relcl | g0p0 | F |           [{\cnode{VP} \\ {$\lambda x.\mathit{drink}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
-ch7.3-relcl | g0p0 | F |             [{\textit{drinks} \\ {$\lambda x.\mathit{drink}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
-ch7.3-relcl | g0p0 | F |           ]
-ch7.3-relcl | g0p0 | F |         ]
-ch7.3-relcl | g0p0 | F |       ]
-ch7.3-relcl | g0p0 | F |     ]
-ch7.3-relcl | g0p0 | F |   ]
-ch7.3-relcl | g0p0 | F | \end{forest}
-ch7.3-relcl | g0p0 | F | 
-ch7.3-relcl | g0p1 | \lambda x.\mathit{hobbit}(x) \land \mathit{brave}(x)
-ch7.3-relcl | g0p2 | \lambda x.\mathit{wizard}(x) \land \lnot \mathit{fear}(x, n)
-ch7.3-relcl | g1p0 | \lambda x.\mathit{hobbit}(x) \land \mathit{love}(g, x)
-ch7.3-relcl | g1p1 | \lambda x.\mathit{human}(x) \land \lnot \mathit{trust}(\mathit{st}, x)
-ch7.3-relcl | g1p2 | \lambda x.\mathit{ranger}(x) \land \mathit{with}(f, x)
-ch7.3-relcl | g2p0 | \mathit{wizard}(g) \land \mathit{wise}(g)
-ch7.3-relcl | g2p1 | \forall x.\mathit{hobbit}(x) \land \mathit{drink}(x) \rightarrow \mathit{sing}(x)
-ch7.3-relcl | g2p2 | \exists x.\mathit{wise}(x) \land \mathit{wizard}(x) \land \mathit{fear}(x, n) \land \mathit{visit}(x, \mathit{sr})
+ch7.1-adj | i-d1 | \mathit{mischievous}(\mathit{pi}) \land \mathit{hobbit}(\mathit{pi})
+ch7.1-adj | i-d1 | F | % ============================================================
+ch7.1-adj | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com
+ch7.1-adj | i-d1 | F | % Requires in your document preamble:
+ch7.1-adj | i-d1 | F | %   \usepackage{forest}
+ch7.1-adj | i-d1 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch7.1-adj | i-d1 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch7.1-adj | i-d1 | F | % ============================================================
+ch7.1-adj | i-d1 | F | % "Pippin is a mischievous hobbit."
+ch7.1-adj | i-d1 | F | \begin{forest}
+ch7.1-adj | i-d1 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch7.1-adj | i-d1 | F |   [{\cnode{S} \\ {$\mathit{mischievous}(\mathit{pi}) \land \mathit{hobbit}(\mathit{pi})$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch7.1-adj | i-d1 | F |     [{\cnode{DP} \\ {$\mathit{pi}$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch7.1-adj | i-d1 | F |       [{\textit{Pippin} \\ {$\mathit{pi}$} \\ {\footnotesize $e$}}]
+ch7.1-adj | i-d1 | F |     ]
+ch7.1-adj | i-d1 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{mischievous}(x) \land \mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+ch7.1-adj | i-d1 | F |       [{\cnode{V} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch7.1-adj | i-d1 | F |         [{\textit{is} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
+ch7.1-adj | i-d1 | F |       ]
+ch7.1-adj | i-d1 | F |       [{\cnode{NP} \\ {$\lambda x.\mathit{mischievous}(x) \land \mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+ch7.1-adj | i-d1 | F |         [{\cnode{D} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch7.1-adj | i-d1 | F |           [{\textit{a} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
+ch7.1-adj | i-d1 | F |         ]
+ch7.1-adj | i-d1 | F |         [{\cnode{NP} \\ {$\lambda x.\mathit{mischievous}(x) \land \mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PM}}
+ch7.1-adj | i-d1 | F |           [{\cnode{AP} \\ {$\lambda x.\mathit{mischievous}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch7.1-adj | i-d1 | F |             [{\textit{mischievous} \\ {$\lambda x.\mathit{mischievous}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch7.1-adj | i-d1 | F |           ]
+ch7.1-adj | i-d1 | F |           [{\cnode{NP} \\ {$\lambda x.\mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch7.1-adj | i-d1 | F |             [{\textit{hobbit} \\ {$\lambda x.\mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch7.1-adj | i-d1 | F |           ]
+ch7.1-adj | i-d1 | F |         ]
+ch7.1-adj | i-d1 | F |       ]
+ch7.1-adj | i-d1 | F |     ]
+ch7.1-adj | i-d1 | F |   ]
+ch7.1-adj | i-d1 | F | \end{forest}
+ch7.1-adj | i-d1 | F | 
+ch7.1-adj | i-d2 | \lnot (\mathit{mundane}(\mathit{tm}) \land \mathit{creature}(\mathit{tm}))
+ch7.1-adj | i-d3 | \forall x.\mathit{traveling}(x) \land \mathit{hobbit}(x) \rightarrow \mathit{brave}(x) \land \mathit{creature}(x)
+ch7.1-adj | i-d1 | \mathit{mischievous}(\mathit{tm}) \land \mathit{magical}(\mathit{tm}) \land \mathit{creature}(\mathit{tm})
+ch7.1-adj | i-d2 | \lnot (\mathit{human}(\mathit{st}) \land \mathit{ranger}(\mathit{st}))
+ch7.1-adj | i-d3 | \lnot (\exists x.\mathit{traveling}(x) \land \mathit{hobbit}(x) \land \mathit{mischievous}(x) \land \mathit{brave}(x) \land \mathit{creature}(x))
+ch7.1-adj | i-d1 | \mathit{alleged}(\lambda x.\mathit{king}(x), \mathit{st})
+ch7.1-adj | i-d2 | \mathit{former}(\lambda x.\mathit{traveling}(x) \land \mathit{hobbit}(x), \mathit{bi})
+ch7.1-adj | i-d3 | \exists x.\mathit{alleged}(\lambda x.\mathit{wise}(x) \land \mathit{wizard}(x), x) \land \mathit{see}(x, n)
+ch7.2-adjts | i-d1 | \mathit{mischievous}(\mathit{pi}) \land \mathit{hobbit}(\mathit{pi})
+ch7.2-adjts | i-d1 | F | % ============================================================
+ch7.2-adjts | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com
+ch7.2-adjts | i-d1 | F | % Requires in your document preamble:
+ch7.2-adjts | i-d1 | F | %   \usepackage{forest}
+ch7.2-adjts | i-d1 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch7.2-adjts | i-d1 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch7.2-adjts | i-d1 | F | % ============================================================
+ch7.2-adjts | i-d1 | F | % "Pippin is a mischievous hobbit."
+ch7.2-adjts | i-d1 | F | \begin{forest}
+ch7.2-adjts | i-d1 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch7.2-adjts | i-d1 | F |   [{\cnode{S} \\ {$\mathit{mischievous}(\mathit{pi}) \land \mathit{hobbit}(\mathit{pi})$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch7.2-adjts | i-d1 | F |     [{\cnode{DP} \\ {$\mathit{pi}$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch7.2-adjts | i-d1 | F |       [{\textit{Pippin} \\ {$\mathit{pi}$} \\ {\footnotesize $e$}}]
+ch7.2-adjts | i-d1 | F |     ]
+ch7.2-adjts | i-d1 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{mischievous}(x) \land \mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+ch7.2-adjts | i-d1 | F |       [{\cnode{V} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch7.2-adjts | i-d1 | F |         [{\textit{is} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
+ch7.2-adjts | i-d1 | F |       ]
+ch7.2-adjts | i-d1 | F |       [{\cnode{NP} \\ {$\lambda x.\mathit{mischievous}(x) \land \mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+ch7.2-adjts | i-d1 | F |         [{\cnode{D} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch7.2-adjts | i-d1 | F |           [{\textit{a} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
+ch7.2-adjts | i-d1 | F |         ]
+ch7.2-adjts | i-d1 | F |         [{\cnode{NP} \\ {$\lambda x.\mathit{mischievous}(x) \land \mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PM}}
+ch7.2-adjts | i-d1 | F |           [{\cnode{AP} \\ {$\lambda x.\mathit{mischievous}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch7.2-adjts | i-d1 | F |             [{\textit{mischievous} \\ {$\lambda x.\mathit{mischievous}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch7.2-adjts | i-d1 | F |           ]
+ch7.2-adjts | i-d1 | F |           [{\cnode{NP} \\ {$\lambda x.\mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch7.2-adjts | i-d1 | F |             [{\textit{hobbit} \\ {$\lambda x.\mathit{hobbit}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch7.2-adjts | i-d1 | F |           ]
+ch7.2-adjts | i-d1 | F |         ]
+ch7.2-adjts | i-d1 | F |       ]
+ch7.2-adjts | i-d1 | F |     ]
+ch7.2-adjts | i-d1 | F |   ]
+ch7.2-adjts | i-d1 | F | \end{forest}
+ch7.2-adjts | i-d1 | F | 
+ch7.2-adjts | i-d2 | \lnot (\mathit{mundane}(\mathit{tm}) \land \mathit{creature}(\mathit{tm}))
+ch7.2-adjts | i-d3 | \forall x.\mathit{traveling}(x) \land \mathit{hobbit}(x) \rightarrow \mathit{brave}(x) \land \mathit{creature}(x)
+ch7.2-adjts | i-d1 | \mathit{mischievous}(\mathit{tm}) \land \mathit{magical}(\mathit{tm}) \land \mathit{creature}(\mathit{tm})
+ch7.2-adjts | i-d2 | \lnot (\mathit{human}(\mathit{st}) \land \mathit{ranger}(\mathit{st}))
+ch7.2-adjts | i-d3 | \lnot (\exists x.\mathit{traveling}(x) \land \mathit{hobbit}(x) \land \mathit{mischievous}(x) \land \mathit{brave}(x) \land \mathit{creature}(x))
+ch7.2-adjts | i-d1 | \mathit{alleged}(\lambda x.\mathit{king}(x), \mathit{st})
+ch7.2-adjts | i-d2 | \mathit{former}(\lambda x.\mathit{traveling}(x) \land \mathit{hobbit}(x), \mathit{bi})
+ch7.2-adjts | i-d3 | \exists x.\mathit{alleged}(\lambda x.\mathit{wise}(x) \land \mathit{wizard}(x), x) \land \mathit{see}(x, n)
+ch7.3-relcl | i-d1 | \lambda x.\mathit{wizard}(x) \land \mathit{drink}(x)
+ch7.3-relcl | i-d1 | F | % ============================================================
+ch7.3-relcl | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com
+ch7.3-relcl | i-d1 | F | % Requires in your document preamble:
+ch7.3-relcl | i-d1 | F | %   \usepackage{forest}
+ch7.3-relcl | i-d1 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+ch7.3-relcl | i-d1 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+ch7.3-relcl | i-d1 | F | % ============================================================
+ch7.3-relcl | i-d1 | F | % "wizard who drinks."
+ch7.3-relcl | i-d1 | F | \begin{forest}
+ch7.3-relcl | i-d1 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+ch7.3-relcl | i-d1 | F |   [{\cnode{NP} \\ {$\lambda x.\mathit{wizard}(x) \land \mathit{drink}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PM}}
+ch7.3-relcl | i-d1 | F |     [{\cnode{NP} \\ {$\lambda x.\mathit{wizard}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch7.3-relcl | i-d1 | F |       [{\textit{wizard} \\ {$\lambda x.\mathit{wizard}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch7.3-relcl | i-d1 | F |     ]
+ch7.3-relcl | i-d1 | F |     [{\cnode{CP} \\ {$\lambda x_{1}.\mathit{drink}(x_{1})$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+ch7.3-relcl | i-d1 | F |       [{\cnode{C} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{NN}}
+ch7.3-relcl | i-d1 | F |         [{\textit{who} \\ {$\lambda X.X$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$}}]
+ch7.3-relcl | i-d1 | F |       ]
+ch7.3-relcl | i-d1 | F |       [{\cnode{LP} \\ {$\lambda x_{1}.\mathit{drink}(x_{1})$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PA}}
+ch7.3-relcl | i-d1 | F |         [{\textit{1}}]
+ch7.3-relcl | i-d1 | F |         [{\cnode{S} \\ {$\mathit{drink}(x_{1})$} \\ {\footnotesize $t$} \\ \crule{FA}}
+ch7.3-relcl | i-d1 | F |           [{\cnode{DP} \\ {$x_{1}$} \\ {\footnotesize $e$} \\ \crule{NN}}
+ch7.3-relcl | i-d1 | F |             [{\textit{t1} \\ {$x_{1}$} \\ {\footnotesize $e$}}]
+ch7.3-relcl | i-d1 | F |           ]
+ch7.3-relcl | i-d1 | F |           [{\cnode{VP} \\ {$\lambda x.\mathit{drink}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+ch7.3-relcl | i-d1 | F |             [{\textit{drinks} \\ {$\lambda x.\mathit{drink}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+ch7.3-relcl | i-d1 | F |           ]
+ch7.3-relcl | i-d1 | F |         ]
+ch7.3-relcl | i-d1 | F |       ]
+ch7.3-relcl | i-d1 | F |     ]
+ch7.3-relcl | i-d1 | F |   ]
+ch7.3-relcl | i-d1 | F | \end{forest}
+ch7.3-relcl | i-d1 | F | 
+ch7.3-relcl | i-d2 | \lambda x.\mathit{hobbit}(x) \land \mathit{brave}(x)
+ch7.3-relcl | i-d3 | \lambda x.\mathit{wizard}(x) \land \lnot \mathit{fear}(x, n)
+ch7.3-relcl | i-d1 | \lambda x.\mathit{hobbit}(x) \land \mathit{love}(g, x)
+ch7.3-relcl | i-d2 | \lambda x.\mathit{human}(x) \land \lnot \mathit{trust}(\mathit{st}, x)
+ch7.3-relcl | i-d3 | \lambda x.\mathit{ranger}(x) \land \mathit{with}(f, x)
+ch7.3-relcl | i-d1 | \mathit{wizard}(g) \land \mathit{wise}(g)
+ch7.3-relcl | i-d2 | \forall x.\mathit{hobbit}(x) \land \mathit{drink}(x) \rightarrow \mathit{sing}(x)
+ch7.3-relcl | i-d3 | \exists x.\mathit{wise}(x) \land \mathit{wizard}(x) \land \mathit{fear}(x, n) \land \mathit{visit}(x, \mathit{sr})
 ch7.4-objraise | g0p0 | UNSOLVED
 ch7.4-objraise | g0p1 | UNSOLVED
 ch7.4-objraise | g0p2 | UNSOLVED

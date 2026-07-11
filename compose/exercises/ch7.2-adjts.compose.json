@@ -269,23 +269,36 @@
           "tree": "[.S [.DP Pippin ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP mischievous ] [.NP hobbit ] ] ] ] ]",
           "reading": {
             "section": "7.2"
-          }
+          },
+          "targets": [
+            "mischievous(pi) ∧ hobbit(pi)"
+          ],
+          "id": "d1"
         },
         {
           "sentence": "Tom is not a mundane creature.",
           "tree": "[.S [.DP Tom ] [.VP [.Neg not ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP mundane ] [.NP creature ] ] ] ] ] ]",
           "reading": {
             "section": "7.2"
-          }
+          },
+          "targets": [
+            "¬(mundane(tm) ∧ creature(tm))"
+          ],
+          "id": "d2"
         },
         {
           "sentence": "Every traveling hobbit is a brave creature.",
           "tree": "[.S [.DP [.D every ] [.NP [.AP traveling ] [.NP hobbit ] ] ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP brave ] [.NP creature ] ] ] ] ]",
           "reading": {
             "section": "7.2"
-          }
+          },
+          "targets": [
+            "∀x.traveling(x) ∧ hobbit(x) → brave(x) ∧ creature(x)"
+          ],
+          "id": "d3"
         }
-      ]
+      ],
+      "id": "g1"
     },
     {
       "title": "B. Stacked MOD",
@@ -296,23 +309,36 @@
           "tree": "[.S [.DP Tom ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP mischievous ] [.NP [.AP magical ] [.NP creature ] ] ] ] ] ]",
           "reading": {
             "section": "7.2.1"
-          }
+          },
+          "targets": [
+            "mischievous(tm) ∧ magical(tm) ∧ creature(tm)"
+          ],
+          "id": "d1"
         },
         {
           "sentence": "Strider is not a human ranger.",
           "tree": "[.S [.DP Strider ] [.VP [.Neg not ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP human ] [.NP ranger ] ] ] ] ] ]",
           "reading": {
             "section": "7.2.1"
-          }
+          },
+          "targets": [
+            "¬(human(st) ∧ ranger(st))"
+          ],
+          "id": "d2"
         },
         {
           "sentence": "No traveling hobbit is a mischievous brave creature.",
           "tree": "[.S [.DP [.D no ] [.NP [.AP traveling ] [.NP hobbit ] ] ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP mischievous ] [.NP [.AP brave ] [.NP creature ] ] ] ] ] ]",
           "reading": {
             "section": "7.2.1"
-          }
+          },
+          "targets": [
+            "¬(∃x.traveling(x) ∧ hobbit(x) ∧ mischievous(x) ∧ brave(x) ∧ creature(x))"
+          ],
+          "id": "d3"
         }
-      ]
+      ],
+      "id": "g2"
     },
     {
       "title": "C. Non-intersective adjectives via FA",
@@ -323,23 +349,36 @@
           "tree": "[.S [.DP Strider ] [.VP [.V is ] [.NP [.D an ] [.NP [.AP alleged ] [.NP king ] ] ] ] ]",
           "reading": {
             "section": "7.2.2"
-          }
+          },
+          "targets": [
+            "alleged(λx.king(x), st)"
+          ],
+          "id": "d1"
         },
         {
           "sentence": "Bilbo is a former traveling hobbit.",
           "tree": "[.S [.DP Bilbo ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP former ] [.NP [.AP traveling ] [.NP hobbit ] ] ] ] ] ]",
           "reading": {
             "section": "7.2.2"
-          }
+          },
+          "targets": [
+            "former(λx.traveling(x) ∧ hobbit(x), bi)"
+          ],
+          "id": "d2"
         },
         {
           "sentence": "Some alleged wise wizard sees Sauron.",
           "tree": "[.S [.DP [.D some ] [.NP [.AP alleged ] [.NP [.AP wise ] [.NP wizard ] ] ] ] [.VP [.V sees ] [.DP Sauron ] ] ]",
           "reading": {
             "section": "7.2.2"
-          }
+          },
+          "targets": [
+            "∃x.alleged(λx.wise(x) ∧ wizard(x), x) ∧ see(x, n)"
+          ],
+          "id": "d3"
         }
-      ]
+      ],
+      "id": "g3"
     }
   ],
   "reading": {

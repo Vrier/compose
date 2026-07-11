@@ -247,6 +247,9 @@ async function main() {
   lacks('root is the bare starter (no full library inlined)', r.text, '"ch7.1-adj":{');
   contains('root still identifies as hosted-root', r.text, 'hosted-root');
   contains('root build requests the demo sample for students', r.text, '"sample":true');
+  contains('root carries a meta description (S15)', r.text, '<meta name="description"');
+  contains('root carries OpenGraph tags (S15)', r.text, 'property="og:title"');
+  contains('root links the favicon (S15)', r.text, 'rel="icon"');
   contains('derivation surface is SR-announcing (S13.5)', r.text, 'aria-live');
   contains('tree nodes carry focus anchors (S13.5)', r.text, 'data-nodeid');
   r = await req('GET', '/editor/', { raw: true });
@@ -271,6 +274,7 @@ async function main() {
   contains('/cc carries §7 content', r.text, '"ch7.1-adj":{');
   contains('/cc carries §13 content', r.text, '"ch13.1-worlds":{');
   contains('/cc shares the lib-cc island', r.text, '"island":"lib-cc"');
+  contains('/cc carries its canonical (S15)', r.text, 'canonical" href="https://compose.tstephen.com/cc/"');
   r = await req('GET', '/cc/ch7/', { raw: true });
   contains('/cc/ch7 carries §7', r.text, '"ch7.1-adj":{');
   lacks('/cc/ch7 does NOT carry §6', r.text, '"ch6.1-fa":{');

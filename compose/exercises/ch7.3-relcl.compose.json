@@ -272,23 +272,36 @@
           "tree": "[.NP [.NP wizard ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP drinks ] ] ] ] ]",
           "reading": {
             "section": "7.3.1"
-          }
+          },
+          "targets": [
+            "λx.wizard(x) ∧ drink(x)"
+          ],
+          "id": "d1"
         },
         {
           "sentence": "hobbit who is brave.",
           "tree": "[.NP [.NP hobbit ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.V is ] [.AP brave ] ] ] ] ] ]",
           "reading": {
             "section": "7.3.1"
-          }
+          },
+          "targets": [
+            "λx.hobbit(x) ∧ brave(x)"
+          ],
+          "id": "d2"
         },
         {
           "sentence": "wizard who doesn't fear Sauron.",
           "tree": "[.NP [.NP wizard ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.Neg doesnt ] [.VP [.V fears ] [.DP Sauron ] ] ] ] ] ] ]",
           "reading": {
             "section": "7.3.1"
-          }
+          },
+          "targets": [
+            "λx.wizard(x) ∧ ¬fear(x, n)"
+          ],
+          "id": "d3"
         }
-      ]
+      ],
+      "id": "g1"
     },
     {
       "title": "B. Object gap relative clauses",
@@ -299,23 +312,36 @@
           "tree": "[.NP [.NP hobbit ] [.CP [.C who ] [.LP 1 [.S [.DP Gandalf ] [.VP [.V loves ] [.DP t1 ] ] ] ] ] ]",
           "reading": {
             "section": "7.3.2"
-          }
+          },
+          "targets": [
+            "λx.hobbit(x) ∧ love(g, x)"
+          ],
+          "id": "d1"
         },
         {
           "sentence": "human who Strider doesn't trust.",
           "tree": "[.NP [.NP human ] [.CP [.C who ] [.LP 1 [.S [.DP Strider ] [.VP [.Neg doesnt ] [.VP [.V trusts ] [.DP t1 ] ] ] ] ] ] ]",
           "reading": {
             "section": "7.3.2"
-          }
+          },
+          "targets": [
+            "λx.human(x) ∧ ¬trust(st, x)"
+          ],
+          "id": "d2"
         },
         {
           "sentence": "ranger who Frodo is with.",
           "tree": "[.NP [.NP ranger ] [.CP [.C who ] [.LP 1 [.S [.DP Frodo ] [.VP [.V is ] [.PP [.P with ] [.DP t1 ] ] ] ] ] ] ]",
           "reading": {
             "section": "7.3.2"
-          }
+          },
+          "targets": [
+            "λx.ranger(x) ∧ with(f, x)"
+          ],
+          "id": "d3"
         }
-      ]
+      ],
+      "id": "g2"
     },
     {
       "title": "C. Full sentences with relative clauses",
@@ -326,23 +352,36 @@
           "tree": "[.S [.DP Gandalf ] [.VP [.V is ] [.NP [.D a ] [.NP [.NP wizard ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.V is ] [.AP wise ] ] ] ] ] ] ] ] ]",
           "reading": {
             "section": "7.3.2"
-          }
+          },
+          "targets": [
+            "wizard(g) ∧ wise(g)"
+          ],
+          "id": "d1"
         },
         {
           "sentence": "Every hobbit who drinks sings.",
           "tree": "[.S [.DP [.D every ] [.NP [.NP hobbit ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP drinks ] ] ] ] ] ] [.VP sings ] ]",
           "reading": {
             "section": "7.3.2"
-          }
+          },
+          "targets": [
+            "∀x.hobbit(x) ∧ drink(x) → sing(x)"
+          ],
+          "id": "d2"
         },
         {
           "sentence": "Some wise wizard who fears Sauron visits Saruman.",
           "tree": "[.S [.DP [.D some ] [.NP [.AP wise ] [.NP [.NP wizard ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.V fears ] [.DP Sauron ] ] ] ] ] ] ] ] [.VP [.V visits ] [.DP Saruman ] ] ]",
           "reading": {
             "section": "7.3.2"
-          }
+          },
+          "targets": [
+            "∃x.wise(x) ∧ wizard(x) ∧ fear(x, n) ∧ visit(x, sr)"
+          ],
+          "id": "d3"
         }
-      ]
+      ],
+      "id": "g3"
     }
   ],
   "reading": {

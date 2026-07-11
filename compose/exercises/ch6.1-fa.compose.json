@@ -297,23 +297,48 @@
           "tree": "[.S [.DP Frodo ] [.VP runs ] ]",
           "reading": {
             "section": "6.1"
-          }
+          },
+          "targets": [
+            "run(f)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote f and λx.run(x). Combine them and β-reduce."
+          ],
+          "id": "d1"
         },
         {
           "sentence": "Strider hikes.",
           "tree": "[.S [.DP Strider ] [.VP hikes ] ]",
           "reading": {
             "section": "6.1"
-          }
+          },
+          "targets": [
+            "hike(st)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote st and λx.hike(x). Combine them and β-reduce."
+          ],
+          "id": "d2"
         },
         {
           "sentence": "Sam gardens.",
           "tree": "[.S [.DP Sam ] [.VP gardens ] ]",
           "reading": {
             "section": "6.1"
-          }
+          },
+          "targets": [
+            "garden(s)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote s and λx.garden(x). Combine them and β-reduce."
+          ],
+          "id": "d3"
         }
-      ]
+      ],
+      "id": "g1"
     },
     {
       "title": "B. Transitive and ditransitive verbs",
@@ -324,23 +349,48 @@
           "tree": "[.S [.DP Bilbo ] [.VP [.V loves ] [.DP Frodo ] ] ]",
           "reading": {
             "section": "6.2"
-          }
+          },
+          "targets": [
+            "love(bi, f)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote bi and λx.love(x, f). Combine them and β-reduce."
+          ],
+          "id": "d1"
         },
         {
           "sentence": "Frodo trusts Sam.",
           "tree": "[.S [.DP Frodo ] [.VP [.V trusts ] [.DP Sam ] ] ]",
           "reading": {
             "section": "6.2"
-          }
+          },
+          "targets": [
+            "trust(f, s)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote f and λx.trust(x, s). Combine them and β-reduce."
+          ],
+          "id": "d2"
         },
         {
           "sentence": "Gandalf gives Frodo Sam.",
           "tree": "[.S [.DP Gandalf ] [.VP [.V [.V gives ] [.DP Frodo ] ] [.DP Sam ] ] ]",
           "reading": {
             "section": "6.2"
-          }
+          },
+          "targets": [
+            "give(g, s, f)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote g and λx.give(x, s, f). Combine them and β-reduce."
+          ],
+          "id": "d3"
         }
-      ]
+      ],
+      "id": "g2"
     },
     {
       "title": "C. The copula",
@@ -351,23 +401,48 @@
           "tree": "[.S [.DP Frodo ] [.VP [.V is ] [.NP [.D a ] [.NP hobbit ] ] ] ]",
           "reading": {
             "section": "6.2.2"
-          }
+          },
+          "targets": [
+            "hobbit(f)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote f and λx.hobbit(x). Combine them and β-reduce."
+          ],
+          "id": "d1"
         },
         {
           "sentence": "Gandalf is a wizard.",
           "tree": "[.S [.DP Gandalf ] [.VP [.V is ] [.NP [.D a ] [.NP wizard ] ] ] ]",
           "reading": {
             "section": "6.2.2"
-          }
+          },
+          "targets": [
+            "wizard(g)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote g and λx.wizard(x). Combine them and β-reduce."
+          ],
+          "id": "d2"
         },
         {
           "sentence": "Sam is brave.",
           "tree": "[.S [.DP Sam ] [.VP [.V is ] [.AP brave ] ] ]",
           "reading": {
             "section": "6.2.2"
-          }
+          },
+          "targets": [
+            "brave(s)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote s and λx.brave(x). Combine them and β-reduce."
+          ],
+          "id": "d3"
         }
-      ]
+      ],
+      "id": "g3"
     },
     {
       "title": "D. Prepositions",
@@ -378,23 +453,48 @@
           "tree": "[.S [.DP Sam ] [.VP [.V is ] [.PP [.P with ] [.DP Frodo ] ] ] ]",
           "reading": {
             "section": "6.2.3"
-          }
+          },
+          "targets": [
+            "with(s, f)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote s and λx.with(x, f). Combine them and β-reduce."
+          ],
+          "id": "d1"
         },
         {
           "sentence": "Sauron is in Mordor.",
           "tree": "[.S [.DP Sauron ] [.VP [.V is ] [.PP [.P in ] [.DP Mordor ] ] ] ]",
           "reading": {
             "section": "6.2.3"
-          }
+          },
+          "targets": [
+            "in(n, o)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote n and λx.in(x, o). Combine them and β-reduce."
+          ],
+          "id": "d2"
         },
         {
           "sentence": "Gandalf is near Rivendell.",
           "tree": "[.S [.DP Gandalf ] [.VP [.V is ] [.PP [.P near ] [.DP Rivendell ] ] ] ]",
           "reading": {
             "section": "6.2.3"
-          }
+          },
+          "targets": [
+            "near(g, w)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote g and λx.near(x, w). Combine them and β-reduce."
+          ],
+          "id": "d3"
         }
-      ]
+      ],
+      "id": "g4"
     },
     {
       "title": "E. Negation",
@@ -405,23 +505,48 @@
           "tree": "[.S [.DP Frodo ] [.VP [.Neg doesnt ] [.VP fights ] ] ]",
           "reading": {
             "section": "6.3"
-          }
+          },
+          "targets": [
+            "¬fight(f)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote f and λx.¬fight(x). Combine them and β-reduce."
+          ],
+          "id": "d1"
         },
         {
           "sentence": "Sauron is not a hobbit.",
           "tree": "[.S [.DP Sauron ] [.VP [.V is ] [.NegP [.Neg not ] [.NP [.D a ] [.NP hobbit ] ] ] ] ]",
           "reading": {
             "section": "6.3"
-          }
+          },
+          "targets": [
+            "¬hobbit(n)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote n and λx.¬hobbit(x). Combine them and β-reduce."
+          ],
+          "id": "d2"
         },
         {
           "sentence": "Sauron is not in Rivendell.",
           "tree": "[.S [.DP Sauron ] [.VP [.V is ] [.NegP [.Neg not ] [.PP [.P in ] [.DP Rivendell ] ] ] ] ]",
           "reading": {
             "section": "6.3"
-          }
+          },
+          "targets": [
+            "¬in(n, w)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote n and λx.¬in(x, w). Combine them and β-reduce."
+          ],
+          "id": "d3"
         }
-      ]
+      ],
+      "id": "g5"
     }
   ],
   "reading": {

@@ -273,23 +273,48 @@
           "tree": "[.S [.DP Pippin ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP mischievous ] [.NP hobbit ] ] ] ] ]",
           "reading": {
             "section": "7.2"
-          }
+          },
+          "targets": [
+            "mischievous(pi) ∧ hobbit(pi)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote pi and λx.mischievous(x) ∧ hobbit(x). Combine them and β-reduce."
+          ],
+          "id": "d1"
         },
         {
           "sentence": "Tom is not a mundane creature.",
           "tree": "[.S [.DP Tom ] [.VP [.Neg not ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP mundane ] [.NP creature ] ] ] ] ] ]",
           "reading": {
             "section": "7.2"
-          }
+          },
+          "targets": [
+            "¬(mundane(tm) ∧ creature(tm))"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote tm and λx.¬(mundane(x) ∧ creature(x)). Combine them and β-reduce."
+          ],
+          "id": "d2"
         },
         {
           "sentence": "Every traveling hobbit is a brave creature.",
           "tree": "[.S [.DP [.D every ] [.NP [.AP traveling ] [.NP hobbit ] ] ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP brave ] [.NP creature ] ] ] ] ]",
           "reading": {
             "section": "7.2"
-          }
+          },
+          "targets": [
+            "∀x.traveling(x) ∧ hobbit(x) → brave(x) ∧ creature(x)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote λY.∀x.traveling(x) ∧ hobbit(x) → Y(x) and λx.brave(x) ∧ creature(x). Combine them and β-reduce."
+          ],
+          "id": "d3"
         }
-      ]
+      ],
+      "id": "g1"
     },
     {
       "title": "B. Stacked adjectives",
@@ -300,23 +325,48 @@
           "tree": "[.S [.DP Tom ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP mischievous ] [.NP [.AP magical ] [.NP creature ] ] ] ] ] ]",
           "reading": {
             "section": "7.2"
-          }
+          },
+          "targets": [
+            "mischievous(tm) ∧ magical(tm) ∧ creature(tm)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote tm and λx.mischievous(x) ∧ magical(x) ∧ creature(x). Combine them and β-reduce."
+          ],
+          "id": "d1"
         },
         {
           "sentence": "Strider is not a human ranger.",
           "tree": "[.S [.DP Strider ] [.VP [.Neg not ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP human ] [.NP ranger ] ] ] ] ] ]",
           "reading": {
             "section": "7.2"
-          }
+          },
+          "targets": [
+            "¬(human(st) ∧ ranger(st))"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote st and λx.¬(human(x) ∧ ranger(x)). Combine them and β-reduce."
+          ],
+          "id": "d2"
         },
         {
           "sentence": "No traveling hobbit is a mischievous brave creature.",
           "tree": "[.S [.DP [.D no ] [.NP [.AP traveling ] [.NP hobbit ] ] ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP mischievous ] [.NP [.AP brave ] [.NP creature ] ] ] ] ] ]",
           "reading": {
             "section": "7.2"
-          }
+          },
+          "targets": [
+            "¬(∃x.traveling(x) ∧ hobbit(x) ∧ mischievous(x) ∧ brave(x) ∧ creature(x))"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote λY.¬(∃x.traveling(x) ∧ hobbit(x) ∧ Y(x)) and λx.mischievous(x) ∧ brave(x) ∧ creature(x). Combine them and β-reduce."
+          ],
+          "id": "d3"
         }
-      ]
+      ],
+      "id": "g2"
     },
     {
       "title": "C. Non-intersective adjectives",
@@ -327,23 +377,48 @@
           "tree": "[.S [.DP Strider ] [.VP [.V is ] [.NP [.D an ] [.NP [.AP alleged ] [.NP king ] ] ] ] ]",
           "reading": {
             "section": "7.2.1"
-          }
+          },
+          "targets": [
+            "alleged(λx.king(x), st)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote st and λx.alleged(λx.king(x), x). Combine them and β-reduce."
+          ],
+          "id": "d1"
         },
         {
           "sentence": "Bilbo is a former traveling hobbit.",
           "tree": "[.S [.DP Bilbo ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP former ] [.NP [.AP traveling ] [.NP hobbit ] ] ] ] ] ]",
           "reading": {
             "section": "7.2.1"
-          }
+          },
+          "targets": [
+            "former(λx.traveling(x) ∧ hobbit(x), bi)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote bi and λx.former(λx.traveling(x) ∧ hobbit(x), x). Combine them and β-reduce."
+          ],
+          "id": "d2"
         },
         {
           "sentence": "Some alleged wise wizard sees Sauron.",
           "tree": "[.S [.DP [.D some ] [.NP [.AP alleged ] [.NP [.AP wise ] [.NP wizard ] ] ] ] [.VP [.V sees ] [.DP Sauron ] ] ]",
           "reading": {
             "section": "7.2.1"
-          }
+          },
+          "targets": [
+            "∃x.alleged(λx.wise(x) ∧ wizard(x), x) ∧ see(x, n)"
+          ],
+          "hints": [
+            "Work bottom-up: resolve every leaf from the lexicon first. The root node is resolved by Function Application — one sister denotes a function whose type matches the other sister.",
+            "At the root, the sisters denote λY.∃x.alleged(λx.wise(x) ∧ wizard(x), x) ∧ Y(x) and λx.see(x, n). Combine them and β-reduce."
+          ],
+          "id": "d3"
         }
-      ]
+      ],
+      "id": "g3"
     }
   ],
   "reading": {

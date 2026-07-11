@@ -65,6 +65,20 @@ const templateEdit = assemblePage(parts, {
 // sample (injected client-side by exercise-files.js when preload==='none'),
 // nothing preloaded, normal file loading. The full libraries live at the
 // curated /cc, /hk and /papers entry points below.
+/* S15: shared head metadata for hosted pages — description, canonical,
+   OpenGraph, favicon. The TEMPLATE deliberately gets none of this (exports
+   and /v/:slug pages must not carry a wrong canonical). */
+const metaFor = (title, desc, urlPath) => [
+  '<meta name="description" content="' + desc + '" />',
+  '<link rel="canonical" href="https://compose.tstephen.com' + urlPath + '" />',
+  '<link rel="icon" href="/icon.svg" type="image/svg+xml" />',
+  '<meta property="og:site_name" content="COMPOSE" />',
+  '<meta property="og:type" content="website" />',
+  '<meta property="og:title" content="' + title + '" />',
+  '<meta property="og:description" content="' + desc + '" />',
+  '<meta property="og:url" content="https://compose.tstephen.com' + urlPath + '" />',
+].join('\n');
+
 const rootIdentityJS =
   'window.COMPOSE_BUILD = ' + JSON.stringify({
     id: 'hosted-root', role: 'student', preload: 'none', sample: true,
@@ -76,6 +90,8 @@ const rootPage = assemblePage(parts, {
   title: 'COMPOSE',
   identityJS: rootIdentityJS,
   libraryJS: '',
+  headMeta: metaFor('COMPOSE — compositional semantics practice',
+    'Practise compositional formal semantics in the browser: build derivations tree by tree with Function Application, Predicate Modification, type-shifting and more. Free, no login.', '/'),
 });
 
 /* ---- 3a · Public editor sandbox (S13.2) ---------------------------------
@@ -95,6 +111,8 @@ const sandboxPage = assemblePage(parts, {
   title: 'COMPOSE — Editor sandbox',
   identityJS: sandboxIdentityJS,
   libraryJS: '',
+  headMeta: metaFor('COMPOSE — Editor sandbox',
+    'Author formal-semantics problem sets in the browser — lexicon, trees, live validation — and export them as JSON. No account needed.', '/editor/'),
 });
 
 /* ---- 3b · Curated library entry points (S13) ----------------------------
@@ -145,6 +163,8 @@ function curatedPage(entry) {
     title: 'COMPOSE — ' + entry.title,
     identityJS: identity,
     libraryJS: 'window.LC_FILES_INLINE = ' + JSON.stringify(files) + ';',
+    headMeta: metaFor('COMPOSE — ' + entry.title,
+      'Interactive problem sets: ' + entry.title + '. Compose derivations step by step with automatic grading — free, in the browser, no login.', '/' + entry.path + '/'),
   });
 }
 
@@ -161,6 +181,8 @@ const aboutPage = `<!DOCTYPE html>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>About COMPOSE</title>
+<meta name="description" content="What COMPOSE is, how to cite it, and the full library of hosted formal-semantics problem sets." />
+<link rel="icon" href="/icon.svg" type="image/svg+xml" />
 <style>
 ${safe(parts.css)}
 .about-wrap { max-width: 680px; margin: 0 auto; padding: 40px 22px 60px; line-height: 1.65; }
@@ -286,6 +308,7 @@ const dashPage = [
   '<meta charset="UTF-8" />',
   '<meta name="viewport" content="width=device-width, initial-scale=1.0" />',
   '<title>COMPOSE — Dashboard</title>',
+  '<link rel="icon" href="/icon.svg" type="image/svg+xml" />',
   '<style>\n' + safe(parts.css) + '\n</style>',
   '</head>',
   '<body>',
@@ -345,6 +368,7 @@ const filesPage = `<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="description" content="Download COMPOSE worksheets and textbook bundles (.compose.json), and find every page on the site." />
 <title>Files &amp; site map — COMPOSE</title>
+<link rel="icon" href="/icon.svg" type="image/svg+xml" />
 <style>
 ${safe(parts.css)}
 .about-wrap { max-width: 760px; margin: 0 auto; padding: 40px 22px 60px; line-height: 1.65; }

@@ -123,7 +123,7 @@ export function buildParts(srcDir) {
 }
 
 /* ---- assemblePage -------------------------------------------------------- */
-export function assemblePage(parts, { title, identityJS, libraryJS = '', extraHeadJS = '' }) {
+export function assemblePage(parts, { title, identityJS, libraryJS = '', extraHeadJS = '', headMeta = '' }) {
   const out = [
     '<!DOCTYPE html>',
     '<html lang="en" data-theme="parchment">',
@@ -131,6 +131,7 @@ export function assemblePage(parts, { title, identityJS, libraryJS = '', extraHe
     '<meta charset="UTF-8" />',
     '<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />',
     '<title>' + title + '</title>',
+    headMeta || '',   // S15: description/OG/canonical/icon on hosted pages
     block(identityJS),
     extraHeadJS ? block(extraHeadJS) : '',
     FONTS,
