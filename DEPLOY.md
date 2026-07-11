@@ -144,26 +144,30 @@ to something private before telling anyone the dashboard exists. This admin
 UI is also where you reset a locked-out instructor's password (users →
 record → change password) — there is no email flow in V1, by design.
 
-## 8 · Backups (on-box zips are already scheduled; add the off-box copy)
+## 8 · Backups (DECIDED 2026-07-10: Hetzner Backups + nightly PB zips)
 
-PocketBase now zips /srv/compose-data nightly at 03:00, keeping 7 (migration
-`1751700003`). For the off-box copy, order a **Storage Box** in the Hetzner
-console (BX11, ~€4/mo), enable SSH support on it, then:
+Three layers, cheapest-first:
 
-**[server]**
+1. **On-box, automatic (already running):** PocketBase zips /srv/compose-data
+   nightly at 03:00, keeping 7 (migration `1751700003`). Protects against
+   application-level accidents (bad upgrade, deleted version). Same disk as
+   the data — not a disaster copy.
+2. **Off-box, automatic — Hetzner Backups (the chosen mechanism):** in the
+   Hetzner console, server view → **Backups** tab → enable. Costs 20% of the
+   server price (~€1/mo at this size); daily whole-server snapshots held on
+   separate infrastructure, 7 slots. Covers disk death, host failure, botched
+   server surgery. The nightly PB zips inside each image give file-level
+   granularity after an image restore.
+3. **Off-site, manual (tail risk — account compromise, billing lapse, DC
+   catastrophe):** roughly monthly, download the newest zip to your own
+   machine — PB admin UI → Settings → Backups → download, or:
+   `scp compose@167.233.233.109:/srv/compose-data/backups/$(ssh compose@167.233.233.109 ls -1t /srv/compose-data/backups | head -1) .`
+   The irreplaceable data (instructor versions) is tiny; this takes seconds.
 
-```
-printf 'uXXXXXX@uXXXXXX.your-storagebox.de:compose-backups/\n' > /srv/compose-data/backup-target
-chown compose:compose /srv/compose-data/backup-target
-# push the compose user's key to the storage box (asks for the box password once):
-sudo -u compose ssh-copy-id -p 23 -i /srv/compose/.ssh/id_ed25519.pub uXXXXXX@uXXXXXX.your-storagebox.de
-# nightly copy at 04:17:
-( crontab -u compose -l 2>/dev/null; echo '17 4 * * * bash /srv/compose/deploy/backup.sh >> /srv/compose-data/backup.log 2>&1' ) | crontab -u compose -
-```
-
-(Replace `uXXXXXX` with the Storage Box username shown in the console. Until
-this step is done the script exits harmlessly with a notice — do not leave it
-that way past the first week.)
+**Optional alternative** (not required with layers 1–3): the original
+Storage Box nightly scp. `deploy/backup.sh` still supports it — write the
+target to /srv/compose-data/backup-target and add the 04:17 cron per the
+script header. Until configured it exits harmlessly with a notice.
 
 ## 9 · GitHub Actions auto-deploy (the Cowork bridge)
 
@@ -189,7 +193,20 @@ Actions tab → the next push shows *test-and-deploy* ending in
 
 ## 10 · Restore drill — perform once now, before real content exists
 
+A backup that has never been restored is a hope, not a backup. The drill is
+scripted (S16) — non-destructive, never touches the live service:
+
 **[server]**
+
+```
+bash /srv/compose/deploy/restore-drill.sh
+```
+
+It restores the newest zip into /tmp, boots a throwaway PocketBase on
+127.0.0.1:8190, checks health + that the versions collection is served from
+the restored data, and cleans up. Re-run after any PocketBase upgrade.
+
+Manual equivalent, for reference:
 
 ```
 # 1. make a fresh backup zip via the admin UI (Settings → Backups → Create) or wait for 03:00
@@ -207,6 +224,20 @@ kill %1 && cd / && rm -rf /tmp/restore-drill
 
 Record the date it was performed here: **____-__-__**. A real restore is the
 same unzip pointed at /srv/compose-data (with the service stopped).
+
+## 10b · SSH hygiene (one-time, from the provisioning era)
+
+Provisioning left password login enabled for root (`99-root.conf`, created by
+`deploy/unlock-ssh.sh` because the web console dropped Shift). Once your own
+key logs in, close it:
+
+**[server]**
+
+```
+# confirm your key works FIRST in a second terminal, then:
+rm -f /etc/ssh/sshd_config.d/99-root.conf
+systemctl restart ssh
+```
 
 ## 11 · Update procedure (between terms only)
 
