@@ -307,6 +307,10 @@ async function main() {
   contains('/guide serves the instructor guide (S17)', r.text, 'Instructor guide');
   contains('/guide embeds screenshots', r.text, '/guide/student-view.jpg');
   contains('/guide is scrollable (S17.2 fix)', r.text, 'height: auto !important');
+  contains('/guide carries the notes input reference (S17.3)', r.text, 'Notes input reference');
+  contains('/guide embeds the share-dialog capture (S17.3)', r.text, '/guide/dash-share.jpg');
+  r = await req('GET', '/guide/dash-share.jpg', { raw: true });
+  expect('share screenshot serves', r.status === 200, r.status);
   r = await req('GET', '/guide/student-view.jpg', { raw: true });
   expect('guide screenshot serves', r.status === 200, r.status);
   r = await req('GET', '/sitemap.xml', { raw: true });

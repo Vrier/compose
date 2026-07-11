@@ -1,185 +1,338 @@
 <main class="about-wrap guide-wrap" id="top">
 <h1>Instructor guide</h1>
-<p class="about-sub">Where everything is, what students see, and how to run your own course on COMPOSE.</p>
+<p class="about-sub">How the site is organised, what students see, how to author worksheets, and how to host material for a class.</p>
 
 <div class="guide-layout">
 <aside class="guide-side"><nav class="guide-toc">
 <div class="guide-toc-head">On this page</div>
-<a href="#map">The site at a glance</a>
+<a href="#map">Pages on this site</a>
 <a href="#student">What students see</a>
-<a href="#sending">Sending students to material</a>
+<a href="#sending">Linking students to material</a>
 <a href="#authoring">Authoring worksheets</a>
-<a href="#hosting">Hosting for your class</a>
-<a href="#files">Files &amp; offline</a>
+<a href="#notes-ref">Notes input reference</a>
+<a href="#hosting">Hosting for a class</a>
+<a href="#files">Files &amp; offline use</a>
 <a href="#top" class="guide-top">↑ Back to top</a>
 </nav></aside>
 <div class="guide-main">
 
-<h2 id="map">The site at a glance</h2>
+<h2 id="map">Pages on this site</h2>
 <table class="files-table">
-<thead><tr><th>Page</th><th>What it is</th></tr></thead>
+<thead><tr><th>Page</th><th>Contents</th></tr></thead>
 <tbody>
-<tr><td><a href="/">compose.tstephen.com</a></td><td>The bare starter — one demo worksheet, load any <code>.compose.json</code> from file. Nothing else preloaded.</td></tr>
-<tr><td><a href="/cc/">/cc</a> · <a href="/hk/">/hk</a> · <a href="/papers/">/papers</a></td><td>The curated library: whole-book pages for Coppock &amp; Champollion and Heim &amp; Kratzer, plus classic papers. Single chapters live at <a href="/cc/ch7/">/cc/ch7</a>, <a href="/hk/ch2/">/hk/ch2</a>, <a href="/papers/partee/">/papers/partee</a>, and so on.</td></tr>
-<tr><td><a href="/editor/">/editor</a></td><td>The editor sandbox — author worksheets with no account, export as JSON or a self-contained student HTML.</td></tr>
-<tr><td><a href="/dash/">/dash</a></td><td>The instructor dashboard — register with an invite code, host your own versions with stable student links and QR handouts.</td></tr>
-<tr><td><a href="/files/">/files</a></td><td>Every built-in worksheet and bundle as downloadable <code>.compose.json</code>, plus the full site map.</td></tr>
-<tr><td><a href="/about/">/about</a></td><td>What COMPOSE is, credits, and how to cite it.</td></tr>
+<tr><td><a href="/">compose.tstephen.com</a></td><td>The app with one demo worksheet loaded. Additional worksheets are loaded from <code>.compose.json</code> files. No account.</td></tr>
+<tr><td><a href="/cc/">/cc</a></td><td>All 30 worksheets tracking Coppock &amp; Champollion, <em>Invitation to Formal Semantics</em>. Single chapters: <a href="/cc/ch6/">/cc/ch6</a>, <a href="/cc/ch7/">/cc/ch7</a>, /cc/ch8, /cc/ch10, /cc/ch11, /cc/ch12, /cc/ch13.</td></tr>
+<tr><td><a href="/hk/">/hk</a></td><td>Eight worksheets tracking Heim &amp; Kratzer, <em>Semantics in Generative Grammar</em> (chapters 1, 2, 4, 5, 6, 7, 9, 12), at /hk/ch1 … /hk/ch12.</td></tr>
+<tr><td><a href="/papers/">/papers</a></td><td>Worksheets on Partee 1986 (<a href="/papers/partee/">/papers/partee</a>) and Montague's PTQ (<a href="/papers/ptq/">/papers/ptq</a>).</td></tr>
+<tr><td><a href="/editor/">/editor</a></td><td>The worksheet editor, usable without an account. Exports <code>.compose.json</code> and self-contained student HTML files. Cannot publish to the server.</td></tr>
+<tr><td><a href="/dash/">/dash</a></td><td>The instructor dashboard. Requires an account (registration by invite code). Hosts <em>versions</em>: worksheet collections with stable student links.</td></tr>
+<tr><td><a href="/files/">/files</a></td><td>All 40 built-in worksheets and both textbook bundles as downloadable <code>.compose.json</code>, with a site map.</td></tr>
+<tr><td><a href="/about/">/about</a></td><td>Project description, credits, citation formats.</td></tr>
 </tbody>
 </table>
 
 <figure class="guide-fig"><img src="/guide/root-starter.jpg" alt="The starter page with the Getting Started demo worksheet loaded" loading="lazy" />
-<figcaption>The starter at <a href="/">compose.tstephen.com</a>: the Getting Started demo set, ready to derive — students need no login and nothing installs.</figcaption></figure>
+<figcaption><a href="/">compose.tstephen.com</a> as it loads: the Getting Started demo worksheet (four derivations), exercise list left, tree centre, lexicon right.</figcaption></figure>
 
 <h2 id="student">What students see</h2>
-<p>Every worksheet page has the same three-panel layout: the exercise list on the
-left, the derivation tree in the middle, and the lexicon (with a symbol
-reference) on the right. Students work bottom-up: click a highlighted node,
-pick the composition rule they think applies, type the β-reduced result, and
-the grader checks it against the target meaning — α-equivalent answers in any
-notation are accepted.</p>
+<p>A worksheet page has three panels: exercise list (left), the current
+derivation tree (centre), lexicon and symbol reference (right). The workflow
+per derivation: click a node whose children are resolved, choose a composition
+rule, type the β-reduced result, submit. The grader accepts any answer
+α-equivalent to the target after normalization; conjunct order does not
+matter. Choosing an inapplicable rule is refused with the reason (for
+example: “Both sisters must be predicates ⟨A,t⟩ of the same type A. The
+sisters are ⟨e,⟨e,t⟩⟩ and e.”).</p>
+
+<p>Input accepts ASCII shortcuts: <code>Lx.</code> → λx., <code>&amp;</code> → ∧,
+<code>~</code> → ¬, <code>-&gt;</code> → →, and a clickable symbol palette
+covers the rest. The palette shows only the operator symbols the current
+worksheet uses (a §6 worksheet shows no mereology or presupposition keys; the
+§10 worksheets show ∗ ⊕ ≤; the definedness and tense/modal worksheets show
+∂ ⊤ ⊥).</p>
 
 <figure class="guide-fig"><img src="/guide/student-view.jpg" alt="A worksheet page: exercise list, derivation tree, lexicon" loading="lazy" />
-<figcaption>A §7 worksheet on <a href="/cc/ch7/">/cc/ch7</a>. Green nodes are resolved; “ready — select” nodes are the frontier. The whole loop is keyboard- and screen-reader-accessible.</figcaption></figure>
+<figcaption><a href="/cc/ch7/">/cc/ch7</a>, first derivation. Nodes marked “ready — select” have resolved children; leaves resolve from the lexicon. The derivation loop is operable by keyboard, and node states are announced to screen readers.</figcaption></figure>
 
-<p>The first time a worksheet is opened, a card lists exactly the rules
-available in that exercise, with a one-line “how to use” for each — it shows
-once per worksheet, and stays available behind the <b>☰ Rules</b> button.</p>
+<p>On first opening a worksheet, a card lists the composition rules enabled in
+it, with a description and a usage note per rule. It appears once per
+worksheet per browser; the <b>☰ Rules</b> button reopens it.</p>
 
 <figure class="guide-fig"><img src="/guide/rules-modal.jpg" alt="The rules-available card listing FA, PM and NN" loading="lazy" />
-<figcaption>The rules card. Worksheets only offer the rules (and only the operator symbols) their chapter actually uses.</figcaption></figure>
+<figcaption>The rules card for a §7.2 worksheet: FA, PM and NN are enabled; PA, IFA, type-shifting and QR are not.</figcaption></figure>
 
 <figure class="guide-fig"><img src="/guide/rule-dock.jpg" alt="The rule chooser dock under the tree" loading="lazy" />
-<figcaption>Selecting a node opens the rule chooser. Wrong choices are refused with the type-theoretic reason, which is half the pedagogy.</figcaption></figure>
+<figcaption>The rule chooser, opened by selecting the NP node. Inapplicable rules remain listed; choosing one shows the type-theoretic reason it fails.</figcaption></figure>
 
-<p>Two supports sit alongside the exercises. <b>Hints</b> reveal in stages —
-first the strategy, then the sisters’ denotations. <b>Notes</b> open a reading
-companion beside the tree: condensed chapter notes with numbered examples,
-typeset trees and step-by-step denotation tables, cross-linked so each exercise
-scrolls the reading to its section. (Notes are written in ordinary LaTeX —
-expex, forest, stmaryrd — see the <a href="#authoring">authoring section</a>.)</p>
+<p>Where the author provided them, derivations carry staged <b>hints</b>
+(revealed one at a time; in practice mode the final stage offers “Show
+answer”) and worksheets carry a <b>notes</b> panel — a reading companion
+with numbered examples, trees and denotation tables. Exercises can anchor
+to sections of the notes; opening an exercise scrolls the notes to its
+section.</p>
 
 <figure class="guide-fig"><img src="/guide/hint.jpg" alt="A staged hint above the derivation" loading="lazy" />
-<figcaption>Hint 1 of 2 on an entry worksheet — the strategy first; the second hint gives the sisters’ denotations.</figcaption></figure>
+<figcaption>Hint 1 of 2 on a ch6 derivation. The built-in ch6 and ch7.1 worksheets currently ship two hints per derivation.</figcaption></figure>
 
 <figure class="guide-fig"><img src="/guide/notes-panel.jpg" alt="The notes panel open next to a derivation" loading="lazy" />
-<figcaption>The 📝 Notes panel: chapter reading with numbered examples and denotation steps, anchored to the current exercise.</figcaption></figure>
+<figcaption>The 📝 Notes panel on /cc/ch7 showing section 7.2: prose, numbered examples, and a denotation table, with a contents bar at the top.</figcaption></figure>
 
-<p>Progress saves automatically in the student’s browser, per site area — work
-on <a href="/cc/">/cc</a> and the per-chapter pages shares one record, and each
-hosted class version keeps its own. Students can save progress to a file and
-restore it elsewhere (Tools menu), and a completion summary gives a
-screenshot-friendly per-worksheet tally. Curated pages also work offline once
-visited (they install as a lightweight web app).</p>
+<p>Progress is stored in the browser's localStorage, separately per area:
+the /cc pages (whole-book and chapters) share one record; /hk and /papers
+each have their own; each hosted version has its own. Tools menu →
+“Save progress to a file” writes all of it to a JSON file; “Restore progress
+from a file” loads it on another machine. A completion summary
+(per-worksheet solved counts) is available from the same menu. The curated
+pages register a service worker on first visit and afterwards load without a
+network connection.</p>
 
-<h2 id="sending">Sending students to material</h2>
-<p>For self-study or homework from the textbooks, just link a curated page —
-<a href="/cc/ch7/">compose.tstephen.com/cc/ch7</a> in the syllabus is enough;
-there is nothing to set up. Deep links address a single derivation
-(<code>/cc/ch7/#g1.d2</code>), handy in handouts or Moodle. For material you
-control — your own selection, your own worksheets, live edits mid-course — host
-a <b>version</b> from the <a href="#hosting">dashboard</a> instead: students get
-a stable <code>/v/your-slug</code> link and a printable QR handout.</p>
+<h2 id="sending">Linking students to material</h2>
+<p>Three kinds of link:</p>
+<table class="files-table">
+<thead><tr><th>Link</th><th>Behaviour</th></tr></thead>
+<tbody>
+<tr><td><code>/cc/ch7</code> etc.</td><td>Fixed library content. Progress persists in the student's browser across visits. Nothing to configure.</td></tr>
+<tr><td><code>/cc/ch7/#g1.d2</code></td><td>Same page, opened at exercise group <code>g1</code>, derivation <code>d2</code>. The anchor ids are visible in the worksheet JSON on <a href="/files/">/files</a>.</td></tr>
+<tr><td><code>/v/&lt;slug&gt;</code></td><td>A hosted version (see <a href="#hosting">below</a>): content you control, changeable after distribution, with its own progress record and an opens counter.</td></tr>
+</tbody>
+</table>
 
-<h2 id="authoring">Authoring worksheets — a walkthrough</h2>
-<p>Try the full authoring surface at <a href="/editor/">/editor</a> — no
-account needed, nothing to install. This section walks the whole loop:
-create, define a lexicon, add derivations, attach notes, export.</p>
+<h2 id="authoring">Authoring worksheets</h2>
+<p>The editor at <a href="/editor/">/editor</a> runs without an account. A
+worksheet consists of: a domain (constants and variables with types), a
+lexicon (words with λ-denotations), a rule configuration, and exercises
+(groups of derivations, each a bracketed tree with optional targets, hints
+and notes anchors). The file format is JSON, documented in
+<a href="https://github.com/Vrier/compose/blob/main/compose/FORMAT.md">FORMAT.md</a>;
+any worksheet from <a href="/files/">/files</a> can be used as a template.</p>
 
-<h3>1 · Open the editor</h3>
-<p>The sandbox opens in teacher mode with the demo set as a working example.
-Click the worksheet name in the header to open the <b>Worksheets</b> panel:
-your own worksheets live here, and this is also where you import — drop any
-<code>.compose.json</code> (for instance one downloaded from
-<a href="/files/">/files</a>) straight onto the panel. Click <b>+ New</b> to
-start from scratch.</p>
+<h3>Opening and importing</h3>
+<p>Click the worksheet name in the header to open the Worksheets panel.
+<b>+ New</b> creates an empty worksheet; dropping a <code>.compose.json</code>
+or <code>.compose-bundle.json</code> onto the panel imports it. Imported and
+newly authored worksheets are stored in the browser.</p>
 
 <figure class="guide-fig"><img src="/guide/editor-files.jpg" alt="The worksheets panel with + New and drag-and-drop import" loading="lazy" />
-<figcaption>The Worksheets panel: <b>+ New</b> to author, or drop a <code>.compose.json</code> to import and adapt.</figcaption></figure>
+<figcaption>The Worksheets panel in the editor sandbox.</figcaption></figure>
 
-<h3>2 · The editor surface</h3>
-<p>Everything lives in one screen. Down the left: the <b>composition rules</b>
-this worksheet offers (FA on, PM, NN, PA, IFA…), <b>type-shifting</b> packs,
-<b>behaviour</b> (Quantifier Raising, auto-resolve non-branching), and
-<b>domain operators</b> — only operators enabled here appear in the students’
-symbol palette. The middle is the <b>lexicon</b>: words (synonyms
-comma-separated) and λ-denotations in plain ASCII — <code>Lx.run(x)</code>
-becomes λx.run(x) as you type, and the engine computes each entry’s <b>type
-live</b> (the ⟨e,t⟩ badges below; a parse error shows ✕ with the reason).
-Constants and variable-type declarations sit underneath, with one-click
-presets for events, worlds and times.</p>
+<h3>The editor surface</h3>
+<p>Left column: checkboxes for the five composition rules (FA, PM, NN, PA,
+IFA), the type-shifting inventory grouped by family (NP shifts, adjectives,
+closure, argument raising), behaviour switches (Quantifier Raising,
+auto-resolve non-branching nodes), and domain operators (∗ ⊕ ≤ ∂ ⊤ ⊥) —
+students' symbol palettes show exactly the operators enabled here. Centre:
+the lexicon. Words are comma-separated for synonyms
+(<code>runs,run</code>); denotations are typed in ASCII
+(<code>Lx.Ly.greet(y,x)</code>). The engine parses each entry as you type and
+displays its computed type, or a parse error. Below the lexicon: constant
+declarations (<code>f g</code> : e) and variable-type declarations, with
+one-click additions for events, worlds, times, generalized quantifiers.</p>
 
 <figure class="guide-fig"><img src="/guide/editor-lexicon.jpg" alt="The editor: rules, live-typed lexicon, constants, variable types, exercise panel" loading="lazy" />
-<figcaption>The whole editor. Note the computed type badges next to each denotation — the same engine that grades students is checking your lexicon as you type.</figcaption></figure>
+<figcaption>The editor with three lexical entries typed in. The right-hand column of the lexicon shows the type the engine computed for each denotation: e, ⟨e,t⟩, ⟨e,⟨e,t⟩⟩.</figcaption></figure>
 
-<h3>3 · Add derivations</h3>
-<p>On the right, exercises group derivations. Each derivation is a bracketed
-tree — <code>[.S [.DP Frodo ] [.VP runs ] ]</code> — plus an optional sentence,
-an <b>expected</b> root denotation, a teacher note, and staged <b>hints</b>
-(one per line, revealed in order; practice mode always ends with “Show
-answer”). <b>▶ Test</b> solves the tree with the engine right there: the
-computed root meaning and type appear, and the expected field gets a ✓ when
-they match — so a broken exercise never reaches students.</p>
+<h3>Derivations</h3>
+<p>Right column: exercises. A derivation is a labelled-bracket tree —
+<code>[.S [.DP Frodo ] [.VP runs ] ]</code> — where leaves are lexicon words.
+Optional fields per derivation: a display sentence, an <b>expected</b> root
+denotation, a teacher-only note, and hints (one per line, revealed in order).
+<b>▶ Test</b> solves the tree with the engine and shows the computed root
+meaning and type; the expected field shows ✓ if they match, ✕ if not.
+<b>Open first tree →</b> loads the worksheet in the app as a student would
+see it.</p>
 
 <figure class="guide-fig"><img src="/guide/editor-derivation.jpg" alt="An exercise with a tested tree and validated expected denotation" loading="lazy" />
-<figcaption>▶ Test solves the tree live: <code>run(f) : t</code> computed, ✓ against the expected denotation. <b>Open first tree →</b> previews exactly what students will see.</figcaption></figure>
+<figcaption>A tested derivation: the engine computed <code>run(f) : t</code> for the tree, matching the expected denotation (✓).</figcaption></figure>
 
-<h3>4 · Attach notes (ordinary LaTeX)</h3>
-<p>📝 Notes opens a two-pane editor: Markdown structure with real LaTeX for
-the linguistics — <code>\ex…\xe</code> examples (expex, linguex and gb4e all
-work), <code>\begingl</code> glosses, <code>\Tree</code> /
-<code>\begin{forest}</code> trees, <code>\llbracket runs \rrbracket</code>,
-<code>$\lambda x.run(x)$</code>, and a <code>derivation</code> environment for
-step tables — rendered live in the student preview on the right. <code>##</code>
-sections become anchors that individual exercises can scroll to.</p>
+<h3>Notes</h3>
+<p>The 📝 Notes button opens a two-pane editor: source on the left, rendered
+student preview on the right. The input format is Markdown for document
+structure with LaTeX for linguistic content — the full construct list is in
+the <a href="#notes-ref">reference below</a>. <code>##</code> headings become
+sections; a derivation's “section” field anchors it to one, and the student
+notes panel scrolls there when the derivation is opened.</p>
 
 <figure class="guide-fig"><img src="/guide/editor-notes.jpg" alt="The notes editor: LaTeX source with live student preview" loading="lazy" />
-<figcaption>Notes in ordinary LaTeX, previewed live exactly as students will see them.</figcaption></figure>
+<figcaption>The notes editor. The source (left) uses <code>\llbracket…\rrbracket</code>, <code>$…$</code>, an expex example and a <code>derivation</code> environment; the preview (right) is what students see.</figcaption></figure>
 
-<h3>5 · Save and export</h3>
-<p>The header buttons cover the whole lifecycle: <b>Save to library</b> keeps
-the worksheet in this browser, <b>Load into app</b> opens it for solving,
-<b>.json</b> downloads the re-importable source, and <b>.html</b> — like
-Tools → Export assignment below — produces a <b>self-contained student
-file</b>: one HTML, locked to student view, fully offline, ready for email or
-a VLE.</p>
+<h3>Saving and exporting</h3>
+<p>Header buttons: <b>Save to library</b> (stores in this browser),
+<b>Load into app</b>, <b>.json</b> (downloads the worksheet source),
+<b>.html</b> (downloads a self-contained student page). The HTML export —
+also available for multi-worksheet selections via Tools → Export
+assignment — is a single file with the app and the chosen worksheets
+embedded; it opens from disk without a network connection and is fixed in
+student mode. The JSON export is the re-importable source, and is also what
+you upload to a hosted version later.</p>
 
 <figure class="guide-fig"><img src="/guide/export-modal.jpg" alt="The export modal with HTML and JSON options" loading="lazy" />
-<figcaption>Export assignment: tick worksheets, choose HTML (self-contained student file) or JSON (re-importable source).</figcaption></figure>
+<figcaption>Tools → Export assignment: worksheet selection, HTML or JSON output.</figcaption></figure>
 
-<p>The JSON format is documented in
-<a href="https://github.com/Vrier/compose/blob/main/compose/FORMAT.md">FORMAT.md</a>;
-every built-in worksheet on <a href="/files/">/files</a> doubles as a
-template.</p>
+<h2 id="notes-ref">Notes input reference</h2>
+<p>Notes (worksheet reading companions and version notes) are written in
+Markdown with a fixed set of LaTeX constructs. The renderer implements the
+constructs below natively; commands outside this list are shown as literal
+source rather than dropped.</p>
 
-<h2 id="hosting">Hosting for your class</h2>
-<p>The dashboard at <a href="/dash/">/dash</a> is where worksheets become a
-course. Registration needs an <b>invite code</b> — ask the administrator (see
-<a href="/about/">/about</a>). No email is required; remember your password.</p>
+<h3>Document structure (Markdown)</h3>
+<table class="files-table">
+<thead><tr><th>Input</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td><code># A</code> · <code>## B</code> · <code>### C</code></td><td>Headings. <code>##</code> headings are the anchors exercises can point to. <code>\section{…}</code>, <code>\subsection{…}</code>, <code>\subsubsection{…}</code> are equivalent.</td></tr>
+<tr><td>blank line</td><td>Paragraph break.</td></tr>
+<tr><td><code>**bold**</code>, <code>*italic*</code>, <code>`code`</code></td><td><b>bold</b>, <em>italic</em>, <code>code</code>. <code>\textbf</code>, <code>\emph</code>/<code>\textit</code>, <code>\texttt</code> are equivalent; <code>\textsc{…}</code> renders small caps.</td></tr>
+<tr><td><code>- item</code> or <code>\item</code> inside <code>itemize</code>/<code>enumerate</code></td><td>List item.</td></tr>
+<tr><td><code>[^a]</code> + <code>[^a]: text</code>, or <code>\footnote{text}</code></td><td>Footnote; all footnotes are collected at the end with back-links.</td></tr>
+<tr><td><code>\href{#g1.d2}{see (12)}</code></td><td>A link that opens derivation d2 of group g1 in the current worksheet.</td></tr>
+</tbody>
+</table>
+
+<h3>Math and denotations</h3>
+<table class="files-table">
+<thead><tr><th>Input</th><th>Renders as</th></tr></thead>
+<tbody>
+<tr><td><code>$\lambda x. \neg run(x)$</code> or <code>\(…\)</code></td><td>λx.¬run(x)</td></tr>
+<tr><td><code>$$ … $$</code> or <code>\[ … \]</code></td><td>The same, as a centred display line.</td></tr>
+<tr><td><code>&lt;e,&lt;e,t&gt;&gt;</code> (in math)</td><td>⟨e,⟨e,t⟩⟩</td></tr>
+<tr><td><code>\llbracket runs \rrbracket</code>, <code>\den{runs}</code>, <code>\sv{runs}</code></td><td>⟦runs⟧ (stmaryrd-style denotation brackets; ⟦…⟧ may also be typed directly, and <code>[[…]]</code> works inside math and derivation blocks)</td></tr>
+<tr><td><code>x_1</code>, <code>x^2</code>, <code>x_{12}</code></td><td>Sub/superscripts: x₁, x².</td></tr>
+<tr><td><code>/\</code> <code>\/</code> <code>~</code> <code>-&gt;</code> <code>&lt;-&gt;</code> <code>=&gt;</code> <code>|-&gt;</code> <code>!=</code> <code>&lt;=</code></td><td>∧ ∨ ¬ → ↔ ⇒ ↦ ≠ ≤</td></tr>
+<tr><td><code>lambda forall exists iota</code> (bare words in math)</td><td>λ ∀ ∃ ι</td></tr>
+</tbody>
+</table>
+<p>Symbol commands available in math: Greek letters
+(<code>\alpha</code>…<code>\omega</code>, <code>\Gamma \Delta \Sigma \Pi \Omega</code>);
+logic <code>\neg \land \wedge \lor \vee \to \rightarrow \leftrightarrow
+\Rightarrow \Leftrightarrow \models \vdash \equiv</code>; sets
+<code>\in \notin \subseteq \subset \cup \cap \emptyset \varnothing
+\setminus</code>; orders and mereology <code>\leq \geq \sqsubseteq \sqcap
+\sqcup \oplus \otimes \ast \star</code>; other
+<code>\top \bot \partial \circ \cdot \times \mapsto \mid \neq \approx \sim
+\langle \rangle \ldots \cdots \prime</code>. <code>\text{…}</code> and
+<code>\mathrm{…}</code> unwrap to plain text; <code>\,</code> and other
+spacing commands become spaces.</p>
+
+<h3>Numbered examples (expex, linguex, gb4e)</h3>
+<table class="files-table">
+<thead><tr><th>Input</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td><code>\ex Frodo runs.</code><br /><code>\xe</code></td><td>(1)&nbsp;&nbsp;Frodo runs. — numbering is automatic and continuous through the document.</td></tr>
+<tr><td><code>\pex Context sentence.</code><br /><code>\a First variant.</code><br /><code>\a *Second variant.</code><br /><code>\xe</code></td><td>(2) with lettered sub-examples a., b. A leading <code>*</code> <code>?</code> <code>??</code> <code>?*</code> <code>*?</code> <code>#</code> <code>%</code> <code>✓</code> is set off as a judgment (glued or spaced).</td></tr>
+<tr><td><code>\ex. Frodo runs.</code><br /><code>\a. *Runs Frodo.</code></td><td>linguex equivalents of the above.</td></tr>
+<tr><td><code>\begin{exe} \ex … \begin{xlist} \ex … \end{xlist} \end{exe}</code></td><td>gb4e equivalents.</td></tr>
+<tr><td><code>\ex&lt;neg&gt; …</code> or <code>\label{neg}</code>, then <code>\ref{neg}</code> / <code>\getfullref{neg}</code></td><td>Label an example; references render as the example's number — 3 / (3) — and click-scroll to it.</td></tr>
+</tbody>
+</table>
+
+<h3>Glosses (expex <code>\begingl</code>)</h3>
+<p>Input:</p>
+<pre class="guide-pre">\begingl
+\gla neko-ga neru //
+\glb cat-NOM sleep //
+\glft 'the cat sleeps' //
+\endgl</pre>
+<p>Result: word-aligned two-line gloss with the translation beneath.
+Leipzig abbreviations in the gloss line (NOM, 3SG, NEG, …) are set in small
+caps and show their expansion on hover. A <code>\begingl</code> block inside
+<code>\ex…\xe</code> attaches the gloss to that example's number.</p>
+
+<h3>Trees (qtree, forest)</h3>
+<p>Input, either form:</p>
+<pre class="guide-pre">\Tree [.S [.NP Frodo ] [.VP runs ] ]
+
+\begin{forest}
+[S{run(f)} [DP{f} Frodo] [VP{Lx.run(x)} runs]]
+\end{forest}</pre>
+<p>Result: a typeset syntax tree. <code>{…}</code> after a node label is a
+denotation, displayed under the category label. Wrapping a terminal in
+<code>&lt;…&gt;</code> draws a roof. Forest option preambles before the first
+bracket are ignored.</p>
+
+<h3>Denotation tables (COMPOSE-specific)</h3>
+<p>LaTeX has no standard environment for type-annotated denotation steps, so
+this one construct is COMPOSE's own. One step per line,
+<code>expression : type</code>; the types right-align into a column;
+indentation indents the row; blank lines leave a gap.</p>
+<pre class="guide-pre">\begin{derivation}
+[[runs]]       = Lx.run(x) : &lt;e,t&gt;
+[[Frodo runs]] = run(f)    : t
+\end{derivation}</pre>
+<p>There is also an <code>avm</code> environment for feature structures
+(<code>ATTR: value</code> per line, nesting with brackets, <code>&amp;</code>
+and <code>\\</code> row syntax accepted).</p>
+
+<h3>IPA (tipa subset)</h3>
+<p><code>\textipa{…}</code> maps a subset of tipa ASCII to IPA:
+<code>@</code>→ə <code>E</code>→ɛ <code>I</code>→ɪ <code>O</code>→ɔ
+<code>U</code>→ʊ <code>V</code>→ʌ <code>&amp;</code>→æ <code>S</code>→ʃ
+<code>Z</code>→ʒ <code>T</code>→θ <code>D</code>→ð <code>N</code>→ŋ
+<code>?</code>→ʔ <code>:</code>→ː <code>"</code>→ˈ <code>%</code>→ˌ,
+among others. Unmapped characters pass through unchanged.</p>
+
+<h2 id="hosting">Hosting for a class</h2>
+<h3>Accounts</h3>
+<p>Registration at <a href="/dash/">/dash</a> requires an email address, a
+password of at least 10 characters, and an invite code (available from the
+administrator — see <a href="/about/">/about</a>). No confirmation email is
+sent and there is no self-service password reset; a forgotten password is
+reset by the administrator.</p>
 
 <figure class="guide-fig"><img src="/guide/dash-login.jpg" alt="The dashboard login and registration screen" loading="lazy" />
-<figcaption>The dashboard gate: log in, or register with an invite code.</figcaption></figure>
+<figcaption>The dashboard gate. The Register tab adds the invite-code field.</figcaption></figure>
 
-<p>A <b>version</b> is your hosted worksheet collection: create one, add
-worksheets (import a bundle, save from the editor, or author from scratch —
-the editor opens with only your own material), and publish. Students reach it
-at <code>compose.tstephen.com/v/your-slug</code> — the Share dialog gives a
-copyable link, a QR code, and a printable A4 handout. Edits go live
-immediately: fix a denotation mid-week and every student sees the correction on
-next load, no re-distribution. Each version can carry <b>instructor notes</b>
-(same LaTeX input) that students see as a 📝 panel, and the dashboard shows an
-opens counter per version. Saving to the server validates every worksheet with
-the same engine that grades students, so a broken file cannot be published.</p>
+<h3>Versions</h3>
+<p>A <em>version</em> is a hosted worksheet collection with its own student
+URL. <b>+ New version</b> creates one from a title; the server assigns the
+slug. The version card shows: the <code>/v/…</code> link, a copy button, the
+worksheet count, a <b>live</b> indicator (published; unpublishing makes the
+student link return 404), <b>✎ Open editor</b>, <b>▤ Share</b>,
+<b>📖 Notes</b>, <b>⬇ bundle</b> (downloads the version's worksheets as a
+<code>.compose-bundle.json</code>), <b>⬆ import</b> (replaces the content
+from a bundle file), delete, and an opens counter that increments each time
+the student page is loaded.</p>
 
-<h2 id="files">Files &amp; offline</h2>
+<figure class="guide-fig"><img src="/guide/dash-versions.jpg" alt="The dashboard with one version card" loading="lazy" />
+<figcaption>A version card. (Screenshot from a local test instance of the same build; on the live site the link reads compose.tstephen.com/v/….)</figcaption></figure>
+
+<p>Content gets into a version three ways: import a bundle file, save a
+worksheet from the version's editor (<b>✎ Open editor</b> opens the editor
+with the version's own worksheets only; ☁ Save to server writes back), or
+author in the <a href="/editor/">sandbox</a> first and import the JSON.
+Every save is validated server-side: the same engine parses every worksheet
+and rejects the save with exact error paths (for example
+<code>worksheets[0].content.lexicon[2].denotation</code>) if anything fails;
+limits are 2&nbsp;MB, 40 worksheets, 400 derivations per version, unique
+worksheet keys.</p>
+
+<h3>Sharing</h3>
+<p><b>▤ Share</b> shows the student link as text, a QR code for it, a PNG
+download of the QR, and a printable A4 handout (title, QR, link). Edits to a
+published version take effect at the same URL — students see updated content
+on their next page load, and printed QR codes remain valid.</p>
+
+<figure class="guide-fig"><img src="/guide/dash-share.jpg" alt="The Share dialog: QR code, link, copy, PNG and A4 handout buttons" loading="lazy" />
+<figcaption>The Share dialog. (Local test instance; live links read compose.tstephen.com/v/….)</figcaption></figure>
+
+<h3>What the student link opens</h3>
+<p><code>/v/&lt;slug&gt;</code> serves the same app as the curated pages,
+loaded with the version's worksheets. Progress on a version is stored under
+its slug, separately from the library pages and other versions. If the
+version has notes, students get the 📝 panel; the rules card and hints work
+as on library pages.</p>
+
+<figure class="guide-fig"><img src="/guide/student-version.jpg" alt="The student page a shared version link opens" loading="lazy" />
+<figcaption>The student view of the version created above (two worksheets). This is what a scanned QR or shared link opens.</figcaption></figure>
+
+<h2 id="files">Files &amp; offline use</h2>
 <figure class="guide-fig"><img src="/guide/files-page.jpg" alt="The files page listing downloadable worksheets" loading="lazy" />
-<figcaption><a href="/files/">/files</a>: every worksheet and whole-book bundle as <code>.compose.json</code>, grouped by textbook, plus the site map.</figcaption></figure>
-<p>Everything students need works from the hosted pages, including offline
-after a first visit. For fully offline teaching, export self-contained HTML
-assignments from the <a href="/editor/">editor</a> — they run from a USB stick.</p>
+<figcaption><a href="/files/">/files</a>: every worksheet and bundle as <code>.compose.json</code>, with titles and derivation counts.</figcaption></figure>
+<p>Offline behaviour: the curated pages and the root work offline after a
+first visit (service worker; /dash and /edit are never cached). For fully
+offline distribution, the editor's HTML export produces single files that
+run from local disk with no server involved.</p>
 
-<p class="about-foot">Questions or an invite code: see <a href="/about/">/about</a> ·
-COMPOSE <a href="https://github.com/Vrier/compose">source on GitHub</a></p>
+<p class="about-foot">Invite codes and questions: <a href="/about/">/about</a> ·
+<a href="https://github.com/Vrier/compose">source repository</a></p>
 </div>
 </div>
 </main>

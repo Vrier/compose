@@ -485,6 +485,7 @@ html { scroll-behavior: smooth; }
 .guide-fig { margin: 18px 0 26px; }
 .guide-fig img { width: 100%; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 2px 10px rgba(60,40,20,.07); }
 .guide-fig figcaption { font-size: 13px; color: var(--ink-soft); margin-top: 8px; line-height: 1.5; }
+.guide-pre { background: var(--panel, rgba(0,0,0,.03)); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; font-size: 13px; line-height: 1.55; overflow-x: auto; }
 .about-foot { margin-top: 40px; font-size: 12.5px; color: var(--ink-soft); }
 </style>
 </head>
