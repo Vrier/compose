@@ -1399,36 +1399,68 @@ hk9-pronouns | g1p0 | \mathit{blame}(j, x_{1})
 hk9-pronouns | g2p0 | \mathit{blame}(j, j)
 hk9-pronouns | g2p1 | \forall x.\mathit{woman}(x) \rightarrow \mathit{blame}(x, x)
 hk9-pronouns | g2p2 | \lnot (\exists x.\mathit{man}(x) \land \mathit{like}(x, x))
-montague-ptq | g0p0 | \mathit{walk}(j)
-montague-ptq | g0p0 | F | % ============================================================
-montague-ptq | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
-montague-ptq | g0p0 | F | % Requires in your document preamble:
-montague-ptq | g0p0 | F | %   \usepackage{forest}
-montague-ptq | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
-montague-ptq | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
-montague-ptq | g0p0 | F | % ============================================================
-montague-ptq | g0p0 | F | % "John walks."
-montague-ptq | g0p0 | F | \begin{forest}
-montague-ptq | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
-montague-ptq | g0p0 | F |   [{\cnode{S} \\ {$\mathit{walk}(j)$} \\ {\footnotesize $t$} \\ \crule{FA}}
-montague-ptq | g0p0 | F |     [{\cnode{DP} \\ {$j$} \\ {\footnotesize $e$} \\ \crule{NN}}
-montague-ptq | g0p0 | F |       [{\textit{John} \\ {$j$} \\ {\footnotesize $e$}}]
-montague-ptq | g0p0 | F |     ]
-montague-ptq | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{walk}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
-montague-ptq | g0p0 | F |       [{\textit{walks} \\ {$\lambda x.\mathit{walk}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
-montague-ptq | g0p0 | F |     ]
-montague-ptq | g0p0 | F |   ]
-montague-ptq | g0p0 | F | \end{forest}
-montague-ptq | g0p0 | F | 
-montague-ptq | g0p1 | \forall x.\mathit{man}(x) \rightarrow \mathit{walk}(x)
+montague-ptq-int | i-d1 | \forall w'.\mathit{walk}(w', j)
+montague-ptq-int | i-d1 | F | % ============================================================
+montague-ptq-int | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com
+montague-ptq-int | i-d1 | F | % Requires in your document preamble:
+montague-ptq-int | i-d1 | F | %   \usepackage{forest}
+montague-ptq-int | i-d1 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+montague-ptq-int | i-d1 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+montague-ptq-int | i-d1 | F | % ============================================================
+montague-ptq-int | i-d1 | F | % "Necessarily John walks."
+montague-ptq-int | i-d1 | F | \begin{forest}
+montague-ptq-int | i-d1 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+montague-ptq-int | i-d1 | F |   [{\cnode{t} \\ {$\forall w'.\mathit{walk}(w', j)$} \\ {\footnotesize $t$} \\ \crule{IFA}}
+montague-ptq-int | i-d1 | F |     [{\cnode{t/t} \\ {$\lambda p.\forall w'.p(w')$} \\ {\footnotesize $\langle \langle s,t\rangle,t\rangle$} \\ \crule{NN}}
+montague-ptq-int | i-d1 | F |       [{\textit{necessarily} \\ {$\lambda p.\forall w'.p(w')$} \\ {\footnotesize $\langle \langle s,t\rangle,t\rangle$}}]
+montague-ptq-int | i-d1 | F |     ]
+montague-ptq-int | i-d1 | F |     [{\cnode{t} \\ {$\mathit{walk}(w_{0}, j)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+montague-ptq-int | i-d1 | F |       [{\cnode{T} \\ {$j$} \\ {\footnotesize $e$} \\ \crule{NN}}
+montague-ptq-int | i-d1 | F |         [{\textit{John} \\ {$j$} \\ {\footnotesize $e$}}]
+montague-ptq-int | i-d1 | F |       ]
+montague-ptq-int | i-d1 | F |       [{\cnode{IV} \\ {$\lambda x.\mathit{walk}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+montague-ptq-int | i-d1 | F |         [{\textit{walks} \\ {$\lambda x.\mathit{walk}(w_{0}, x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+montague-ptq-int | i-d1 | F |       ]
+montague-ptq-int | i-d1 | F |     ]
+montague-ptq-int | i-d1 | F |   ]
+montague-ptq-int | i-d1 | F | \end{forest}
+montague-ptq-int | i-d1 | F | 
+montague-ptq-int | i-d1 | \mathit{seek}(w_{0}, j, \lambda w_{0} \lambda Q.\exists u.\mathit{unicorn}(w_{0}, u) \land Q(u))
+montague-ptq-int | i-d1 | \mathit{try}(w_{0}, j, \lambda w_{0} \lambda x.\exists u.\mathit{unicorn}(w_{0}, u) \land \mathit{find}(w_{0}, x, u))
+montague-ptq-int | i-d1 | \mathit{believe}(w_{0}, m, \lambda w_{0}.\exists u.\mathit{unicorn}(w_{0}, u) \land \mathit{find}(w_{0}, j, u))
+montague-ptq-int | i-d1 | \exists c.(\forall c'.\mathit{temp}(w_{0}, c') \leftrightarrow c' = c) \land c(w_{0}) = n
+montague-ptq-int | i-d2 | \exists c.(\forall c'.\mathit{temp}(w_{0}, c') \leftrightarrow c' = c) \land \mathit{rise}(w_{0}, c)
+montague-ptq-int | i-d3 | \mathit{rise}(w_{0}, \lambda w.n)
+montague-ptq | i-d1 | \mathit{walk}(b)
+montague-ptq | i-d1 | F | % ============================================================
+montague-ptq | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com
+montague-ptq | i-d1 | F | % Requires in your document preamble:
+montague-ptq | i-d1 | F | %   \usepackage{forest}
+montague-ptq | i-d1 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+montague-ptq | i-d1 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+montague-ptq | i-d1 | F | % ============================================================
+montague-ptq | i-d1 | F | % "Bill walks."
+montague-ptq | i-d1 | F | \begin{forest}
+montague-ptq | i-d1 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+montague-ptq | i-d1 | F |   [{\cnode{t} \\ {$\mathit{walk}(b)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+montague-ptq | i-d1 | F |     [{\cnode{T} \\ {$b$} \\ {\footnotesize $e$} \\ \crule{NN}}
+montague-ptq | i-d1 | F |       [{\textit{Bill} \\ {$b$} \\ {\footnotesize $e$}}]
+montague-ptq | i-d1 | F |     ]
+montague-ptq | i-d1 | F |     [{\cnode{IV} \\ {$\lambda x.\mathit{walk}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+montague-ptq | i-d1 | F |       [{\textit{walks} \\ {$\lambda x.\mathit{walk}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+montague-ptq | i-d1 | F |     ]
+montague-ptq | i-d1 | F |   ]
+montague-ptq | i-d1 | F | \end{forest}
+montague-ptq | i-d1 | F | 
+montague-ptq | i-d2 | \exists x.\mathit{man}(x) \land \mathit{walk}(x)
+montague-ptq | i-d3 | \forall x.\mathit{man}(x) \rightarrow \mathit{walk}(x)
 montague-ptq | g1p0 | UNSOLVED
 montague-ptq | g1p1 | \forall y.\mathit{woman}(y) \rightarrow \mathit{love}(j, y)
 montague-ptq | g1p2 | \exists y.\mathit{unicorn}(y) \land \mathit{find}(j, y)
 montague-ptq | g2p0 | UNSOLVED
-montague-ptq | g2p1 | \mathit{man}(j)
+montague-ptq | g2p1 | \mathit{man}(b)
 montague-ptq | g3p0 | \exists x.\mathit{man}(x) \land (\forall y.\mathit{man}(y) \rightarrow y = x) \land \mathit{walk}(x)
 montague-ptq | g4p0 | \forall x.\mathit{man}(x) \rightarrow (\exists y.\mathit{woman}(y) \land \mathit{love}(x, y))
-montague-ptq | g4p1 | \exists y.\mathit{unicorn}(y) \land \mathit{seek}(j, y)
 partee-triangle | g0p0 | \mathit{walk}(j)
 partee-triangle | g0p0 | F | % ============================================================
 partee-triangle | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com

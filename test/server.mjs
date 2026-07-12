@@ -282,6 +282,9 @@ async function main() {
   r = await req('GET', '/hk/ch2/', { raw: true });
   contains('/hk/ch2 carries H&K ch2', r.text, '"hk2-fa":{');
   lacks('/hk/ch2 does NOT carry ch4', r.text, '"hk4-definites":{');
+  r = await req('GET', '/papers/ptq/', { raw: true });
+  contains('/papers/ptq carries Part A', r.text, '"montague-ptq":{');
+  contains('/papers/ptq carries the intensional Part B (S19)', r.text, '"montague-ptq-int":{');
   r = await req('GET', '/papers/partee/', { raw: true });
   contains('/papers/partee carries Partee', r.text, '"partee-triangle":{');
   lacks('/papers/partee does NOT carry PTQ', r.text, '"montague-ptq":{');

@@ -1,4 +1,4 @@
-# Montague 1973 · The Proper Treatment of Quantification (Extensional PTQ)
+# Montague's PTQ · A — The Extensional Core
 
 Montague's guiding idea is **uniformity**: every noun phrase — a name, a quantifier
 phrase, even a pronoun — denotes one and the same kind of thing, a *generalized
@@ -32,7 +32,7 @@ A quantifier subject takes the VP as *its* argument (\ref{npq}):
   [VP{lambda x.walk(x)} walks]]
 \end{forest}
 
-\ex<npq> John walks.
+\ex<npq> Bill walks.
 \xe
 
 \ex Every man walks.
@@ -84,13 +84,13 @@ asks whether it holds of the property *being identical to the subject*:
 [[is a man]]    = lambda x.exists z[man(z) & x=z] = lambda x.man(x) : <e,t>
 \end{derivation}
 
-*John is Bill* is the identity `j=b`; *John is a man* reduces — by the one-point
+*Bill is Mary* is the identity `j=b`; *Bill is a man* reduces — by the one-point
 law — to the predication `man(j)` (\ref{beids}).
 
-\ex<beids> John is Bill.
+\ex<beids> Bill is Mary.
 \xe
 
-\ex John is a man.
+\ex Bill is a man.
 \xe
 
 ## 4 The (Russellian)
@@ -137,12 +137,11 @@ lambda-bind x1         = lambda x1.forall x[man(x) -> love(x,x1)]  : <e,t>
 
 ## 6 A note on intensionality
 
-PTQ's signature is *intensional*. *John seeks a unicorn* has a **de dicto** reading
-on which John's search can succeed with no unicorn in the world at all — *seek*
-relates John to the **intension** of *a unicorn*, a function from worlds to
-quantifiers. The same machinery of individual concepts resolves *the temperature is
-ninety and the temperature rises* without inferring that ninety rises.
-
-Modelling this needs the type of worlds and Montague's `^`/`˅` operators — the
-intensional fragment (cf. the worlds chapters). The extensional set here derives
-only the **de re** reading of *seek*: `exists y[unicorn(y) & seek(j,y)]`.
+This worksheet stays inside the extensional core: by Montague's own meaning
+postulates (MP1–MP4), names are rigid, ordinary common nouns and verbs are
+extensional, and the starred (reduced) translations used here are exactly
+what those postulates license. The paper's real subject — *seek*,
+*believe that*, *try to*, *necessarily*, and the temperature puzzle — lives
+in **Part B — The Intensional Fragment**, the companion worksheet on this
+page, which states explicitly how COMPOSE renders Montague's intensional
+logic in Gallin's two-sorted TY2.

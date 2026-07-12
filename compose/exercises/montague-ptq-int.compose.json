@@ -1,0 +1,283 @@
+{
+  "compose": 1,
+  "id": "montague-ptq-int",
+  "title": "Montague's PTQ · B — The Intensional Fragment (TY2)",
+  "notation": "cc",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "j m b n"
+    },
+    "variables": {
+      "e": "x y z u",
+      "s": "w0 w w' w''",
+      "st": "p q",
+      "et": "P Q",
+      "<s,e>": "c c' c''",
+      "<<s,e>,t>": "R S",
+      "<<e,t>,t>": "T",
+      "<s,<<e,t>,t>>": "K",
+      "<s,<e,t>>": "G"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "John"
+      ],
+      "denotation": "j"
+    },
+    {
+      "words": [
+        "Mary"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "Bill"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "ninety"
+      ],
+      "denotation": "Lw.n"
+    },
+    {
+      "words": [
+        "walks",
+        "walk"
+      ],
+      "denotation": "Lx.walk(w0,x)"
+    },
+    {
+      "words": [
+        "man"
+      ],
+      "denotation": "Lx.man(w0,x)"
+    },
+    {
+      "words": [
+        "unicorn"
+      ],
+      "denotation": "Lx.unicorn(w0,x)"
+    },
+    {
+      "words": [
+        "temperature"
+      ],
+      "denotation": "Lc.temp(w0,c)"
+    },
+    {
+      "words": [
+        "rises",
+        "rise"
+      ],
+      "denotation": "Lc.rise(w0,c)"
+    },
+    {
+      "words": [
+        "finds",
+        "find"
+      ],
+      "denotation": "LT.Lx.T(Ly.find(w0,x,y))"
+    },
+    {
+      "words": [
+        "seeks",
+        "seek"
+      ],
+      "denotation": "LK.Lx.seek(w0,x,K)"
+    },
+    {
+      "words": [
+        "tries-to",
+        "try-to"
+      ],
+      "denotation": "LG.Lx.try(w0,x,G)"
+    },
+    {
+      "words": [
+        "believes-that",
+        "believe-that"
+      ],
+      "denotation": "Lp.Lx.believe(w0,x,p)"
+    },
+    {
+      "words": [
+        "necessarily"
+      ],
+      "denotation": "Lp.Aw'[p(w')]"
+    },
+    {
+      "words": [
+        "a",
+        "an"
+      ],
+      "denotation": "LP.LQ.Eu[P(u) & Q(u)]"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "LR.LS.Ec[Ac'[R(c') ↔ c' = c] & S(c)]"
+    },
+    {
+      "words": [
+        "is",
+        "be"
+      ],
+      "denotation": "Lc'.Lc.(c(w0) = c'(w0))"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "predicateModification": false,
+      "nonBranchingNodes": true,
+      "predicateAbstraction": true,
+      "intensionalFunctionApplication": true
+    },
+    "typeShifts": [
+      "lift"
+    ],
+    "quantifierRaising": true
+  },
+  "exercises": [
+    {
+      "id": "g1",
+      "title": "A. Necessity (S9, T1c)",
+      "instructions": "necessarily is λp□ˇp in IL — in TY2 dress: λp.∀w′[p(w′)]. IFA hands it the intension of the embedded sentence.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.t/t necessarily ] [.t [.T John ] [.IV walks ] ] ]",
+          "sentence": "Necessarily John walks.",
+          "hints": [
+            "Resolve the inner sentence first: it denotes a truth value at the evaluation world, walk(w0, j).",
+            "necessarily needs a proposition ⟨s,t⟩ — Intensional Function Application abstracts w0 from the inner sentence, giving λw.walk(w, j)."
+          ],
+          "targets": [
+            "Aw'[walk(w',j)]"
+          ],
+          "reading": {
+            "section": "1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g2",
+      "title": "B. An intensional transitive: seek (S5, T5; MP4 exceptions)",
+      "instructions": "seek takes the INTENSION of its object — that is the whole point of the paper. In situ composition gives de dicto; Quantifier Raising the object gives de re. Derive both.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.T John ] [.IV [.TV seeks ] [.T [.Det a ] [.CN unicorn ] ] ] ]",
+          "sentence": "John seeks a unicorn.",
+          "hints": [
+            "For de dicto: compose in situ. seek wants type ⟨s,⟨⟨e,t⟩,t⟩⟩ — IFA wraps the object quantifier as λw.λQ.∃u[unicorn(w,u) ∧ Q(u)].",
+            "For de re: drag a unicorn up (QR), leaving a trace. Inside, LIFT the trace to quantifier type, let IFA wrap it, finish with seek; then Predicate Abstraction and the raised quantifier."
+          ],
+          "targets": [
+            "de dicto: seek(w0,j,Lw.LQ.Eu[unicorn(w,u) & Q(u)])",
+            "de re: Eu[unicorn(w0,u) & seek(w0,j,Lw.LQ.Q(u))]"
+          ],
+          "reading": {
+            "section": "2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g3",
+      "title": "C. try to find (S8; MP9)",
+      "instructions": "Montague's MP9 defines seek as try-to-find: □[seek′(x,𝒬) ↔ try-to′(x,^[find′(𝒬)])]. Here the ambiguity is transparently scopal.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.T John ] [.IV [.IV//IV tries-to ] [.IV [.TV find ] [.T [.Det a ] [.CN unicorn ] ] ] ] ]",
+          "sentence": "John tries to find a unicorn.",
+          "targets": [
+            "de dicto: try(w0,j,Lw.Lx.Eu[unicorn(w,u) & find(w,x,u)])",
+            "de re: Eu[unicorn(w0,u) & try(w0,j,Lw.Lx.find(w,x,u))]"
+          ],
+          "reading": {
+            "section": "3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g4",
+      "title": "D. believe that (S7; MPs 5–7)",
+      "instructions": "believe-that takes a proposition. Unlike the ch13 worksheets, PTQ leaves believe′ unanalysed — no quantification over doxastic alternatives.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.T Mary ] [.IV [.IV/t believes-that ] [.t [.T John ] [.IV [.TV finds ] [.T [.Det a ] [.CN unicorn ] ] ] ] ] ]",
+          "sentence": "Mary believes that John finds a unicorn.",
+          "targets": [
+            "de dicto: believe(w0,m,Lw.Eu[unicorn(w,u) & find(w,j,u)])",
+            "de re: Eu[unicorn(w0,u) & believe(w0,m,Lw.find(w,j,u))]"
+          ],
+          "reading": {
+            "section": "4"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g5",
+      "title": "E. The Partee puzzle: temperature and ninety (T2, T1b; MP2/MP3 exceptions)",
+      "instructions": "Here CNs denote sets of individual concepts (⟨s,e⟩), rise is concept-level, and be compares extensions at the evaluation world. The three sentences show why the temperature argument is invalid.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.T [.Det the ] [.CN temperature ] ] [.IV [.TV is ] [.T ninety ] ] ]",
+          "sentence": "The temperature is ninety.",
+          "targets": [
+            "Ec[Ac'[temp(w0,c') ↔ c' = c] & c(w0) = n]"
+          ],
+          "reading": {
+            "section": "5"
+          }
+        },
+        {
+          "id": "d2",
+          "tree": "[.t [.T [.Det the ] [.CN temperature ] ] [.IV rises ] ]",
+          "sentence": "The temperature rises.",
+          "targets": [
+            "Ec[Ac'[temp(w0,c') ↔ c' = c] & rise(w0,c)]"
+          ],
+          "reading": {
+            "section": "5"
+          }
+        },
+        {
+          "id": "d3",
+          "tree": "[.t [.T ninety ] [.IV rises ] ]",
+          "sentence": "Ninety rises.",
+          "targets": [
+            "rise(w0,Lw.n)"
+          ],
+          "reading": {
+            "section": "5"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": {
+    "format": "latex",
+    "markdown": "# Montague's PTQ · B — The Intensional Fragment\n\nWorksheet companion to Richard Montague, \"The Proper Treatment of\nQuantification in Ordinary English\" (1973) — the intensional half. Part A\ncovers the extensional core (quantified terms, *be*, the Russellian *the*).\n\n## 0 How this worksheet renders IL — read this first\n\nPTQ is stated in Montague's **intensional logic (IL)**: the operators\n$^{\\wedge}\\alpha$ (intension) and $^{\\vee}\\alpha$ (extension) manipulate an\n*implicit* index of evaluation — no world variable appears in the formulas.\nCOMPOSE derivations instead use **TY2**, Gallin's two-sorted type theory:\nworlds are explicit variables of type $s$, and the dictionary is\n\n\\begin{derivation}\nIL: ^α        = TY2: λw.α       : <s,a>\nIL: ˇα        = TY2: α(w)       : a\nIL: □φ        = TY2: Aw'[φ(w')] : t\n\\end{derivation}\n\nNothing is lost: Gallin (1975) proved that IL embeds exactly into TY2, and\nZimmermann (1989) worked out the precise relationship between the two. The\nexplicit-world style is also how intensional semantics is now standardly\ntaught (e.g. von Fintel & Heim's *Intensional Semantics* lecture notes) —\nthe bookkeeping that IL's operators hide is exactly what these exercises\nmake you do by hand. Where you see \\llbracket seeks \\rrbracket taking a\n$\\langle s,\\ldots\\rangle$ argument below, the paper writes $^{\\wedge}$.\n\nTwo more renderings to be aware of. PTQ builds *analysis trees* annotated\nwith rule numbers, not phrase-structure trees; the trees here are the\nnow-standard phrase-structural rendering, with node labels from PTQ's own\ncategory system (t, T, IV, TV, CN, t/t, IV/t, IV//IV). And PTQ's\n*quantifying-in* rules (S14–S16) build the scoped reading top-down by\nsubstitution; here you derive it bottom-up with Quantifier Raising — same\ntrace, same binder, same result, opposite direction of travel. Finally,\nfollowing Montague's own meaning postulates we use the *starred* (reduced)\ntranslations wherever the postulates license them: names are rigid (MP1), so\n*John* denotes $j$ of type $e$ rather than $\\lambda P.P\\{^{\\wedge}j\\}$;\nordinary CNs and IVs are predicates of individuals (MP2, MP3). The\nexceptions the paper itself carves out — *seek*, *believe*, *try to*,\n*necessarily*, and the concept-level *price / temperature / rise* — keep\ntheir intensionality, because that is where it does real work.\n\n## 1 Necessity\n\nPTQ's rule S9 combines *necessarily* (category t/t) with a sentence; its\ntranslation T1(c) is $\\lambda p\\,\\square\\,^{\\vee}p$. In TY2:\n\n\\begin{derivation}\n[[necessarily]] = Lp.Aw'[p(w')] : <<s,t>,t>\n\\end{derivation}\n\nThe embedded sentence denotes a truth value, so Intensional Function\nApplication supplies its intension: it abstracts the evaluation world $w_0$,\nhanding *necessarily* the proposition $\\lambda w.walk(w,j)$.\n\n\\ex Necessarily John walks.\n\\xe\n\n## 2 Seeking — the intensional transitive\n\nThe centrepiece. *seek* does not take an individual, nor even a quantifier —\nit takes the **intension of a quantifier** (type\n$\\langle s,\\langle\\langle e,t\\rangle,t\\rangle\\rangle$). Montague's two\ntranslations for \\ref{seek-ex} (his §4, quoted in IL):\n\n\\begin{derivation}\nseek'(^j, ^𝒫Eu[unicorn'*(u) & 𝒫{^u}])   (de dicto)\nEu[unicorn'*(u) & seek'*(j,u)]          (de re)\n\\end{derivation}\n\n\\ex<seek-ex> John seeks a unicorn.\n\\xe\n\nIn situ composition — IFA wrapping the object quantifier — yields the de\ndicto reading: no unicorn need exist. Quantifier Raising the object first\n(PTQ: quantifying-in, S14) yields de re: existential commitment, with the\ntrace lifted and intensionalized inside. MP4 exempts *seek* (and *conceive*)\nfrom the extensionality guarantee that lets every other transitive verb\nreduce to a relation between individuals.\n\n## 3 Trying to find\n\nMeaning postulate 9 — the only *definitional* postulate — ties the two verbs\ntogether: $\\square[seek'(x,\\mathcal{Q}) \\leftrightarrow\ntry\\text{-}to'(x,{}^{\\wedge}[find'(\\mathcal{Q})])]$. In *try to find*, the\nsame ambiguity is transparently a matter of scope, which is Montague's point\nin giving the pair:\n\n\\ex John tries to find a unicorn.\n\\xe\n\n*try to* (category IV//IV, rule S8) takes the intension of an IV. Derive\nboth readings; compare each with its *seek* counterpart under MP9.\n\n## 4 Believing\n\n*believe that* (category IV/t, rule S7) takes a proposition. Note the\ncontrast with the ch13 worksheets: PTQ leaves $believe'$ **unanalysed** —\nno quantification over doxastic alternatives; that analysis is Hintikka's,\nnot Montague's. MPs 5–7 make *believe*, *assert*, *try*, *wish* extensional\nin subject position only.\n\n\\ex Mary believes that John finds a unicorn.\n\\xe\n\n## 5 The Partee puzzle\n\nMontague credits Barbara Partee with the puzzle: from \\ref{t-is} and\n\\ref{t-rises}, \\ref{n-rises} seems to follow by Leibniz's law — yet it\nplainly does not follow. PTQ's solution: *temperature* denotes a set of\n**individual concepts** (type $\\langle s,e\\rangle$ here), *rise* applies to\nthe concept itself, but *be* compares only **extensions** at the evaluation\nworld. MP2 and MP3 explicitly exempt *price, temperature, rise, change*\nfrom the extensionality postulates.\n\n\\pex\n\\a<t-is> The temperature is ninety.\n\\a<t-rises> The temperature rises.\n\\a<n-rises> Ninety rises.\n\\xe\n\nIn the worksheet, $c, c', c''$ range over concepts; *ninety* denotes the\nconstant concept $\\lambda w.n$ (rigid, MP1); and the invalidity is visible in\nthe formulas: the first premise fixes only $c(w_0)$, while *rise* cares about\n$c$ across worlds. The paper extends the point with *a price rises*, whose\ntranslation $\\exists x[price'(x) \\wedge rise'(x)]$ requires concept\nvariables even in the indefinite — we leave it out only because this\nworksheet keeps one determiner type per word.\n\n## 6 What is simplified or omitted\n\nOmitted from the fragment as rendered here: tense and negation (S17), the\nIV- and sentence-adverbs (*rapidly, allegedly*), the intensional\nprepositions (*in, about*), *conceive*, *wish to*, the *such that*\nrelatives (S3), pronoun/gender morphology in quantifying-in (S14's he/she/it\nselection), and *a price rises*. Each is discussed in the paper; none\nrequires machinery beyond what you have used here except the morphological\ndetails. The starred reductions used throughout are Montague's own MPs\napplied as rewrites, shown one by one in the notes above.\n\n## Credits\n\nMontague, R. (1973). The proper treatment of quantification in ordinary\nEnglish. In Hintikka, Moravcsik & Suppes (eds.), *Approaches to Natural\nLanguage*. Reidel. — Gallin, D. (1975). *Intensional and Higher-Order Modal\nLogic*. North-Holland; TY2 and the embedding of IL. — Zimmermann, T. E.\n(1989). Intensional logic and two-sorted type theory. *Journal of Symbolic\nLogic* 54(1); the exact IL–TY2 relationship. — The explicit-world\npresentation follows the style of von Fintel & Heim's *Intensional\nSemantics* notes. Worksheet content is original paraphrase; the IL formulas\nquoted are Montague's own translations from §4 of the paper."
+  },
+  "meta": {
+    "author": "Thomas Stephen",
+    "source": "after Montague 1973 (PTQ), rendered in TY2 per Gallin 1975",
+    "license": "MIT",
+    "difficulty": "challenge"
+  }
+}
