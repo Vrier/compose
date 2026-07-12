@@ -1,0 +1,182 @@
+{
+  "compose": 1,
+  "id": "davidson-events",
+  "title": "Davidson 1967 — The Logical Form of Action Sentences",
+  "notation": "cc",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "jo shem shaun kn mid"
+    },
+    "variables": {
+      "e": "x y z",
+      "v": "e e' e''",
+      "et": "P Q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Jones"
+      ],
+      "denotation": "jo"
+    },
+    {
+      "words": [
+        "Shem"
+      ],
+      "denotation": "shem"
+    },
+    {
+      "words": [
+        "Shaun"
+      ],
+      "denotation": "shaun"
+    },
+    {
+      "words": [
+        "midnight"
+      ],
+      "denotation": "mid"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "LP.Ix.P(x)"
+    },
+    {
+      "words": [
+        "toast"
+      ],
+      "denotation": "Lx.toast(x)"
+    },
+    {
+      "words": [
+        "bathroom"
+      ],
+      "denotation": "Lx.bathroom(x)"
+    },
+    {
+      "words": [
+        "knife"
+      ],
+      "denotation": "Lx.knife(x)"
+    },
+    {
+      "words": [
+        "kicked",
+        "kick"
+      ],
+      "denotation": "Ly.Lx.Le.kick(x,y,e)"
+    },
+    {
+      "words": [
+        "buttered",
+        "butter"
+      ],
+      "denotation": "Ly.Lx.Le.butter(x,y,e)"
+    },
+    {
+      "words": [
+        "in"
+      ],
+      "denotation": "Lz.Le.in(e,z)"
+    },
+    {
+      "words": [
+        "with"
+      ],
+      "denotation": "Lz.Le.with(e,z)"
+    },
+    {
+      "words": [
+        "at"
+      ],
+      "denotation": "Lz.Le.at(e,z)"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "predicateModification": true,
+      "nonBranchingNodes": true
+    },
+    "typeShifts": [
+      "ec-v"
+    ]
+  },
+  "exercises": [
+    {
+      "id": "g1",
+      "title": "A. The event argument",
+      "instructions": "Davidson: an action sentence quantifies over an event. The verb takes its usual arguments plus an event; Existential Closure binds it at the top.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.DP Shem ] [.VP [.V kicked ] [.DP Shaun ] ] ]",
+          "sentence": "Shem kicked Shaun.",
+          "hints": [
+            "kick takes object, subject, and an event: λy.λx.λe.kick(x,y,e).",
+            "After the subject composes you have an event predicate ⟨v,t⟩ — close it with EC over events."
+          ],
+          "targets": [
+            "Ee[kick(shem,shaun,e)]"
+          ],
+          "reading": {
+            "section": "1"
+          }
+        },
+        {
+          "id": "d2",
+          "tree": "[.t [.DP Jones ] [.VP [.V buttered ] [.DP [.Det the ] [.CN toast ] ] ] ]",
+          "sentence": "Jones buttered the toast.",
+          "targets": [
+            "Ee[butter(jo,Ix[toast(x)],e)]"
+          ],
+          "reading": {
+            "section": "1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g2",
+      "title": "B. Adverbial modification is predication of events",
+      "instructions": "Modifiers are predicates of the event, conjoined by Predicate Modification with the clause’s event description (above the subject — the whole clause describes the event). Each PP adds one conjunct, and drops by ∧-elimination: the entailment diamond.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.S [.DP Jones ] [.VP [.V buttered ] [.DP [.Det the ] [.CN toast ] ] ] ] [.PP [.P in ] [.DP [.Det the ] [.CN bathroom ] ] ] ]",
+          "sentence": "Jones buttered the toast in the bathroom.",
+          "targets": [
+            "Ee[butter(jo,Ix[toast(x)],e) & in(e,Iy[bathroom(y)])]"
+          ],
+          "reading": {
+            "section": "2"
+          }
+        },
+        {
+          "id": "d2",
+          "tree": "[.t [.S [.S [.S [.DP Jones ] [.VP [.V buttered ] [.DP [.Det the ] [.CN toast ] ] ] ] [.PP [.P in ] [.DP [.Det the ] [.CN bathroom ] ] ] ] [.PP [.P with ] [.DP [.Det the ] [.CN knife ] ] ] ] [.PP [.P at ] [.DP midnight ] ] ]",
+          "sentence": "Jones buttered the toast in the bathroom with the knife at midnight.",
+          "targets": [
+            "Ee[butter(jo,Ix[toast(x)],e) & in(e,Iy[bathroom(y)]) & with(e,Iz[knife(z)]) & at(e,mid)]"
+          ],
+          "reading": {
+            "section": "2"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": {
+    "format": "latex",
+    "markdown": "# Davidson 1967 · The Logical Form of Action Sentences\n\nCompanion to Donald Davidson, \"The Logical Form of Action Sentences\" (in\nN. Rescher (ed.), *The Logic of Decision and Action*, 1967). The examples are\nDavidson's own, as standardly quoted in the literature.\n\n## 1 The event argument\n\nThe problem: *Jones buttered the toast in the bathroom with the knife at\nmidnight* entails *Jones buttered the toast* — but if each adverbial added an\nargument place, these would be different predicates (variable polyadicity)\nand the entailment would be a mystery. Davidson's solution: the verb has one\nextra argument, an **event**, and the sentence existentially quantifies over\nit.\n\n\\ex Shem kicked Shaun.\n\\xe\n\n\\begin{derivation}\n[[kicked]] = Ly.Lx.Le.kick(x,y,e) : <e,<e,<v,t>>>\nEe[kick(shem, shaun, e)] : t\n\\end{derivation}\n\nNote the form: kick takes its ordered arguments PLUS the event — this is\nDavidson's original proposal, not the neo-Davidsonian decomposition into\nthematic-role predicates (compare ch11.3, where AGENT and PATIENT are\nseparate conjuncts; that refinement is due to later work, notably Castañeda's\ncomment on this paper and Parsons 1990).\n\n## 2 Modifiers are predicates of events\n\nAdverbials add conjuncts about the event: *in the bathroom* is\nλe.in(e, ιy.bathroom(y)). Composition: the clause denotes an event predicate\n⟨v,t⟩; each PP conjoins with it by Predicate Modification; Existential\nClosure binds the event at the top.\n\n\\pex\n\\a Jones buttered the toast.\n\\a Jones buttered the toast in the bathroom.\n\\a Jones buttered the toast in the bathroom with the knife at midnight.\n\\xe\n\nEach formula extends the previous by one conjunct, so ∧-elimination gives\nthe entailments downward — the diamond of entailments the analysis was built\nto capture. Omitted here: Davidson's discussion of *intentionally* and other\nnon-extensional adverbs (which do not fit the conjunct pattern), and his\n*I flew my spaceship to the Morning Star* identity cases.\n\n## Credits\n\nDavidson, D. (1967). The logical form of action sentences. In N. Rescher\n(ed.), *The Logic of Decision and Action*, 81–95. University of Pittsburgh\nPress. — Parsons, T. (1990). *Events in the Semantics of English*. MIT Press\n(the neo-Davidsonian development, cf. ch11.3). Worksheet content is original\nparaphrase."
+  },
+  "meta": {
+    "author": "Thomas Stephen",
+    "license": "MIT",
+    "difficulty": "challenge"
+  }
+}

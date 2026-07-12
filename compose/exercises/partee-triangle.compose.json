@@ -1,16 +1,16 @@
 {
   "compose": 1,
   "id": "partee-triangle",
-  "title": "The Partee Triangle (NP Type-Shifting)",
-  "subtitle": "Partee 1986 — lift, lower, ident, iota, A, BE",
+  "title": "Partee 1986 — The Type-Shifting Triangle",
+  "notation": "cc",
   "domain": {
     "multiLetterNames": true,
     "constants": {
-      "e": "j m b su h p"
+      "e": "j m h p"
     },
     "variables": {
       "e": "x y z",
-      "et": "P Q X Y Z",
+      "et": "P Q X Y",
       "<<e,t>,t>": "T U"
     }
   },
@@ -29,18 +29,6 @@
     },
     {
       "words": [
-        "Bill"
-      ],
-      "denotation": "b"
-    },
-    {
-      "words": [
-        "Sue"
-      ],
-      "denotation": "su"
-    },
-    {
-      "words": [
         "Hesperus"
       ],
       "denotation": "h"
@@ -50,6 +38,24 @@
         "Phosphorus"
       ],
       "denotation": "p"
+    },
+    {
+      "words": [
+        "man"
+      ],
+      "denotation": "Lx.man(x)"
+    },
+    {
+      "words": [
+        "king"
+      ],
+      "denotation": "Lx.king(x)"
+    },
+    {
+      "words": [
+        "president"
+      ],
+      "denotation": "Lx.president(x)"
     },
     {
       "words": [
@@ -65,57 +71,9 @@
     },
     {
       "words": [
-        "doctor"
-      ],
-      "denotation": "Lx.doctor(x)"
-    },
-    {
-      "words": [
-        "linguist"
-      ],
-      "denotation": "Lx.linguist(x)"
-    },
-    {
-      "words": [
-        "senator"
-      ],
-      "denotation": "Lx.senator(x)"
-    },
-    {
-      "words": [
-        "dog"
-      ],
-      "denotation": "Lx.dog(x)"
-    },
-    {
-      "words": [
-        "moon"
-      ],
-      "denotation": "Lx.moon(x)"
-    },
-    {
-      "words": [
-        "sun"
-      ],
-      "denotation": "Lx.sun(x)"
-    },
-    {
-      "words": [
         "tall"
       ],
       "denotation": "Lx.tall(x)"
-    },
-    {
-      "words": [
-        "happy"
-      ],
-      "denotation": "Lx.happy(x)"
-    },
-    {
-      "words": [
-        "clever"
-      ],
-      "denotation": "Lx.clever(x)"
     },
     {
       "words": [
@@ -126,41 +84,10 @@
     },
     {
       "words": [
-        "left",
-        "leaves",
-        "leave"
+        "arrived",
+        "arrive"
       ],
-      "denotation": "Lx.leave(x)"
-    },
-    {
-      "words": [
-        "barked",
-        "barks",
-        "bark"
-      ],
-      "denotation": "Lx.bark(x)"
-    },
-    {
-      "words": [
-        "rose",
-        "rises",
-        "rise"
-      ],
-      "denotation": "Lx.rise(x)"
-    },
-    {
-      "words": [
-        "smokes",
-        "smoke"
-      ],
-      "denotation": "Lx.smoke(x)"
-    },
-    {
-      "words": [
-        "admires",
-        "admire"
-      ],
-      "denotation": "Ly.Lx.admire(x,y)"
+      "denotation": "Lx.arrive(x)"
     },
     {
       "words": [
@@ -184,44 +111,37 @@
     },
     {
       "words": [
+        "THE"
+      ],
+      "displayAs": "the",
+      "denotation": "LX.LY.Ex[Ay[X(y) ↔ y = x] & Y(x)]"
+    },
+    {
+      "words": [
         "the"
       ],
       "denotation": "LX.Ix.X(x)"
     },
     {
       "words": [
-        "andGQ"
+        "andT"
       ],
       "displayAs": "and",
-      "denotation": "LT.LU.LP.[U(P) & T(P)]"
+      "denotation": "LU.LT.LP.[T(P) & U(P)]"
     },
     {
       "words": [
-        "and"
+        "andP"
       ],
+      "displayAs": "and",
       "denotation": "LQ.LP.Lx.[P(x) & Q(x)]"
-    },
-    {
-      "words": [
-        "Lift"
-      ],
-      "displayAs": "⇑",
-      "denotation": "Lx.LP.P(x)"
-    },
-    {
-      "words": [
-        "Lower"
-      ],
-      "displayAs": "⇓",
-      "denotation": "LT.Iz.T(Ly.(z=y))"
     }
   ],
   "rules": {
     "composition": {
       "functionApplication": true,
       "predicateModification": true,
-      "nonBranchingNodes": true,
-      "predicateAbstraction": false
+      "nonBranchingNodes": true
     },
     "typeShifts": [
       "lift",
@@ -234,12 +154,14 @@
   },
   "exercises": [
     {
-      "title": "A. Three meanings for a noun phrase",
-      "instructions": "An NP can be type e (a name), ⟨e,t⟩ (a predicate), or ⟨⟨e,t⟩,t⟩ (a quantifier). These three compose with no shifting: a name by FA, a quantifier by taking the VP as its argument.",
-      "items": [
+      "id": "g1",
+      "title": "A. Three types for NPs",
+      "instructions": "Referential, predicative, quantificational: John as e, a fool as ⟨e,t⟩, every man as ⟨⟨e,t⟩,t⟩ (Partee 1986, §2).",
+      "derivations": [
         {
+          "id": "d1",
+          "tree": "[.t [.DP John ] [.IV walks ] ]",
           "sentence": "John walks.",
-          "tree": "[.S [.DP John ] [.VP walks ] ]",
           "targets": [
             "walk(j)"
           ],
@@ -248,8 +170,9 @@
           }
         },
         {
+          "id": "d2",
+          "tree": "[.t [.DP Mary ] [.Pred [.Cop is ] [.AP tall ] ] ]",
           "sentence": "Mary is tall.",
-          "tree": "[.S [.DP Mary ] [.VP [.V is ] [.AP tall ] ] ]",
           "targets": [
             "tall(m)"
           ],
@@ -258,10 +181,11 @@
           }
         },
         {
-          "sentence": "Every student walks.",
-          "tree": "[.S [.DP [.D every ] [.NP student ] ] [.VP walks ] ]",
+          "id": "d3",
+          "tree": "[.t [.DP [.Det every ] [.CN man ] ] [.IV walks ] ]",
+          "sentence": "Every man walks.",
           "targets": [
-            "Ax[student(x) -> walk(x)]"
+            "Ax[man(x) -> walk(x)]"
           ],
           "reading": {
             "section": "1"
@@ -270,118 +194,105 @@
       ]
     },
     {
-      "title": "B. lift — coordination raises a name to a quantifier",
-      "instructions": "To conjoin a name with a quantifier, apply lift (e → ⟨⟨e,t⟩,t⟩) to the name so both conjuncts are quantifiers; generalized conjunction (andGQ) then combines them. (Partee's “John and every student”.)",
-      "items": [
+      "id": "g2",
+      "title": "B. BE — predicative NPs (defs. 14–16)",
+      "instructions": "English be means apply-predicate, λP.λx.P(x) (Williams 1983; Partee’s (16)). When its complement is a quantifier, the BE shift lowers it to ⟨e,t⟩: BE(P) = λx.P(λy.y = x).",
+      "derivations": [
         {
-          "sentence": "John and every student left.",
-          "tree": "[.S [.DP [.DP John ] [.Conj' [.Conj andGQ ] [.DP [.D every ] [.NP student ] ] ] ] [.VP left ] ]",
+          "id": "d1",
+          "tree": "[.t [.DP John ] [.Pred [.Cop is ] [.DP [.Det a ] [.CN man ] ] ] ]",
+          "sentence": "John is a man.",
+          "hints": [
+            "a man is a quantifier λY.∃x[man(x) ∧ Y(x)] — but is wants a predicate. Apply the BE shift.",
+            "BE(⟦a man⟧) = λx.∃y[man(y) ∧ y = x] = λx.man(x) — Partee’s computation (21): BE(a man) = man."
+          ],
           "targets": [
-            "leave(j) & Ax[student(x) -> leave(x)]"
+            "man(j)"
           ],
           "reading": {
-            "section": "2.1"
-          }
-        }
-      ]
-    },
-    {
-      "title": "C. iota (THE) — a bare noun as a definite argument",
-      "instructions": "A bare common noun is ⟨e,t⟩ but the verb wants an e argument. Apply iota (⟨e,t⟩ → e) to shift the noun to its unique satisfier — natural for a uniquely referring noun. (Article-less, as in Russian/Latin.)",
-      "items": [
-        {
-          "sentence": "Moon rose.",
-          "tree": "[.S [.DP moon ] [.VP rose ] ]",
-          "targets": [
-            "rise(Iz[moon(z)])"
-          ],
-          "reading": {
-            "section": "2.2"
-          }
-        }
-      ]
-    },
-    {
-      "title": "D. A — a bare noun as an existential quantifier",
-      "instructions": "Apply A (⟨e,t⟩ → ⟨⟨e,t⟩,t⟩) to the bare noun to get an existential quantifier, which then takes the VP by FA. (Gloss: “a dog barked”.)",
-      "items": [
-        {
-          "sentence": "Dog barked.",
-          "tree": "[.S [.DP dog ] [.VP barked ] ]",
-          "targets": [
-            "Ez[dog(z) & bark(z)]"
-          ],
-          "reading": {
-            "section": "2.2"
-          }
-        }
-      ]
-    },
-    {
-      "title": "E. BE — a quantifier as a predicate",
-      "instructions": "The indefinite “a teacher” is a quantifier ⟨⟨e,t⟩,t⟩; the copula wants a predicate ⟨e,t⟩. Apply BE to shift it down. The one-point law reduces λx.∃z[teacher(z) ∧ z=x] to λx.teacher(x). (Partee's “Mary is a teacher”.)",
-      "items": [
-        {
-          "sentence": "Mary is a teacher.",
-          "tree": "[.S [.DP Mary ] [.VP [.V is ] [.DP [.D a ] [.NP teacher ] ] ] ]",
-          "targets": [
-            "teacher(m)"
-          ],
-          "reading": {
-            "section": "2.3"
-          }
-        }
-      ]
-    },
-    {
-      "title": "F. ident — a name as a predicate (equatives)",
-      "instructions": "In an equative the post-copular name must be a predicate. Apply ident (e → ⟨e,t⟩) to the name, giving λy.y=name, which the copula passes to the subject. (“The teacher is Mary”; Frege's “Hesperus is Phosphorus”.)",
-      "items": [
-        {
-          "sentence": "The teacher is Mary.",
-          "tree": "[.S [.DP [.D the ] [.NP teacher ] ] [.VP [.V is ] [.DP Mary ] ] ]",
-          "targets": [
-            "Ix[teacher(x)] = m"
-          ],
-          "reading": {
-            "section": "2.4"
+            "section": "2"
           }
         },
         {
+          "id": "d2",
+          "tree": "[.t [.DP John ] [.Pred [.Cop is ] [.DP [.Det THE ] [.CN president ] ] ] ]",
+          "sentence": "John is the president.",
+          "targets": [
+            "Ez[Ay[president(y) ↔ y = z] & z = j]"
+          ],
+          "reading": {
+            "section": "2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g3",
+      "title": "C. THE and iota (def. 14, Diagram 2)",
+      "instructions": "THE is the generalized-quantifier definite; iota is its e-type cousin. When uniqueness holds, lift(iota(king)) = THE(king).",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.DP [.Det the ] [.CN king ] ] [.IV walks ] ]",
+          "sentence": "The king walks.",
+          "targets": [
+            "walk(Ix[king(x)])"
+          ],
+          "reading": {
+            "section": "3"
+          }
+        },
+        {
+          "id": "d2",
+          "tree": "[.t [.DP [.Det THE ] [.CN king ] ] [.IV walks ] ]",
+          "sentence": "The king walks. (GQ route)",
+          "targets": [
+            "Ex[Ay[king(y) ↔ y = x] & walk(x)]"
+          ],
+          "reading": {
+            "section": "3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g4",
+      "title": "D. ident — equatives",
+      "instructions": "ident maps j to λx[x = j]: a name in predicate position.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.DP Hesperus ] [.Pred [.Cop is ] [.DP Phosphorus ] ] ]",
           "sentence": "Hesperus is Phosphorus.",
-          "tree": "[.S [.DP Hesperus ] [.VP [.V is ] [.DP Phosphorus ] ] ]",
           "targets": [
             "h = p"
           ],
           "reading": {
-            "section": "2.4"
+            "section": "4"
           }
         }
       ]
     },
     {
-      "title": "G. lower — the inverse of lift",
-      "instructions": "lower (⟨⟨e,t⟩,t⟩ → e) recovers an individual from a principal ultrafilter — the lift of a single individual. Here ⇑ lifts John and ⇓ lowers it straight back. (lower is undefined on a genuine quantifier like “every student”.)",
-      "items": [
+      "id": "g5",
+      "title": "E. Coercion by conjunction (§1.2; Partee & Rooth 1983)",
+      "instructions": "Unlike-type conjunctions force shifts: the e-type definite LIFTs to conjoin with a quantifier; a predicative AP conjoins with a BE-shifted NP.",
+      "derivations": [
         {
-          "sentence": "lower(lift(John)) = John",
-          "tree": "[.DP [.Op Lower ] [.DP [.Op Lift ] [.DP John ] ] ]",
+          "id": "d1",
+          "tree": "[.t [.DP [.DP [.Det the ] [.CN teacher ] ] [.ConjP [.Conj andT ] [.DP [.Det every ] [.CN student ] ] ] ] [.IV arrived ] ]",
+          "sentence": "The teacher and every student arrived.",
           "targets": [
-            "j"
+            "arrive(Ix[teacher(x)]) & Ax[student(x) -> arrive(x)]"
           ],
           "reading": {
-            "section": "2.1"
+            "section": "5"
           }
-        }
-      ]
-    },
-    {
-      "title": "I. Predicate Modification across types",
-      "instructions": "Once “a teacher” is shifted to ⟨e,t⟩ by BE it can conjoin with a predicative adjective. Apply BE to “a teacher”, then conjoin with “tall” — the two predicates combine pointwise. (Partee's “tall and a teacher”.)",
-      "items": [
+        },
         {
+          "id": "d2",
+          "tree": "[.t [.DP Mary ] [.Pred [.Cop is ] [.PredP [.AP tall ] [.ConjP [.Conj andP ] [.DP [.Det a ] [.CN teacher ] ] ] ] ] ]",
           "sentence": "Mary is tall and a teacher.",
-          "tree": "[.S [.DP Mary ] [.VP [.V is ] [.PredP [.AP tall ] [.Conj' [.Conj and ] [.DP [.D a ] [.NP teacher ] ] ] ] ] ]",
           "targets": [
             "tall(m) & teacher(m)"
           ],
@@ -394,6 +305,11 @@
   ],
   "reading": {
     "format": "latex",
-    "markdown": "# Partee 1986 · Noun-Phrase Type-Shifting\n\nOne noun phrase can denote three different kinds of thing. *Mary* names an\nindividual; *a teacher* in *Mary is a teacher* is a predicate; *every student* is a\nquantifier. Partee's proposal is that these three meanings live at three **types**\nand that a small family of **type-shifting** operators moves an NP between them —\nthe \"Partee triangle.\" The same shifts a grammar may lexicalise as *the*, *a*, or\nthe copula are available \"for free\" wherever the types demand them.\n\n## 1 Three meanings for a noun phrase\n\nThe three NP types and a sample denotation of each:\n\n\\begin{derivation}\n[[Mary]]          = m                          : e\n[[teacher]]       = lambda x.teacher(x)        : <e,t>\n[[every student]] = lambda Q.forall x[student(x) -> Q(x)] : <<e,t>,t>\n\\end{derivation}\n\nA type-`e` subject combines with a predicate by Function Application; a quantifier\nof type ⟨⟨e,t⟩,t⟩ takes the predicate as *its* argument (\\ref{types}).\n\n\\begin{forest}\n[S{forall x[student(x) -> walk(x)]}\n  [DP{lambda Q.forall x[student(x) -> Q(x)]}\n    [D{lambda X.lambda Y.forall x[X(x) -> Y(x)]} every]\n    [NP{lambda x.student(x)} student]]\n  [VP{lambda x.walk(x)} walks]]\n\\end{forest}\n\n\\ex<types> John walks.\n\\xe\n\n\\ex Mary is tall.\n\\xe\n\n\\ex Every student walks.\n\\xe\n\n## 2 The shifting triangle\n\nSix operators connect the three corners. Each is a closed λ-term; applying one to a\nnode's meaning and β-reducing gives the shifted meaning.\n\n\\begin{derivation}\nlift  : e        -> <<e,t>,t>   = lambda x.lambda P.P(x)\nlower : <<e,t>,t> -> e          = lambda T.iota z.T(lambda y.z=y)\nident : e        -> <e,t>       = lambda x.lambda y.y=x\niota  : <e,t>    -> e           = lambda P.iota z.P(z)\nA     : <e,t>    -> <<e,t>,t>   = lambda P.lambda Q.exists z[P(z) & Q(z)]\nBE    : <<e,t>,t> -> <e,t>      = lambda T.lambda x.T(lambda y.y=x)\n\\end{derivation}\n\n`lift`/`A` climb to the quantifier corner; `iota`/`lower` drop to the individual\ncorner; `ident`/`BE` cross to the predicate corner. The natural determiners *the*\nand *a* and the predicative copula lexicalise particular arrows.\n\n## 2.1 lift and lower\n\n**lift** sends an individual to the set of its properties. It is what lets a name\ncombine where a quantifier is expected — for instance, to be conjoined with one:\n\n\\begin{derivation}\n[[John]]      = j                       : e\nlift([[John]]) = lambda P.P(j)          : <<e,t>,t>\n\\end{derivation}\n\nIn *John and every student left*, *John* must lift so that both conjuncts are\nquantifiers and generalized conjunction can apply (\\ref{lift}).\n\n\\begin{forest}\n[S{leave(j) & forall x[student(x) -> leave(x)]}\n  [DP{lambda P.[P(j) & forall x[student(x) -> P(x)]]}\n    [DP{lambda P.P(j)} John]\n    [Conj'{lambda U.lambda P.[U(P) & forall x[student(x) -> P(x)]]}\n      [Conj and]\n      [DP{lambda P.forall x[student(x) -> P(x)]} every student]]]\n  [VP{lambda x.leave(x)} left]]\n\\end{forest}\n\n**lower** is the partial inverse: it recovers the individual *from* its\nproperty-set, but only when that set is a *principal ultrafilter* — the lift of a\nsingle individual. On such a meaning it undoes lift; on a genuinely\nquantificational meaning like *every student* it is undefined.\n\n\\begin{derivation}\nlower(lift(j)) = iota z.(z=j)            = j          : e\nlower([[every student]]) = iota z.forall x[student(x) -> z=x]   (undefined: no unique z)\n\\end{derivation}\n\n## 2.2 iota and A: a bare noun as an argument\n\nIn article-less languages (Russian, Latin, Hindi …) a bare common noun serves\ndirectly as an argument; the shift supplies what an article would. **iota**\n(Partee's *THE*) maps a predicate to its unique satisfier — natural for a uniquely\nreferring noun:\n\n\\begin{derivation}\n[[moon]]      = lambda x.moon(x)        : <e,t>\niota([[moon]]) = iota z.moon(z)         : e\n\\end{derivation}\n\n\\begin{forest}\n[S{rise(iota z.moon(z))}\n  [DP{iota z.moon(z)}\n    [shift{iota} THE]\n    [NP{lambda x.moon(x)} moon]]\n  [VP{lambda x.rise(x)} rose]]\n\\end{forest}\n\n**A** instead makes the predicate an existential quantifier — the indefinite\nreading of a bare nominal (cf. Carlson on bare arguments):\n\n\\begin{derivation}\n[[dog]]    = lambda x.dog(x)                    : <e,t>\nA([[dog]]) = lambda Q.exists z[dog(z) & Q(z)]   : <<e,t>,t>\n\\end{derivation}\n\nSo *Dog barked* (i.e. *a dog barked*) composes to (\\ref{bareNoun}):\n\n\\begin{derivation}\n[[Dog barked]] = exists z[dog(z) & bark(z)]   : t\n\\end{derivation}\n\n\\ex<bareNoun> Moon rose.\n\\xe\n\n\\ex Dog barked.\n\\xe\n\n## 2.3 BE: a quantifier as a predicate\n\nA quantificational NP like *a teacher* is type ⟨⟨e,t⟩,t⟩. To appear after the\ncopula it must become a predicate ⟨e,t⟩. The shift **BE** does this — it asks, of\neach individual *x*, whether the quantifier holds of the property *being x*:\n\n\\begin{derivation}\n[[a teacher]]     = lambda Q.exists z[teacher(z) & Q(z)] : <<e,t>,t>\nBE([[a teacher]]) = lambda x.exists z[teacher(z) & z=x]  : <e,t>\n                  = lambda x.teacher(x)                  : <e,t>\n\\end{derivation}\n\nThe copula is the identity `λP.P`, so *Mary is a teacher* is just this predicate of\nMary (\\ref{beteacher}).\n\n\\begin{forest}\n[S{teacher(m)}\n  [DP{m} Mary]\n  [VP{lambda x.teacher(x)}\n    [V{lambda P.P} is]\n    [DP{lambda x.teacher(x)}\n      [shift{BE} BE]\n      [DP{lambda Q.exists z[teacher(z) & Q(z)]} a teacher]]]]\n\\end{forest}\n\n\\ex<beteacher> Mary is a teacher.\n\\xe\n\n\\ex John is a doctor.\n\\xe\n\n\\ex * Is a teacher Mary.\n\\xe\n\n## 2.4 ident: a name as a predicate\n\nThe mirror image of BE: an **equative** sentence puts a name in predicate position.\n**ident** turns the individual into the property of being identical to it — as in\n*The teacher is Mary* or Frege's *Hesperus is Phosphorus*:\n\n\\begin{derivation}\n[[Mary]]       = m             : e\nident([[Mary]]) = lambda y.y=m : <e,t>\n\\end{derivation}\n\n\\begin{forest}\n[S{iota x.teacher(x) = m}\n  [DP{iota x.teacher(x)}\n    [D{lambda X.iota x.X(x)} the]\n    [NP{lambda x.teacher(x)} teacher]]\n  [VP{lambda y.y=m}\n    [V{lambda P.P} is]\n    [DP{lambda y.y=m}\n      [shift{ident} ident]\n      [DP{m} Mary]]]]\n\\end{forest}\n\n## 3 The copula is just λP.P\n\nPredication and identity are not two different verbs *be*. There is one copula, the\nidentity function `λP.P`, and the complement type-shifts to a predicate ⟨e,t⟩: a\nquantifier shifts by **BE** (§2.3), a name by **ident** (§2.4). One verb, two\nshifts — the choice is forced by the complement's type.\n\n## 4 The triangle commutes\n\nThe arrows compose, and the composites are exactly the natural determiners and the\nidentities you would expect:\n\n\\begin{derivation}\nTHE  = lift . iota : [[the teacher]] = lambda P.P(iota z.teacher(z))\nBE . A  = identity on the predicate  : BE(A(teacher)) = lambda x.teacher(x)\nBE . lift = ident                    : BE(lift(m))    = lambda x.(m=x)\n\\end{derivation}\n\nSo *the* lexicalises `lift ∘ iota`, *a* lexicalises `A`, and the two ways of making\na name predicative — go up by `lift` then across by `BE`, or straight across by\n`ident` — give the same meaning.\n\n## 5 Conjunction and predication\n\nTwo applications close the loop. First, **coordination forces lift**: to conjoin a\nname with a quantifier, raise the name (§2.1). Second, **BE feeds Predicate\nModification**: once *a teacher* is shifted to ⟨e,t⟩ it can conjoin with a\npredicative adjective, and the two combine pointwise — Partee's *tall and a\nteacher* (\\ref{pmtype}).\n\n\\begin{derivation}\n[[tall]]               = lambda x.tall(x)               : <e,t>\nBE([[a teacher]])      = lambda x.teacher(x)            : <e,t>\n[[tall and a teacher]] = lambda x.[tall(x) & teacher(x)] : <e,t>\n[[Mary is tall and a teacher]] = tall(m) & teacher(m)   : t\n\\end{derivation}\n\n\\ex<pmtype> Mary is tall and a teacher.\n\\xe\n\n\\ex John is clever and a linguist.\n\\xe"
+    "markdown": "# Partee 1986 · The Type-Shifting Triangle\n\nCompanion to Barbara Partee, \"Noun Phrase Interpretation and Type-Shifting\nPrinciples\" (1986). Definitions and computations below are Partee's own,\ncited by her numbering; this reading was checked against Partee's own\nsummary of the paper (Partee 2006, Lecture 14).\n\n## 1 Three types for NPs\n\nMontague gave every NP the quantifier type ⟨⟨e,t⟩,t⟩. Partee's resolution:\nevery NP has a ⟨⟨e,t⟩,t⟩ meaning, and some also have e and/or ⟨e,t⟩\nmeanings, related by general shifting principles. Her evidence: e-type NPs\nlicense discourse anaphora (her (9)–(10): *John / the man / a man walked in.\nHe looked tired* vs. *every man / no man … \\*He looked tired*), and\npredicative positions select ⟨e,t⟩ NPs (her (11)–(12): *Mary considers John\ncompetent in semantics and an authority on unicorns*).\n\n\\pex\n\\a John walks. (e)\n\\a Mary is tall. (⟨e,t⟩ predicate)\n\\a Every man walks. (⟨⟨e,t⟩,t⟩)\n\\xe\n\n## 2 BE — predicative noun phrases\n\nPartee's (15)–(16), following Williams: English *be* is just apply-predicate,\nλP.λx.P(x). When its complement is a quantifier, the **BE** shift applies\n(her (14)): BE(𝒫) = λx.𝒫(λy.y = x) — find the singletons in the quantifier,\ncollect their members. Her computations (21):\n\n\\begin{derivation}\nBE(a man)     = λx.man(x)\nBE(John)      = λx.x = j\nBE(no man)    = λx.¬man(x)\nBE(every man) = λx.Ay[man(y) -> y = x]\n\\end{derivation}\n\nBE is a Boolean homomorphism, and the unique one making her Diagram 3\ncommute (Facts (19)–(20)) — that is the \"naturalness\" argument, and A is\nnatural in part as an inverse of BE: BE(A(P)) = P.\n\n\\ex John is a man.\n\\xe\n\n\\ex John is the president.\n\\xe\n\nFor the second: BE(THE(president)) applied to j. The worksheet's target is\nthe form the shift derives, ∃z[∀y[president(y) ↔ y = z] ∧ z = j]; Partee's\n(17) states the equivalent λx[president(x) ∧ ∀y[president(y) ↔ y = x]].\nHer (18) records the bare-nominal contrast: *John is {the president /\npresident}* but *John is {the teacher / \\*teacher}*.\n\n## 3 THE and iota\n\nTHE (her (14)): Q ⇒ λP[∃x[∀y[Q(y) ↔ y = x]] ∧ P(x)] — the generalized\nquantifier definite. iota: P ⇒ ιx.P(x), partial. When uniqueness holds the\ntriangle commutes: lift(iota(king)) = THE(king) and lower(THE(king)) =\niota(king). Derive *the king walks* both ways and compare.\n\n## 4 ident — equatives\n\nident (Diagram 1): j ⇒ λx[x = j], a name in predicate position. The laws of\nthe triangle: lower(lift(j)) = j and iota(ident(j)) = j — lift/lower and\nident/iota are inverse pairs (up to partiality).\n\n\\ex Hesperus is Phosphorus.\n\\xe\n\n## 5 Coercion by conjunction\n\nPartee's own motivation for the whole system (§1.2) comes from Partee &\nRooth 1983: unlike-type conjunctions force shifts. The e-type definite lifts\nto conjoin with a quantifier; a predicative AP conjoins with a BE-shifted\nindefinite. (The full conjunction story has its own worksheet on this page.)\n\n\\pex\n\\a The teacher and every student arrived.\n\\a Mary is tall and a teacher.\n\\xe\n\n## Credits\n\nPartee, B. H. (1986). Noun phrase interpretation and type-shifting\nprinciples. In Groenendijk, de Jongh & Stokhof (eds.), *Studies in Discourse\nRepresentation Theory and the Theory of Generalized Quantifiers*, 115–143.\nForis. Reprinted in Portner & Partee (2002) and Partee (2004). — Partee,\nB. H. (2006). *The Structure of Meaning*, Lecture 14\n(people.umass.edu/partee) — consulted directly for definitions, data and\ncomputations. — Williams, E. (1983), for the analysis of *be*. Worksheet\ncontent is original paraphrase; definitions quoted with Partee's numbering."
+  },
+  "meta": {
+    "author": "Thomas Stephen",
+    "license": "MIT",
+    "difficulty": "challenge"
   }
 }

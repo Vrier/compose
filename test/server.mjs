@@ -287,7 +287,12 @@ async function main() {
   contains('/papers/ptq carries the intensional Part B (S19)', r.text, '"montague-ptq-int":{');
   r = await req('GET', '/papers/krifka/', { raw: true });
   contains('/papers/krifka carries the telicity worksheet (S20)', r.text, '"krifka-telicity":{');
+  r = await req('GET', '/papers/davidson/', { raw: true });
+  contains('/papers/davidson carries the events worksheet (S21)', r.text, '"davidson-events":{');
+  r = await req('GET', '/papers/partee-rooth/', { raw: true });
+  contains('/papers/partee-rooth carries generalized conjunction (S21)', r.text, '"partee-rooth-conj":{');
   r = await req('GET', '/papers/partee/', { raw: true });
+  lacks('/papers/partee is the triangle only (S21)', r.text, '"partee-rooth-conj":{');
   contains('/papers/partee carries Partee', r.text, '"partee-triangle":{');
   lacks('/papers/partee does NOT carry PTQ', r.text, '"montague-ptq":{');
   r = await req('GET', '/CC', { raw: true, noRedirect: true });

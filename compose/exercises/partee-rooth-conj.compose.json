@@ -1,0 +1,220 @@
+{
+  "compose": 1,
+  "id": "partee-rooth-conj",
+  "title": "Partee & Rooth 1983 — Generalized Conjunction",
+  "notation": "cc",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "j m"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "P Q X Y",
+      "<<e,t>,t>": "T U",
+      "<e,<e,t>>": "R1 R2"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "John"
+      ],
+      "denotation": "j"
+    },
+    {
+      "words": [
+        "Mary"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "woman"
+      ],
+      "denotation": "Lx.woman(x)"
+    },
+    {
+      "words": [
+        "student"
+      ],
+      "denotation": "Lx.student(x)"
+    },
+    {
+      "words": [
+        "teacher"
+      ],
+      "denotation": "Lx.teacher(x)"
+    },
+    {
+      "words": [
+        "car"
+      ],
+      "denotation": "Lx.car(x)"
+    },
+    {
+      "words": [
+        "walks",
+        "walk"
+      ],
+      "denotation": "Lx.walk(x)"
+    },
+    {
+      "words": [
+        "talks",
+        "talk"
+      ],
+      "denotation": "Lx.talk(x)"
+    },
+    {
+      "words": [
+        "arrived",
+        "arrive"
+      ],
+      "denotation": "Lx.arrive(x)"
+    },
+    {
+      "words": [
+        "needed",
+        "need"
+      ],
+      "denotation": "Ly.Lx.need(x,y)"
+    },
+    {
+      "words": [
+        "bought",
+        "buy"
+      ],
+      "denotation": "Ly.Lx.buy(x,y)"
+    },
+    {
+      "words": [
+        "every"
+      ],
+      "denotation": "LX.LY.Ax[X(x) -> Y(x)]"
+    },
+    {
+      "words": [
+        "a",
+        "an"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "LX.Ix.X(x)"
+    },
+    {
+      "words": [
+        "andP"
+      ],
+      "displayAs": "and",
+      "denotation": "LQ.LP.Lx.[P(x) & Q(x)]"
+    },
+    {
+      "words": [
+        "andT"
+      ],
+      "displayAs": "and",
+      "denotation": "LU.LT.LP.[T(P) & U(P)]"
+    },
+    {
+      "words": [
+        "andTV"
+      ],
+      "displayAs": "and",
+      "denotation": "LR2.LR1.Ly.Lx.[R1(y)(x) & R2(y)(x)]"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "predicateModification": false,
+      "nonBranchingNodes": true,
+      "predicateAbstraction": true
+    },
+    "typeShifts": [
+      "lift",
+      "iota"
+    ],
+    "quantifierRaising": true
+  },
+  "exercises": [
+    {
+      "id": "g1",
+      "title": "A. ⊓ at ⟨e,t⟩ — the base of the recursion",
+      "instructions": "Generalized conjunction: at conjoinable types ⟨a,b⟩, f ⊓ g = λx[f(x) ⊓ g(x)], bottoming out in ∧ at t.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.DP John ] [.IV [.IV walks ] [.ConjP [.Conj andP ] [.IV talks ] ] ] ]",
+          "sentence": "John walks and talks.",
+          "targets": [
+            "walk(j) & talk(j)"
+          ],
+          "reading": {
+            "section": "1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g2",
+      "title": "B. Conjoining unlike NPs — lift as coercion",
+      "instructions": "P&R's processing strategy: use the simplest types, shift only under coercion. To conjoin an e-type NP with a quantifier, LIFT it.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.DP [.DP John ] [.ConjP [.Conj andT ] [.DP [.Det every ] [.CN woman ] ] ] ] [.IV arrived ] ]",
+          "sentence": "John and every woman arrived.",
+          "targets": [
+            "arrive(j) & Ax[woman(x) -> arrive(x)]"
+          ],
+          "reading": {
+            "section": "2"
+          }
+        },
+        {
+          "id": "d2",
+          "tree": "[.t [.DP [.DP [.Det the ] [.CN teacher ] ] [.ConjP [.Conj andT ] [.DP [.Det every ] [.CN student ] ] ] ] [.IV arrived ] ]",
+          "sentence": "The teacher and every student arrived.",
+          "targets": [
+            "arrive(Ix[teacher(x)]) & Ax[student(x) -> arrive(x)]"
+          ],
+          "reading": {
+            "section": "2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g3",
+      "title": "C. Conjoined transitive verbs share their object",
+      "instructions": "Conjoin the TVs pointwise first, then let the object take scope (QR): one car, needed and bought.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.DP John ] [.IV [.TV [.TV needed ] [.ConjP [.Conj andTV ] [.TV bought ] ] ] [.DP [.Det a ] [.CN car ] ] ] ]",
+          "sentence": "John needed and bought a car.",
+          "targets": [
+            "Ez[car(z) & need(j,z) & buy(j,z)]"
+          ],
+          "reading": {
+            "section": "3"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": {
+    "format": "latex",
+    "markdown": "# Partee & Rooth 1983 · Generalized Conjunction\n\nCompanion to Barbara Partee & Mats Rooth, \"Generalized Conjunction and Type\nAmbiguity\" (in Bäuerle, Schwarze & von Stechow (eds.), *Meaning, Use, and\nInterpretation of Language*, de Gruyter, 1983). Cases and the processing\nstrategy are as summarized by Partee herself (Partee 2006, Lecture 14, which\nthis reading consulted directly).\n\n## 1 Generalized meet\n\n*and* does not just conjoin sentences. Partee & Rooth generalize ∧ to every\n\"conjoinable type\" — the types ending in t:\n\n\\begin{derivation}\nat t:        p ⊓ q = p ∧ q\nat <a,b>:    f ⊓ g = λx[f(x) ⊓ g(x)]   (b conjoinable)\n\\end{derivation}\n\nAt ⟨e,t⟩ this gives λP.λQ.λx[P(x) ∧ Q(x)] — your *walks and talks*. COMPOSE\nis simply typed, so the worksheet provides ⊓ at each type as its own lexical\nentry (all displayed as *and*); the recursion above is the single definition\nthey instantiate.\n\n\\ex John walks and talks.\n\\xe\n\n## 2 Type multiplicity and coercion\n\nTheir processing strategy: \"Use the simplest types consistent with coherent\ntyping of the entire sentence\" — higher types only under coercion. To\nconjoin an e-type NP with a quantifier, LIFT the name; an e-type definite\nlifts the same way (via iota, then lift).\n\n\\pex\n\\a John and every woman arrived.\n\\a The teacher and every student arrived.\n\\xe\n\n## 3 Conjoined transitive verbs\n\nConjoining TVs pointwise and then letting one object take scope derives the\nshared-object reading: one car, both needed and bought. (For intensional\nverbs like *want* and *need* with narrow-scope objects, Partee & Rooth\ndevelop a higher-type analysis with lowering as the default — omitted here;\nsee the PTQ Part B worksheet for the intensional machinery it presupposes.)\n\n\\ex John needed and bought a car.\n\\xe\n\n## Credits\n\nPartee, B. & M. Rooth (1983). Generalized conjunction and type ambiguity.\nIn R. Bäuerle et al. (eds.), *Meaning, Use, and Interpretation of Language*,\n361–383. de Gruyter. — Partee, B. (2006). *The Structure of Meaning*,\nLecture 14 (people.umass.edu/partee) — consulted for the summary and cases.\nWorksheet content is original paraphrase."
+  },
+  "meta": {
+    "author": "Thomas Stephen",
+    "license": "MIT",
+    "difficulty": "challenge"
+  }
+}

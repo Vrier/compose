@@ -1141,6 +1141,35 @@ ch8.4-definedness | g1p0 | \partial(\exists x.\mathit{ring}(x)) \land (\forall x
 ch8.4-definedness | g1p1 | \partial(\exists x.\mathit{wizard}(x)) \land (\forall x.\mathit{wizard}(x) \rightarrow \mathit{wise}(x))
 ch8.4-definedness | g2p0 | \lnot (\partial(\exists x.\mathit{ring}(x)) \land (\forall x.\mathit{ring}(x) \rightarrow \mathit{golden}(x)))
 ch8.4-definedness | g3p0 | \exists x.\mathit{ring}(x) \land \mathit{golden}(x)
+davidson-events | i-d1 | \lambda e.\mathit{kick}(\mathit{shem}, \mathit{shaun}, e)
+davidson-events | i-d1 | F | % ============================================================
+davidson-events | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com
+davidson-events | i-d1 | F | % Requires in your document preamble:
+davidson-events | i-d1 | F | %   \usepackage{forest}
+davidson-events | i-d1 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+davidson-events | i-d1 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+davidson-events | i-d1 | F | % ============================================================
+davidson-events | i-d1 | F | % "Shem kicked Shaun."
+davidson-events | i-d1 | F | \begin{forest}
+davidson-events | i-d1 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+davidson-events | i-d1 | F |   [{\cnode{t} \\ {$\lambda e.\mathit{kick}(\mathit{shem}, \mathit{shaun}, e)$} \\ {\footnotesize $\langle v,t\rangle$} \\ \crule{FA}}
+davidson-events | i-d1 | F |     [{\cnode{DP} \\ {$\mathit{shem}$} \\ {\footnotesize $e$} \\ \crule{NN}}
+davidson-events | i-d1 | F |       [{\textit{Shem} \\ {$\mathit{shem}$} \\ {\footnotesize $e$}}]
+davidson-events | i-d1 | F |     ]
+davidson-events | i-d1 | F |     [{\cnode{VP} \\ {$\lambda x \lambda e.\mathit{kick}(x, \mathit{shaun}, e)$} \\ {\footnotesize $\langle e,\langle v,t\rangle\rangle$} \\ \crule{FA}}
+davidson-events | i-d1 | F |       [{\cnode{V} \\ {$\lambda y \lambda x \lambda e.\mathit{kick}(x, y, e)$} \\ {\footnotesize $\langle e,\langle e,\langle v,t\rangle\rangle\rangle$} \\ \crule{NN}}
+davidson-events | i-d1 | F |         [{\textit{kicked} \\ {$\lambda y \lambda x \lambda e.\mathit{kick}(x, y, e)$} \\ {\footnotesize $\langle e,\langle e,\langle v,t\rangle\rangle\rangle$}}]
+davidson-events | i-d1 | F |       ]
+davidson-events | i-d1 | F |       [{\cnode{DP} \\ {$\mathit{shaun}$} \\ {\footnotesize $e$} \\ \crule{NN}}
+davidson-events | i-d1 | F |         [{\textit{Shaun} \\ {$\mathit{shaun}$} \\ {\footnotesize $e$}}]
+davidson-events | i-d1 | F |       ]
+davidson-events | i-d1 | F |     ]
+davidson-events | i-d1 | F |   ]
+davidson-events | i-d1 | F | \end{forest}
+davidson-events | i-d1 | F | 
+davidson-events | i-d2 | \lambda e.\mathit{butter}(\mathit{jo}, \iota x.\mathit{toast}(x), e)
+davidson-events | i-d1 | \lambda e.\mathit{butter}(\mathit{jo}, \iota x.\mathit{toast}(x), e) \land \mathit{in}(e, \iota x.\mathit{bathroom}(x))
+davidson-events | i-d2 | \lambda e.\mathit{butter}(\mathit{jo}, \iota x.\mathit{toast}(x), e) \land \mathit{in}(e, \iota x.\mathit{bathroom}(x)) \land \mathit{with}(e, \iota x.\mathit{knife}(x)) \land \mathit{at}(e, \mathit{mid})
 hk1-conventions | g0p0 | a
 hk1-conventions | g0p0 | F | % ============================================================
 hk1-conventions | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
@@ -1493,34 +1522,67 @@ montague-ptq | g2p0 | UNSOLVED
 montague-ptq | g2p1 | \mathit{man}(b)
 montague-ptq | g3p0 | \exists x.\mathit{man}(x) \land (\forall y.\mathit{man}(y) \rightarrow y = x) \land \mathit{walk}(x)
 montague-ptq | g4p0 | \forall x.\mathit{man}(x) \rightarrow (\exists y.\mathit{woman}(y) \land \mathit{love}(x, y))
-partee-triangle | g0p0 | \mathit{walk}(j)
-partee-triangle | g0p0 | F | % ============================================================
-partee-triangle | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
-partee-triangle | g0p0 | F | % Requires in your document preamble:
-partee-triangle | g0p0 | F | %   \usepackage{forest}
-partee-triangle | g0p0 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
-partee-triangle | g0p0 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
-partee-triangle | g0p0 | F | % ============================================================
-partee-triangle | g0p0 | F | % "John walks."
-partee-triangle | g0p0 | F | \begin{forest}
-partee-triangle | g0p0 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
-partee-triangle | g0p0 | F |   [{\cnode{S} \\ {$\mathit{walk}(j)$} \\ {\footnotesize $t$} \\ \crule{FA}}
-partee-triangle | g0p0 | F |     [{\cnode{DP} \\ {$j$} \\ {\footnotesize $e$} \\ \crule{NN}}
-partee-triangle | g0p0 | F |       [{\textit{John} \\ {$j$} \\ {\footnotesize $e$}}]
-partee-triangle | g0p0 | F |     ]
-partee-triangle | g0p0 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{walk}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
-partee-triangle | g0p0 | F |       [{\textit{walks} \\ {$\lambda x.\mathit{walk}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
-partee-triangle | g0p0 | F |     ]
-partee-triangle | g0p0 | F |   ]
-partee-triangle | g0p0 | F | \end{forest}
-partee-triangle | g0p0 | F | 
-partee-triangle | g0p1 | \mathit{tall}(m)
-partee-triangle | g0p2 | \forall x.\mathit{student}(x) \rightarrow \mathit{walk}(x)
-partee-triangle | g1p0 | UNSOLVED
-partee-triangle | g2p0 | \lambda x.\mathit{moon}(x) \land \mathit{rise}(x)
-partee-triangle | g3p0 | \lambda x.\mathit{dog}(x) \land \mathit{bark}(x)
-partee-triangle | g4p0 | UNSOLVED
-partee-triangle | g5p0 | UNSOLVED
-partee-triangle | g5p1 | UNSOLVED
-partee-triangle | g6p0 | j
-partee-triangle | g7p0 | UNSOLVED
+partee-rooth-conj | i-d1 | \mathit{walk}(j) \land \mathit{talk}(j)
+partee-rooth-conj | i-d1 | F | % ============================================================
+partee-rooth-conj | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com
+partee-rooth-conj | i-d1 | F | % Requires in your document preamble:
+partee-rooth-conj | i-d1 | F | %   \usepackage{forest}
+partee-rooth-conj | i-d1 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+partee-rooth-conj | i-d1 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+partee-rooth-conj | i-d1 | F | % ============================================================
+partee-rooth-conj | i-d1 | F | % "John walks and talks."
+partee-rooth-conj | i-d1 | F | \begin{forest}
+partee-rooth-conj | i-d1 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+partee-rooth-conj | i-d1 | F |   [{\cnode{t} \\ {$\mathit{walk}(j) \land \mathit{talk}(j)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+partee-rooth-conj | i-d1 | F |     [{\cnode{DP} \\ {$j$} \\ {\footnotesize $e$} \\ \crule{NN}}
+partee-rooth-conj | i-d1 | F |       [{\textit{John} \\ {$j$} \\ {\footnotesize $e$}}]
+partee-rooth-conj | i-d1 | F |     ]
+partee-rooth-conj | i-d1 | F |     [{\cnode{IV} \\ {$\lambda x.\mathit{walk}(x) \land \mathit{talk}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{FA}}
+partee-rooth-conj | i-d1 | F |       [{\cnode{IV} \\ {$\lambda x.\mathit{walk}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+partee-rooth-conj | i-d1 | F |         [{\textit{walks} \\ {$\lambda x.\mathit{walk}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+partee-rooth-conj | i-d1 | F |       ]
+partee-rooth-conj | i-d1 | F |       [{\cnode{ConjP} \\ {$\lambda P \lambda x.P(x) \land \mathit{talk}(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle e,t\rangle\rangle$} \\ \crule{FA}}
+partee-rooth-conj | i-d1 | F |         [{\cnode{Conj} \\ {$\lambda Q \lambda P \lambda x.P(x) \land Q(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle \langle e,t\rangle,\langle e,t\rangle\rangle\rangle$} \\ \crule{NN}}
+partee-rooth-conj | i-d1 | F |           [{\textit{andP} \\ {$\lambda Q \lambda P \lambda x.P(x) \land Q(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle \langle e,t\rangle,\langle e,t\rangle\rangle\rangle$}}]
+partee-rooth-conj | i-d1 | F |         ]
+partee-rooth-conj | i-d1 | F |         [{\cnode{IV} \\ {$\lambda x.\mathit{talk}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+partee-rooth-conj | i-d1 | F |           [{\textit{talks} \\ {$\lambda x.\mathit{talk}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+partee-rooth-conj | i-d1 | F |         ]
+partee-rooth-conj | i-d1 | F |       ]
+partee-rooth-conj | i-d1 | F |     ]
+partee-rooth-conj | i-d1 | F |   ]
+partee-rooth-conj | i-d1 | F | \end{forest}
+partee-rooth-conj | i-d1 | F | 
+partee-rooth-conj | i-d1 | UNSOLVED
+partee-rooth-conj | i-d2 | UNSOLVED
+partee-rooth-conj | i-d1 | UNSOLVED
+partee-triangle | i-d1 | \mathit{walk}(j)
+partee-triangle | i-d1 | F | % ============================================================
+partee-triangle | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com
+partee-triangle | i-d1 | F | % Requires in your document preamble:
+partee-triangle | i-d1 | F | %   \usepackage{forest}
+partee-triangle | i-d1 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+partee-triangle | i-d1 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+partee-triangle | i-d1 | F | % ============================================================
+partee-triangle | i-d1 | F | % "John walks."
+partee-triangle | i-d1 | F | \begin{forest}
+partee-triangle | i-d1 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+partee-triangle | i-d1 | F |   [{\cnode{t} \\ {$\mathit{walk}(j)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+partee-triangle | i-d1 | F |     [{\cnode{DP} \\ {$j$} \\ {\footnotesize $e$} \\ \crule{NN}}
+partee-triangle | i-d1 | F |       [{\textit{John} \\ {$j$} \\ {\footnotesize $e$}}]
+partee-triangle | i-d1 | F |     ]
+partee-triangle | i-d1 | F |     [{\cnode{IV} \\ {$\lambda x.\mathit{walk}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+partee-triangle | i-d1 | F |       [{\textit{walks} \\ {$\lambda x.\mathit{walk}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+partee-triangle | i-d1 | F |     ]
+partee-triangle | i-d1 | F |   ]
+partee-triangle | i-d1 | F | \end{forest}
+partee-triangle | i-d1 | F | 
+partee-triangle | i-d2 | \mathit{tall}(m)
+partee-triangle | i-d3 | \forall x.\mathit{man}(x) \rightarrow \mathit{walk}(x)
+partee-triangle | i-d1 | UNSOLVED
+partee-triangle | i-d2 | UNSOLVED
+partee-triangle | i-d1 | \mathit{walk}(\iota x.\mathit{king}(x))
+partee-triangle | i-d2 | \exists x.(\forall y.\mathit{king}(y) \leftrightarrow y = x) \land \mathit{walk}(x)
+partee-triangle | i-d1 | UNSOLVED
+partee-triangle | i-d1 | UNSOLVED
+partee-triangle | i-d2 | UNSOLVED
