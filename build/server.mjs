@@ -142,9 +142,10 @@ const CURATED = [
   ...CC_CHAPTERS.map(([pfx, label]) => ({ path: 'cc/' + pfx, island: 'lib-cc', title: 'C&C ' + label, keys: pick([pfx]) })),
   { path: 'hk', island: 'lib-hk', title: 'Heim & Kratzer — Semantics in Generative Grammar', keys: pick(HK_CHAPTERS.map(([p]) => p)) },
   ...HK_CHAPTERS.map(([pfx, label]) => ({ path: 'hk/' + pfx.replace('hk', 'ch'), island: 'lib-hk', title: 'H&K ' + label, keys: pick([pfx]) })),
-  { path: 'papers', island: 'lib-papers', title: 'Classic Papers', keys: pick(['partee', 'montague']) },
+  { path: 'papers', island: 'lib-papers', title: 'Classic Papers', keys: pick(['partee', 'montague', 'krifka']) },
   { path: 'papers/partee', island: 'lib-papers', title: 'Partee 1986 — NP Type-Shifting', keys: pick(['partee']) },
   { path: 'papers/ptq', island: 'lib-papers', title: 'Montague 1973 — PTQ', keys: pick(['montague']) },
+  { path: 'papers/krifka', island: 'lib-papers', title: 'Krifka 1998 — The Origins of Telicity', keys: pick(['krifka']) },
 ];
 
 function curatedPage(entry) {
@@ -227,7 +228,7 @@ answers are graded by <em>meaning</em> (α/β/η-equivalence), not surface form.
 ${CC_CHAPTERS.map(([pfx]) => '<a href="/cc/' + pfx + '/">/cc/' + pfx + '</a>').join(' · ')}</li>
 <li><a href="/hk/">/hk</a> — the Heim &amp; Kratzer companion; per chapter:
 ${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk/' + pfx.replace('hk', 'ch') + '</a>').join(' · ')}</li>
-<li><a href="/papers/">/papers</a> — classic papers: <a href="/papers/partee/">/papers/partee</a> · <a href="/papers/ptq/">/papers/ptq</a></li>
+<li><a href="/papers/">/papers</a> — classic papers: <a href="/papers/partee/">/papers/partee</a> · <a href="/papers/ptq/">/papers/ptq</a> · <a href="/papers/krifka/">/papers/krifka</a></li>
 <li><a href="/editor/">/editor</a> — the editor sandbox: author worksheets and export them as JSON, no account needed (to host worksheets for students, instructors use <a href="/dash/">/dash</a>)</li>
 <li><a href="/files/">/files</a> — download every worksheet and bundle as .compose.json, plus the full site map</li>
 <li><a href="/guide/">/guide</a> — the instructor guide: what students see, authoring, and hosting your own course</li>
@@ -425,7 +426,7 @@ ${OTHER_KEYS.length ? filesSection('Other worksheets', OTHER_KEYS) : ''}
 ${CC_CHAPTERS.map(([pfx]) => '<a href="/cc/' + pfx + '/">/cc/' + pfx + '</a>').join(' · ')}</li>
 <li><a href="/hk/">/hk</a> — Heim &amp; Kratzer, whole book; chapters:
 ${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk/' + pfx.replace('hk', 'ch') + '</a>').join(' · ')}</li>
-<li><a href="/papers/">/papers</a> — <a href="/papers/partee/">/papers/partee</a> · <a href="/papers/ptq/">/papers/ptq</a></li>
+<li><a href="/papers/">/papers</a> — <a href="/papers/partee/">/papers/partee</a> · <a href="/papers/ptq/">/papers/ptq</a> · <a href="/papers/krifka/">/papers/krifka</a></li>
 <li><a href="/guide/">/guide</a> — instructor guide with screenshots: navigation, authoring, hosting</li>
 <li><a href="/editor/">/editor</a> — author worksheets without an account; export JSON</li>
 <li><a href="/dash/">/dash</a> — instructor dashboard (invite-code registration): host your own versions</li>

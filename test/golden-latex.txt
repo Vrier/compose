@@ -1399,6 +1399,38 @@ hk9-pronouns | g1p0 | \mathit{blame}(j, x_{1})
 hk9-pronouns | g2p0 | \mathit{blame}(j, j)
 hk9-pronouns | g2p1 | \forall x.\mathit{woman}(x) \rightarrow \mathit{blame}(x, x)
 hk9-pronouns | g2p2 | \lnot (\exists x.\mathit{man}(x) \land \mathit{like}(x, x))
+krifka-telicity | i-d1 | (\exists x.\exists y.{\ast}\mathit{apple}(x) \land {\ast}\mathit{apple}(y) \land \lnot (x = y)) \land (\forall x.\forall y.{\ast}\mathit{apple}(x) \land {\ast}\mathit{apple}(y) \rightarrow {\ast}\mathit{apple}(x \oplus y))
+krifka-telicity | i-d1 | F | % ============================================================
+krifka-telicity | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com
+krifka-telicity | i-d1 | F | % Requires in your document preamble:
+krifka-telicity | i-d1 | F | %   \usepackage{forest}
+krifka-telicity | i-d1 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+krifka-telicity | i-d1 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+krifka-telicity | i-d1 | F | % ============================================================
+krifka-telicity | i-d1 | F | % "Apples are cumulative."
+krifka-telicity | i-d1 | F | \begin{forest}
+krifka-telicity | i-d1 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+krifka-telicity | i-d1 | F |   [{\cnode{t} \\ {$(\exists x.\exists y.{\ast}\mathit{apple}(x) \land {\ast}\mathit{apple}(y) \land \lnot (x = y)) \land (\forall x.\forall y.{\ast}\mathit{apple}(x) \land {\ast}\mathit{apple}(y) \rightarrow {\ast}\mathit{apple}(x \oplus y))$} \\ {\footnotesize $t$} \\ \crule{FA}}
+krifka-telicity | i-d1 | F |     [{\cnode{NP} \\ {$\lambda x.{\ast}\mathit{apple}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+krifka-telicity | i-d1 | F |       [{\textit{apples} \\ {$\lambda x.{\ast}\mathit{apple}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+krifka-telicity | i-d1 | F |     ]
+krifka-telicity | i-d1 | F |     [{\cnode{Pred} \\ {$\lambda P.(\exists x.\exists y.P(x) \land P(y) \land \lnot (x = y)) \land (\forall x.\forall y.P(x) \land P(y) \rightarrow P(x \oplus y))$} \\ {\footnotesize $\langle \langle e,t\rangle,t\rangle$} \\ \crule{FA}}
+krifka-telicity | i-d1 | F |       [{\cnode{Cop} \\ {$\lambda K.K$} \\ {\footnotesize $\langle \langle \langle e,t\rangle,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle$} \\ \crule{NN}}
+krifka-telicity | i-d1 | F |         [{\textit{are} \\ {$\lambda K.K$} \\ {\footnotesize $\langle \langle \langle e,t\rangle,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle$}}]
+krifka-telicity | i-d1 | F |       ]
+krifka-telicity | i-d1 | F |       [{\cnode{A} \\ {$\lambda P.(\exists x.\exists y.P(x) \land P(y) \land \lnot (x = y)) \land (\forall x.\forall y.P(x) \land P(y) \rightarrow P(x \oplus y))$} \\ {\footnotesize $\langle \langle e,t\rangle,t\rangle$} \\ \crule{NN}}
+krifka-telicity | i-d1 | F |         [{\textit{cumulative} \\ {$\lambda P.(\exists x.\exists y.P(x) \land P(y) \land \lnot (x = y)) \land (\forall x.\forall y.P(x) \land P(y) \rightarrow P(x \oplus y))$} \\ {\footnotesize $\langle \langle e,t\rangle,t\rangle$}}]
+krifka-telicity | i-d1 | F |       ]
+krifka-telicity | i-d1 | F |     ]
+krifka-telicity | i-d1 | F |   ]
+krifka-telicity | i-d1 | F | \end{forest}
+krifka-telicity | i-d1 | F | 
+krifka-telicity | i-d2 | \forall x.\forall y.\mathit{water}(x) \land \mathit{liter}(x) = \mathit{two} \land \mathit{water}(y) \land \mathit{liter}(y) = \mathit{two} \rightarrow \lnot (y \leq x \land \lnot (y = x))
+krifka-telicity | i-d1 | \lambda e.\mathit{sleep}(m, e)
+krifka-telicity | i-d2 | \lambda e.\exists y.{\ast}\mathit{apple}(y) \land \mathit{eat}(m, y, e)
+krifka-telicity | i-d1 | \lambda e.\exists y.{\ast}\mathit{apple}(y) \land \lvert y\rvert = \mathit{two} \land \mathit{eat}(m, y, e)
+krifka-telicity | i-d2 | \lambda e.\exists y.\mathit{water}(y) \land \mathit{liter}(y) = \mathit{two} \land \mathit{drink}(j, y, e)
+krifka-telicity | i-d3 | \lambda e.\exists y.\mathit{cart}(y) \land \mathit{push}(j, y, e)
 montague-ptq-int | i-d1 | \forall w'.\mathit{walk}(w', j)
 montague-ptq-int | i-d1 | F | % ============================================================
 montague-ptq-int | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com

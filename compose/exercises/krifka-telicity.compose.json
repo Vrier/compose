@@ -1,0 +1,243 @@
+{
+  "compose": 1,
+  "id": "krifka-telicity",
+  "title": "Krifka 1998 — The Origins of Telicity",
+  "notation": "cc",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "j m",
+      "n": "two"
+    },
+    "variables": {
+      "e": "x y z u",
+      "v": "e e' e''",
+      "et": "P Q",
+      "t": "p q",
+      "<<e,t>,t>": "K"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Mary"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "John"
+      ],
+      "denotation": "j"
+    },
+    {
+      "words": [
+        "sleeps",
+        "sleep"
+      ],
+      "denotation": "Lx.Le.sleep(x,e)"
+    },
+    {
+      "words": [
+        "eats",
+        "eat"
+      ],
+      "denotation": "LP.Lx.Le.Ey[P(y) & eat(x,y,e)]"
+    },
+    {
+      "words": [
+        "drinks",
+        "drink"
+      ],
+      "denotation": "LP.Lx.Le.Ey[P(y) & drink(x,y,e)]"
+    },
+    {
+      "words": [
+        "pushes",
+        "push"
+      ],
+      "denotation": "LP.Lx.Le.Ey[P(y) & push(x,y,e)]"
+    },
+    {
+      "words": [
+        "apples"
+      ],
+      "denotation": "Lx.*apple(x)"
+    },
+    {
+      "words": [
+        "water"
+      ],
+      "denotation": "Lx.water(x)"
+    },
+    {
+      "words": [
+        "cart"
+      ],
+      "denotation": "Lx.cart(x)"
+    },
+    {
+      "words": [
+        "a",
+        "an"
+      ],
+      "denotation": "LP.P"
+    },
+    {
+      "words": [
+        "two"
+      ],
+      "denotation": "LP.Lx.[P(x) & card(x) = two]"
+    },
+    {
+      "words": [
+        "two-liters-of"
+      ],
+      "denotation": "LP.Lx.[P(x) & liter(x) = two]"
+    },
+    {
+      "words": [
+        "is",
+        "are"
+      ],
+      "denotation": "LK.K"
+    },
+    {
+      "words": [
+        "cumulative"
+      ],
+      "denotation": "LP.[Ex[Ey[P(x) & P(y) & ~(x = y)]] & Ax[Ay[P(x) & P(y) -> P(x ⊕ y)]]]"
+    },
+    {
+      "words": [
+        "quantized"
+      ],
+      "denotation": "LP.Ax[Ay[P(x) & P(y) -> ~((y ≤ x) & ~(y = x))]]"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "predicateModification": false,
+      "nonBranchingNodes": true,
+      "predicateAbstraction": false
+    },
+    "typeShifts": [
+      "ec-v"
+    ]
+  },
+  "exercises": [
+    {
+      "id": "g1",
+      "title": "A. Cumulative and quantized reference (defs. 3–4)",
+      "instructions": "CUM and QUA are properties of predicates, not of things (Krifka: one entity can fall under apples and under two apples). Unfold the definitions by composing.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.NP apples ] [.Pred [.Cop are ] [.A cumulative ] ] ]",
+          "sentence": "Apples are cumulative.",
+          "hints": [
+            "are is vacuous here; cumulative denotes a property of predicates — apply it to ⟦apples⟧ = λx.∗apple(x).",
+            "The result unfolds definition (3): non-triviality (two distinct instances) plus closure under sum ⊕."
+          ],
+          "targets": [
+            "Ex[Ey[*apple(x) & *apple(y) & ~(x = y)]] & Ax[Ay[*apple(x) & *apple(y) -> *apple(x ⊕ y)]]"
+          ],
+          "reading": {
+            "section": "1"
+          }
+        },
+        {
+          "id": "d2",
+          "tree": "[.t [.NP [.Mea two-liters-of ] [.CN water ] ] [.Pred [.Cop is ] [.A quantized ] ] ]",
+          "sentence": "Two liters of water is quantized.",
+          "targets": [
+            "Ax[Ay[(water(x) & liter(x) = two) & (water(y) & liter(y) = two) -> ~((y ≤ x) & ~(y = x))]]"
+          ],
+          "reading": {
+            "section": "1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g2",
+      "title": "B. Verbs have an event argument (def. 40)",
+      "instructions": "Every n-place verbal predicate becomes an (n+1)-place relation with a final event argument. Close the event with Existential Closure (EC) at the top.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.NP Mary ] [.VP sleeps ] ]",
+          "sentence": "Mary sleeps.",
+          "targets": [
+            "Ee[sleep(m,e)]"
+          ],
+          "reading": {
+            "section": "2"
+          }
+        },
+        {
+          "id": "d2",
+          "tree": "[.t [.NP Mary ] [.VP [.V eats ] [.NP apples ] ] ]",
+          "sentence": "Mary eats apples.",
+          "targets": [
+            "Ee[Ey[*apple(y) & eat(m,y,e)]]"
+          ],
+          "reading": {
+            "section": "2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g3",
+      "title": "C. Aspectual composition (§3): the object shapes the VP",
+      "instructions": "Same verb, different objects, different telicity. The formulas differ only in the object conjuncts — the telicity difference is proved from them in the notes via TEL (37) and incrementality SINC (51).",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.NP Mary ] [.VP [.V eats ] [.NP [.Num two ] [.CN apples ] ] ] ]",
+          "sentence": "Mary eats two apples.",
+          "targets": [
+            "Ee[Ey[*apple(y) & card(y) = two & eat(m,y,e)]]"
+          ],
+          "reading": {
+            "section": "3"
+          }
+        },
+        {
+          "id": "d2",
+          "tree": "[.t [.NP John ] [.VP [.V drinks ] [.NP [.Mea two-liters-of ] [.CN water ] ] ] ]",
+          "sentence": "John drinks two liters of water.",
+          "targets": [
+            "Ee[Ey[water(y) & liter(y) = two & drink(j,y,e)]]"
+          ],
+          "reading": {
+            "section": "3"
+          }
+        },
+        {
+          "id": "d3",
+          "tree": "[.t [.NP John ] [.VP [.V pushes ] [.NP [.Det a ] [.CN cart ] ] ] ]",
+          "sentence": "John pushes a cart.",
+          "targets": [
+            "Ee[Ey[cart(y) & push(j,y,e)]]"
+          ],
+          "reading": {
+            "section": "3"
+          }
+        }
+      ]
+    }
+  ],
+  "reading": {
+    "format": "latex",
+    "markdown": "# Krifka 1998 · The Origins of Telicity\n\nWorksheet companion to Manfred Krifka, \"The Origins of Telicity\" (in\nS. Rothstein (ed.), *Events and Grammar*, Kluwer, 1998). The paper derives\nthe telic/atelic distinction from the algebra of parts — the same ⊕ and ≤\nyou know from the §10 worksheets — applied to objects *and* events, linked\nby thematic relations.\n\n## 1 Cumulative and quantized reference\n\nTelicity talk starts on the nominal side. With respect to a part structure,\nKrifka defines (his (3), (4)):\n\n\\begin{derivation}\nCUM(X) ↔ Ex,y[X(x) & X(y) & ~x=y] & Ax,y[X(x) & X(y) -> X(x ⊕ y)]\nQUA(X) ↔ Ax,y[X(x) & X(y) -> ~y < x]\n\\end{derivation}\n\n*apples* and *water* are cumulative: sum two instances and the predicate\nstill applies. *two liters of water* is quantized: no proper part of two\nliters is two liters — Krifka proves this from the properties of extensive\nmeasure functions (his (10) and the remainder principle). Crucially these\nare properties of **descriptions**, not things: one and the same portion\nfalls under *apples* and under *two apples*. The worksheet writes proper\npart $y < x$ as $y \\leq x \\wedge \\neg y = x$.\n\n\\ex Apples are cumulative.\n\\xe\n\n\\ex Two liters of water is quantized.\n\\xe\n\n## 2 Verbs carry an event argument\n\nFollowing Davidson, every n-place verbal predicate translates as an\n(n+1)-place relation whose last argument is an event (Krifka's (40)):\n$sleep(x,e)$, $eat(x,y,e)$. Uniqueness of participants (41) keeps events\ntied to their participants. In these derivations you close the event\nargument at the top with Existential Closure (EC over events) — the same\nshift as in the ch11 worksheets.\n\n\\ex Mary sleeps.\n\\xe\n\n## 3 Aspectual composition\n\nThe telicity of a VP is computed, not listed: *eat apples* is atelic, *eat\ntwo apples* is telic, with one verb. Krifka defines telicity for event\npredicates (his (37), using initial/final parts (36)):\n\n\\begin{derivation}\nTEL(X) ↔ Ae,e'[X(e) & X(e') & e' ≤ e -> INI(e',e) & FIN(e',e)]\n\\end{derivation}\n\nand shows that quantized event predicates are telic, cumulative ones\n(non-contemporaneous) atelic. What transmits the object's reference type to\nthe event predicate is the **thematic relation** and its homomorphism\nproperties (his (43)–(51)): mapping to subevents MSE (46) — every proper\npart of the apples is eaten in a proper part of the event; mapping to\nsubobjects MSO (49) — every proper part of the event eats a proper part of\nthe apples; with uniqueness of events (47) and objects (50) these make θ a\none-to-one correspondence between object parts and event parts. The\nconjunction (plus non-atomicity) is **strict incrementality**, SINC (51).\n\nIf the patient relation of *eat* is strictly incremental and the object\npredicate is quantized, the VP's event predicate is quantized, hence telic;\nif the object is cumulative (*apples*), the VP is cumulative, hence atelic.\nCompare your three formulas below — they differ only in the object\nconjuncts:\n\n\\pex\n\\a Mary eats two apples. (telic: quantized object, incremental θ)\n\\a John drinks two liters of water. (telic, via the measure function)\n\\a John pushes a cart. (atelic: θ of push is NOT incremental — no part of\nthe cart is pushed in a part of the pushing; MSE/MSO fail)\n\\xe\n\nThe *push a cart* case is the paper's warning against reading telicity off\nthe object alone: the object description is quantized, but without an\nincremental thematic relation nothing transmits that to the event\npredicate. Krifka's counter-cases to weaker definitions — *see a picture*,\n*touch a cup* (satisfy mapping but not uniqueness), *make a dot* (atomic on\nboth sides) — are what force the full SINC package.\n\n## 4 What is simplified or omitted\n\nThe worksheet stops where the engine's comfortable expressivity stops:\nKrifka's extensive measure functions appear only as the $liter(x) = two$\nconjunct (his §2.3 develops the theory: additivity, commensurability, the\nremainder principle); the paths-and-movement half of the paper (*walk from\nthe university to the capitol*, adjacency structures, §§4–5) and the\nproperty-change cases (*bake the lobster*, §6) are not derived; and the\nhomomorphism properties (43)–(51) are stated and used in these notes rather\nthan composed in trees — they quantify over the thematic relation itself,\none level up from what tree composition manipulates. The definitions quoted\nare Krifka's own, cited by his numbering throughout.\n\n## Credits\n\nKrifka, M. (1998). The origins of telicity. In S. Rothstein (ed.), *Events\nand Grammar*, 197–235. Kluwer. — The mereological machinery follows the\n§10 (Coppock & Champollion ch. 10) worksheets; the event argument and EC\nfollow ch. 11. Worksheet content is original paraphrase; definitions are\nquoted with the paper's own numbering."
+  },
+  "meta": {
+    "author": "Thomas Stephen",
+    "source": "after Krifka 1998, The Origins of Telicity",
+    "license": "MIT",
+    "difficulty": "challenge"
+  }
+}

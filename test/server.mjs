@@ -285,6 +285,8 @@ async function main() {
   r = await req('GET', '/papers/ptq/', { raw: true });
   contains('/papers/ptq carries Part A', r.text, '"montague-ptq":{');
   contains('/papers/ptq carries the intensional Part B (S19)', r.text, '"montague-ptq-int":{');
+  r = await req('GET', '/papers/krifka/', { raw: true });
+  contains('/papers/krifka carries the telicity worksheet (S20)', r.text, '"krifka-telicity":{');
   r = await req('GET', '/papers/partee/', { raw: true });
   contains('/papers/partee carries Partee', r.text, '"partee-triangle":{');
   lacks('/papers/partee does NOT carry PTQ', r.text, '"montague-ptq":{');

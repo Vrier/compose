@@ -21,8 +21,8 @@ install; progress lives in the browser and is shared within each family:
 | /cc/ch6 … /cc/ch13 | single C&C chapters (§6–§8, §10–§13) |
 | [/hk](https://compose.tstephen.com/hk/) | Heim & Kratzer, *Semantics in Generative Grammar* — all worksheets |
 | /hk/ch1, ch2, ch4, ch5, ch6, ch7, ch9, ch12 | single H&K chapters |
-| [/papers](https://compose.tstephen.com/papers/) | classic papers — Partee 1986 + Montague's PTQ |
-| /papers/partee, /papers/ptq | one paper each |
+| [/papers](https://compose.tstephen.com/papers/) | classic papers — Partee 1986, Montague's PTQ (extensional + intensional), Krifka 1998 on telicity |
+| /papers/partee, /papers/ptq, /papers/krifka | one paper each |
 | [/editor](https://compose.tstephen.com/editor/) | author worksheets without an account; export JSON or self-contained HTML |
 | [/files](https://compose.tstephen.com/files/) | every worksheet + bundle as downloadable .compose.json, plus the site map |
 | [/guide](https://compose.tstephen.com/guide/) | the instructor guide, with screenshots and the notes input reference |
