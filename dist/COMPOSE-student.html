@@ -215,6 +215,9 @@ body {
 .lib-links a:hover { text-decoration: underline; }
 .file-btn-kicker { color: var(--ink-soft); font-weight: 400; }
 .file-btn-caret { opacity: .55; font-size: 10px; }
+.dash-back { margin-top: 14px; text-align: center; font-size: 13px; color: var(--ink-soft); }
+.dash-back a { color: var(--accent-ink); text-decoration: none; }
+.dash-back a:hover { text-decoration: underline; }
 .nav-item.active { background: var(--accent-soft); color: var(--ink); }
 .nav-item.active::before {
   content: ''; position: absolute; left: -10px; top: 7px; bottom: 7px; width: 3px;
@@ -9487,15 +9490,25 @@ function App() {
       reader.onload = () => {
         const text = String(reader.result || "");
         const title = file.name.replace(/\.(compose\.)?(json|txt|lbd|lc)$/i, "").replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
-        let ok = false;
+        let ok = false, empty = false;
         try {
           const { summary } = window.LCData.loadText(text, title);
           ok = summary.problems > 0 || summary.lex > 0;
+          empty = !ok;
         } catch (e) {
           ok = false;
         }
         if (!ok) {
-          setLoadErr("Could not parse \u201C" + file.name + "\u201D as a COMPOSE exercise file.");
+          let msg = empty ? "\u201C" + file.name + "\u201D parsed, but contains no exercises or lexicon." : "Could not parse \u201C" + file.name + "\u201D as a COMPOSE exercise file.";
+          try {
+            if (!empty && window.LCFormat && window.LCFormat.parseFile) {
+              const d = window.LCFormat.parseFile(text, title, { collect: true });
+              const errs = (d && d.diagnostics || []).filter((x) => x.level === "error").slice(0, 2);
+              if (errs.length) msg = "Could not load \u201C" + file.name + "\u201D: " + errs.map((x) => (x.path ? x.path + " \u2014 " : "") + x.message).join("; ") + (errs.length > 1 ? " \u2026" : "");
+            }
+          } catch (e) {
+          }
+          setLoadErr(msg);
         } else {
           const key = "user-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6);
           added = key;

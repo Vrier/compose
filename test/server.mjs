@@ -293,6 +293,9 @@ async function main() {
   contains('/papers/partee-rooth carries generalized conjunction (S21)', r.text, '"partee-rooth-conj":{');
   r = await req('GET', '/papers/barwise-cooper/', { raw: true });
   contains('/papers/barwise-cooper carries the GQ worksheet (S22)', r.text, '"barwise-cooper":{');
+  r = await req('GET', '/dash/', { raw: true });
+  contains('/dash offers the invite-code contact (S26)', r.text, 'tmurrays@tcd.ie');
+  contains('/dash links back to the site (S26)', r.text, 'dash-back');
   r = await req('GET', '/help/', { raw: true });
   contains('/help serves the student reference (S23)', r.text, 'How grading works');
   r = await req('GET', '/help/guides/', { raw: true });

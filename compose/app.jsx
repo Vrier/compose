@@ -384,9 +384,26 @@ function App() {
       reader.onload = () => {
         const text = String(reader.result || '');
         const title = file.name.replace(/\.(compose\.)?(json|txt|lbd|lc)$/i, '').replace(/[-_]+/g, ' ').replace(/\s+/g, ' ').trim();
-        let ok = false;
-        try { const { summary } = window.LCData.loadText(text, title); ok = summary.problems > 0 || summary.lex > 0; } catch (e) { ok = false; }
-        if (!ok) { setLoadErr('Could not parse “' + file.name + '” as a COMPOSE exercise file.'); }
+        let ok = false, empty = false;
+        try { const { summary } = window.LCData.loadText(text, title); ok = summary.problems > 0 || summary.lex > 0; empty = !ok; } catch (e) { ok = false; }
+        if (!ok) {
+          // Surface the parser's own diagnostics (S26) instead of a generic
+          // failure: worksheet-shaped JSON gets per-field errors from
+          // parseFile's collect mode; anything else gets the old message.
+          let msg = empty
+            ? '“' + file.name + '” parsed, but contains no exercises or lexicon.'
+            : 'Could not parse “' + file.name + '” as a COMPOSE exercise file.';
+          try {
+            if (!empty && window.LCFormat && window.LCFormat.parseFile) {
+              const d = window.LCFormat.parseFile(text, title, { collect: true });
+              const errs = ((d && d.diagnostics) || []).filter((x) => x.level === 'error').slice(0, 2);
+              if (errs.length) msg = 'Could not load “' + file.name + '”: '
+                + errs.map((x) => (x.path ? x.path + ' — ' : '') + x.message).join('; ')
+                + (errs.length > 1 ? ' …' : '');
+            }
+          } catch (e) {}
+          setLoadErr(msg);
+        }
         else {
           const key = 'user-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6);
           added = key;

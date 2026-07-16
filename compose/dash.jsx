@@ -104,7 +104,10 @@
             {err && <div className="dash-err">{err}</div>}
             <button className="btn-primary dash-submit" disabled={busy}>{busy ? '…' : mode === 'login' ? 'Log in' : 'Register'}</button>
           </form>
-          {mode === 'register' && <div className="dash-note">Registration requires an invite code. No emails are sent — remember your password; only the administrator can reset it.</div>}
+          {mode === 'register' && <div className="dash-note">Registration requires an invite code — no code yet? Email <a href="mailto:tmurrays@tcd.ie">tmurrays@tcd.ie</a>. No emails are sent by the server — remember your password; only the administrator can reset it.</div>}
+        </div>
+        <div className="dash-back">
+          <a href="/">← compose.tstephen.com</a> · <a href="/guide/">instructor guide</a> · <a href="/about/">about</a>
         </div>
       </div>
     );
