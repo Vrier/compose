@@ -65,7 +65,7 @@ built-in library) that run from a double-click with no server at all.
     compose/            the app: engine.js (λ-calculus core), lcformat.js
                         (format/solver), *.jsx UI, lingdown.js (notes renderer:
                         Markdown + LaTeX input — internal filename only),
-                        exercises/ (40 built-in worksheets), reading/, bundles/
+                        exercises/ (46 built-in worksheets), reading/, bundles/
     build/              page assembler + server-artifact builder
     server/             PocketBase: migrations, hooks (serving, validation), pin script
     deploy/             Caddyfile, systemd unit, provision/deploy/backup scripts

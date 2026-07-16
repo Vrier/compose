@@ -1,11 +1,13 @@
 # Montague's PTQ · A — The Extensional Core
 
-Montague's guiding idea is **uniformity**: every noun phrase — a name, a quantifier
-phrase, even a pronoun — denotes one and the same kind of thing, a *generalized
-quantifier* of type ⟨⟨e,t⟩,t⟩, a set of properties. A name is folded into this type
-by `lift`; determiners build quantifiers directly; and a transitive verb is given a
-type that lets it take a quantifier as its object. Scope ambiguities then come from
-one extra rule, *quantifying-in*.
+PTQ opens: "The aim of this paper is to present in a rigorous way the syntax
+and semantics of a certain fragment of a certain dialect of English." In the
+fragment every term phrase — a name, a quantifier phrase, a pronoun — is
+translated at one type, the generalized-quantifier type ⟨⟨e,t⟩,t⟩; the
+worksheet's lexical entries below are PTQ's own translations (rules T1–T2,
+quoted at the point of use, with PTQ's P{x} notation adapted to P(x) and
+intension/extension marks dropped as licensed by his meaning postulates —
+see §6).
 
 This reading develops the **extensional skeleton** of PTQ. The intensional half —
 the de dicto reading of *seek*, the rising-temperature puzzle — needs functions
@@ -13,8 +15,10 @@ from possible worlds and is noted in §6 but not derived here.
 
 ## 1 Every noun phrase is a quantifier
 
-A name lifts to the set of its properties (a *principal ultrafilter*); a determiner
-combines with a noun to give a quantifier:
+A name lifts to the set of its properties; PTQ's T1(e): "heₙ translates into
+λP.P{xₙ}" — the same shape, λP.P(j), for lifted names. For determiners,
+T2, quoted (notation adapted): "If ζ ∈ P_CN and ζ translates into ζ′, then
+every ζ translates into λP∀x[ζ′(x) → P{x}]":
 
 \begin{derivation}
 lift([[John]])    = lambda P.P(j)                       : <<e,t>,t>
@@ -75,8 +79,11 @@ object lifts first, and the truth conditions reduce to the simple relation:
 
 ## 3 The verb *be*
 
-One entry covers both identity and predication. `be` takes a quantifier object and
-asks whether it holds of the property *being identical to the subject*:
+One entry covers both identity and predication. PTQ's T1(b), quoted
+(notation adapted, extension marks dropped): "be translates into
+λ𝒫λx.𝒫{ŷ[ˇx = ˇy]}". Montague notes its extensionality need not be
+stipulated: "The reason why the extensionality of be was not explicitly
+assumed is that it can be proved."
 
 \begin{derivation}
 [[is]]          = lambda T.lambda x.T(lambda y.x=y)   : <<<e,t>,t>,<e,t>>
@@ -95,7 +102,8 @@ law — to the predication `man(j)` (\ref{beids}).
 
 ## 4 The (Russellian)
 
-Montague's *the* carries Russell's existence-and-uniqueness:
+T2 continues (notation adapted): "the ζ translates into
+λP∃y[∀x[ζ′(x) ↔ x = y] ∧ P{y}]" — Russell's existence-and-uniqueness:
 
 \begin{derivation}
 [[the]]      = lambda X.lambda Y.exists x[X(x) & forall y[X(y) -> y=x] & Y(x)] : <<e,t>,<<e,t>,t>>
@@ -145,3 +153,11 @@ what those postulates license. The paper's real subject — *seek*,
 in **Part B — The Intensional Fragment**, the companion worksheet on this
 page, which states explicitly how COMPOSE renders Montague's intensional
 logic in Gallin's two-sorted TY2.
+
+## Credits
+
+Montague, R. (1973). The proper treatment of quantification in ordinary
+English. In K. J. J. Hintikka et al. (eds.), *Approaches to Natural
+Language*, 221–242. Reidel. Translations quoted from T1–T2 with notation
+adapted as flagged above. Notes text: quotes as marked, plus flagged
+rendering notes; remaining prose is signposting.

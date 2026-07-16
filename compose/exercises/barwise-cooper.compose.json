@@ -1,0 +1,295 @@
+{
+  "compose": 1,
+  "id": "barwise-cooper",
+  "title": "Barwise & Cooper 1981 — Generalized Quantifiers and Natural Language",
+  "notation": "cc",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "<e,t>": "man student king solution computer problem linguistics_student perfect new exist walk"
+    },
+    "variables": {
+      "e": "x y z",
+      "et": "P Q",
+      "<<e,t>,t>": "T",
+      "<<e,t>,<<e,t>,t>>": "D"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "every",
+        "Every"
+      ],
+      "denotation": "LQ.LP.Ax[Q(x) -> P(x)]"
+    },
+    {
+      "words": [
+        "a",
+        "A",
+        "an"
+      ],
+      "denotation": "LQ.LP.Ex[Q(x) & P(x)]"
+    },
+    {
+      "words": [
+        "no",
+        "No"
+      ],
+      "denotation": "LQ.LP.~Ex[Q(x) & P(x)]"
+    },
+    {
+      "words": [
+        "the",
+        "The"
+      ],
+      "denotation": "LQ.LP.Ex[[Q(x) & Ay[Q(y) -> y = x]] & P(x)]"
+    },
+    {
+      "words": [
+        "man"
+      ],
+      "denotation": "man"
+    },
+    {
+      "words": [
+        "student"
+      ],
+      "denotation": "student"
+    },
+    {
+      "words": [
+        "king"
+      ],
+      "denotation": "king"
+    },
+    {
+      "words": [
+        "solution"
+      ],
+      "denotation": "solution"
+    },
+    {
+      "words": [
+        "computer"
+      ],
+      "denotation": "computer"
+    },
+    {
+      "words": [
+        "problem"
+      ],
+      "denotation": "problem"
+    },
+    {
+      "words": [
+        "linguistics-student"
+      ],
+      "denotation": "linguistics_student"
+    },
+    {
+      "words": [
+        "perfect"
+      ],
+      "denotation": "perfect"
+    },
+    {
+      "words": [
+        "new"
+      ],
+      "denotation": "new"
+    },
+    {
+      "words": [
+        "walks",
+        "walk"
+      ],
+      "denotation": "Lx.walk(x)"
+    },
+    {
+      "words": [
+        "is",
+        "are"
+      ],
+      "denotation": "LP.P"
+    },
+    {
+      "words": [
+        "is-a"
+      ],
+      "displayAs": "is a",
+      "denotation": "LP.P"
+    },
+    {
+      "words": [
+        "conservative"
+      ],
+      "denotation": "LD.AP[AQ[D(P)(Q) ↔ D(P)(Lx.[P(x) & Q(x)])]]"
+    },
+    {
+      "words": [
+        "There-is",
+        "there-is"
+      ],
+      "displayAs": "There is",
+      "denotation": "LT.T(Lx.exist(x))"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "predicateModification": true,
+      "nonBranchingNodes": true,
+      "predicateAbstraction": false
+    }
+  },
+  "exercises": [
+    {
+      "id": "g1",
+      "title": "A. NPs as generalized quantifiers",
+      "instructions": "Every NP denotes a set of sets, type ⟨⟨e,t⟩,t⟩; the determiner applies to the CN and the resulting quantifier applies to the VP. The determiner entries are the ones given in Partee (2008, §2).",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.DP [.Det every ] [.NP man ] ] [.VP walks ] ]",
+          "sentence": "Every man walks.",
+          "targets": [
+            "Ax[man(x) -> walk(x)]"
+          ],
+          "reading": {
+            "section": "1"
+          }
+        },
+        {
+          "id": "d2",
+          "tree": "[.t [.DP [.Det a ] [.NP student ] ] [.VP walks ] ]",
+          "sentence": "A student walks.",
+          "targets": [
+            "Ex[student(x) & walk(x)]"
+          ],
+          "reading": {
+            "section": "1"
+          }
+        },
+        {
+          "id": "d3",
+          "tree": "[.t [.DP [.Det the ] [.NP king ] ] [.VP walks ] ]",
+          "sentence": "The king walks.",
+          "targets": [
+            "Ex[[king(x) & Ay[king(y) -> y = x]] & walk(x)]"
+          ],
+          "reading": {
+            "section": "1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g2",
+      "title": "B. Conservativity (the B&C universal)",
+      "instructions": "conservative denotes a property of determiner meanings (type ⟨⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩,t⟩). Applying it to a determiner unfolds the definition D(A)(B) = D(A)(A ∩ B). The copula is vacuous and omitted from the tree. Then check one of B&C's sentence pairs by computing both sides.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.Det every ] [.Pred conservative ] ]",
+          "sentence": "every is conservative.",
+          "targets": [
+            "AP[AQ[Ax[P(x) -> Q(x)] ↔ Ax[P(x) -> [P(x) & Q(x)]]]]"
+          ],
+          "reading": {
+            "section": "2"
+          }
+        },
+        {
+          "id": "d2",
+          "tree": "[.t [.DP [.Det no ] [.NP solution ] ] [.VP [.Cop is ] [.AP perfect ] ] ]",
+          "sentence": "No solution is perfect.",
+          "targets": [
+            "~Ex[solution(x) & perfect(x)]"
+          ],
+          "reading": {
+            "section": "2"
+          }
+        },
+        {
+          "id": "d3",
+          "tree": "[.t [.DP [.Det no ] [.NP solution ] ] [.VP [.Cop is-a ] [.NP [.AP perfect ] [.N solution ] ] ] ]",
+          "sentence": "No solution is a perfect solution.",
+          "targets": [
+            "~Ex[solution(x) & [perfect(x) & solution(x)]]"
+          ],
+          "reading": {
+            "section": "2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g3",
+      "title": "C. Weak and strong determiners",
+      "instructions": "B&C's test: compute \"Det CN is a CN\". If the result is a tautology the determiner is positive strong; if a contradiction, negative strong; if contingent, weak.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.DP [.Det every ] [.NP solution ] ] [.VP [.Cop is-a ] [.N solution ] ] ]",
+          "sentence": "Every solution is a solution.",
+          "targets": [
+            "Ax[solution(x) -> solution(x)]"
+          ],
+          "reading": {
+            "section": "3"
+          }
+        },
+        {
+          "id": "d2",
+          "tree": "[.t [.DP [.Det no ] [.NP computer ] ] [.VP [.Cop is-a ] [.N computer ] ] ]",
+          "sentence": "No computer is a computer.",
+          "targets": [
+            "~Ex[computer(x) & computer(x)]"
+          ],
+          "reading": {
+            "section": "3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g4",
+      "title": "D. Existential sentences",
+      "instructions": "B&C interpret \"There be Det CN\" as D(A)(E), where E is the universe. We render membership in E by the predicate exist (see the notes for this rendering choice). Compute a weak and a strong case; the strong case comes out tautologous.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.Ex There-is ] [.DP [.Det a ] [.NP [.AP new ] [.N problem ] ] ] ]",
+          "sentence": "There is a new problem.",
+          "targets": [
+            "Ex[[new(x) & problem(x)] & exist(x)]"
+          ],
+          "reading": {
+            "section": "4"
+          }
+        },
+        {
+          "id": "d2",
+          "tree": "[.t [.Ex There-is ] [.DP [.Det every ] [.NP linguistics-student ] ] ]",
+          "sentence": "#There is every linguistics student.",
+          "targets": [
+            "Ax[linguistics_student(x) -> exist(x)]"
+          ],
+          "reading": {
+            "section": "4"
+          }
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "author": "Thomas Stephen",
+    "license": "MIT",
+    "difficulty": "challenge"
+  },
+  "reading": {
+    "format": "latex",
+    "markdown": "# Barwise & Cooper 1981 · Generalized Quantifiers and Natural Language\n\nCompanion to Jon Barwise & Robin Cooper, \"Generalized quantifiers and natural\nlanguage\", *Linguistics and Philosophy* 4 (1981), 159–219. The original is not\nfreely available, so every definition and example below is quoted from Barbara\nPartee's lecture presentation of the paper (Partee 2008, RGGU Lecture 4, \"Noun\nPhrases and Generalized Quantifiers\"), which states B&C's definitions verbatim.\nProse that is not quoted is signposting or a flagged rendering note.\n\n## 1 NPs as generalized quantifiers\n\nPartee (2008, §2), reviewing Montague (1973): \"Uniform type for all NP\ninterpretations: (e → t) → t\". Her list (notation adapted to this app's λ):\n\n\\begin{derivation}\n[[every student]] = LP.Ax[student(x) -> P(x)]\n[[a student]]     = LP.Ex[student(x) & P(x)]\n[[the king]]      = LP.Ex[[king(x) & Ay[king(y) -> y = x]] & P(x)]\n\\end{derivation}\n\n\"Determiner meanings: Relations between sets, or functions which apply to one\nset (the interpretation of the CNP) … or equivalently, a set of sets (the\ninterpretation of the NP).\" In relational terms (quoted from the same page):\n\"Every: as a relation between sets A and B ('Every A B'): A ⊆ B. Some, a:\nA ∩ B ≠ ∅. No: A ∩ B = ∅. Most (not first-order expressible):\n|A ∩ B| > |A − B|.\" The parenthesis on *most* is B&C's point that determiner\nmeanings cannot in general be reduced to first-order quantifier prefixes.\n\n\\ex Every man walks.\n\\xe\n\n\\ex The king walks.\n\\xe\n\n## 2 Conservativity\n\nQuoted from Partee (2008, §2): \"Linguistic universal: Natural language\ndeterminers are conservative functions. (Barwise and Cooper 1981) Definition:\nA determiner meaning D is conservative iff for all A,B, D(A)(B) =\nD(A)(A ∩ B).\" Her examples, verbatim: \"No solution is perfect = No solution\nis a perfect solution.\" — \"Every boy is singing = every boy is a boy who is\nsinging.\" And the non-example: \"Only is not conservative; but it can be\nargued that only is not a determiner.\"\n\nRendering note: the worksheet's *conservative* is a property of determiner\nmeanings, type ⟨⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩,t⟩, so applying it to a determiner unfolds\nthe definition compositionally — the same device as CUM and QUA in the\nKrifka worksheet on this page. A ∩ B is rendered λx[A(x) ∧ B(x)].\n\n\\ex every is conservative.\n\\xe\n\n\\pex\n\\a No solution is perfect.\n\\a No solution is a perfect solution.\n\\xe\n\n## 3 Weak and strong determiners\n\nB&C's definitions, quoted from Partee (2008, §3.2.1): \"(i) A determiner D is\npositive strong if for every model M and every A ⊆ E, if D(A) is defined,\nthen D(A)(A) = 1. (ii) A determiner D is negative strong if for every model\nM and every A ⊆ E, if D(A) is defined, then D(A)(A) = 0. (iii) A determiner\nD is weak if it is neither positive strong nor negative strong.\"\n\nThe natural-language test, quoted: \"if 'Det CNP' is semantically defined\n(has no presupposition failure), then 'Det CNP is a CNP' is true in every\nmodel. Example: 'Every solution is a solution'. … If there are no solutions,\n'every solution is a solution' is still true, 'vacuously'.\" Compute the two\nworksheet cases and check: the *every* sentence is a tautology (positive\nstrong); the *no* sentence is contingent — true exactly when there are no\ncomputers — so *no* is weak.\n\n\\pex\n\\a Every solution is a solution.\n\\a No computer is a computer.\n\\xe\n\n## 4 Existential sentences\n\nQuoted from Partee (2008, §3.2.1), presenting B&C's semantics: \"To 'exist'\nis to be a member of the domain E of the model. A sentence of the form\n'There be Det CNP' is interpreted as 'Det CNP exist(s)', i.e. as\nE ∈ ⟦Det CNP⟧. … Because of conservativity, this is equivalent to:\nD(A)(A ∩ E) = 1. Since A ∩ E = A, this is equivalent to D(A)(A) = 1.\"\n\nTheir explanation of the definiteness effect, quoted: \"For positive strong\ndeterminers, the formula D(A)(A) = 1 is a tautology (hence never\ninformative), for negative strong determiners it is a contradiction. Only\nfor weak determiners is it a contingent sentence that can give us\ninformation.\"\n\nRendering note: the worksheet renders membership in E by an ordinary\npredicate *exist* (λx.x ∈ E), so *There-is* denotes λT.T(exist). B&C's data\nas reported by Partee (2008, §3.2.1): \"OK, normal: There is a new problem.\"\n— \"Anomalous, not OK: #There is every linguistics student.\"\n\n\\pex\n\\a There is a new problem.\n\\a #There is every linguistics student.\n\\xe\n\nOmitted from the worksheet: B&C's witness sets and \"lives on\" property,\ntheir monotonicity universals, and the later refinements of the weak/strong\ncharacterization by Keenan (1987, 2003) via intersectivity and symmetry,\nwhich Partee (2008, §3) also presents.\n\n## Credits\n\nBarwise, J. & R. Cooper (1981). Generalized quantifiers and natural\nlanguage. *Linguistics and Philosophy* 4, 159–219. — Partee, B. H. (2008).\n*Formal Semantics and Current Problems of Semantics*, RGGU Lecture 4\n(people.umass.edu/partee/RGGU_2008/) — all definitions, examples and data\nabove are quoted from this presentation. — Montague, R. (1973), for the\nuniform NP type. Notes text: quotes as marked, plus flagged rendering notes;\nremaining prose is signposting."
+  }
+}

@@ -1,3 +1,38 @@
+barwise-cooper | i-d1 | \forall x.\mathit{man}(x) \rightarrow \mathit{walk}(x)
+barwise-cooper | i-d1 | F | % ============================================================
+barwise-cooper | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com
+barwise-cooper | i-d1 | F | % Requires in your document preamble:
+barwise-cooper | i-d1 | F | %   \usepackage{forest}
+barwise-cooper | i-d1 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+barwise-cooper | i-d1 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+barwise-cooper | i-d1 | F | % ============================================================
+barwise-cooper | i-d1 | F | % "Every man walks."
+barwise-cooper | i-d1 | F | \begin{forest}
+barwise-cooper | i-d1 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+barwise-cooper | i-d1 | F |   [{\cnode{t} \\ {$\forall x.\mathit{man}(x) \rightarrow \mathit{walk}(x)$} \\ {\footnotesize $t$} \\ \crule{FA}}
+barwise-cooper | i-d1 | F |     [{\cnode{DP} \\ {$\lambda P.\forall x.\mathit{man}(x) \rightarrow P(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,t\rangle$} \\ \crule{FA}}
+barwise-cooper | i-d1 | F |       [{\cnode{Det} \\ {$\lambda Q \lambda P.\forall x.Q(x) \rightarrow P(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle$} \\ \crule{NN}}
+barwise-cooper | i-d1 | F |         [{\textit{every} \\ {$\lambda Q \lambda P.\forall x.Q(x) \rightarrow P(x)$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle$}}]
+barwise-cooper | i-d1 | F |       ]
+barwise-cooper | i-d1 | F |       [{\cnode{NP} \\ {$\mathit{man}$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+barwise-cooper | i-d1 | F |         [{\textit{man} \\ {$\mathit{man}$} \\ {\footnotesize $\langle e,t\rangle$}}]
+barwise-cooper | i-d1 | F |       ]
+barwise-cooper | i-d1 | F |     ]
+barwise-cooper | i-d1 | F |     [{\cnode{VP} \\ {$\lambda x.\mathit{walk}(x)$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{NN}}
+barwise-cooper | i-d1 | F |       [{\textit{walks} \\ {$\lambda x.\mathit{walk}(x)$} \\ {\footnotesize $\langle e,t\rangle$}}]
+barwise-cooper | i-d1 | F |     ]
+barwise-cooper | i-d1 | F |   ]
+barwise-cooper | i-d1 | F | \end{forest}
+barwise-cooper | i-d1 | F | 
+barwise-cooper | i-d2 | \exists x.\mathit{student}(x) \land \mathit{walk}(x)
+barwise-cooper | i-d3 | \exists x.\mathit{king}(x) \land (\forall y.\mathit{king}(y) \rightarrow y = x) \land \mathit{walk}(x)
+barwise-cooper | i-d1 | \forall P.\forall Q.(\forall x.P(x) \rightarrow Q(x)) \leftrightarrow \forall x.P(x) \rightarrow P(x) \land Q(x)
+barwise-cooper | i-d2 | \lnot (\exists x.\mathit{solution}(x) \land \mathit{perfect}(x))
+barwise-cooper | i-d3 | \lnot (\exists x.\mathit{solution}(x) \land \mathit{perfect}(x) \land \mathit{solution}(x))
+barwise-cooper | i-d1 | \forall x.\mathit{solution}(x) \rightarrow \mathit{solution}(x)
+barwise-cooper | i-d2 | \lnot (\exists x.\mathit{computer}(x) \land \mathit{computer}(x))
+barwise-cooper | i-d1 | \exists x.\mathit{new}(x) \land \mathit{problem}(x) \land \mathit{exist}(x)
+barwise-cooper | i-d2 | \forall x.\mathit{linguistics\_student}(x) \rightarrow \mathit{exist}(x)
 ch10-coord | g0p0 | \mathit{sing}(f) \land \mathit{ride}(g)
 ch10-coord | g0p0 | F | % ============================================================
 ch10-coord | g0p0 | F | % COMPOSE derivation export — compose.tstephen.com
@@ -1460,6 +1495,40 @@ krifka-telicity | i-d2 | \lambda e.\exists y.{\ast}\mathit{apple}(y) \land \math
 krifka-telicity | i-d1 | \lambda e.\exists y.{\ast}\mathit{apple}(y) \land \lvert y\rvert = \mathit{two} \land \mathit{eat}(m, y, e)
 krifka-telicity | i-d2 | \lambda e.\exists y.\mathit{water}(y) \land \mathit{liter}(y) = \mathit{two} \land \mathit{drink}(j, y, e)
 krifka-telicity | i-d3 | \lambda e.\exists y.\mathit{cart}(y) \land \mathit{push}(j, y, e)
+link-plurals | i-d1 | j \oplus m
+link-plurals | i-d1 | F | % ============================================================
+link-plurals | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com
+link-plurals | i-d1 | F | % Requires in your document preamble:
+link-plurals | i-d1 | F | %   \usepackage{forest}
+link-plurals | i-d1 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+link-plurals | i-d1 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+link-plurals | i-d1 | F | % ============================================================
+link-plurals | i-d1 | F | % "John and Mary"
+link-plurals | i-d1 | F | \begin{forest}
+link-plurals | i-d1 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+link-plurals | i-d1 | F |   [{\cnode{DP} \\ {$j \oplus m$} \\ {\footnotesize $e$} \\ \crule{FA}}
+link-plurals | i-d1 | F |     [{\cnode{DP} \\ {$j$} \\ {\footnotesize $e$} \\ \crule{NN}}
+link-plurals | i-d1 | F |       [{\textit{John} \\ {$j$} \\ {\footnotesize $e$}}]
+link-plurals | i-d1 | F |     ]
+link-plurals | i-d1 | F |     [{\cnode{and'} \\ {$\lambda z.z \oplus m$} \\ {\footnotesize $\langle e,e\rangle$} \\ \crule{FA}}
+link-plurals | i-d1 | F |       [{\cnode{Conj} \\ {$\lambda y \lambda z.z \oplus y$} \\ {\footnotesize $\langle e,\langle e,e\rangle\rangle$} \\ \crule{NN}}
+link-plurals | i-d1 | F |         [{\textit{andI} \\ {$\lambda y \lambda z.z \oplus y$} \\ {\footnotesize $\langle e,\langle e,e\rangle\rangle$}}]
+link-plurals | i-d1 | F |       ]
+link-plurals | i-d1 | F |       [{\cnode{DP} \\ {$m$} \\ {\footnotesize $e$} \\ \crule{NN}}
+link-plurals | i-d1 | F |         [{\textit{Mary} \\ {$m$} \\ {\footnotesize $e$}}]
+link-plurals | i-d1 | F |       ]
+link-plurals | i-d1 | F |     ]
+link-plurals | i-d1 | F |   ]
+link-plurals | i-d1 | F | \end{forest}
+link-plurals | i-d1 | F | 
+link-plurals | i-d2 | \mathit{meet}(j \oplus m)
+link-plurals | i-d3 | \mathit{carry}(j \oplus m, \iota x.\mathit{piano}(x))
+link-plurals | i-d1 | {\ast}\mathit{cat}
+link-plurals | i-d2 | \iota z.{\ast}\mathit{cat}(z) \land (\forall u.{\ast}\mathit{cat}(u) \rightarrow u \leq z)
+link-plurals | i-d3 | {\textstyle\bigoplus}\mathit{water}
+link-plurals | i-d1 | \lambda x.{\ast}\mathit{cat}(x) \land \mathit{atoms}(x) = \mathit{two}
+link-plurals | i-d2 | \iota z.{\ast}\mathit{cat}(z) \land \mathit{atoms}(z) = \mathit{two} \land (\forall u.{\ast}\mathit{cat}(u) \land \mathit{atoms}(u) = \mathit{two} \rightarrow u \leq z)
+link-plurals | i-d1 | \exists x.\exists y.(\iota z.{\ast}\mathit{girl}(z) \land (\forall u.{\ast}\mathit{girl}(u) \rightarrow u \leq z)) = x \oplus y \land {\ast}\mathit{sing}(x) \land {\ast}\mathit{dance}(y)
 montague-ptq-int | i-d1 | \forall w'.\mathit{walk}(w', j)
 montague-ptq-int | i-d1 | F | % ============================================================
 montague-ptq-int | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com

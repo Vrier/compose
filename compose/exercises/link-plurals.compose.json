@@ -1,0 +1,278 @@
+{
+  "compose": 1,
+  "id": "link-plurals",
+  "title": "Link 1983 — The Logical Analysis of Plurals and Mass Terms",
+  "notation": "cc",
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "j m",
+      "n": "two",
+      "<e,t>": "piano cat girl water sing dance meet",
+      "<e,n>": "atoms"
+    },
+    "variables": {
+      "e": "x y z u",
+      "et": "P Q"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "John"
+      ],
+      "denotation": "j"
+    },
+    {
+      "words": [
+        "Mary"
+      ],
+      "denotation": "m"
+    },
+    {
+      "words": [
+        "andI"
+      ],
+      "displayAs": "and",
+      "denotation": "Ly.Lz.z⊕y"
+    },
+    {
+      "words": [
+        "andPS"
+      ],
+      "displayAs": "and",
+      "denotation": "LQ.LP.Lz.Ex[Ey[[z = x⊕y & P(x)] & Q(y)]]"
+    },
+    {
+      "words": [
+        "met",
+        "meet"
+      ],
+      "denotation": "Lx.meet(x)"
+    },
+    {
+      "words": [
+        "carried",
+        "carry"
+      ],
+      "denotation": "Ly.Lx.carry(x,y)"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "LP.Ix.P(x)"
+    },
+    {
+      "words": [
+        "theSUP"
+      ],
+      "displayAs": "the",
+      "denotation": "LP.Iz.[P(z) & Au[P(u) -> u ≤ z]]"
+    },
+    {
+      "words": [
+        "theSUM"
+      ],
+      "displayAs": "the",
+      "denotation": "LP.⊕P"
+    },
+    {
+      "words": [
+        "piano"
+      ],
+      "denotation": "piano"
+    },
+    {
+      "words": [
+        "cat"
+      ],
+      "denotation": "cat"
+    },
+    {
+      "words": [
+        "girl"
+      ],
+      "denotation": "girl"
+    },
+    {
+      "words": [
+        "water"
+      ],
+      "denotation": "water"
+    },
+    {
+      "words": [
+        "-s",
+        "PL"
+      ],
+      "denotation": "LP.*P"
+    },
+    {
+      "words": [
+        "two"
+      ],
+      "denotation": "LP.Lx.[P(x) & atoms(x) = two]"
+    },
+    {
+      "words": [
+        "sang",
+        "sing"
+      ],
+      "denotation": "Lx.*sing(x)"
+    },
+    {
+      "words": [
+        "danced",
+        "dance"
+      ],
+      "denotation": "Lx.*dance(x)"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "functionApplication": true,
+      "predicateModification": false,
+      "nonBranchingNodes": true,
+      "predicateAbstraction": false
+    }
+  },
+  "exercises": [
+    {
+      "id": "g1",
+      "title": "A. Sums and conjoined terms",
+      "instructions": "and between terms denotes sum formation: it maps two individuals to their mereological sum. Predicates like met apply directly to sum individuals (collective predication).",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.DP [.DP John ] [.and' [.Conj andI ] [.DP Mary ] ] ]",
+          "sentence": "John and Mary",
+          "targets": [
+            "j⊕m"
+          ],
+          "reading": {
+            "section": "1"
+          }
+        },
+        {
+          "id": "d2",
+          "tree": "[.t [.DP [.DP John ] [.and' [.Conj andI ] [.DP Mary ] ] ] [.VP met ] ]",
+          "sentence": "John and Mary met.",
+          "targets": [
+            "meet(j⊕m)"
+          ],
+          "reading": {
+            "section": "1"
+          }
+        },
+        {
+          "id": "d3",
+          "tree": "[.t [.DP [.DP John ] [.and' [.Conj andI ] [.DP Mary ] ] ] [.VP [.V carried ] [.DP [.Det the ] [.NP piano ] ] ] ]",
+          "sentence": "John and Mary carried the piano.",
+          "targets": [
+            "carry(j⊕m, Ix.piano(x))"
+          ],
+          "reading": {
+            "section": "1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g2",
+      "title": "B. Plurals as algebraic closure",
+      "instructions": "The plural morpheme denotes the star operator: ∗P contains everything in P together with all sums of things in P. Two definite articles: theSUP picks the supremum of a set; theSUM forms the sum of a set.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.NP [.N cat ] [.Pl -s ] ]",
+          "sentence": "cats",
+          "targets": [
+            "*cat"
+          ],
+          "reading": {
+            "section": "2"
+          }
+        },
+        {
+          "id": "d2",
+          "tree": "[.DP [.Det theSUP ] [.NP [.N cat ] [.Pl -s ] ] ]",
+          "sentence": "the cats",
+          "targets": [
+            "Ix.[*cat(x) & Ay[*cat(y) -> y ≤ x]]"
+          ],
+          "reading": {
+            "section": "2"
+          }
+        },
+        {
+          "id": "d3",
+          "tree": "[.DP [.Det theSUM ] [.NP water ] ]",
+          "sentence": "the water",
+          "targets": [
+            "⊕water"
+          ],
+          "reading": {
+            "section": "2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g3",
+      "title": "C. Measured plurals",
+      "instructions": "two restricts a plural predicate to sums with exactly two atomic parts, via the atoms function. The supremum article on top is defined only if there are exactly two cats.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.NP [.Num two ] [.NP [.N cat ] [.Pl -s ] ] ]",
+          "sentence": "two cats",
+          "targets": [
+            "Lx.[*cat(x) & atoms(x) = two]"
+          ],
+          "reading": {
+            "section": "3"
+          }
+        },
+        {
+          "id": "d2",
+          "tree": "[.DP [.Det theSUP ] [.NP [.Num two ] [.NP [.N cat ] [.Pl -s ] ] ] ]",
+          "sentence": "the two cats",
+          "targets": [
+            "Ix.[[*cat(x) & atoms(x) = two] & Ay[[*cat(y) & atoms(y) = two] -> y ≤ x]]"
+          ],
+          "reading": {
+            "section": "3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g4",
+      "title": "D. Sums of predicates",
+      "instructions": "Link lifts sum formation from individuals to predicates: sang and danced is true of any sum x⊕y where x sang and y danced. Compose the whole sentence.",
+      "derivations": [
+        {
+          "id": "d1",
+          "tree": "[.t [.DP [.Det theSUP ] [.NP [.N girl ] [.Pl -s ] ] ] [.VP [.VP sang ] [.and' [.Conj andPS ] [.VP danced ] ] ] ]",
+          "sentence": "The girls sang and danced.",
+          "targets": [
+            "Ex[Ey[[[[Iz.[*girl(z) & Au[*girl(u) -> u ≤ z]]] = x⊕y] & *sing(x)] & *dance(y)]]"
+          ],
+          "reading": {
+            "section": "4"
+          }
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "author": "Thomas Stephen",
+    "license": "MIT",
+    "difficulty": "challenge"
+  },
+  "reading": {
+    "format": "latex",
+    "markdown": "# Link 1983 · The Logical Analysis of Plurals and Mass Terms\n\nCompanion to Godehard Link, \"The logical analysis of plurals and mass terms:\nA lattice-theoretical approach\" (in Bäuerle, Schwarze & von Stechow (eds.),\n*Meaning, Use, and Interpretation of Language*, de Gruyter, 1983). The\noriginal is not freely available, so the definitions below are quoted from\nChampollion & Krifka (2016), \"Mereology\" (*The Cambridge Handbook of Formal\nSemantics*, ch. 13), cited by their numbering. Prose that is not quoted is\nsignposting or a flagged rendering note. The operators ∗, ⊕, ≤ are the same\nones as in the §10 worksheets.\n\n## 1 Sums and conjoined terms\n\nChampollion & Krifka's (9): \"Definition Binary sum: x⊕y = ιz sum(z, {x, y}).\nFor example, the meaning of the term John and Mary can be written as j⊕m.\"\nThe proposal is Link's: \"Link (1983) proposes to represent the denotation of\nthe conjoined term John and Mary as the sum of the individual John with the\nindividual Mary.\" Their (10): \"Definition Generalized sum: For any nonempty\nset P, its sum ⊕P is defined as ιz sum(z,P). For example, the meaning of the\nterm the water can be written as ⊕water\" — the latter crediting Sharvy\n(1980).\n\nRendering note: the worksheet's *and* between terms is λy.λz.z⊕y, and\ncollective predicates (*met*, *carried the piano*) apply to the sum\nindividual directly.\n\n\\pex\n\\a John and Mary met.\n\\a John and Mary carried the piano.\n\\xe\n\n## 2 Plurals as algebraic closure\n\nCumulative reference, their (16): \"CUM(P) ⇔ ∀x∀y[P(x) ∧ P(y) → P(x⊕y)]\" —\nwith Link's slogan as they quote it: \"if you add some horses to some other\nhorses then you again get some horses (Link, 1983)\". Their (21): \"Definition\nAlgebraic closure: If set P is nonempty, *P = {x|∃P′ ⊆ P[x=⊕P′]}. (The\nalgebraic closure of a set P is the set that contains any sum of things\ntaken from P.)\" Their toy model: \"suppose the set C = {a, b, c} is the set\nof all cats. … The algebraic closure of C is written *C and is the set\n{a, b, c, a⊕b, b⊕c, a⊕c, a⊕b⊕c}.\"\n\nOn what plurals denote: \"In most mereological approaches to the semantics of\ncount nouns, a plural count noun denotes the algebraic closure of the set\ndenoted by its singular form.\" The worksheet's plural morpheme -s = λP.∗P is\nthe *inclusive* variant: \"On the inclusive view, the plural form of a count\nnoun denotes its algebraic closure (Krifka, 1986; Sauerland, 2003 …)\".\n\nTwo definite articles. Their (27): \"Definition Supremum of a set P:\nsup(P) = ιz [P(z) ∧ ∀x[P(x) → x ≤ z]]\", introduced \"Following a proposal of\nMontague (1973) … (cf. Krifka 1986)\". The worksheet's theSUP is exactly\n(27). theSUM is Sharvy's generalized-sum article; on cumulative sets they\nagree: \"the cats would refer to ⊕cat = a⊕b⊕c, the sum of all cats.\"\n\n\\pex\n\\a the cats\n\\a the water\n\\xe\n\n## 3 Measured plurals\n\nTheir (25): \"Definition Atomic number: atoms(x) = card({y | y ≤ x ∧\natom(y)}). (The atomic number of x is the cardinality of the set of atoms\nthat are part of x.)\" Then: \"With this, we can interpret two cats as\n{x | *cat(x) ∧ atoms(x) = 2}, which can be shown to be a quantized set\". For\nthe definite: \"For a non-cumulative set like {x | x∈*C ∧ atoms(x) = 2}, the\nsupremum exists only if it is a singleton set … hence, only if there are\nexactly two cats. This captures the intuitive meaning of the two cats.\"\n\n\\pex\n\\a two cats\n\\a the two cats\n\\xe\n\n## 4 Sums of predicates\n\nQuoted in full: \"Mereological notions have been applied to predicates to\nmodel certain cases of conjunction, as in the girls sang and danced, which\nis true if some of the girls sang and the other girls danced. Link (1983)\nproposed to lift sum formation to predicates. Take *S and *D to be the set\nof singers and dancers; then sang and danced denotes the set\n{x⊕y | x∈*S ∧ y∈*D}.\"\n\nRendering note: the worksheet's second *and*,\nλQ.λP.λz.∃x∃y[z = x⊕y ∧ P(x) ∧ Q(y)], is that set comprehension written as\na λ-term.\n\n\\ex The girls sang and danced.\n\\xe\n\nOmitted from the worksheet: Link's separate mass/count domains and the\nmaterialisation homomorphism, his distributivity operator, and the\nindividual/group distinction — see Champollion & Krifka (2016, §§2–3) for\nthe full picture.\n\n## Credits\n\nLink, G. (1983). The logical analysis of plurals and mass terms: A\nlattice-theoretical approach. In R. Bäuerle et al. (eds.), *Meaning, Use,\nand Interpretation of Language*, 302–323. de Gruyter. — Champollion, L. &\nM. Krifka (2016). Mereology. In M. Aloni & P. Dekker (eds.), *The Cambridge\nHandbook of Formal Semantics*, 369–388. CUP — all definitions above quoted\nfrom the preprint, with their numbering. — Sharvy, R. (1980) and Montague,\nR. (1973), for the two definite articles. Notes text: quotes as marked,\nplus flagged rendering notes; remaining prose is signposting."
+  }
+}

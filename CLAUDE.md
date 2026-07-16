@@ -23,6 +23,11 @@ Champollion's *Invitation to Formal Semantics*.
 - Keep the standalone `.md` in `compose/reading/` as the source of truth; re-embed
   into the `.compose.json` when it changes.
 - The textbook is copyrighted — condense and paraphrase, never paste prose verbatim.
+- Paper readings (the /papers shelf) follow the quote-only sourcing standard
+  (S22): notes text is only (a) short direct quotes from the paper or secondary
+  literature, attributed, (b) the papers' numbered definitions, (c) explicitly
+  flagged rendering/implementation notes (the PTQ-B TY2 §0 pattern), and
+  (d) minimal signposting. No unsourced paraphrase presented as fact.
 
 ## Architecture (hosted V1 — LIVE at compose.tstephen.com)
 

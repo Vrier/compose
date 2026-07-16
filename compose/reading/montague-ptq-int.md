@@ -148,5 +148,6 @@ Logic*. North-Holland; TY2 and the embedding of IL. — Zimmermann, T. E.
 (1989). Intensional logic and two-sorted type theory. *Journal of Symbolic
 Logic* 54(1); the exact IL–TY2 relationship. — The explicit-world
 presentation follows the style of von Fintel & Heim's *Intensional
-Semantics* notes. Worksheet content is original paraphrase; the IL formulas
-quoted are Montague's own translations from §4 of the paper.
+Semantics* notes. Notes text: Montague's own translations quoted from §4,
+plus the flagged IL→TY2 rendering dictionary in §0; remaining prose is
+signposting.

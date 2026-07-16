@@ -142,12 +142,14 @@ const CURATED = [
   ...CC_CHAPTERS.map(([pfx, label]) => ({ path: 'cc/' + pfx, island: 'lib-cc', title: 'C&C ' + label, keys: pick([pfx]) })),
   { path: 'hk', island: 'lib-hk', title: 'Heim & Kratzer — Semantics in Generative Grammar', keys: pick(HK_CHAPTERS.map(([p]) => p)) },
   ...HK_CHAPTERS.map(([pfx, label]) => ({ path: 'hk/' + pfx.replace('hk', 'ch'), island: 'lib-hk', title: 'H&K ' + label, keys: pick([pfx]) })),
-  { path: 'papers', island: 'lib-papers', title: 'Classic Papers', keys: pick(['partee', 'montague', 'krifka', 'davidson']) },
+  { path: 'papers', island: 'lib-papers', title: 'Classic Papers', keys: pick(['partee', 'montague', 'krifka', 'davidson', 'barwise-cooper', 'link-plurals']) },
   { path: 'papers/partee', island: 'lib-papers', title: 'Partee 1986 — The Type-Shifting Triangle', keys: pick(['partee-triangle']) },
   { path: 'papers/ptq', island: 'lib-papers', title: 'Montague 1973 — PTQ', keys: pick(['montague']) },
   { path: 'papers/krifka', island: 'lib-papers', title: 'Krifka 1998 — The Origins of Telicity', keys: pick(['krifka']) },
   { path: 'papers/davidson', island: 'lib-papers', title: 'Davidson 1967 — Action Sentences', keys: pick(['davidson']) },
   { path: 'papers/partee-rooth', island: 'lib-papers', title: 'Partee & Rooth 1983 — Generalized Conjunction', keys: pick(['partee-rooth']) },
+  { path: 'papers/barwise-cooper', island: 'lib-papers', title: 'Barwise & Cooper 1981 — Generalized Quantifiers', keys: pick(['barwise-cooper']) },
+  { path: 'papers/link', island: 'lib-papers', title: 'Link 1983 — Plurals and Mass Terms', keys: pick(['link-plurals']) },
 ];
 
 function curatedPage(entry) {
@@ -230,7 +232,7 @@ answers are graded by <em>meaning</em> (α/β/η-equivalence), not surface form.
 ${CC_CHAPTERS.map(([pfx]) => '<a href="/cc/' + pfx + '/">/cc/' + pfx + '</a>').join(' · ')}</li>
 <li><a href="/hk/">/hk</a> — the Heim &amp; Kratzer companion; per chapter:
 ${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk/' + pfx.replace('hk', 'ch') + '</a>').join(' · ')}</li>
-<li><a href="/papers/">/papers</a> — classic papers: <a href="/papers/partee/">/papers/partee</a> · <a href="/papers/partee-rooth/">/papers/partee-rooth</a> · <a href="/papers/ptq/">/papers/ptq</a> · <a href="/papers/davidson/">/papers/davidson</a> · <a href="/papers/krifka/">/papers/krifka</a></li>
+<li><a href="/papers/">/papers</a> — classic papers: <a href="/papers/partee/">/papers/partee</a> · <a href="/papers/partee-rooth/">/papers/partee-rooth</a> · <a href="/papers/ptq/">/papers/ptq</a> · <a href="/papers/davidson/">/papers/davidson</a> · <a href="/papers/krifka/">/papers/krifka</a> · <a href="/papers/barwise-cooper/">/papers/barwise-cooper</a> · <a href="/papers/link/">/papers/link</a></li>
 <li><a href="/editor/">/editor</a> — the editor sandbox: author worksheets and export them as JSON, no account needed (to host worksheets for students, instructors use <a href="/dash/">/dash</a>)</li>
 <li><a href="/files/">/files</a> — download every worksheet and bundle as .compose.json, plus the full site map</li>
 <li><a href="/guide/">/guide</a> — the instructor guide: what students see, authoring, and hosting your own course</li>
@@ -366,7 +368,7 @@ const filesSection = (label, keys) =>
 const ALL_KEYS = Object.keys(LIB).sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
 const CC_KEYS = pick(CC_CHAPTERS.map(([p2]) => p2));
 const HK_KEYS = pick(HK_CHAPTERS.map(([p2]) => p2));
-const PAPER_KEYS = pick(['partee', 'montague']);
+const PAPER_KEYS = pick(['partee', 'montague', 'krifka', 'davidson', 'barwise-cooper', 'link-plurals']);
 const OTHER_KEYS = ALL_KEYS.filter((k) => !CC_KEYS.includes(k) && !HK_KEYS.includes(k) && !PAPER_KEYS.includes(k));
 
 const filesPage = `<!DOCTYPE html>
@@ -428,7 +430,7 @@ ${OTHER_KEYS.length ? filesSection('Other worksheets', OTHER_KEYS) : ''}
 ${CC_CHAPTERS.map(([pfx]) => '<a href="/cc/' + pfx + '/">/cc/' + pfx + '</a>').join(' · ')}</li>
 <li><a href="/hk/">/hk</a> — Heim &amp; Kratzer, whole book; chapters:
 ${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk/' + pfx.replace('hk', 'ch') + '</a>').join(' · ')}</li>
-<li><a href="/papers/">/papers</a> — <a href="/papers/partee/">/papers/partee</a> · <a href="/papers/partee-rooth/">/papers/partee-rooth</a> · <a href="/papers/ptq/">/papers/ptq</a> · <a href="/papers/davidson/">/papers/davidson</a> · <a href="/papers/krifka/">/papers/krifka</a></li>
+<li><a href="/papers/">/papers</a> — <a href="/papers/partee/">/papers/partee</a> · <a href="/papers/partee-rooth/">/papers/partee-rooth</a> · <a href="/papers/ptq/">/papers/ptq</a> · <a href="/papers/davidson/">/papers/davidson</a> · <a href="/papers/krifka/">/papers/krifka</a> · <a href="/papers/barwise-cooper/">/papers/barwise-cooper</a> · <a href="/papers/link/">/papers/link</a></li>
 <li><a href="/guide/">/guide</a> — instructor guide with screenshots: navigation, authoring, hosting</li>
 <li><a href="/editor/">/editor</a> — author worksheets without an account; export JSON</li>
 <li><a href="/dash/">/dash</a> — instructor dashboard (invite-code registration): host your own versions</li>
@@ -529,7 +531,13 @@ for (const k of Object.keys(LIB)) {
   fs.copyFileSync(path.join(SRC, 'exercises', k + '.compose.json'), path.join(OUT, 'pb_public', 'files', 'worksheets', k + '.compose.json'));
 }
 console.log('  pb_public/files/worksheets/          (' + Object.keys(LIB).length + ' worksheets)');
+// --only <prefix>: rebuild just the curated pages whose path starts with the
+// prefix (e.g. --only papers). Everything else is still built; this only
+// filters the heavyweight curated-page loop, for quick partial rebuilds.
+const onlyIdx = process.argv.indexOf('--only');
+const ONLY = onlyIdx >= 0 ? process.argv[onlyIdx + 1] : null;
 for (const entry of CURATED) {
+  if (ONLY && !(entry.path === ONLY || entry.path.startsWith(ONLY + '/'))) continue;
   fs.mkdirSync(path.join(OUT, 'pb_public', ...entry.path.split('/')), { recursive: true });
   write(path.join('pb_public', ...entry.path.split('/'), 'index.html'), curatedPage(entry));
 }

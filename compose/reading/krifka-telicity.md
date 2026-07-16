@@ -16,13 +16,16 @@ CUM(X) ↔ Ex,y[X(x) & X(y) & ~x=y] & Ax,y[X(x) & X(y) -> X(x ⊕ y)]
 QUA(X) ↔ Ax,y[X(x) & X(y) -> ~y < x]
 \end{derivation}
 
-*apples* and *water* are cumulative: sum two instances and the predicate
-still applies. *two liters of water* is quantized: no proper part of two
-liters is two liters — Krifka proves this from the properties of extensive
-measure functions (his (10) and the remainder principle). Crucially these
-are properties of **descriptions**, not things: one and the same portion
-falls under *apples* and under *two apples*. The worksheet writes proper
-part $y < x$ as $y \leq x \wedge \neg y = x$.
+Krifka's own illustration (§2): "Examples of cumulative predicates are
+*water* or *apples*: If x and y fall under *apples*, then the sum of x and y
+falls under *apples* as well. Examples of quantized predicates are *three
+liters of water* or *three apples*: If x falls under *three apples*, then it
+cannot have a proper part y that also falls under *three apples*.
+Cumulativity of a predicate X implies that X applies to at least two
+distinct elements." For measured predicates he shows quantization follows
+from the properties of extensive measure functions (his (10) and the
+remainder principle). Rendering note: the worksheet writes proper part
+$y < x$ as $y \leq x \wedge \neg y = x$.
 
 \ex Apples are cumulative.
 \xe
@@ -100,5 +103,5 @@ are Krifka's own, cited by his numbering throughout.
 Krifka, M. (1998). The origins of telicity. In S. Rothstein (ed.), *Events
 and Grammar*, 197–235. Kluwer. — The mereological machinery follows the
 §10 (Coppock & Champollion ch. 10) worksheets; the event argument and EC
-follow ch. 11. Worksheet content is original paraphrase; definitions are
-quoted with the paper's own numbering.
+follow ch. 11. Notes text: quotes and definitions with the paper's own
+numbering, plus flagged rendering notes; remaining prose is signposting.

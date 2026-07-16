@@ -291,6 +291,11 @@ async function main() {
   contains('/papers/davidson carries the events worksheet (S21)', r.text, '"davidson-events":{');
   r = await req('GET', '/papers/partee-rooth/', { raw: true });
   contains('/papers/partee-rooth carries generalized conjunction (S21)', r.text, '"partee-rooth-conj":{');
+  r = await req('GET', '/papers/barwise-cooper/', { raw: true });
+  contains('/papers/barwise-cooper carries the GQ worksheet (S22)', r.text, '"barwise-cooper":{');
+  r = await req('GET', '/papers/link/', { raw: true });
+  contains('/papers/link carries the plurals worksheet (S22)', r.text, '"link-plurals":{');
+  lacks('/papers/link does NOT carry linguistics prefixes beyond its own', r.text, '"barwise-cooper":{');
   r = await req('GET', '/papers/partee/', { raw: true });
   lacks('/papers/partee is the triangle only (S21)', r.text, '"partee-rooth-conj":{');
   contains('/papers/partee carries Partee', r.text, '"partee-triangle":{');

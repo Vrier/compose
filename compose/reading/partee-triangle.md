@@ -7,9 +7,10 @@ summary of the paper (Partee 2006, Lecture 14).
 
 ## 1 Three types for NPs
 
-Montague gave every NP the quantifier type ⟨⟨e,t⟩,t⟩. Partee's resolution:
-every NP has a ⟨⟨e,t⟩,t⟩ meaning, and some also have e and/or ⟨e,t⟩
-meanings, related by general shifting principles. Her evidence: e-type NPs
+Montague gave every NP the quantifier type ⟨⟨e,t⟩,t⟩. Partee's resolution,
+as she summarizes it (2006, Lecture 14): every NP has a ⟨⟨e,t⟩,t⟩ meaning,
+and some also have e and/or ⟨e,t⟩ meanings, related by general shifting
+principles. Her evidence: e-type NPs
 license discourse anaphora (her (9)–(10): *John / the man / a man walked in.
 He looked tired* vs. *every man / no man … \*He looked tired*), and
 predicative positions select ⟨e,t⟩ NPs (her (11)–(12): *Mary considers John
@@ -86,6 +87,8 @@ principles. In Groenendijk, de Jongh & Stokhof (eds.), *Studies in Discourse
 Representation Theory and the Theory of Generalized Quantifiers*, 115–143.
 Foris. Reprinted in Portner & Partee (2002) and Partee (2004). — Partee,
 B. H. (2006). *The Structure of Meaning*, Lecture 14
-(people.umass.edu/partee) — consulted directly for definitions, data and
-computations. — Williams, E. (1983), for the analysis of *be*. Worksheet
-content is original paraphrase; definitions quoted with Partee's numbering.
+(people.umass.edu/partee) — definitions, data and computations quoted from
+it with Partee's numbering. — Williams, E. (1983), for the analysis of
+*be*. Notes text: quotes and numbered definitions as marked, plus flagged
+rendering notes (the derived-form target in §2); remaining prose is
+signposting.

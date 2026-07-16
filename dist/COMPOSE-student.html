@@ -3150,7 +3150,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = { COMPOSE_
       }
       case 'bin': {
         const op = e.op;
-        return toHTML(e.l, prec(e) + (op === '→' ? 1 : 0)) +
+        return toHTML(e.l, prec(e) + (op === '→' || op === '↔' ? 1 : 0)) +
           '<span class="lx-op lx-' + opClass(op) + '">' + opGlyph(op) + '</span>' +
           toHTML(e.r, prec(e));
       }
@@ -3192,7 +3192,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = { COMPOSE_
       case 'gsum': s = '⊕' + toStr(e.e, 5); break;
       case 'card': s = '|' + toStr(e.e, 0) + '|'; break;
       case 'def': s = (_disp === 'hk') ? (toStr(e.cond, 3) + ' : ' + toStr(e.e, 0)) : ('∂(' + toStr(e.cond, 0) + ') ∧ ' + toStr(e.e, 2)); break;
-      case 'bin': s = toStr(e.l, prec(e) + (e.op === '→' ? 1 : 0)) + ' ' + opGlyph(e.op) + ' ' + toStr(e.r, prec(e)); break;
+      case 'bin': s = toStr(e.l, prec(e) + (e.op === '→' || e.op === '↔' ? 1 : 0)) + ' ' + opGlyph(e.op) + ' ' + toStr(e.r, prec(e)); break;
       case 'lam': { if (e.dom) { s = 'λ' + e.v + ' : ' + toStr(e.dom, 1) + ' . ' + toStr(e.body, 0); break; } let chain = [], cur = e; while (cur.t === 'lam' && !cur.dom) { chain.push(cur.v); cur = cur.body; } s = chain.map((v) => 'λ' + v).join('') + '.' + toStr(cur, 0); break; }
       case 'quant': s = e.q + e.v + '.' + toStr(e.body, 0); break;
     }
@@ -3238,7 +3238,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = { COMPOSE_
       case 'gsum': s = '{\\textstyle\\bigoplus}' + toLaTeX(e.e, 5); break;
       case 'card': s = '\\lvert ' + toLaTeX(e.e, 0) + '\\rvert'; break;
       case 'def': s = (_disp === 'hk') ? (toLaTeX(e.cond, 3) + ' : ' + toLaTeX(e.e, 0)) : ('\\partial(' + toLaTeX(e.cond, 0) + ') \\land ' + toLaTeX(e.e, 2)); break;
-      case 'bin': s = toLaTeX(e.l, prec(e) + (e.op === '→' ? 1 : 0)) + ' ' + (LATEX_OPS[e.op] || latexEscape(e.op)) + ' ' + toLaTeX(e.r, prec(e)); break;
+      case 'bin': s = toLaTeX(e.l, prec(e) + (e.op === '→' || e.op === '↔' ? 1 : 0)) + ' ' + (LATEX_OPS[e.op] || latexEscape(e.op)) + ' ' + toLaTeX(e.r, prec(e)); break;
       case 'lam': {
         if (e.dom) { s = '\\lambda ' + symLaTeX(e.v) + ' : ' + toLaTeX(e.dom, 1) + ' \\,.\\, ' + toLaTeX(e.body, 0); break; }
         let chain = [], cur = e;
