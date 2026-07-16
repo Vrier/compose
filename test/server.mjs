@@ -297,6 +297,11 @@ async function main() {
   contains('/help serves the student reference (S23)', r.text, 'How grading works');
   r = await req('GET', '/help/guides/', { raw: true });
   contains('/help/guides serves the walkthroughs (S23)', r.text, 'your first derivation');
+  contains('/help/guides embeds the walkthrough videos (S24)', r.text, '/guide/wt-first.mp4');
+  for (const v of ['wt-first', 'wt-tv', 'wt-pm']) {
+    r = await req('GET', '/guide/' + v + '.mp4', { raw: true });
+    ok('/guide/' + v + '.mp4 served (S24)', r.status === 200 && r.text.length > 50000, 'status ' + r.status + ' len ' + r.text.length);
+  }
   r = await req('GET', '/lingdown.css', { raw: true });
   ok('/lingdown.css serves real CSS, not the SPA fallback (S23)', r.status === 200 && !/^\s*</.test(r.text) && r.text.includes('.ld-'), 'status ' + r.status);
   r = await req('GET', '/lingdown.js', { raw: true });

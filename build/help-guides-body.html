@@ -29,6 +29,9 @@ substitutes f for x. Type <code>run(f)</code> and submit. ✓</li>
 <p>If you instead type <code>(Lx.run(x))(f)</code>, it is rejected: the
 unreduced application is not the computed value — performing the reduction is
 the exercise.</p>
+<figure class="guide-fig"><video controls muted playsinline loop preload="metadata" src="/guide/wt-first.mp4"></video>
+<figcaption>The whole derivation, as recorded in the app: NN on VP and DP, then FA at S and typing <code>run(f)</code>.</figcaption></figure>
+
 
 <h2 id="tv">2 · A transitive verb — "Frodo greets Gandalf"</h2>
 <p>Same worksheet, group B. The verb is
@@ -47,17 +50,24 @@ first</b>, then the subject. The tree is
 typing λy.greet(g,y) — which says Gandalf greets y. The grader refuses it
 with the "check which variable each argument replaces" hint. The λ that gets
 the first argument is the <i>outermost</i> one.</p>
+<figure class="guide-fig"><video controls muted playsinline loop preload="metadata" src="/guide/wt-tv.mp4"></video>
+<figcaption>Both FA steps recorded: the object composes first (typing <code>Ly.greet(y,g)</code> at VP), then the subject at S.</figcaption></figure>
+
 
 <h2 id="pm">3 · Predicate Modification — an adjective plus a noun</h2>
-<p>Open <a href="/cc/ch7/">/cc/ch7</a>. In "Alex is a grey cat"-style
-derivations the interesting node is the NP: ⟦grey⟧ = λx.grey(x) and
-⟦cat⟧ = λx.cat(x) are <b>both ⟨e,t⟩</b>. Neither can apply to the other, so
-FA is refused — try it and read the message. The rule that fits two
-same-typed predicates is <b>PM</b>, and the value to type is their
-conjunction:</p>
-<p><code>Lx.[grey(x) &amp; cat(x)]</code></p>
-<p>Conjunct order doesn't matter — <code>Lx.[cat(x) &amp; grey(x)]</code> is
-the same answer. The rest of the derivation is FA/NN as before.</p>
+<p>Open <a href="/cc/ch7/">/cc/ch7</a>, first derivation: <i>Pippin is a
+mischievous hobbit</i>. The interesting node is the inner NP:
+⟦mischievous⟧ = λx.mischievous(x) and ⟦hobbit⟧ = λx.hobbit(x) are <b>both
+⟨e,t⟩</b>. Neither can apply to the other, so FA is refused — try it and
+read the message. The rule that fits two same-typed predicates is <b>PM</b>,
+and the value to type is their conjunction:</p>
+<p><code>Lx.[mischievous(x) &amp; hobbit(x)]</code></p>
+<p>Conjunct order doesn't matter — <code>Lx.[hobbit(x) &amp;
+mischievous(x)]</code> is the same answer. The rest of the derivation is
+FA/NN as before.</p>
+<figure class="guide-fig"><video controls muted playsinline loop preload="metadata" src="/guide/wt-pm.mp4"></video>
+<figcaption>Recorded on /cc/ch7: FA is tried first and refused with the type-theoretic reason; PM then conjoins the two ⟨e,t⟩ predicates.</figcaption></figure>
+
 
 <h2 id="stuck">When you're stuck</h2>
 <p>In rough order: (1) click the rule anyway — a refusal states the
