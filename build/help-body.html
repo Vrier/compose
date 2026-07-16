@@ -1,0 +1,110 @@
+<main class="about-wrap guide-wrap" id="top">
+<h1>Help with derivations</h1>
+<p class="about-sub">A student reference: what each composition rule does, how to type answers, how grading works, and how to read the feedback. For worked examples, see the <a href="/help/guides/">derivation guides</a>.</p>
+
+<div class="guide-layout">
+<aside class="guide-side"><nav class="guide-toc">
+<div class="guide-toc-head">On this page</div>
+<a href="#loop">The derivation loop</a>
+<a href="#rules">The composition rules</a>
+<a href="#shifts">Type-shifts</a>
+<a href="#typing">Typing answers</a>
+<a href="#grading">How grading works</a>
+<a href="#feedback">Reading the feedback</a>
+<a href="#progress">Progress &amp; hints</a>
+<a href="#top" class="guide-top">↑ Back to top</a>
+</nav></aside>
+<div class="guide-main">
+
+<h2 id="loop">The derivation loop</h2>
+<p>A derivation is a tree computed bottom-up. Leaves take their meanings from
+the lexicon in the right panel. For every other node, the loop is: <b>click a
+node whose children are resolved → choose a composition rule → type the
+β-reduced result → submit</b>. A ✓ appears when your answer matches the target
+meaning. The whole loop also works by keyboard: Tab to a node, Enter or Space
+to select it.</p>
+
+<h2 id="rules">The composition rules</h2>
+<p>A worksheet enables only the rules it needs; the <b>☰ Rules</b> button
+lists the ones active in the current worksheet.</p>
+<table class="files-table">
+<thead><tr><th>Rule</th><th>Applies when</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td><b>FA</b> — Function Application</td><td>One sister has type ⟨σ,τ⟩ and the other has type σ.</td><td>The function applied to the argument, β-reduced.</td></tr>
+<tr><td><b>NN</b> — Non-branching Node</td><td>The node has exactly one child.</td><td>The child's meaning, unchanged.</td></tr>
+<tr><td><b>PM</b> — Predicate Modification</td><td>Both sisters are predicates ⟨σ,t⟩ of the same type σ.</td><td>λx[P(x) ∧ Q(x)] — the conjunction of the two predicates.</td></tr>
+<tr><td><b>PA</b> — Predicate Abstraction</td><td>One child is a bare index n and its sister is a resolved subtree.</td><td>λ-abstraction over the trace variable xₙ.</td></tr>
+<tr><td><b>IFA</b> — Intensional FA</td><td>One sister has type ⟨⟨s,σ⟩,τ⟩ and the other has type σ.</td><td>The function applied to λw.argument — abstraction over the evaluation world.</td></tr>
+<tr><td><b>QR</b> — Quantifier Raising</td><td>Enabled per worksheet; drag or select a quantifier phrase.</td><td>The phrase moves up, leaving an indexed trace bound by PA.</td></tr>
+</tbody>
+</table>
+
+<h2 id="shifts">Type-shifts</h2>
+<p>Where a worksheet enables them, type-shifts apply to a single resolved node
+and change its type. The ones used across the built-in library:</p>
+<table class="files-table">
+<thead><tr><th>Shift</th><th>Type</th><th>Term</th></tr></thead>
+<tbody>
+<tr><td>Lift</td><td>e → ⟨⟨e,t⟩,t⟩</td><td>λx.λP.P(x)</td></tr>
+<tr><td>Ident</td><td>e → ⟨e,t⟩</td><td>λx.λy.y = x</td></tr>
+<tr><td>Iota (the)</td><td>⟨e,t⟩ → e</td><td>λP.ιz.P(z)</td></tr>
+<tr><td>A</td><td>⟨e,t⟩ → ⟨⟨e,t⟩,t⟩</td><td>λP.λQ.∃z[P(z) ∧ Q(z)]</td></tr>
+<tr><td>BE</td><td>⟨⟨e,t⟩,t⟩ → ⟨e,t⟩</td><td>λT.λx.T(λy.y = x)</td></tr>
+<tr><td>Lower</td><td>⟨⟨e,t⟩,t⟩ → e</td><td>λT.ιz.T(λy.z = y)</td></tr>
+<tr><td>MOD / PRED</td><td>⟨e,t⟩ ↔ ⟨⟨e,t⟩,⟨e,t⟩⟩</td><td>attributive ↔ predicative adjectives</td></tr>
+<tr><td>EC</td><td>⟨τ,σ⟩ → σ</td><td>existential closure over individuals, events or times</td></tr>
+</tbody>
+</table>
+<p>The first six are Partee's (1986) NP-shifting inventory; MOD/PRED and EC
+follow Coppock &amp; Champollion (2022).</p>
+
+<h2 id="typing">Typing answers</h2>
+<p>Answers are typed in plain ASCII; the input converts as you type:</p>
+<table class="files-table">
+<thead><tr><th>You type</th><th>You get</th></tr></thead>
+<tbody>
+<tr><td><code>Lx.</code></td><td>λx.</td></tr>
+<tr><td><code>Ax[…]</code> / <code>Ex[…]</code> / <code>Ix[…]</code></td><td>∀x[…] / ∃x[…] / ιx[…]</td></tr>
+<tr><td><code>&amp;</code></td><td>∧</td></tr>
+<tr><td><code>~</code></td><td>¬</td></tr>
+<tr><td><code>-&gt;</code></td><td>→</td></tr>
+</tbody>
+</table>
+<p>The clickable symbol palette under the input covers everything else, and it
+shows only the operator symbols the current worksheet uses — a worksheet
+without mereology shows no ∗ ⊕ ≤ keys.</p>
+
+<h2 id="grading">How grading works</h2>
+<p>Grading is by <b>meaning, not spelling</b>. Your answer is parsed,
+normalized, and compared with the target up to renaming of bound variables
+(α-equivalence); the order of conjuncts does not matter, so
+<code>Lx.[cat(x) &amp; grey(x)]</code> and <code>Lx.[grey(x) &amp; cat(x)]</code>
+are the same answer. What does matter is that you actually perform the
+β-reduction: an unreduced function–argument application is not accepted as
+the value of the node you are computing, because the reduction is the
+exercise.</p>
+
+<h2 id="feedback">Reading the feedback</h2>
+<p>Choosing an inapplicable rule is refused with the type-theoretic reason —
+for example: <i>"Both sisters must be predicates ⟨A,t⟩ of the same type A.
+The sisters are ⟨e,⟨e,t⟩⟩ and e."</i> That message tells you the two types the
+rule saw; compare them against the rule's condition in the table above. A
+near-miss answer gets a hint such as <i>"Not equivalent yet — check which
+variable each argument replaces"</i>: re-do the substitution slowly, one
+λ at a time, outermost first.</p>
+
+<h2 id="progress">Progress &amp; hints</h2>
+<p>Where the author provided them, derivations carry staged hints, revealed
+one at a time; in practice mode the final stage offers "Show answer". The
+📝 Notes button opens the worksheet's reading companion, and opening an
+exercise scrolls the notes to its section. Progress is stored in your
+browser; Tools → "Save progress to a file" moves it between machines.</p>
+
+<p class="about-foot">Questions that this page doesn't answer are usually
+answered by the worksheet's own notes (📝) or the
+<a href="/help/guides/">worked derivation guides</a>. Instructors: see the
+<a href="/guide/">instructor guide</a>.</p>
+
+</div>
+</div>
+</main>

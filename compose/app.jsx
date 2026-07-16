@@ -723,8 +723,8 @@ function App() {
             <span className="sub" title="COMPOSE: Compositional Meaning Practice and Online Semantics Engine">Compositional Meaning Practice<br/>and Online Semantics Engine</span>
           </span>
         </div>
-        <button className="file" onClick={() => setModal('files')}>
-          <span className="dot" /> {custom ? 'Custom exercise' : (lib ? lib.title : 'No worksheet')}
+        <button className="file" onClick={() => setModal('files')} title="Choose a worksheet">
+          <span className="dot" /> <span className="file-btn-kicker">Worksheet:</span> {custom ? 'Custom exercise' : (lib ? lib.title : 'No worksheet')} <span className="file-btn-caret">▾</span>
         </button>
         {hasContent && <button className="file ghost" onClick={() => setModal('rules')} title="View rules for this exercise">☰ Rules</button>}
         {hasContent && hasReading && !isMobile && <button className={'file ghost' + (rightTab === 'reading' ? ' on' : '')} onClick={() => setRightTab(t => t === 'reading' ? 'lexicon' : 'reading')} title="Show the notes in the side panel">📝 Notes</button>}
@@ -928,12 +928,46 @@ function App() {
           onDrop={(e) => { e.preventDefault(); e.currentTarget.classList.remove('modal-drop-over'); importFiles(e.dataTransfer.files); }}>
             <h3>Worksheets</h3>
             <div className="sub">Choose a worksheet to open.</div>
+            {(() => {
+              /* Library entry points (S23): only on the public site's own pages
+                 (bare root, /editor sandbox, curated /cc /hk /papers) — never on
+                 hosted /v/ versions or /edit, and never in exported files. */
+              const bid = String((window.COMPOSE_BUILD || {}).id || '');
+              if (!(bid === 'hosted-root' || bid === 'hosted-sandbox' || bid.indexOf('hosted-lib') === 0)) return null;
+              return (
+                <div className="lib-links">
+                  <span className="lib-links-label">Full library:</span>
+                  <a href="/cc/">Coppock&nbsp;&amp;&nbsp;Champollion</a>
+                  <a href="/hk/">Heim&nbsp;&amp;&nbsp;Kratzer</a>
+                  <a href="/papers/">Classic papers</a>
+                  <a href="/files/">All downloads</a>
+                  <a href="/help/">Help</a>
+                  <a href="/guide/">Guide</a>
+                  <a href="/about/">About</a>
+                </div>
+              );
+            })()}
             <div className="list">
               {(() => {
                 const CHAPTERS = window.LCData.CHAPTERS || [];
                 const builtinKeys = new Set(BUILTIN.map(l => l.key));
                 const userItems = LIB.filter(l => l.user);
                 return (<>
+                  {/* built-ins that belong to no chapter grouping (e.g. the
+                      injected Getting Started demo on the bare root — S23:
+                      previously invisible in its own picker) */}
+                  {LIB.filter(l => !l.user && !CHAPTERS.some(ch => l.key === ch.prefix || l.key.startsWith(ch.prefix + '.') || l.key.startsWith(ch.prefix + '-'))).map(l => {
+                    const counts = l.set.groups.reduce((a, g) => a + g.problems.length, 0);
+                    const active = !custom && l.key === fileKey;
+                    return (
+                      <div key={l.key} className={'file-card'+(active?' fc-active':'')}
+                        onClick={() => { setCustom(null); setFileKey(l.key); setSel({ gi: 0, pi: 0 }); setModal(null); }}>
+                        <span className="fc-icon">{active ? '📖' : '📘'}</span>
+                        <div style={{ flex: 1 }}><div className="fc-title">{l.title}</div>
+                          <div className="fc-meta">{counts} derivations · {l.set.lexList.length} entries</div></div>
+                      </div>
+                    );
+                  })}
                   {CHAPTERS.map(ch => {
                     const chLibs = LIB.filter(l => !l.user && (l.key === ch.prefix || l.key.startsWith(ch.prefix + '.') || l.key.startsWith(ch.prefix + '-')));
                     if (!chLibs.length) return null;

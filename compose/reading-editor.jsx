@@ -182,8 +182,14 @@ function validateAutogen(res) {
 /* ---- standalone reading HTML export ------------------------------------ */
 async function buildReadingHtml(md, title) {
   let css = '', js = '';
-  try { css = await (await fetch('lingdown.css')).text(); } catch (e) {}
-  try { js = await (await fetch('lingdown.js')).text(); } catch (e) {}
+  // Absolute paths: these are served from the site root (build/server.mjs
+  // copies them into pb_public — S23; relative fetches returned the SPA
+  // fallback HTML from /editor/ and /edit/:id). A guard below drops any
+  // HTML fallback so a broken fetch degrades to unstyled rather than garbage.
+  try { css = await (await fetch('/lingdown.css')).text(); } catch (e) {}
+  try { js = await (await fetch('/lingdown.js')).text(); } catch (e) {}
+  if (/^\s*</.test(css)) css = '';
+  if (/^\s*</.test(js)) js = '';
   const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>

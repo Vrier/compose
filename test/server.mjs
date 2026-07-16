@@ -293,6 +293,19 @@ async function main() {
   contains('/papers/partee-rooth carries generalized conjunction (S21)', r.text, '"partee-rooth-conj":{');
   r = await req('GET', '/papers/barwise-cooper/', { raw: true });
   contains('/papers/barwise-cooper carries the GQ worksheet (S22)', r.text, '"barwise-cooper":{');
+  r = await req('GET', '/help/', { raw: true });
+  contains('/help serves the student reference (S23)', r.text, 'How grading works');
+  r = await req('GET', '/help/guides/', { raw: true });
+  contains('/help/guides serves the walkthroughs (S23)', r.text, 'your first derivation');
+  r = await req('GET', '/lingdown.css', { raw: true });
+  ok('/lingdown.css serves real CSS, not the SPA fallback (S23)', r.status === 200 && !/^\s*</.test(r.text) && r.text.includes('.ld-'), 'status ' + r.status);
+  r = await req('GET', '/lingdown.js', { raw: true });
+  ok('/lingdown.js serves the renderer (S23)', r.status === 200 && r.text.includes('window.Lingdown'), 'status ' + r.status);
+  // PocketBase system endpoints must reject unauthenticated access (S23 audit)
+  for (const ep of ['/api/logs', '/api/settings', '/api/backups', '/api/crons']) {
+    r = await req('GET', ep, { raw: true, noRedirect: true });
+    ok('unauthenticated ' + ep + ' rejected', r.status === 401 || r.status === 403 || r.status === 404, 'status ' + r.status);
+  }
   r = await req('GET', '/papers/link/', { raw: true });
   contains('/papers/link carries the plurals worksheet (S22)', r.text, '"link-plurals":{');
   lacks('/papers/link does NOT carry linguistics prefixes beyond its own', r.text, '"barwise-cooper":{');

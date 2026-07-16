@@ -206,6 +206,15 @@ body {
   font-size: 14px; transition: background .12s; position: relative;
 }
 .nav-item:hover { background: var(--panel-2); }
+/* library entry points inside the worksheet picker (S23) */
+.lib-links { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline;
+  margin: 8px 0 10px; padding: 8px 10px; border: 1px solid var(--line);
+  border-radius: 8px; background: var(--panel-2); font-size: 12.5px; }
+.lib-links-label { color: var(--ink-soft); font-weight: 600; }
+.lib-links a { color: var(--accent-ink); text-decoration: none; white-space: nowrap; }
+.lib-links a:hover { text-decoration: underline; }
+.file-btn-kicker { color: var(--ink-soft); font-weight: 400; }
+.file-btn-caret { opacity: .55; font-size: 10px; }
 .nav-item.active { background: var(--accent-soft); color: var(--ink); }
 .nav-item.active::before {
   content: ''; position: absolute; left: -10px; top: 7px; bottom: 7px; width: 3px;
@@ -4376,14 +4385,70 @@ if (typeof module !== 'undefined' && module.exports) module.exports = LC_API;
       quantifierRaising: false,
       autoResolveNonBranching: false,
     },
+    reading: {
+      format: 'latex',
+      markdown: [
+        '# Getting started',
+        '',
+        'COMPOSE lets you compute the meaning of a sentence the way formal',
+        'semantics courses do it on the board: bottom-up through the tree, one',
+        'composition rule at a time. This page walks you through your first',
+        'derivation.',
+        '',
+        '## 1 Solve your first tree',
+        '',
+        'Open \"Frodo runs\" on the left. Then:',
+        '',
+        '1. **Click the VP node** (*runs*). It has one child, so choose **NN**',
+        '   (Non-branching Node) — the meaning passes up unchanged.',
+        '2. **Click the DP node** (*Frodo*) and choose **NN** again.',
+        '3. **Click the S node.** Both daughters are resolved, so choose',
+        '   **FA** (Function Application): \u27e6runs\u27e7 = \u03bbx.run(x) applies to \u27e6Frodo\u27e7 = f.',
+        '4. **Type the \u03b2-reduced result** — `run(f)` — and submit. A \u2713 appears',
+        '   when your answer matches the target meaning.',
+        '',
+        'Leaves take their meanings from the **lexicon** in the right panel.',
+        'If a rule doesn\'t apply, COMPOSE refuses it and tells you why (a type',
+        'mismatch, for example) — that feedback is part of the exercise.',
+        '',
+        '## 2 Typing answers, and how grading works',
+        '',
+        'ASCII shortcuts: `Lx.` becomes \u03bbx., `&` becomes \u2227, `~` becomes \u00ac, `->`',
+        'becomes \u2192. The symbol palette under the input has the rest — it only',
+        'shows the operators this worksheet actually uses.',
+        '',
+        'Grading is by **meaning, not spelling**: any answer that is',
+        '\u03b1-equivalent to the target after normalization counts, and the order',
+        'of conjuncts doesn\'t matter. `run(f)` and its fully reduced variants',
+        'are all the same answer; an unreduced application is not — the point',
+        'of the exercise is the reduction.',
+        '',
+        '## 3 Transitive verbs',
+        '',
+        '*greets* is type \u27e8e,\u27e8e,t\u27e9\u27e9: it takes the **object first**, then the',
+        'subject. So in \"Frodo greets Gandalf\", FA applies twice: once at VP',
+        '(*greets* + *Gandalf*), once at S. Two FA steps, two typed answers.',
+        '',
+        '## 4 Where to go next',
+        '',
+        'This demo is the smallest possible worksheet. The full library —',
+        'Coppock & Champollion \u00a76\u201313, all of Heim & Kratzer, and classic',
+        'papers (Montague, Partee, Davidson, Krifka, Barwise & Cooper, Link) —',
+        'is at [compose.tstephen.com/files](https://compose.tstephen.com/files/),',
+        'with per-chapter pages at [/cc](https://compose.tstephen.com/cc/),',
+        '[/hk](https://compose.tstephen.com/hk/) and',
+        '[/papers](https://compose.tstephen.com/papers/). Stuck mid-derivation?',
+        'See [/help](https://compose.tstephen.com/help/).',
+      ].join('\n'),
+    },
     exercises: [
       {
         id: 'a',
         title: 'A. Intransitive verbs',
         instructions: 'Compose each tree bottom-up with Function Application: click a node, pick the rule, and \u03b2-reduce. The \u2713 appears when your result matches the target meaning.',
         items: [
-          { id: 'a1', tree: '[.S [.DP Frodo ] [.VP runs ] ]', sentence: 'Frodo runs', targets: ['run(f)'] },
-          { id: 'a2', tree: '[.S [.DP Sam ] [.VP sleeps ] ]', sentence: 'Sam sleeps', targets: ['sleep(s)'] },
+          { id: 'a1', tree: '[.S [.DP Frodo ] [.VP runs ] ]', sentence: 'Frodo runs', targets: ['run(f)'], reading: { section: '1' } },
+          { id: 'a2', tree: '[.S [.DP Sam ] [.VP sleeps ] ]', sentence: 'Sam sleeps', targets: ['sleep(s)'], reading: { section: '2' } },
         ],
       },
       {
@@ -4391,8 +4456,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = LC_API;
         title: 'B. Transitive verbs',
         instructions: 'The verb takes its object first, then its subject.',
         items: [
-          { id: 'b1', tree: '[.S [.DP Frodo ] [.VP [.V greets ] [.DP Gandalf ] ] ]', sentence: 'Frodo greets Gandalf', targets: ['greet(f,g)'] },
-          { id: 'b2', tree: '[.S [.DP Gandalf ] [.VP [.V greets ] [.DP Sam ] ] ]', sentence: 'Gandalf greets Sam', targets: ['greet(g,s)'] },
+          { id: 'b1', tree: '[.S [.DP Frodo ] [.VP [.V greets ] [.DP Gandalf ] ] ]', sentence: 'Frodo greets Gandalf', targets: ['greet(f,g)'], reading: { section: '3' } },
+          { id: 'b2', tree: '[.S [.DP Gandalf ] [.VP [.V greets ] [.DP Sam ] ] ]', sentence: 'Gandalf greets Sam', targets: ['greet(g,s)'], reading: { section: '3' } },
         ],
       },
     ],
@@ -7880,13 +7945,15 @@ function validateAutogen(res) {
 async function buildReadingHtml(md, title) {
   let css = "", js = "";
   try {
-    css = await (await fetch("lingdown.css")).text();
+    css = await (await fetch("/lingdown.css")).text();
   } catch (e) {
   }
   try {
-    js = await (await fetch("lingdown.js")).text();
+    js = await (await fetch("/lingdown.js")).text();
   } catch (e) {
   }
+  if (/^\s*</.test(css)) css = "";
+  if (/^\s*</.test(js)) js = "";
   const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -9753,7 +9820,7 @@ function App() {
       }
     ),
     isMobile && /* @__PURE__ */ React.createElement("header", { className: "topbar topbar-mobile" }, /* @__PURE__ */ React.createElement("button", { className: "mtop-set", onClick: () => setModal("files"), title: "Choose a worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "mtop-glyph" }, "\u03BB"), /* @__PURE__ */ React.createElement("span", { className: "mtop-set-name" }, custom ? "Custom exercise" : lib ? lib.title : "No worksheet"), /* @__PURE__ */ React.createElement("span", { className: "mtop-caret" }, "\u25BE")), /* @__PURE__ */ React.createElement("div", { className: "spacer" }), hasContent && flatNav.length > 0 ? /* @__PURE__ */ React.createElement("div", { className: "mtop-nav" }, /* @__PURE__ */ React.createElement("button", { className: "mtop-arrow", disabled: flatIdx <= 0, onClick: () => gotoFlat(-1), "aria-label": "Previous exercise" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "mtop-score" }, doneCount, "/", probCount), /* @__PURE__ */ React.createElement("button", { className: "mtop-arrow", disabled: flatIdx < 0 || flatIdx >= flatNav.length - 1, onClick: () => gotoFlat(1), "aria-label": "Next exercise" }, "\u203A")) : /* @__PURE__ */ React.createElement("div", { className: "mtop-score solo" }, doneCount, "/", probCount)),
-    !isMobile && /* @__PURE__ */ React.createElement("header", { className: "topbar" }, /* @__PURE__ */ React.createElement("div", { className: "brand" }, /* @__PURE__ */ React.createElement("span", { className: "glyph" }, "\u03BB"), /* @__PURE__ */ React.createElement("span", { className: "brand-text" }, /* @__PURE__ */ React.createElement("span", { className: "name" }, "COMPOSE"), /* @__PURE__ */ React.createElement("span", { className: "sub", title: "COMPOSE: Compositional Meaning Practice and Online Semantics Engine" }, "Compositional Meaning Practice", /* @__PURE__ */ React.createElement("br", null), "and Online Semantics Engine"))), /* @__PURE__ */ React.createElement("button", { className: "file", onClick: () => setModal("files") }, /* @__PURE__ */ React.createElement("span", { className: "dot" }), " ", custom ? "Custom exercise" : lib ? lib.title : "No worksheet"), hasContent && /* @__PURE__ */ React.createElement("button", { className: "file ghost", onClick: () => setModal("rules"), title: "View rules for this exercise" }, "\u2630 Rules"), hasContent && hasReading && !isMobile && /* @__PURE__ */ React.createElement("button", { className: "file ghost" + (rightTab === "reading" ? " on" : ""), onClick: () => setRightTab((t2) => t2 === "reading" ? "lexicon" : "reading"), title: "Show the notes in the side panel" }, "\u{1F4DD} Notes"), !isStudentBuild && /* @__PURE__ */ React.createElement(
+    !isMobile && /* @__PURE__ */ React.createElement("header", { className: "topbar" }, /* @__PURE__ */ React.createElement("div", { className: "brand" }, /* @__PURE__ */ React.createElement("span", { className: "glyph" }, "\u03BB"), /* @__PURE__ */ React.createElement("span", { className: "brand-text" }, /* @__PURE__ */ React.createElement("span", { className: "name" }, "COMPOSE"), /* @__PURE__ */ React.createElement("span", { className: "sub", title: "COMPOSE: Compositional Meaning Practice and Online Semantics Engine" }, "Compositional Meaning Practice", /* @__PURE__ */ React.createElement("br", null), "and Online Semantics Engine"))), /* @__PURE__ */ React.createElement("button", { className: "file", onClick: () => setModal("files"), title: "Choose a worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "dot" }), " ", /* @__PURE__ */ React.createElement("span", { className: "file-btn-kicker" }, "Worksheet:"), " ", custom ? "Custom exercise" : lib ? lib.title : "No worksheet", " ", /* @__PURE__ */ React.createElement("span", { className: "file-btn-caret" }, "\u25BE")), hasContent && /* @__PURE__ */ React.createElement("button", { className: "file ghost", onClick: () => setModal("rules"), title: "View rules for this exercise" }, "\u2630 Rules"), hasContent && hasReading && !isMobile && /* @__PURE__ */ React.createElement("button", { className: "file ghost" + (rightTab === "reading" ? " on" : ""), onClick: () => setRightTab((t2) => t2 === "reading" ? "lexicon" : "reading"), title: "Show the notes in the side panel" }, "\u{1F4DD} Notes"), !isStudentBuild && /* @__PURE__ */ React.createElement(
       "button",
       {
         className: "mode-toggle" + (teacherMode ? " teacher" : " student"),
@@ -9905,11 +9972,34 @@ function App() {
       },
       /* @__PURE__ */ React.createElement("h3", null, "Worksheets"),
       /* @__PURE__ */ React.createElement("div", { className: "sub" }, "Choose a worksheet to open."),
+      (() => {
+        const bid = String((window.COMPOSE_BUILD || {}).id || "");
+        if (!(bid === "hosted-root" || bid === "hosted-sandbox" || bid.indexOf("hosted-lib") === 0)) return null;
+        return /* @__PURE__ */ React.createElement("div", { className: "lib-links" }, /* @__PURE__ */ React.createElement("span", { className: "lib-links-label" }, "Full library:"), /* @__PURE__ */ React.createElement("a", { href: "/cc/" }, "Coppock\xA0&\xA0Champollion"), /* @__PURE__ */ React.createElement("a", { href: "/hk/" }, "Heim\xA0&\xA0Kratzer"), /* @__PURE__ */ React.createElement("a", { href: "/papers/" }, "Classic papers"), /* @__PURE__ */ React.createElement("a", { href: "/files/" }, "All downloads"), /* @__PURE__ */ React.createElement("a", { href: "/help/" }, "Help"), /* @__PURE__ */ React.createElement("a", { href: "/guide/" }, "Guide"), /* @__PURE__ */ React.createElement("a", { href: "/about/" }, "About"));
+      })(),
       /* @__PURE__ */ React.createElement("div", { className: "list" }, (() => {
         const CHAPTERS = window.LCData.CHAPTERS || [];
         const builtinKeys = new Set(BUILTIN.map((l) => l.key));
         const userItems = LIB.filter((l) => l.user);
-        return /* @__PURE__ */ React.createElement(React.Fragment, null, CHAPTERS.map((ch) => {
+        return /* @__PURE__ */ React.createElement(React.Fragment, null, LIB.filter((l) => !l.user && !CHAPTERS.some((ch) => l.key === ch.prefix || l.key.startsWith(ch.prefix + ".") || l.key.startsWith(ch.prefix + "-"))).map((l) => {
+          const counts = l.set.groups.reduce((a, g) => a + g.problems.length, 0);
+          const active = !custom && l.key === fileKey;
+          return /* @__PURE__ */ React.createElement(
+            "div",
+            {
+              key: l.key,
+              className: "file-card" + (active ? " fc-active" : ""),
+              onClick: () => {
+                setCustom(null);
+                setFileKey(l.key);
+                setSel({ gi: 0, pi: 0 });
+                setModal(null);
+              }
+            },
+            /* @__PURE__ */ React.createElement("span", { className: "fc-icon" }, active ? "\u{1F4D6}" : "\u{1F4D8}"),
+            /* @__PURE__ */ React.createElement("div", { style: { flex: 1 } }, /* @__PURE__ */ React.createElement("div", { className: "fc-title" }, l.title), /* @__PURE__ */ React.createElement("div", { className: "fc-meta" }, counts, " derivations \xB7 ", l.set.lexList.length, " entries"))
+          );
+        }), CHAPTERS.map((ch) => {
           const chLibs = LIB.filter((l) => !l.user && (l.key === ch.prefix || l.key.startsWith(ch.prefix + ".") || l.key.startsWith(ch.prefix + "-")));
           if (!chLibs.length) return null;
           const chActive = chLibs.some((l) => !custom && l.key === fileKey);

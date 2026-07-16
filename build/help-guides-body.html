@@ -1,0 +1,78 @@
+<main class="about-wrap guide-wrap" id="top">
+<h1>Derivation guides</h1>
+<p class="about-sub">Worked, step-by-step walkthroughs of three derivations, from the demo worksheet to Predicate Modification. The rule reference lives at <a href="/help/">Help with derivations</a>.</p>
+
+<div class="guide-layout">
+<aside class="guide-side"><nav class="guide-toc">
+<div class="guide-toc-head">On this page</div>
+<a href="#first">1 · "Frodo runs"</a>
+<a href="#tv">2 · A transitive verb</a>
+<a href="#pm">3 · Predicate Modification</a>
+<a href="#stuck">When you're stuck</a>
+<a href="#top" class="guide-top">↑ Back to top</a>
+</nav></aside>
+<div class="guide-main">
+
+<h2 id="first">1 · "Frodo runs" — your first derivation</h2>
+<p>Open <a href="/">the demo worksheet</a>. The tree is
+<code>[S [DP Frodo] [VP runs]]</code>; the lexicon gives
+⟦Frodo⟧ = f (type e) and ⟦runs⟧ = λx.run(x) (type ⟨e,t⟩).</p>
+<ol>
+<li><b>Click the VP node.</b> It has one child, <i>runs</i>, so the only rule
+that fits is <b>NN</b> — the leaf's meaning λx.run(x) passes up unchanged.</li>
+<li><b>Click the DP node</b> and choose <b>NN</b> again: it receives f.</li>
+<li><b>Click the S node.</b> Its two daughters are now resolved. Their types
+are ⟨e,t⟩ and e — a function and its argument — so choose <b>FA</b>.</li>
+<li><b>Type the result.</b> The application is (λx.run(x))(f); β-reduction
+substitutes f for x. Type <code>run(f)</code> and submit. ✓</li>
+</ol>
+<p>If you instead type <code>(Lx.run(x))(f)</code>, it is rejected: the
+unreduced application is not the computed value — performing the reduction is
+the exercise.</p>
+
+<h2 id="tv">2 · A transitive verb — "Frodo greets Gandalf"</h2>
+<p>Same worksheet, group B. The verb is
+⟦greets⟧ = λx.λy.greet(y,x), type ⟨e,⟨e,t⟩⟩ — it takes the <b>object
+first</b>, then the subject. The tree is
+<code>[S [DP Frodo] [VP [V greets] [DP Gandalf]]]</code>.</p>
+<ol>
+<li>Resolve the leaves (NN on the DPs and V as needed).</li>
+<li><b>VP node</b>: ⟨e,⟨e,t⟩⟩ meets e → <b>FA</b>. The reduction is
+(λx.λy.greet(y,x))(g): substitute g for x <i>only</i>. Type
+<code>Ly.greet(y,g)</code>.</li>
+<li><b>S node</b>: ⟨e,t⟩ meets e → <b>FA</b> again. (λy.greet(y,g))(f) →
+<code>greet(f,g)</code>. ✓</li>
+</ol>
+<p>The common slip at the VP: substituting g for the wrong variable and
+typing λy.greet(g,y) — which says Gandalf greets y. The grader refuses it
+with the "check which variable each argument replaces" hint. The λ that gets
+the first argument is the <i>outermost</i> one.</p>
+
+<h2 id="pm">3 · Predicate Modification — an adjective plus a noun</h2>
+<p>Open <a href="/cc/ch7/">/cc/ch7</a>. In "Alex is a grey cat"-style
+derivations the interesting node is the NP: ⟦grey⟧ = λx.grey(x) and
+⟦cat⟧ = λx.cat(x) are <b>both ⟨e,t⟩</b>. Neither can apply to the other, so
+FA is refused — try it and read the message. The rule that fits two
+same-typed predicates is <b>PM</b>, and the value to type is their
+conjunction:</p>
+<p><code>Lx.[grey(x) &amp; cat(x)]</code></p>
+<p>Conjunct order doesn't matter — <code>Lx.[cat(x) &amp; grey(x)]</code> is
+the same answer. The rest of the derivation is FA/NN as before.</p>
+
+<h2 id="stuck">When you're stuck</h2>
+<p>In rough order: (1) click the rule anyway — a refusal states the
+type-theoretic reason, which usually identifies the problem; (2) check the
+node's expected type against the lexicon entries below it; (3) open the
+worksheet's 📝 notes — exercises are anchored to the section that introduces
+their construction; (4) use the staged hints where provided — in practice
+mode the last hint offers the answer; (5) reset the derivation (↺) and
+rebuild bottom-up. The <a href="/help/">rule reference</a> has the full
+rule and symbol tables.</p>
+
+<p class="about-foot">Instructors: the <a href="/guide/">instructor
+guide</a> covers authoring, hosting and sharing. The full worksheet library
+is on <a href="/files/">/files</a>.</p>
+
+</div>
+</div>
+</main>

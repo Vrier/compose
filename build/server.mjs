@@ -236,6 +236,7 @@ ${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk
 <li><a href="/editor/">/editor</a> — the editor sandbox: author worksheets and export them as JSON, no account needed (to host worksheets for students, instructors use <a href="/dash/">/dash</a>)</li>
 <li><a href="/files/">/files</a> — download every worksheet and bundle as .compose.json, plus the full site map</li>
 <li><a href="/guide/">/guide</a> — the instructor guide: what students see, authoring, and hosting your own course</li>
+<li><a href="/help/">/help</a> — student help: rules, symbols, grading, and worked derivation guides</li>
 </ul>
 <h2>Credits and lineage</h2>
 <p>The bundled worksheet library tracks Elizabeth Coppock &amp; Lucas
@@ -432,6 +433,7 @@ ${CC_CHAPTERS.map(([pfx]) => '<a href="/cc/' + pfx + '/">/cc/' + pfx + '</a>').j
 ${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk/' + pfx.replace('hk', 'ch') + '</a>').join(' · ')}</li>
 <li><a href="/papers/">/papers</a> — <a href="/papers/partee/">/papers/partee</a> · <a href="/papers/partee-rooth/">/papers/partee-rooth</a> · <a href="/papers/ptq/">/papers/ptq</a> · <a href="/papers/davidson/">/papers/davidson</a> · <a href="/papers/krifka/">/papers/krifka</a> · <a href="/papers/barwise-cooper/">/papers/barwise-cooper</a> · <a href="/papers/link/">/papers/link</a></li>
 <li><a href="/guide/">/guide</a> — instructor guide with screenshots: navigation, authoring, hosting</li>
+<li><a href="/help/">/help</a> — student reference: rules, symbols, grading · <a href="/help/guides/">/help/guides</a> — worked walkthroughs</li>
 <li><a href="/editor/">/editor</a> — author worksheets without an account; export JSON</li>
 <li><a href="/dash/">/dash</a> — instructor dashboard (invite-code registration): host your own versions</li>
 <li><a href="/about/">/about</a> — citation, credits, and how COMPOSE works</li>
@@ -446,15 +448,18 @@ ${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk
 
 /* ---- 4d · /guide — instructor guide with live screenshots (S17) -------- */
 const guideBody = fs.readFileSync(path.join('build', 'guide-body.html'), 'utf8');
-const guidePage = `<!DOCTYPE html>
+const helpBody = fs.readFileSync(path.join('build', 'help-body.html'), 'utf8');
+const helpGuidesBody = fs.readFileSync(path.join('build', 'help-guides-body.html'), 'utf8');
+// one wrapper for all long-form doc pages (guide + the /help pages, S23)
+const docPage = (meta, body) => `<!DOCTYPE html>
 <html lang="en" data-theme="parchment">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="Instructor guide to COMPOSE: what students see, authoring worksheets, and hosting your own course versions with QR handouts." />
-<link rel="canonical" href="https://compose.tstephen.com/guide/" />
+<meta name="description" content="${meta.desc}" />
+<link rel="canonical" href="https://compose.tstephen.com${meta.path}" />
 <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-<title>Instructor guide — COMPOSE</title>
+<title>${meta.title} — COMPOSE</title>
 <style>
 ${safe(parts.css)}
 /* doc pages are normal scrolling documents — undo the app's fixed-viewport
@@ -495,13 +500,19 @@ html { scroll-behavior: smooth; }
 </style>
 </head>
 <body>
-${guideBody}
+${body}
 </body>
 </html>`;
+const guidePage = docPage({ title: 'Instructor guide', path: '/guide/',
+  desc: 'Instructor guide to COMPOSE: what students see, authoring worksheets, and hosting your own course versions with QR handouts.' }, guideBody);
+const helpPage = docPage({ title: 'Help with derivations', path: '/help/',
+  desc: 'Student reference for COMPOSE: the composition rules, type-shifts, symbol entry, grading, and how to read the feedback.' }, helpBody);
+const helpGuidesPage = docPage({ title: 'Derivation guides', path: '/help/guides/',
+  desc: 'Worked step-by-step COMPOSE derivations: a first tree, a transitive verb, and Predicate Modification.' }, helpGuidesBody);
 
 /* machine sitemap + robots (S14.1) */
 const SITE = 'https://compose.tstephen.com';
-const sitemapUrls = ['/', '/about/', '/files/', '/guide/', '/editor/', ...CURATED.map((e) => '/' + e.path + '/')];
+const sitemapUrls = ['/', '/about/', '/files/', '/guide/', '/help/', '/help/guides/', '/editor/', ...CURATED.map((e) => '/' + e.path + '/')];
 const sitemapXml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
   + sitemapUrls.map((u) => '  <url><loc>' + SITE + u + '</loc></url>').join('\n') + '\n</urlset>\n';
 const robotsTxt = 'User-agent: *\nAllow: /\nDisallow: /dash/\nDisallow: /edit/\nDisallow: /_/\nSitemap: ' + SITE + '/sitemap.xml\n';
@@ -516,6 +527,8 @@ write(path.join('pb_public', 'about', 'index.html'), aboutPage);
 write(path.join('pb_public', 'editor', 'index.html'), sandboxPage);
 write(path.join('pb_public', 'files', 'index.html'), filesPage);
 write(path.join('pb_public', 'guide', 'index.html'), guidePage);
+write(path.join('pb_public', 'help', 'index.html'), helpPage);
+write(path.join('pb_public', 'help', 'guides', 'index.html'), helpGuidesPage);
 for (const img of fs.readdirSync(path.join('server', 'guide-assets')).filter((f) => f.endsWith('.jpg'))) {
   fs.copyFileSync(path.join('server', 'guide-assets', img), path.join(OUT, 'pb_public', 'guide', img));
 }
@@ -541,6 +554,12 @@ for (const entry of CURATED) {
   fs.mkdirSync(path.join(OUT, 'pb_public', ...entry.path.split('/')), { recursive: true });
   write(path.join('pb_public', ...entry.path.split('/'), 'index.html'), curatedPage(entry));
 }
+// notes renderer assets for the standalone reading export (S23):
+// reading-editor.jsx fetches these from the site root.
+for (const asset of ['lingdown.css', 'lingdown.js']) {
+  fs.copyFileSync(path.join(SRC, asset), path.join(OUT, 'pb_public', asset));
+}
+console.log('  pb_public/lingdown.{css,js}         (reading-export assets)');
 write(path.join('pb_public', 'sw.js'), swJs);
 write(path.join('pb_public', 'manifest.json'), manifestJson);
 write(path.join('pb_public', 'icon.svg'), iconSvg);

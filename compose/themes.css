@@ -192,6 +192,15 @@ body {
   font-size: 14px; transition: background .12s; position: relative;
 }
 .nav-item:hover { background: var(--panel-2); }
+/* library entry points inside the worksheet picker (S23) */
+.lib-links { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline;
+  margin: 8px 0 10px; padding: 8px 10px; border: 1px solid var(--line);
+  border-radius: 8px; background: var(--panel-2); font-size: 12.5px; }
+.lib-links-label { color: var(--ink-soft); font-weight: 600; }
+.lib-links a { color: var(--accent-ink); text-decoration: none; white-space: nowrap; }
+.lib-links a:hover { text-decoration: underline; }
+.file-btn-kicker { color: var(--ink-soft); font-weight: 400; }
+.file-btn-caret { opacity: .55; font-size: 10px; }
 .nav-item.active { background: var(--accent-soft); color: var(--ink); }
 .nav-item.active::before {
   content: ''; position: absolute; left: -10px; top: 7px; bottom: 7px; width: 3px;
