@@ -38,7 +38,8 @@ per-family progress islands; `/v/:slug` = per-version student pages
 (server-side template substitution, isolated localStorage via `island`);
 `/dash/` = instructor dashboard; `/edit/:id` = hosted editor (version's own
 worksheets only, S13.4); `/editor/` = account-less editor sandbox;
-`/files/` = worksheet downloads + site map; `/guide/` = instructor guide
+`/files/` = worksheet downloads + site map; `/help/` (+`/help/guides/`, with
+video walkthroughs) = student help (S23/S24); `/guide/` = instructor guide
 (screenshots regenerate via scripts/capture-guide.mjs + capture-dash.mjs);
 `/about/` = citation page; `/_/` = PB admin; `/template.html` = public
 tokenized template (client-side export substitution, S13.3).

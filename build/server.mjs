@@ -241,9 +241,14 @@ ${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk
 <h2>Credits and lineage</h2>
 <p>The bundled worksheet library tracks Elizabeth Coppock &amp; Lucas
 Champollion's <em>Invitation to Formal Semantics</em> (§6–§13) and Irene Heim &amp;
-Angelika Kratzer's <em>Semantics in Generative Grammar</em>, with capstones after
-Partee (1986) and Montague's PTQ. All bundled content is original paraphrase —
-nothing is reproduced from the textbooks.</p>
+Angelika Kratzer's <em>Semantics in Generative Grammar</em>, plus a classic-papers
+shelf: Partee (1986), Partee &amp; Rooth (1983), Montague's PTQ (1973), Davidson
+(1967), Krifka (1998), Barwise &amp; Cooper (1981) and Link (1983). Textbook
+companions are original paraphrase — nothing is reproduced from the textbooks.
+Paper companions quote sparingly and with attribution: their notes contain only
+short attributed quotes (from the papers or published presentations of them),
+the papers' own numbered definitions, and explicitly flagged notes on how this
+implementation renders them.</p>
 <p>COMPOSE is written in homage to the <a href="http://lambdacalculator.com/">Lambda
 Calculator</a> (Champollion, Tauberer &amp; Romero), the classic teaching tool of
 this tradition.</p>
