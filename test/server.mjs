@@ -267,6 +267,9 @@ async function main() {
   // NB esbuild ASCII-escapes the middots in the strip's label — assert the
   // ASCII aria-label instead.
   contains('root ships the panel reopen affordance (N3)', r.text, 'Open the reference panel (Lexicon, Rules, Notes)');
+  // N4 (S32) — command palette + progress page compiled into the site bundle
+  contains('root ships the command palette (N4)', r.text, 'pal-list');
+  contains('root ships the progress page (N4)', r.text, 'pg-inner');
   r = await req('GET', '/editor/', { raw: true });
   contains('/editor identifies as the sandbox', r.text, '"id":"hosted-sandbox"');
   contains('/editor is an instructor surface', r.text, '"role":"instructor"');

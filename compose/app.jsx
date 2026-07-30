@@ -669,6 +669,86 @@ function App() {
       .catch(() => {}); // offline: keep the stored identity; server calls will fail loudly
   }, []);
   useEffect(() => { if (isMobile && page !== 'practice') setPage('practice'); }, [isMobile]);
+  // ---- N4 (S32): command palette + shortcuts dialog + server progress sync
+  const [palette, setPalette] = useState(false);
+  const [paletteQ, setPaletteQ] = useState('');
+  const [paletteIdx, setPaletteIdx] = useState(0);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const paletteRef = useRef(null);
+  function openPalette() { setPaletteQ(''); setPaletteIdx(0); setPalette(true); }
+  function closePalette() { setPalette(false); setPaletteQ(''); setPaletteIdx(0); }
+  useEffect(() => { if (palette && paletteRef.current) paletteRef.current.focus(); }, [palette]);
+  useEffect(() => {
+    if (!palette) return;
+    const el = document.querySelector('.pal-row.on');
+    if (el && el.scrollIntoView) el.scrollIntoView({ block: 'nearest' });
+  }, [palette, paletteIdx, paletteQ]);
+  // Server progress sync (signed-in, site builds only): pull ONCE per
+  // identity on boot/sign-in and merge per island — the record with more
+  // solved items wins via a union, so local progress is never deleted.
+  // After the pull, local changes debounce-push (~2s) to the user's own
+  // `progress` record (create, or update after a duplicate-create 400).
+  // Every failure degrades silently to localStorage-only behaviour.
+  const ISLAND = LC_NS ? LC_NS.slice(0, -1) : 'local';
+  const authId = auth && auth.record && auth.record.id;
+  const canSync = isFullBuild && tier !== 'anon' && !!(auth && auth.token);
+  const syncRef = useRef({ recordId: null, pulledFor: null, lastSent: null });
+  const [pullDone, setPullDone] = useState(false);
+  const [syncState, setSyncState] = useState(null); // null | 'synced' | 'error'
+  useEffect(() => {
+    if (!canSync || !authId) { setSyncState(null); return; }
+    if (syncRef.current.pulledFor === authId) return;
+    syncRef.current.pulledFor = authId;
+    syncRef.current.recordId = null;
+    syncRef.current.lastSent = null;
+    setPullDone(false);
+    fetch('/api/collections/progress/records?perPage=200', { headers: { Authorization: auth.token } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => {
+        const rec = j && Array.isArray(j.items) && j.items.find((x) => x.island === ISLAND);
+        if (rec) {
+          syncRef.current.recordId = rec.id;
+          const srv = (rec.data && typeof rec.data === 'object' && !Array.isArray(rec.data)) ? rec.data : {};
+          syncRef.current.lastSent = JSON.stringify(srv);
+          setProgress((loc) => {
+            const merged = Object.assign({}, srv, loc);
+            return Object.keys(merged).length > Object.keys(loc).length ? merged : loc;
+          });
+          setSyncState('synced');
+        }
+        setPullDone(true);
+      })
+      .catch(() => { setPullDone(true); });
+  }, [canSync, authId]);
+  useEffect(() => {
+    if (!canSync || !authId || !pullDone) return;
+    if (JSON.stringify(progress) === syncRef.current.lastSent) return;
+    if (!syncRef.current.recordId && Object.keys(progress).length === 0) return;
+    const body = JSON.stringify({ user: authId, island: ISLAND, data: progress });
+    const timer = setTimeout(async () => {
+      const H = { 'Content-Type': 'application/json', Authorization: auth.token };
+      const send = (method, url) => fetch(url, { method, headers: H, body });
+      try {
+        let r = syncRef.current.recordId
+          ? await send('PATCH', '/api/collections/progress/records/' + syncRef.current.recordId)
+          : await send('POST', '/api/collections/progress/records');
+        if (!r.ok && !syncRef.current.recordId) {
+          // 400 on a duplicate create — find our record, then update it.
+          const l = await fetch('/api/collections/progress/records?perPage=200', { headers: { Authorization: auth.token } })
+            .then((x) => (x.ok ? x.json() : null)).catch(() => null);
+          const rec = l && Array.isArray(l.items) && l.items.find((x) => x.island === ISLAND);
+          if (rec) { syncRef.current.recordId = rec.id; r = await send('PATCH', '/api/collections/progress/records/' + rec.id); }
+        }
+        if (r && r.ok) {
+          const j = await r.json().catch(() => null);
+          if (j && j.id) syncRef.current.recordId = j.id;
+          syncRef.current.lastSent = JSON.stringify(progress);
+          setSyncState('synced');
+        } else setSyncState('error');
+      } catch (e) { setSyncState('error'); }
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [progress, canSync, authId, pullDone]);
   function openEditorSurface() {
     // Desktop: the editor is a page (N2). Mobile keeps the modal path.
     if (isMobile) { setModal('editor'); }
@@ -1050,6 +1130,9 @@ function App() {
 
   const doneCount = groups.reduce((a, g) => a + g.problems.filter((p) => progress[keyOf(g, p)]).length, 0);
   const probCount = groups.reduce((a, g) => a + g.problems.length, 0);
+  // N4: island-wide solved count (progress keys are set-key/group/problem;
+  // scratch derivations land under custom/ and stay out of the tally)
+  const grandSolved = Object.keys(progress).filter((k) => progress[k] && k.indexOf('custom/') !== 0).length;
 
   // Flattened exercise order for one-tap prev/next on mobile
   const flatNav = [];
@@ -1078,14 +1161,32 @@ function App() {
     if (isMobile) return;
     function onNavKey(e) {
       const tg = e.target;
-      if (tg && (tg.tagName === 'INPUT' || tg.tagName === 'TEXTAREA' || tg.tagName === 'SELECT' || tg.isContentEditable)) return;
+      const typing = !!(tg && (tg.tagName === 'INPUT' || tg.tagName === 'TEXTAREA' || tg.tagName === 'SELECT' || tg.isContentEditable));
+      const inPalette = !!(tg && paletteRef.current && tg === paletteRef.current);
+      // N4: ⌘K/Ctrl+K toggles the palette ANYWHERE, even mid-typing; Esc
+      // unwinds palette → shortcuts (README order). Everything else keeps the
+      // N1 typing suppression — the palette's own input handles its keys in
+      // onPaletteKey, so it is exempt by construction.
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault();
+        if (palette) closePalette(); else openPalette();
+        return;
+      }
+      if (e.key === 'Escape' && !inPalette) {
+        if (palette) { e.preventDefault(); closePalette(); return; }
+        if (shortcutsOpen) { e.preventDefault(); setShortcutsOpen(false); return; }
+      }
+      if (typing) return;
       if ((e.metaKey || e.ctrlKey) && e.key === '\\') {
         e.preventDefault();
         if (railCollapsed || (exOpen && hasContent)) { setRailCollapsed(false); setExOpen(false); }
         else setRailCollapsed(true);
         return;
       }
-      if (e.metaKey || e.ctrlKey || e.altKey || modal || page !== 'practice') return;
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'e' || e.key === 'E') && canAuthor) {
+        e.preventDefault(); closePalette(); setShortcutsOpen(false); openEditorSurface(); return;
+      }
+      if (e.metaKey || e.ctrlKey || e.altKey || modal || palette || shortcutsOpen || page !== 'practice') return;
       if (e.key === 'j' || e.key === 'J') { e.preventDefault(); gotoFlat(-1); }
       else if (e.key === 'k' || e.key === 'K') { e.preventDefault(); gotoFlat(1); }
     }
@@ -1321,7 +1422,7 @@ function App() {
               <span className="sb-search-glyph" aria-hidden="true">⌕</span>
               <input ref={searchRef} value={navQuery} onChange={(e) => setNavQuery(e.target.value)}
                 aria-label="Search worksheets" placeholder="Search worksheets…" />
-              <button type="button" className="sb-kbd" title="Command palette — coming soon (⌘K)">⌘K</button>
+              <button type="button" className="sb-kbd" title="Command palette (⌘K)" aria-label="Open the command palette" onClick={() => openPalette()}>⌘K</button>
             </div>
           </div>
         )}
@@ -1350,6 +1451,13 @@ function App() {
                   <button type="button" className="sb-row" onClick={() => { setLoadErr(null); setModal('files'); }}>
                     <span className="sb-ico" aria-hidden="true">↑</span>
                     <span className="sb-row-label">Open a file…</span>
+                  </button>
+                  <button type="button" className={'sb-row' + (page === 'progress' ? ' on' : '')}
+                    aria-current={page === 'progress' ? 'true' : undefined}
+                    onClick={() => setPage('progress')}>
+                    <span className="sb-ico" aria-hidden="true">✓</span>
+                    <span className="sb-row-label">Your progress</span>
+                    <span className="sb-row-note">{grandSolved} solved</span>
                   </button>
                   {isFullBuild && (
                     <div>
@@ -1419,7 +1527,7 @@ function App() {
                     </div>
                   </div>
                   <div className="sb-kicker sb-actions-kicker">Actions</div>
-                  <button type="button" className="sb-row" onClick={() => setModal('summary')}><span className="sb-ico" aria-hidden="true">✓</span><span className="sb-row-label">Progress summary</span><span className="sb-row-note">{doneCount}/{probCount}</span></button>
+                  <button type="button" className="sb-row" onClick={() => setPage('progress')}><span className="sb-ico" aria-hidden="true">✓</span><span className="sb-row-label">Progress summary</span><span className="sb-row-note">{doneCount}/{probCount}</span></button>
                   <button type="button" className="sb-row" onClick={() => composeExportProgress()}><span className="sb-ico" aria-hidden="true">⤓</span><span className="sb-row-label">Save progress to a file</span></button>
                   <button type="button" className="sb-row" onClick={() => { if (progressFileInput.current) progressFileInput.current.click(); }}><span className="sb-ico" aria-hidden="true">⤒</span><span className="sb-row-label">Restore progress from a file…</span></button>
                   <button type="button" className="sb-row" disabled={exporting} onClick={exportDerivation}><span className="sb-ico" aria-hidden="true">⧉</span><span className="sb-row-label">{exporting ? 'Rendering…' : 'Export derivation (PNG)'}</span></button>
@@ -1489,8 +1597,8 @@ function App() {
   function renderRail() {
     return (
       <div className="sb-rail">
-        {isFullBuild && <button type="button" className="rail-btn" title="Search worksheets" aria-label="Search worksheets"
-          onClick={() => { drillOut('library'); setTimeout(() => { if (searchRef.current) searchRef.current.focus(); }, 200); }}>⌕</button>}
+        <button type="button" className="rail-btn" title="Search everything (⌘K)" aria-label="Search everything (⌘K)"
+          onClick={() => openPalette()}>⌕</button>
         <button type="button" className={'rail-btn' + (sidebarExpanded && navSection === 'library' ? ' on' : '')} title="All worksheets" aria-label="All worksheets"
           onClick={() => drillOut('library')}>❏</button>
         {hasContent && <button type="button" className={'rail-btn' + (exOpen ? ' on' : '')} title="Exercises in this worksheet" aria-label="Exercises in this worksheet"
@@ -1566,7 +1674,7 @@ function App() {
           {!custom && (
             <div className="colx-foot">
               <button type="button" className="sb-row" onClick={() => openPanelTab('rules', true)} title="View rules for this exercise"><span className="sb-ico" aria-hidden="true">☰</span><span className="sb-row-label">Rules for this worksheet</span></button>
-              <button type="button" className="sb-row" onClick={() => setModal('summary')}><span className="sb-ico" aria-hidden="true">✓</span><span className="sb-row-label">Progress summary</span><span className="sb-row-note">{doneCount}/{probCount}</span></button>
+              <button type="button" className="sb-row" onClick={() => setPage('progress')}><span className="sb-ico" aria-hidden="true">✓</span><span className="sb-row-label">Progress summary</span><span className="sb-row-note">{doneCount}/{probCount}</span></button>
               <button type="button" className="sb-row" onClick={() => composeExportProgress()}><span className="sb-ico" aria-hidden="true">⤓</span><span className="sb-row-label">Save progress to a file</span></button>
               <button type="button" className="sb-row" onClick={resetAllProgress} title="Clear all progress for this worksheet"><span className="sb-ico" aria-hidden="true">↺</span><span className="sb-row-label">Reset all derivations</span></button>
             </div>
@@ -1618,6 +1726,256 @@ function App() {
         }} />
     );
   }
+
+  /* =========================================================================
+     N4 (S32) — ⌘K command palette, keyboard-shortcuts dialog, progress page.
+     Palette index is built from in-memory structures (LIB, the current set's
+     groups, recents) at render time while the palette is open — no fetches.
+     Copy and metrics follow the navigation-redesign prototype/README.
+     ========================================================================= */
+  function paletteWorksheetRows(q) {
+    const out = [];
+    LIB.forEach((l) => {
+      const coll = collectionOf(l) || 'Worksheets';
+      if (q && !((l.title || '') + ' ' + coll).toLowerCase().includes(q)) return;
+      out.push({ glyph: '❏', label: l.title, kicker: coll, act: () => openWorksheetKey(l.key) });
+    });
+    return out;
+  }
+  function paletteExerciseRows(q) {
+    const out = [];
+    if (custom || !hasContent) return out;
+    groups.forEach((g, gi) => g.problems.forEach((p, pi) => {
+      const label = navLabel(g, p) || '';
+      if (q && !label.toLowerCase().includes(q)) return;
+      out.push({ glyph: '☰', label, kicker: 'exercise', act: () => { setPage('practice'); setSel({ gi, pi }); setExOpen(true); } });
+    }));
+    return out;
+  }
+  function palettePageRows(q) {
+    const rows = [
+      { glyph: '✓', label: 'Your progress', kicker: 'page', hay: 'progress solved score summary', act: () => setPage('progress') },
+    ];
+    if (canAuthor) {
+      rows.push({ glyph: '✎', label: 'Worksheet editor', kicker: '⌘E', hay: 'editor new worksheet author', act: () => openEditorSurface() });
+      rows.push({ glyph: '♪', label: 'Scratchpad', kicker: 'page', hay: 'scratchpad free composition', act: () => setModal('scratch') });
+    }
+    if (tier === 'instructor') rows.push({ glyph: '◈', label: 'My versions', kicker: 'page', hay: 'dash versions hosting account', act: () => setPage('dash') });
+    if (isFullBuild) {
+      rows.push({ glyph: '◆', label: 'Instructor guide', kicker: 'page', hay: 'guide instructor', act: () => { window.location.href = '/guide/'; } });
+      rows.push({ glyph: '?', label: 'Student help', kicker: 'page', hay: 'help student', act: () => { window.location.href = '/help/'; } });
+      rows.push({ glyph: '▷', label: 'Worked walkthroughs', kicker: 'page', hay: 'help videos walkthrough', act: () => { window.location.href = '/help/guides/'; } });
+      rows.push({ glyph: '⤓', label: 'Downloads & site map', kicker: 'page', hay: 'files downloads site map', act: () => { window.location.href = '/files/'; } });
+      rows.push({ glyph: '§', label: 'About & how to cite', kicker: 'page', hay: 'about cite citation', act: () => { window.location.href = '/about/'; } });
+    }
+    return q ? rows.filter((r) => (r.label + ' ' + r.hay).toLowerCase().includes(q)) : rows;
+  }
+  function paletteActionRows(q) {
+    const rows = [
+      { glyph: '⌘', label: 'Keyboard shortcuts', kicker: 'action', hay: 'keyboard shortcuts keys', act: () => setShortcutsOpen(true) },
+    ];
+    if (isFullBuild) {
+      if (tier === 'anon') rows.push({ glyph: '◉', label: 'Sign in or create an account', kicker: 'action', hay: 'sign in account register', act: () => { setSigninMode('login'); setPage('signin'); } });
+      else rows.push({ glyph: '→', label: 'Sign out', kicker: 'action', hay: 'sign out log out', act: () => { setAuth(null); setPage('practice'); } });
+    }
+    return q ? rows.filter((r) => (r.label + ' ' + r.hay).toLowerCase().includes(q)) : rows;
+  }
+  function buildPaletteRows() {
+    const q = paletteQ.trim().toLowerCase();
+    const rows = [];
+    const push = (head, items) => { if (items.length) { rows.push({ head }); items.forEach((r) => rows.push(r)); } };
+    if (!q) {
+      push('Continue', recents.slice(0, 6).map((r) => {
+        const l = LIB.find((x) => x.key === r.ws);
+        if (!l) return null;
+        const gs = l.set.groups.filter((g) => g.kind === 'tree');
+        const dot = String(r.ex || '').indexOf('.');
+        const gid = dot > 0 ? r.ex.slice(0, dot) : '', pid = dot > 0 ? r.ex.slice(dot + 1) : '';
+        const g = gs.find((x) => x.id === gid);
+        const pb = g && g.problems.find((x) => x.id === pid);
+        return { glyph: '☰', label: pb ? navLabel(g, pb) : l.title, kicker: relTime(r.at), act: () => openRecent(r) };
+      }).filter(Boolean));
+      push('Go to', palettePageRows(''));
+      push('Actions', paletteActionRows(''));
+      return rows;
+    }
+    // Grouped results in the README's order:
+    // Worksheets · Exercises in this worksheet · Pages · Actions.
+    push('Worksheets', paletteWorksheetRows(q));
+    push('Exercises in this worksheet', paletteExerciseRows(q));
+    push('Pages', palettePageRows(q));
+    push('Actions', paletteActionRows(q));
+    return rows;
+  }
+  const paletteRows = (!isMobile && palette) ? buildPaletteRows() : [];
+  const paletteItems = paletteRows.filter((r) => !r.head);
+  const palIdx = Math.max(0, Math.min(paletteItems.length - 1, paletteIdx));
+  function paletteRun(r) { closePalette(); r.act(); }
+  function onPaletteKey(e) {
+    const n = paletteItems.length;
+    if (e.key === 'ArrowDown') { e.preventDefault(); if (n) setPaletteIdx((palIdx + 1) % n); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); if (n) setPaletteIdx((palIdx - 1 + n) % n); }
+    else if (e.key === 'Enter') { e.preventDefault(); const it = paletteItems[palIdx]; if (it) paletteRun(it); }
+    else if (e.key === 'Escape') {
+      // stopPropagation matters: closePalette flushes synchronously (legacy
+      // ReactDOM), the window nav-key listener re-registers mid-dispatch with
+      // palette=false, and the still-bubbling Escape would then close the
+      // shortcuts dialog underneath in the same keystroke.
+      e.preventDefault(); e.stopPropagation(); closePalette();
+    }
+  }
+  function renderPalette() {
+    if (!palette || isMobile) return null;
+    const q = paletteQ.trim();
+    let seen = -1;
+    return (
+      <div className="pal-scrim" onClick={() => closePalette()}>
+        <div className="pal" role="dialog" aria-modal="true" aria-label="Search and jump to anything" onClick={(e) => e.stopPropagation()}>
+          <div className="pal-search">
+            <span className="pal-glyph" aria-hidden="true">⌕</span>
+            <input ref={paletteRef} value={paletteQ}
+              onChange={(e) => { setPaletteQ(e.target.value); setPaletteIdx(0); }}
+              onKeyDown={onPaletteKey}
+              aria-label="Search worksheets, exercises, pages and help"
+              aria-controls="pal-listbox"
+              aria-activedescendant={paletteItems.length ? 'pal-opt-' + palIdx : undefined}
+              placeholder="Jump to a worksheet, exercise, page or action…" />
+            <span className="pal-esc" aria-hidden="true">esc</span>
+          </div>
+          <div className="pal-list" id="pal-listbox" role="listbox" aria-label="Results">
+            {paletteRows.map((r, i) => {
+              if (r.head) return <div className="pal-head" key={'h' + i}>{r.head}</div>;
+              seen++;
+              const my = seen;
+              const on = my === palIdx;
+              return (
+                <button type="button" className={'pal-row' + (on ? ' on' : '')} key={'r' + i}
+                  id={'pal-opt-' + my} role="option" aria-selected={on}
+                  onMouseEnter={() => { if (paletteIdx !== my) setPaletteIdx(my); }}
+                  onClick={() => paletteRun(r)}>
+                  <span className="pal-ico" aria-hidden="true">{r.glyph}</span>
+                  <span className="pal-label lx">{r.label}</span>
+                  <span className="pal-kicker">{r.kicker}</span>
+                  <span className="pal-enter" aria-hidden="true">↵</span>
+                </button>
+              );
+            })}
+            {q && paletteItems.length === 0 && (
+              <div className="pal-empty">
+                <div className="pal-empty-main">Nothing matches “{q}”.</div>
+                <div className="pal-empty-sub">Try a chapter number, a phrase from an exercise, or a page name like “editor”.</div>
+              </div>
+            )}
+          </div>
+          <div className="pal-foot">
+            <span><span className="mono">↑↓</span> move</span>
+            <span><span className="mono">↵</span> open</span>
+            <span><span className="mono">⌘K</span> anywhere</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  function renderShortcuts() {
+    if (!shortcutsOpen || isMobile) return null;
+    const rows = [
+      { label: 'Search / jump to anything', keys: '⌘K / Ctrl+K' },
+      { label: 'Collapse or expand the sidebar', keys: '⌘\\ / Ctrl+\\' },
+      ...(canAuthor ? [{ label: 'Open the worksheet editor', keys: '⌘E / Ctrl+E' }] : []),
+      { label: 'Previous / next exercise', keys: 'J / K' },
+      { label: 'Move, open and dismiss in the palette', keys: '↑ ↓ ↵ esc' },
+      { label: 'Activate a focused sidebar row', keys: 'Enter / Space' },
+    ];
+    return (
+      <div className="pal-scrim kbd-scrim" onClick={() => setShortcutsOpen(false)}>
+        <div className="kbd-modal" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts" onClick={(e) => e.stopPropagation()}>
+          <div className="kbd-title">Keyboard shortcuts</div>
+          <div className="kbd-sub">Display options now live in the sidebar's Display section.</div>
+          {rows.map((r) => (
+            <div className="kbd-row" key={r.label}>
+              <span className="kbd-label">{r.label}</span>
+              <span className="kbd-keys">{r.keys}</span>
+            </div>
+          ))}
+          <button type="button" className="btn btn-primary kbd-done" onClick={() => setShortcutsOpen(false)}>Done</button>
+        </div>
+      </div>
+    );
+  }
+  function renderProgressPage() {
+    const rows = LIB.map((l) => {
+      let total = 0, solved = 0;
+      (l.set.groups || []).forEach((g) => {
+        if (g.kind !== 'tree') return;
+        (g.problems || []).forEach((pb) => { total++; if (progress[l.key + '/' + g.id + '/' + pb.id]) solved++; });
+      });
+      return { key: l.key, title: l.title, coll: collectionOf(l), total, solved };
+    }).filter((r) => r.total > 0);
+    const grand = rows.reduce((acc, r) => ({ t: acc.t + r.total, s: acc.s + r.solved }), { t: 0, s: 0 });
+    const anon = tier === 'anon';
+    return (
+      <div className="page-view pg-wrap">
+        <div className="pg-inner">
+          <div className="page-crumb-row">
+            <button type="button" className="page-back" onClick={() => setPage('practice')} title="Back to practice" aria-label="Back to practice">‹</button>
+            <span className="page-crumb">Worksheets · Your progress</span>
+          </div>
+          <div className="pg-head">
+            <div className="pg-head-main">
+              <div className="pg-kicker">Your progress</div>
+              <h1 className="pg-title">{grand.s === 0 ? 'Nothing solved yet' : grand.s + ' of ' + grand.t + ' solved'}</h1>
+              <div className="pg-sub">A derivation counts as solved once every node carries a meaning and the root matches the target. Nothing here is graded or sent to your instructor.</div>
+            </div>
+            <div className="pg-head-actions">
+              <button type="button" className="btn-ghost pg-btn" onClick={() => composeExportProgress()}>⤓ Save to a file</button>
+              <button type="button" className="btn-ghost pg-btn" onClick={() => { if (progressFileInput.current) progressFileInput.current.click(); }}>⤒ Restore…</button>
+            </div>
+          </div>
+          <div className="pg-stats">
+            <div className="pg-stat"><div className="pg-stat-label">Solved</div><div className="pg-stat-value">{doneCount} / {probCount}</div><div className="pg-stat-sub">{custom ? 'Custom exercise' : (lib ? lib.title : 'No worksheet')}</div></div>
+            <div className="pg-stat"><div className="pg-stat-label">Still open</div><div className="pg-stat-value">{Math.max(0, probCount - doneCount)}</div><div className="pg-stat-sub">in the worksheet you have open</div></div>
+            <div className="pg-stat"><div className="pg-stat-label">Worksheets</div><div className="pg-stat-value">{rows.length}</div><div className="pg-stat-sub">{rows.length ? 'across all collections' : 'nothing here yet'}</div></div>
+          </div>
+          <div className="pg-kicker pg-by">By worksheet</div>
+          <div className="pg-rows">
+            {rows.map((r) => {
+              const cur = !custom && r.key === fileKey;
+              const pct = r.total ? Math.round(100 * r.solved / r.total) : 0;
+              return (
+                <div className="pg-row" key={r.key}>
+                  <div className="pg-row-main">
+                    <div className="pg-row-title">{r.title}</div>
+                    <div className="pg-row-sub">{(r.coll || 'Worksheets') + (cur ? ' · open now' : (r.solved ? '' : ' · not started'))}</div>
+                  </div>
+                  <div className="pg-bar" aria-hidden="true"><span className={'pg-bar-fill' + (r.solved ? ' has' : '')} style={{ width: pct + '%' }} /></div>
+                  <span className="pg-count">{r.solved}/{r.total}</span>
+                  <button type="button" className="pg-go" onClick={() => openWorksheetKey(r.key)}>{r.solved ? 'Resume' : 'Start'}</button>
+                </div>
+              );
+            })}
+            {rows.length === 0 && (
+              <div className="pg-none">
+                <div className="pg-none-title">No worksheets unlocked yet</div>
+                <div className="pg-none-sub">Enter the code your instructor gave you and the worksheet — and your progress through it — appears here.</div>
+              </div>
+            )}
+          </div>
+          <div className="pg-callout">
+            <span className={'pg-callout-glyph' + (anon ? ' warn' : ' ok')} aria-hidden="true">{anon ? '△' : '✓'}</span>
+            <div className="pg-callout-main">
+              <div className="pg-callout-title">{anon ? 'This progress lives in this browser only' : 'Progress is saved to your account'}</div>
+              <div className="pg-callout-body">{anon
+                ? 'Clearing site data loses it, and it will not follow you to another device. Export a file as a backup' + (isFullBuild ? ', or create an account.' : '.')
+                : 'It follows you to any device you sign in on. A file export is still worth keeping as a backup.'}</div>
+              {!anon && syncState === 'synced' && <div className="pg-synced">✓ Synced to your account</div>}
+              {!anon && syncState === 'error' && <div className="pg-sync-err">Could not reach the server just now — progress is safe in this browser and syncs when you are back online.</div>}
+            </div>
+            {anon && isFullBuild && <button type="button" className="btn btn-primary pg-signup" onClick={() => { setSigninMode('register'); setPage('signin'); }}>Create an account</button>}
+          </div>
+        </div>
+      </div>
+    );
+  }
   function renderPageView() {
     if (page === 'signin' || (page === 'dash' && tier !== 'instructor')) {
       return <SigninPage key={signinMode} initialMode={signinMode}
@@ -1629,6 +1987,7 @@ function App() {
         onBack={() => setPage('practice')}
         onAuthGone={() => { setAuth(null); setSigninMode('login'); setPage('signin'); }} />;
     }
+    if (page === 'progress') return renderProgressPage();
     if (page === 'editor') return <div className="page-view page-editor">{renderEditorSurface(true)}</div>;
     return null;
   }
@@ -1925,6 +2284,9 @@ function App() {
       })()}
 
       {modal === 'summary' && <SummaryModal lib={LIB} progress={progress} onClose={() => setModal(null)} />}
+
+      {!isMobile && renderPalette()}
+      {!isMobile && renderShortcuts()}
 
       {netNotice && <div className="net-notice">{netNotice}</div>}
 

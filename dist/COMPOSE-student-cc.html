@@ -2118,6 +2118,112 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
   .app-main > .rp-panel { position: absolute; right: 0; top: 0; bottom: 0; z-index: 7; box-shadow: var(--shadow); }
 }
 
+/* =========================================================================
+   N4 (S32) — command palette (pal-*), keyboard-shortcuts dialog (kbd-*),
+   progress page (pg-*). Theme tokens only; metrics per the navigation
+   redesign README: scrim /0.32, dialog 568px / radius 13px / 11vh top,
+   pop .16s; shortcuts dialog 360px; progress page max-width 900px.
+   ========================================================================= */
+@keyframes palPop { from { opacity: 0; transform: scale(0.985) translateY(-4px); } to { opacity: 1; transform: none; } }
+.pal-scrim {
+  position: fixed; inset: 0; z-index: 60;
+  background: oklch(0.285 0.022 52 / 0.32);
+  background: color-mix(in oklab, var(--ink) 32%, transparent);
+  display: flex; align-items: flex-start; justify-content: center; padding: 11vh 20px 20px;
+}
+.pal {
+  width: 100%; max-width: 568px; border: 1px solid var(--line); border-radius: 13px;
+  background: var(--panel); box-shadow: var(--shadow); overflow: hidden;
+  animation: palPop .16s ease; display: flex; flex-direction: column; max-height: 74vh;
+}
+.pal-search { flex: none; display: flex; align-items: center; gap: 11px; padding: 13px 15px; border-bottom: 1px solid var(--line-soft); }
+.pal-search .pal-glyph { font-size: 15px; color: var(--faint); }
+.pal-search input { flex: 1; min-width: 0; border: 0; background: transparent; outline: none; font-family: var(--serif); font-size: 15.5px; color: var(--ink); }
+.pal-search input::placeholder { color: var(--faint); }
+.pal-esc { flex: none; font-family: var(--mono); font-size: 10px; color: var(--faint); border: 1px solid var(--line); border-radius: 5px; padding: 2px 5px; }
+.pal-list { flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0; padding: 5px 0 7px; }
+.pal-head { padding: 9px 16px 5px; font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+.pal-row {
+  display: flex; align-items: center; gap: 9px; width: 100%; padding: 7px 16px;
+  font-size: 12.5px; color: var(--ink-soft); cursor: pointer;
+  border: 0; border-radius: 0; background: transparent; text-align: left; font-family: inherit;
+}
+.pal-row .pal-ico { flex: none; width: 18px; text-align: center; font-size: 12px; opacity: .75; }
+.pal-row .pal-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pal-row .pal-kicker { flex: none; max-width: 38%; overflow: hidden; text-overflow: ellipsis; font-size: 10.5px; color: var(--faint); white-space: nowrap; }
+.pal-row .pal-enter { flex: none; width: 10px; font-size: 11px; color: transparent; }
+.pal-row.on { background: var(--accent-soft); color: var(--accent-ink); }
+.pal-row.on .pal-kicker, .pal-row.on .pal-enter { color: var(--accent-ink); }
+.pal-empty { padding: 22px 20px; text-align: center; }
+.pal-empty-main { font-size: 13.5px; color: var(--ink-soft); }
+.pal-empty-sub { font-size: 12px; color: var(--faint); line-height: 1.5; margin: 5px auto 0; max-width: 40ch; }
+.pal-foot {
+  flex: none; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  padding: 9px 15px; border-top: 1px solid var(--line-soft); background: var(--panel-2);
+  font-size: 10.5px; color: var(--faint);
+}
+.pal-foot .mono { font-family: var(--mono); }
+
+/* keyboard-shortcuts dialog */
+.kbd-scrim { align-items: center; padding: 20px; }
+.kbd-modal {
+  width: 100%; max-width: 360px; border: 1px solid var(--line); border-radius: 12px;
+  background: var(--panel); padding: 18px 20px 20px; box-shadow: var(--shadow); animation: palPop .16s ease;
+}
+.kbd-title { font-size: 17px; font-weight: 600; margin-bottom: 4px; color: var(--ink); }
+.kbd-sub { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+.kbd-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-top: 1px solid var(--line-soft); }
+.kbd-row .kbd-label { flex: 1; font-size: 13px; color: var(--ink-soft); }
+.kbd-row .kbd-keys { font-family: var(--mono); font-size: 10.5px; color: var(--ink-soft); border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; flex: none; }
+.kbd-done { width: 100%; margin-top: 14px; }
+
+/* progress page */
+.pg-inner { max-width: 900px; margin: 0 auto; padding: 30px 28px 44px; }
+.pg-head { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.pg-head-main { flex: 1 1 320px; min-width: 250px; }
+.pg-kicker { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+.pg-title { font-size: 29px; font-weight: 600; margin: 5px 0 0; color: var(--ink); }
+.pg-sub { font-size: 14px; color: var(--muted); margin-top: 6px; max-width: 62ch; line-height: 1.55; }
+.pg-head-actions { display: flex; gap: 8px; flex: none; flex-wrap: wrap; }
+.pg-btn { white-space: nowrap; }
+.pg-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-top: 22px; }
+.pg-stat { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); padding: 13px 15px 14px; }
+.pg-stat-label { font-size: 10px; letter-spacing: .11em; text-transform: uppercase; color: var(--faint); }
+.pg-stat-value { font-size: 26px; font-weight: 600; margin-top: 6px; line-height: 1.1; color: var(--ink); }
+.pg-stat-sub { font-size: 11.5px; color: var(--muted); margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pg-by { padding: 26px 0 9px; }
+.pg-rows { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); overflow: hidden; }
+.pg-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 11px 16px; border-top: 1px solid var(--line-soft); }
+.pg-row:first-child { border-top: 0; }
+.pg-row-main { flex: 1 1 240px; min-width: 0; }
+.pg-row-title { font-size: 13.5px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pg-row-sub { font-size: 11px; color: var(--faint); margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pg-bar { flex: 0 0 128px; height: 5px; border-radius: 3px; background: var(--line-soft); overflow: hidden; }
+.pg-bar-fill { display: block; height: 100%; border-radius: 3px; background: var(--line); }
+.pg-bar-fill.has { background: var(--good); }
+.pg-count { flex: none; width: 46px; text-align: right; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.pg-go {
+  flex: none; height: 27px; padding: 0 12px; border: 1px solid var(--line); border-radius: 7px;
+  background: var(--panel-2); font-size: 11.5px; color: var(--ink-soft); cursor: pointer; white-space: nowrap; font-family: inherit;
+}
+.pg-go:hover { border-color: var(--accent); color: var(--accent-ink); }
+.pg-none { padding: 28px 24px; text-align: center; }
+.pg-none-title { font-size: 15px; font-weight: 600; color: var(--ink); }
+.pg-none-sub { font-size: 13px; color: var(--muted); line-height: 1.55; margin: 6px auto 0; max-width: 44ch; }
+.pg-callout {
+  display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; margin-top: 18px;
+  padding: 13px 15px; border: 1px dashed var(--line); border-radius: 10px; background: var(--panel-2);
+}
+.pg-callout-glyph { flex: none; font-size: 13px; }
+.pg-callout-glyph.warn { color: var(--accent); }
+.pg-callout-glyph.ok { color: var(--good); }
+.pg-callout-main { flex: 1 1 320px; min-width: 220px; }
+.pg-callout-title { font-size: 12.5px; font-weight: 600; color: var(--ink-soft); }
+.pg-callout-body { font-size: 11.5px; color: var(--muted); line-height: 1.5; margin-top: 3px; }
+.pg-synced { font-size: 11.5px; color: var(--good); margin-top: 5px; }
+.pg-sync-err { font-size: 11.5px; color: var(--bad); margin-top: 5px; }
+.pg-signup { flex: none; align-self: center; white-space: nowrap; }
+
 
 /* ===========================================================================
    lingdown.css — typesetting for the lingdown engine. Themable via --ld-*
@@ -10109,6 +10215,92 @@ function App() {
   useEffect(() => {
     if (isMobile && page !== "practice") setPage("practice");
   }, [isMobile]);
+  const [palette, setPalette] = useState(false);
+  const [paletteQ, setPaletteQ] = useState("");
+  const [paletteIdx, setPaletteIdx] = useState(0);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const paletteRef = useRef(null);
+  function openPalette() {
+    setPaletteQ("");
+    setPaletteIdx(0);
+    setPalette(true);
+  }
+  function closePalette() {
+    setPalette(false);
+    setPaletteQ("");
+    setPaletteIdx(0);
+  }
+  useEffect(() => {
+    if (palette && paletteRef.current) paletteRef.current.focus();
+  }, [palette]);
+  useEffect(() => {
+    if (!palette) return;
+    const el = document.querySelector(".pal-row.on");
+    if (el && el.scrollIntoView) el.scrollIntoView({ block: "nearest" });
+  }, [palette, paletteIdx, paletteQ]);
+  const ISLAND = LC_NS ? LC_NS.slice(0, -1) : "local";
+  const authId = auth && auth.record && auth.record.id;
+  const canSync = isFullBuild && tier !== "anon" && !!(auth && auth.token);
+  const syncRef = useRef({ recordId: null, pulledFor: null, lastSent: null });
+  const [pullDone, setPullDone] = useState(false);
+  const [syncState, setSyncState] = useState(null);
+  useEffect(() => {
+    if (!canSync || !authId) {
+      setSyncState(null);
+      return;
+    }
+    if (syncRef.current.pulledFor === authId) return;
+    syncRef.current.pulledFor = authId;
+    syncRef.current.recordId = null;
+    syncRef.current.lastSent = null;
+    setPullDone(false);
+    fetch("/api/collections/progress/records?perPage=200", { headers: { Authorization: auth.token } }).then((r) => r.ok ? r.json() : null).then((j) => {
+      const rec = j && Array.isArray(j.items) && j.items.find((x) => x.island === ISLAND);
+      if (rec) {
+        syncRef.current.recordId = rec.id;
+        const srv = rec.data && typeof rec.data === "object" && !Array.isArray(rec.data) ? rec.data : {};
+        syncRef.current.lastSent = JSON.stringify(srv);
+        setProgress((loc) => {
+          const merged = Object.assign({}, srv, loc);
+          return Object.keys(merged).length > Object.keys(loc).length ? merged : loc;
+        });
+        setSyncState("synced");
+      }
+      setPullDone(true);
+    }).catch(() => {
+      setPullDone(true);
+    });
+  }, [canSync, authId]);
+  useEffect(() => {
+    if (!canSync || !authId || !pullDone) return;
+    if (JSON.stringify(progress) === syncRef.current.lastSent) return;
+    if (!syncRef.current.recordId && Object.keys(progress).length === 0) return;
+    const body = JSON.stringify({ user: authId, island: ISLAND, data: progress });
+    const timer = setTimeout(async () => {
+      const H = { "Content-Type": "application/json", Authorization: auth.token };
+      const send = (method, url) => fetch(url, { method, headers: H, body });
+      try {
+        let r = syncRef.current.recordId ? await send("PATCH", "/api/collections/progress/records/" + syncRef.current.recordId) : await send("POST", "/api/collections/progress/records");
+        if (!r.ok && !syncRef.current.recordId) {
+          const l = await fetch("/api/collections/progress/records?perPage=200", { headers: { Authorization: auth.token } }).then((x) => x.ok ? x.json() : null).catch(() => null);
+          const rec = l && Array.isArray(l.items) && l.items.find((x) => x.island === ISLAND);
+          if (rec) {
+            syncRef.current.recordId = rec.id;
+            r = await send("PATCH", "/api/collections/progress/records/" + rec.id);
+          }
+        }
+        if (r && r.ok) {
+          const j = await r.json().catch(() => null);
+          if (j && j.id) syncRef.current.recordId = j.id;
+          syncRef.current.lastSent = JSON.stringify(progress);
+          setSyncState("synced");
+        } else setSyncState("error");
+      } catch (e) {
+        setSyncState("error");
+      }
+    }, 2e3);
+    return () => clearTimeout(timer);
+  }, [progress, canSync, authId, pullDone]);
   function openEditorSurface() {
     if (isMobile) {
       setModal("editor");
@@ -10555,6 +10747,7 @@ function App() {
   const updWork = useCallback((k, patch) => setWork((w) => ({ ...w, [k]: { ...w[k] || {}, ...patch } })), []);
   const doneCount = groups.reduce((a, g) => a + g.problems.filter((p) => progress[keyOf(g, p)]).length, 0);
   const probCount = groups.reduce((a, g) => a + g.problems.length, 0);
+  const grandSolved = Object.keys(progress).filter((k) => progress[k] && k.indexOf("custom/") !== 0).length;
   const flatNav = [];
   groups.forEach((g, gi) => g.problems.forEach((p, pi) => flatNav.push({ gi, pi })));
   const flatIdx = flatNav.findIndex((n) => n.gi === sel.gi && n.pi === sel.pi);
@@ -10579,7 +10772,27 @@ function App() {
     if (isMobile) return;
     function onNavKey(e) {
       const tg = e.target;
-      if (tg && (tg.tagName === "INPUT" || tg.tagName === "TEXTAREA" || tg.tagName === "SELECT" || tg.isContentEditable)) return;
+      const typing = !!(tg && (tg.tagName === "INPUT" || tg.tagName === "TEXTAREA" || tg.tagName === "SELECT" || tg.isContentEditable));
+      const inPalette = !!(tg && paletteRef.current && tg === paletteRef.current);
+      if ((e.metaKey || e.ctrlKey) && (e.key === "k" || e.key === "K")) {
+        e.preventDefault();
+        if (palette) closePalette();
+        else openPalette();
+        return;
+      }
+      if (e.key === "Escape" && !inPalette) {
+        if (palette) {
+          e.preventDefault();
+          closePalette();
+          return;
+        }
+        if (shortcutsOpen) {
+          e.preventDefault();
+          setShortcutsOpen(false);
+          return;
+        }
+      }
+      if (typing) return;
       if ((e.metaKey || e.ctrlKey) && e.key === "\\") {
         e.preventDefault();
         if (railCollapsed || exOpen && hasContent) {
@@ -10588,7 +10801,14 @@ function App() {
         } else setRailCollapsed(true);
         return;
       }
-      if (e.metaKey || e.ctrlKey || e.altKey || modal || page !== "practice") return;
+      if ((e.metaKey || e.ctrlKey) && (e.key === "e" || e.key === "E") && canAuthor) {
+        e.preventDefault();
+        closePalette();
+        setShortcutsOpen(false);
+        openEditorSurface();
+        return;
+      }
+      if (e.metaKey || e.ctrlKey || e.altKey || modal || palette || shortcutsOpen || page !== "practice") return;
       if (e.key === "j" || e.key === "J") {
         e.preventDefault();
         gotoFlat(-1);
@@ -10824,7 +11044,7 @@ function App() {
         "aria-label": "Search worksheets",
         placeholder: "Search worksheets\u2026"
       }
-    ), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-kbd", title: "Command palette \u2014 coming soon (\u2318K)" }, "\u2318K"))), /* @__PURE__ */ React.createElement("div", { className: "sb-scroll" }, results ? /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, results.length, " ", results.length === 1 ? "result" : "results"), results.map((l) => renderWsRow(l)), results.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Nothing matches \u201C", navQuery.trim(), "\u201D. Try a chapter number, or a phrase from a worksheet title.")) : /* @__PURE__ */ React.createElement("div", null, sbSection("library", "\u274F", "Worksheets", wsTotal + (wsTotal === 1 ? " worksheet" : " worksheets"), /* @__PURE__ */ React.createElement("div", null, cols.map((c) => /* @__PURE__ */ React.createElement("div", { key: c.id }, /* @__PURE__ */ React.createElement(
+    ), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-kbd", title: "Command palette (\u2318K)", "aria-label": "Open the command palette", onClick: () => openPalette() }, "\u2318K"))), /* @__PURE__ */ React.createElement("div", { className: "sb-scroll" }, results ? /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, results.length, " ", results.length === 1 ? "result" : "results"), results.map((l) => renderWsRow(l)), results.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Nothing matches \u201C", navQuery.trim(), "\u201D. Try a chapter number, or a phrase from a worksheet title.")) : /* @__PURE__ */ React.createElement("div", null, sbSection("library", "\u274F", "Worksheets", wsTotal + (wsTotal === 1 ? " worksheet" : " worksheets"), /* @__PURE__ */ React.createElement("div", null, cols.map((c) => /* @__PURE__ */ React.createElement("div", { key: c.id }, /* @__PURE__ */ React.createElement(
       "button",
       {
         type: "button",
@@ -10838,7 +11058,18 @@ function App() {
     ), openId === c.id && c.items.map((l) => renderWsRow(l)))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
       setLoadErr(null);
       setModal("files");
-    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2191"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Open a file\u2026")), isFullBuild && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, "Full library"), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/cc/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Coppock & Champollion")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/hk/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Heim & Kratzer")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/papers/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Classic papers"))))), sbSection("continue", "\u21BB", "Continue", recents.length ? String(recents.length) : null, /* @__PURE__ */ React.createElement("div", null, recents.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Open an exercise and it appears here, most recent first."), recents.slice(0, 6).map((r) => {
+    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2191"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Open a file\u2026")), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "sb-row" + (page === "progress" ? " on" : ""),
+        "aria-current": page === "progress" ? "true" : void 0,
+        onClick: () => setPage("progress")
+      },
+      /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"),
+      /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Your progress"),
+      /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, grandSolved, " solved")
+    ), isFullBuild && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, "Full library"), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/cc/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Coppock & Champollion")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/hk/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Heim & Kratzer")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/papers/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Classic papers"))))), sbSection("continue", "\u21BB", "Continue", recents.length ? String(recents.length) : null, /* @__PURE__ */ React.createElement("div", null, recents.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Open an exercise and it appears here, most recent first."), recents.slice(0, 6).map((r) => {
       const l = LIB.find((x) => x.key === r.ws);
       if (!l) return null;
       const gs = l.set.groups.filter((g2) => g2.kind === "tree");
@@ -10850,7 +11081,7 @@ function App() {
     }))), canAuthor && sbSection("author", "\u270E", "Author", null, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row" + (page === "editor" ? " on" : ""), onClick: () => openEditorSurface() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u270E"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Worksheet editor"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, "page")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("scratch") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u266A"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Scratchpad"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, "free")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("reading") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4DD}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Notes")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
       setLoadErr(null);
       if (fileInput.current) fileInput.current.click();
-    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2191"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Import worksheet\u2026")))), sbSection("display", "\u25D0", "Display", null, /* @__PURE__ */ React.createElement("div", { className: "sb-display" }, /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Dark mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (darkMode ? " on" : ""), role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode((d) => !d) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-resolve non-branching"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoNN ? " on" : ""), role: "switch", "aria-checked": autoNN, onClick: () => setAutoNN((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), !isStudentBuild && /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-apply composition rules"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoCompose ? " on" : ""), role: "switch", "aria-checked": autoCompose, onClick: () => setAutoCompose((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Collapse resolved subtrees"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (collapseResolved ? " on" : ""), role: "switch", "aria-checked": collapseResolved, onClick: () => setCollapseResolved((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("div", { className: "settings-row settings-layout-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Layout"), /* @__PURE__ */ React.createElement("div", { className: "seg-mini" }, /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() == null ? " on" : ""), onClick: () => setForceLayout(null) }, "Auto"), /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() === "mobile" ? " on" : ""), onClick: () => setForceLayout("mobile") }, "Mobile"))), /* @__PURE__ */ React.createElement("div", { className: "sb-kicker sb-actions-kicker" }, "Actions"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("summary") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, doneCount, "/", probCount)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => composeExportProgress() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Save progress to a file")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
+    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2191"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Import worksheet\u2026")))), sbSection("display", "\u25D0", "Display", null, /* @__PURE__ */ React.createElement("div", { className: "sb-display" }, /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Dark mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (darkMode ? " on" : ""), role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode((d) => !d) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-resolve non-branching"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoNN ? " on" : ""), role: "switch", "aria-checked": autoNN, onClick: () => setAutoNN((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), !isStudentBuild && /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-apply composition rules"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoCompose ? " on" : ""), role: "switch", "aria-checked": autoCompose, onClick: () => setAutoCompose((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Collapse resolved subtrees"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (collapseResolved ? " on" : ""), role: "switch", "aria-checked": collapseResolved, onClick: () => setCollapseResolved((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("div", { className: "settings-row settings-layout-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Layout"), /* @__PURE__ */ React.createElement("div", { className: "seg-mini" }, /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() == null ? " on" : ""), onClick: () => setForceLayout(null) }, "Auto"), /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() === "mobile" ? " on" : ""), onClick: () => setForceLayout("mobile") }, "Mobile"))), /* @__PURE__ */ React.createElement("div", { className: "sb-kicker sb-actions-kicker" }, "Actions"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setPage("progress") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, doneCount, "/", probCount)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => composeExportProgress() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Save progress to a file")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
       if (progressFileInput.current) progressFileInput.current.click();
     } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2912"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Restore progress from a file\u2026")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", disabled: exporting, onClick: exportDerivation }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u29C9"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, exporting ? "Rendering\u2026" : "Export derivation (PNG)")), !isStudentBuild && !(BID.indexOf("hosted") === 0 && BID !== "hosted-sandbox") && /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("export") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2193"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Export assignment")))), isFullBuild && sbSection("help", "\u24D8", "Guide & help", null, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/guide/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25C6"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Instructor guide")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/help/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "?"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Student help")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/help/guides/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25B7"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Worked walkthroughs")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/files/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Downloads & site map")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/about/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\xA7"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "About & how to cite")))), isFullBuild && sbSection("account", "\u25C9", tier === "anon" ? "Account" : "Account \xB7 " + (tier === "instructor" ? "instructor" : "student"), null, tier === "anon" ? /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Everything works without an account \u2014 an account only keeps your unlocks and progress. An invite code turns it into an instructor account."), /* @__PURE__ */ React.createElement("div", { className: "sb-account-btns" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary sb-signin-btn", onClick: () => {
       setSigninMode("login");
@@ -10881,19 +11112,14 @@ function App() {
     ), /* @__PURE__ */ React.createElement("span", { className: "sb-version", title: (BUILD.label || "COMPOSE") + (BUILD.date ? " \xB7 " + BUILD.date : "") }, BUILD.version ? "v" + BUILD.version : "")));
   }
   function renderRail() {
-    return /* @__PURE__ */ React.createElement("div", { className: "sb-rail" }, isFullBuild && /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("div", { className: "sb-rail" }, /* @__PURE__ */ React.createElement(
       "button",
       {
         type: "button",
         className: "rail-btn",
-        title: "Search worksheets",
-        "aria-label": "Search worksheets",
-        onClick: () => {
-          drillOut("library");
-          setTimeout(() => {
-            if (searchRef.current) searchRef.current.focus();
-          }, 200);
-        }
+        title: "Search everything (\u2318K)",
+        "aria-label": "Search everything (\u2318K)",
+        onClick: () => openPalette()
       },
       "\u2315"
     ), /* @__PURE__ */ React.createElement(
@@ -10970,7 +11196,7 @@ function App() {
         /* @__PURE__ */ React.createElement("span", { className: "colx-ring", "aria-hidden": "true" }, progress[k] ? "\u2713" : ""),
         /* @__PURE__ */ React.createElement("span", { className: "colx-gloss lx" }, navLabel(g, p))
       );
-    }))), !custom && /* @__PURE__ */ React.createElement("div", { className: "colx-foot" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => openPanelTab("rules", true), title: "View rules for this exercise" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2630"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Rules for this worksheet")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("summary") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, doneCount, "/", probCount)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => composeExportProgress() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Save progress to a file")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: resetAllProgress, title: "Clear all progress for this worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u21BA"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Reset all derivations")))));
+    }))), !custom && /* @__PURE__ */ React.createElement("div", { className: "colx-foot" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => openPanelTab("rules", true), title: "View rules for this exercise" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2630"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Rules for this worksheet")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setPage("progress") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, doneCount, "/", probCount)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => composeExportProgress() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Save progress to a file")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: resetAllProgress, title: "Clear all progress for this worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u21BA"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Reset all derivations")))));
   }
   function renderPracticeHead() {
     if (!hasContent || !group || !problem) return null;
@@ -11018,6 +11244,210 @@ function App() {
       }
     );
   }
+  function paletteWorksheetRows(q) {
+    const out = [];
+    LIB.forEach((l) => {
+      const coll = collectionOf(l) || "Worksheets";
+      if (q && !((l.title || "") + " " + coll).toLowerCase().includes(q)) return;
+      out.push({ glyph: "\u274F", label: l.title, kicker: coll, act: () => openWorksheetKey(l.key) });
+    });
+    return out;
+  }
+  function paletteExerciseRows(q) {
+    const out = [];
+    if (custom || !hasContent) return out;
+    groups.forEach((g, gi) => g.problems.forEach((p, pi) => {
+      const label = navLabel(g, p) || "";
+      if (q && !label.toLowerCase().includes(q)) return;
+      out.push({ glyph: "\u2630", label, kicker: "exercise", act: () => {
+        setPage("practice");
+        setSel({ gi, pi });
+        setExOpen(true);
+      } });
+    }));
+    return out;
+  }
+  function palettePageRows(q) {
+    const rows = [
+      { glyph: "\u2713", label: "Your progress", kicker: "page", hay: "progress solved score summary", act: () => setPage("progress") }
+    ];
+    if (canAuthor) {
+      rows.push({ glyph: "\u270E", label: "Worksheet editor", kicker: "\u2318E", hay: "editor new worksheet author", act: () => openEditorSurface() });
+      rows.push({ glyph: "\u266A", label: "Scratchpad", kicker: "page", hay: "scratchpad free composition", act: () => setModal("scratch") });
+    }
+    if (tier === "instructor") rows.push({ glyph: "\u25C8", label: "My versions", kicker: "page", hay: "dash versions hosting account", act: () => setPage("dash") });
+    if (isFullBuild) {
+      rows.push({ glyph: "\u25C6", label: "Instructor guide", kicker: "page", hay: "guide instructor", act: () => {
+        window.location.href = "/guide/";
+      } });
+      rows.push({ glyph: "?", label: "Student help", kicker: "page", hay: "help student", act: () => {
+        window.location.href = "/help/";
+      } });
+      rows.push({ glyph: "\u25B7", label: "Worked walkthroughs", kicker: "page", hay: "help videos walkthrough", act: () => {
+        window.location.href = "/help/guides/";
+      } });
+      rows.push({ glyph: "\u2913", label: "Downloads & site map", kicker: "page", hay: "files downloads site map", act: () => {
+        window.location.href = "/files/";
+      } });
+      rows.push({ glyph: "\xA7", label: "About & how to cite", kicker: "page", hay: "about cite citation", act: () => {
+        window.location.href = "/about/";
+      } });
+    }
+    return q ? rows.filter((r) => (r.label + " " + r.hay).toLowerCase().includes(q)) : rows;
+  }
+  function paletteActionRows(q) {
+    const rows = [
+      { glyph: "\u2318", label: "Keyboard shortcuts", kicker: "action", hay: "keyboard shortcuts keys", act: () => setShortcutsOpen(true) }
+    ];
+    if (isFullBuild) {
+      if (tier === "anon") rows.push({ glyph: "\u25C9", label: "Sign in or create an account", kicker: "action", hay: "sign in account register", act: () => {
+        setSigninMode("login");
+        setPage("signin");
+      } });
+      else rows.push({ glyph: "\u2192", label: "Sign out", kicker: "action", hay: "sign out log out", act: () => {
+        setAuth(null);
+        setPage("practice");
+      } });
+    }
+    return q ? rows.filter((r) => (r.label + " " + r.hay).toLowerCase().includes(q)) : rows;
+  }
+  function buildPaletteRows() {
+    const q = paletteQ.trim().toLowerCase();
+    const rows = [];
+    const push = (head, items) => {
+      if (items.length) {
+        rows.push({ head });
+        items.forEach((r) => rows.push(r));
+      }
+    };
+    if (!q) {
+      push("Continue", recents.slice(0, 6).map((r) => {
+        const l = LIB.find((x) => x.key === r.ws);
+        if (!l) return null;
+        const gs = l.set.groups.filter((g2) => g2.kind === "tree");
+        const dot = String(r.ex || "").indexOf(".");
+        const gid = dot > 0 ? r.ex.slice(0, dot) : "", pid = dot > 0 ? r.ex.slice(dot + 1) : "";
+        const g = gs.find((x) => x.id === gid);
+        const pb = g && g.problems.find((x) => x.id === pid);
+        return { glyph: "\u2630", label: pb ? navLabel(g, pb) : l.title, kicker: relTime(r.at), act: () => openRecent(r) };
+      }).filter(Boolean));
+      push("Go to", palettePageRows(""));
+      push("Actions", paletteActionRows(""));
+      return rows;
+    }
+    push("Worksheets", paletteWorksheetRows(q));
+    push("Exercises in this worksheet", paletteExerciseRows(q));
+    push("Pages", palettePageRows(q));
+    push("Actions", paletteActionRows(q));
+    return rows;
+  }
+  const paletteRows = !isMobile && palette ? buildPaletteRows() : [];
+  const paletteItems = paletteRows.filter((r) => !r.head);
+  const palIdx = Math.max(0, Math.min(paletteItems.length - 1, paletteIdx));
+  function paletteRun(r) {
+    closePalette();
+    r.act();
+  }
+  function onPaletteKey(e) {
+    const n = paletteItems.length;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (n) setPaletteIdx((palIdx + 1) % n);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (n) setPaletteIdx((palIdx - 1 + n) % n);
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const it = paletteItems[palIdx];
+      if (it) paletteRun(it);
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
+      closePalette();
+    }
+  }
+  function renderPalette() {
+    if (!palette || isMobile) return null;
+    const q = paletteQ.trim();
+    let seen = -1;
+    return /* @__PURE__ */ React.createElement("div", { className: "pal-scrim", onClick: () => closePalette() }, /* @__PURE__ */ React.createElement("div", { className: "pal", role: "dialog", "aria-modal": "true", "aria-label": "Search and jump to anything", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("div", { className: "pal-search" }, /* @__PURE__ */ React.createElement("span", { className: "pal-glyph", "aria-hidden": "true" }, "\u2315"), /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        ref: paletteRef,
+        value: paletteQ,
+        onChange: (e) => {
+          setPaletteQ(e.target.value);
+          setPaletteIdx(0);
+        },
+        onKeyDown: onPaletteKey,
+        "aria-label": "Search worksheets, exercises, pages and help",
+        "aria-controls": "pal-listbox",
+        "aria-activedescendant": paletteItems.length ? "pal-opt-" + palIdx : void 0,
+        placeholder: "Jump to a worksheet, exercise, page or action\u2026"
+      }
+    ), /* @__PURE__ */ React.createElement("span", { className: "pal-esc", "aria-hidden": "true" }, "esc")), /* @__PURE__ */ React.createElement("div", { className: "pal-list", id: "pal-listbox", role: "listbox", "aria-label": "Results" }, paletteRows.map((r, i) => {
+      if (r.head) return /* @__PURE__ */ React.createElement("div", { className: "pal-head", key: "h" + i }, r.head);
+      seen++;
+      const my = seen;
+      const on = my === palIdx;
+      return /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          className: "pal-row" + (on ? " on" : ""),
+          key: "r" + i,
+          id: "pal-opt-" + my,
+          role: "option",
+          "aria-selected": on,
+          onMouseEnter: () => {
+            if (paletteIdx !== my) setPaletteIdx(my);
+          },
+          onClick: () => paletteRun(r)
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "pal-ico", "aria-hidden": "true" }, r.glyph),
+        /* @__PURE__ */ React.createElement("span", { className: "pal-label lx" }, r.label),
+        /* @__PURE__ */ React.createElement("span", { className: "pal-kicker" }, r.kicker),
+        /* @__PURE__ */ React.createElement("span", { className: "pal-enter", "aria-hidden": "true" }, "\u21B5")
+      );
+    }), q && paletteItems.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "pal-empty" }, /* @__PURE__ */ React.createElement("div", { className: "pal-empty-main" }, "Nothing matches \u201C", q, "\u201D."), /* @__PURE__ */ React.createElement("div", { className: "pal-empty-sub" }, "Try a chapter number, a phrase from an exercise, or a page name like \u201Ceditor\u201D."))), /* @__PURE__ */ React.createElement("div", { className: "pal-foot" }, /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("span", { className: "mono" }, "\u2191\u2193"), " move"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("span", { className: "mono" }, "\u21B5"), " open"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("span", { className: "mono" }, "\u2318K"), " anywhere"))));
+  }
+  function renderShortcuts() {
+    if (!shortcutsOpen || isMobile) return null;
+    const rows = [
+      { label: "Search / jump to anything", keys: "\u2318K / Ctrl+K" },
+      { label: "Collapse or expand the sidebar", keys: "\u2318\\ / Ctrl+\\" },
+      ...canAuthor ? [{ label: "Open the worksheet editor", keys: "\u2318E / Ctrl+E" }] : [],
+      { label: "Previous / next exercise", keys: "J / K" },
+      { label: "Move, open and dismiss in the palette", keys: "\u2191 \u2193 \u21B5 esc" },
+      { label: "Activate a focused sidebar row", keys: "Enter / Space" }
+    ];
+    return /* @__PURE__ */ React.createElement("div", { className: "pal-scrim kbd-scrim", onClick: () => setShortcutsOpen(false) }, /* @__PURE__ */ React.createElement("div", { className: "kbd-modal", role: "dialog", "aria-modal": "true", "aria-label": "Keyboard shortcuts", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("div", { className: "kbd-title" }, "Keyboard shortcuts"), /* @__PURE__ */ React.createElement("div", { className: "kbd-sub" }, "Display options now live in the sidebar's Display section."), rows.map((r) => /* @__PURE__ */ React.createElement("div", { className: "kbd-row", key: r.label }, /* @__PURE__ */ React.createElement("span", { className: "kbd-label" }, r.label), /* @__PURE__ */ React.createElement("span", { className: "kbd-keys" }, r.keys))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary kbd-done", onClick: () => setShortcutsOpen(false) }, "Done")));
+  }
+  function renderProgressPage() {
+    const rows = LIB.map((l) => {
+      let total = 0, solved = 0;
+      (l.set.groups || []).forEach((g) => {
+        if (g.kind !== "tree") return;
+        (g.problems || []).forEach((pb) => {
+          total++;
+          if (progress[l.key + "/" + g.id + "/" + pb.id]) solved++;
+        });
+      });
+      return { key: l.key, title: l.title, coll: collectionOf(l), total, solved };
+    }).filter((r) => r.total > 0);
+    const grand = rows.reduce((acc, r) => ({ t: acc.t + r.total, s: acc.s + r.solved }), { t: 0, s: 0 });
+    const anon = tier === "anon";
+    return /* @__PURE__ */ React.createElement("div", { className: "page-view pg-wrap" }, /* @__PURE__ */ React.createElement("div", { className: "pg-inner" }, /* @__PURE__ */ React.createElement("div", { className: "page-crumb-row" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "page-back", onClick: () => setPage("practice"), title: "Back to practice", "aria-label": "Back to practice" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "page-crumb" }, "Worksheets \xB7 Your progress")), /* @__PURE__ */ React.createElement("div", { className: "pg-head" }, /* @__PURE__ */ React.createElement("div", { className: "pg-head-main" }, /* @__PURE__ */ React.createElement("div", { className: "pg-kicker" }, "Your progress"), /* @__PURE__ */ React.createElement("h1", { className: "pg-title" }, grand.s === 0 ? "Nothing solved yet" : grand.s + " of " + grand.t + " solved"), /* @__PURE__ */ React.createElement("div", { className: "pg-sub" }, "A derivation counts as solved once every node carries a meaning and the root matches the target. Nothing here is graded or sent to your instructor.")), /* @__PURE__ */ React.createElement("div", { className: "pg-head-actions" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn-ghost pg-btn", onClick: () => composeExportProgress() }, "\u2913 Save to a file"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn-ghost pg-btn", onClick: () => {
+      if (progressFileInput.current) progressFileInput.current.click();
+    } }, "\u2912 Restore\u2026"))), /* @__PURE__ */ React.createElement("div", { className: "pg-stats" }, /* @__PURE__ */ React.createElement("div", { className: "pg-stat" }, /* @__PURE__ */ React.createElement("div", { className: "pg-stat-label" }, "Solved"), /* @__PURE__ */ React.createElement("div", { className: "pg-stat-value" }, doneCount, " / ", probCount), /* @__PURE__ */ React.createElement("div", { className: "pg-stat-sub" }, custom ? "Custom exercise" : lib ? lib.title : "No worksheet")), /* @__PURE__ */ React.createElement("div", { className: "pg-stat" }, /* @__PURE__ */ React.createElement("div", { className: "pg-stat-label" }, "Still open"), /* @__PURE__ */ React.createElement("div", { className: "pg-stat-value" }, Math.max(0, probCount - doneCount)), /* @__PURE__ */ React.createElement("div", { className: "pg-stat-sub" }, "in the worksheet you have open")), /* @__PURE__ */ React.createElement("div", { className: "pg-stat" }, /* @__PURE__ */ React.createElement("div", { className: "pg-stat-label" }, "Worksheets"), /* @__PURE__ */ React.createElement("div", { className: "pg-stat-value" }, rows.length), /* @__PURE__ */ React.createElement("div", { className: "pg-stat-sub" }, rows.length ? "across all collections" : "nothing here yet"))), /* @__PURE__ */ React.createElement("div", { className: "pg-kicker pg-by" }, "By worksheet"), /* @__PURE__ */ React.createElement("div", { className: "pg-rows" }, rows.map((r) => {
+      const cur = !custom && r.key === fileKey;
+      const pct = r.total ? Math.round(100 * r.solved / r.total) : 0;
+      return /* @__PURE__ */ React.createElement("div", { className: "pg-row", key: r.key }, /* @__PURE__ */ React.createElement("div", { className: "pg-row-main" }, /* @__PURE__ */ React.createElement("div", { className: "pg-row-title" }, r.title), /* @__PURE__ */ React.createElement("div", { className: "pg-row-sub" }, (r.coll || "Worksheets") + (cur ? " \xB7 open now" : r.solved ? "" : " \xB7 not started"))), /* @__PURE__ */ React.createElement("div", { className: "pg-bar", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("span", { className: "pg-bar-fill" + (r.solved ? " has" : ""), style: { width: pct + "%" } })), /* @__PURE__ */ React.createElement("span", { className: "pg-count" }, r.solved, "/", r.total), /* @__PURE__ */ React.createElement("button", { type: "button", className: "pg-go", onClick: () => openWorksheetKey(r.key) }, r.solved ? "Resume" : "Start"));
+    }), rows.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "pg-none" }, /* @__PURE__ */ React.createElement("div", { className: "pg-none-title" }, "No worksheets unlocked yet"), /* @__PURE__ */ React.createElement("div", { className: "pg-none-sub" }, "Enter the code your instructor gave you and the worksheet \u2014 and your progress through it \u2014 appears here."))), /* @__PURE__ */ React.createElement("div", { className: "pg-callout" }, /* @__PURE__ */ React.createElement("span", { className: "pg-callout-glyph" + (anon ? " warn" : " ok"), "aria-hidden": "true" }, anon ? "\u25B3" : "\u2713"), /* @__PURE__ */ React.createElement("div", { className: "pg-callout-main" }, /* @__PURE__ */ React.createElement("div", { className: "pg-callout-title" }, anon ? "This progress lives in this browser only" : "Progress is saved to your account"), /* @__PURE__ */ React.createElement("div", { className: "pg-callout-body" }, anon ? "Clearing site data loses it, and it will not follow you to another device. Export a file as a backup" + (isFullBuild ? ", or create an account." : ".") : "It follows you to any device you sign in on. A file export is still worth keeping as a backup."), !anon && syncState === "synced" && /* @__PURE__ */ React.createElement("div", { className: "pg-synced" }, "\u2713 Synced to your account"), !anon && syncState === "error" && /* @__PURE__ */ React.createElement("div", { className: "pg-sync-err" }, "Could not reach the server just now \u2014 progress is safe in this browser and syncs when you are back online.")), anon && isFullBuild && /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary pg-signup", onClick: () => {
+      setSigninMode("register");
+      setPage("signin");
+    } }, "Create an account"))));
+  }
   function renderPageView() {
     if (page === "signin" || page === "dash" && tier !== "instructor") {
       return /* @__PURE__ */ React.createElement(
@@ -11048,6 +11478,7 @@ function App() {
         }
       );
     }
+    if (page === "progress") return renderProgressPage();
     if (page === "editor") return /* @__PURE__ */ React.createElement("div", { className: "page-view page-editor" }, renderEditorSurface(true));
     return null;
   }
@@ -11367,6 +11798,8 @@ function App() {
       );
     })(),
     modal === "summary" && /* @__PURE__ */ React.createElement(SummaryModal, { lib: LIB, progress, onClose: () => setModal(null) }),
+    !isMobile && renderPalette(),
+    !isMobile && renderShortcuts(),
     netNotice && /* @__PURE__ */ React.createElement("div", { className: "net-notice" }, netNotice),
     isMobile && !phoneOk && window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment && /* @__PURE__ */ React.createElement(PhoneInterstitial, { onContinue: () => {
       setPhoneOk(true);
