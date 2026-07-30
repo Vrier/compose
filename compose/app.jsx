@@ -93,41 +93,6 @@ function composeImportProgress(file, onDone) {
   });
 }
 
-function SummaryModal({ lib, progress, onClose }) {
-  const a = (window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment) || {};
-  const rows = (lib || []).map((l) => {
-    let total = 0, solved = 0;
-    (l.set.groups || []).forEach((g) => {
-      if (g.kind !== 'tree') return;
-      (g.problems || []).forEach((pb) => { total++; if (progress[l.key + '/' + g.id + '/' + pb.id]) solved++; });
-    });
-    return { key: l.key, title: l.title, total, solved };
-  }).filter((r) => r.total > 0);
-  const grand = rows.reduce((acc, r) => ({ t: acc.t + r.total, s: acc.s + r.solved }), { t: 0, s: 0 });
-  return (
-    <div className="modal-back" onClick={onClose}>
-      <div className="modal sum-modal" onClick={(e) => e.stopPropagation()}>
-        <h3>✓ Progress summary</h3>
-        <div className="sub">{a.title || (window.COMPOSE_BUILD && window.COMPOSE_BUILD.label) || 'COMPOSE'} · {new Date().toLocaleDateString()}</div>
-        <table className="sum-table">
-          <tbody>
-            {rows.map((r) => (
-              <tr key={r.key} className={r.solved >= r.total ? 'sum-done' : ''}>
-                <td className="sum-title">{r.title}</td>
-                <td className="sum-count">{r.solved} / {r.total}</td>
-                <td className="sum-bar"><div className="sum-bar-track"><div className="sum-bar-fill" style={{ width: (r.total ? Math.round(100 * r.solved / r.total) : 0) + '%' }} /></div></td>
-              </tr>
-            ))}
-            <tr className="sum-grand"><td className="sum-title">All worksheets</td><td className="sum-count">{grand.s} / {grand.t}</td><td className="sum-bar" /></tr>
-          </tbody>
-        </table>
-        <div className="sum-hint">Derivations solved per worksheet — screenshot this page for your records or your tutor.</div>
-        <div className="sum-actions"><button className="btn-ghost" onClick={onClose}>Close</button></div>
-      </div>
-    </div>
-  );
-}
-
 function PhoneInterstitial({ onContinue }) {
   const url = window.location.href;
   const a = (window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment) || {};
@@ -571,7 +536,11 @@ function UnlockDialog({ token, onClose, onSignin, onUnlocked }) {
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState(null); // { kind: 'ok' | 'err', msg }
   const inputRef = useRef(null);
-  useEffect(() => { if (inputRef.current) inputRef.current.focus(); }, []);
+  useEffect(() => {
+    const opener = document.activeElement;
+    if (inputRef.current) inputRef.current.focus();
+    return () => { try { if (opener && opener.focus) opener.focus(); } catch (e) {} };
+  }, []);
   async function submit(ev) {
     ev.preventDefault();
     if (!code.trim() || busy) return;
@@ -906,7 +875,6 @@ function App() {
   // instructor came for; the toggle preference still persists per build.
   const [teacherMode, setTeacherMode] = useState(() => isStudentBuild ? false : load('lc2-teacher', ['hosted-teacher', 'hosted-sandbox'].includes(String((window.COMPOSE_BUILD || {}).id || ''))));
   const [darkMode, setDarkMode] = useState(() => load('lc2-dark', false));
-  const [rightTab, setRightTab] = useState('lexicon'); // MOBILE reader overlay: 'lexicon' | 'reading' (desktop uses refTab below since N3)
   // ---- N3 (S31): right reference panel (Lexicon / Rules / Notes) --------
   // Open by default at viewports >=1180px, closed below; once the user
   // opens or closes it the choice is remembered (island-namespaced
@@ -924,7 +892,12 @@ function App() {
   const openPanelTab = useCallback((tab, touch) => { setRefTab(tab); setPanelOpen(true); if (touch) setPanelTouched(true); }, []);
   const touchPanel = useCallback((open) => { setPanelTouched(true); setPanelOpen(open); }, []);
   const isMobile = useIsMobile(760);
-  const [sheet, setSheet] = useState(null); // mobile: 'exercises' | 'lexicon' | 'more' | null
+  // ---- N6 (S34): mobile chrome — bottom tabs + sheets ---------------------
+  // mtab: which of the four bottom tabs is active (Derive is the stage).
+  // sheet: 'ws' (switch-worksheet bottom sheet) | null; the unlock sheet
+  // reuses the N5 unlockOpen state (same dialog, restyled as a sheet).
+  const [mtab, setMtab] = useState('derive');
+  const [sheet, setSheet] = useState(null);
   // Close any open mobile sheet when we grow back to desktop
   React.useEffect(() => { if (!isMobile) setSheet(null); }, [isMobile]);
   const [collapseResolved, setCollapseResolved] = useState(() => load('lc2-collapse', false));
@@ -960,8 +933,9 @@ function App() {
   useEffect(() => { save('lc2-nav-section', navSection); }, [navSection]);
   useEffect(() => { save('lc2-recents', recents); }, [recents]);
   // ---- N2 (S30): auth tier + in-app pages ---------------------------------
-  // page: 'practice' | 'signin' | 'editor' | 'dash' (desktop only; mobile
-  // keeps its modal/sheet navigation untouched until N6).
+  // page: 'practice' | 'signin' | 'editor' | 'dash' | 'assign' | 'progress'.
+  // Desktop renders non-practice pages in the centre column; mobile (N6)
+  // renders them as pushed views with a title + back row (back -> Menu tab).
   const [page, setPage] = useState('practice');
   const [signinMode, setSigninMode] = useState('login');
   const [auth, setAuthState] = useState(() => composeReadAuth());
@@ -982,7 +956,10 @@ function App() {
       })
       .catch(() => {}); // offline: keep the stored identity; server calls will fail loudly
   }, []);
-  useEffect(() => { if (isMobile && page !== 'practice') setPage('practice'); }, [isMobile]);
+  // The editor is the one page without a mobile variant: its three-column
+  // internals cannot stack at 390px, so shrinking to mobile converts the
+  // editor PAGE into the existing full-screen editor modal (N2 mobile path).
+  useEffect(() => { if (isMobile && page === 'editor') { setPage('practice'); setModal('editor'); } }, [isMobile]);
   // ---- N4 (S32): command palette + shortcuts dialog + server progress sync
   const [palette, setPalette] = useState(false);
   const [paletteQ, setPaletteQ] = useState('');
@@ -1259,9 +1236,11 @@ function App() {
     if (teacherMode || custom || !set || !set.key) return;
     if (seenSets[set.key]) return;
     setSeenSets((s) => ({ ...s, [set.key]: true }));
-    // N3: on desktop the rules now surface in the right panel's Rules tab
-    // (same once-per-worksheet seenSets memory); mobile keeps the modal.
-    if (isMobile) setModal('rules');
+    // N3: on desktop the rules surface in the right panel's Rules tab
+    // (same once-per-worksheet seenSets memory). N6: mobile retires the
+    // rules modal — the first visit lands on the Reference tab's Rules
+    // subtab instead, the phone counterpart of the panel redirect.
+    if (isMobile) { setRefTab('rules'); setMtab('reference'); }
     else openPanelTab('rules', false);
   }, [set && set.key, teacherMode, custom]);
 
@@ -2447,7 +2426,7 @@ function App() {
     if (page === 'signin' || ((page === 'dash' || page === 'assign') && tier !== 'instructor')) {
       return <SigninPage key={signinMode} initialMode={signinMode}
         onBack={() => setPage('practice')}
-        onAuthed={(a) => { setAuth(a); setPage('practice'); setNavSection('account'); }} />;
+        onAuthed={(a) => { setAuth(a); setPage('practice'); setNavSection('account'); setMtab('menu'); }} />;
     }
     if (page === 'dash') {
       return <VersionsPage token={auth.token}
@@ -2465,6 +2444,309 @@ function App() {
     return null;
   }
 
+  /* =========================================================================
+     N6 (S34) — mobile layer: bottom tab bar (Derive · Exercises · Reference ·
+     Menu), chip row above it, bottom sheets (switch worksheet, unlock) and
+     pushed views with a title + back row. Copy and metrics follow the mobile
+     prototype; the secondary pages reuse the N2/N4/N5 page components.
+     ========================================================================= */
+  const MB_TITLES = { signin: 'Account', dash: 'My versions', assign: 'Assign & share', progress: 'Your progress', editor: 'Worksheet editor' };
+  function mbGoTab(id) {
+    setModal(null); setSheet(null); setUnlockOpen(false);
+    setPage('practice'); setMtab(id);
+  }
+  function mbPush(pg) { setSheet(null); setUnlockOpen(false); setPage(pg); }
+  function mbBack() { setPage('practice'); setMtab('menu'); }
+  function mbOpenWorksheet(key) { openWorksheetKey(key); setSheet(null); setMtab('derive'); }
+  function mbCollections() {
+    // The sidebar's collections plus My classes — the switch sheet shows the
+    // same data the desktop Worksheets section does.
+    const cols = sidebarCollections().map((c) => ({ id: c.id, label: c.label, items: c.items }));
+    if (isFullBuild && tier !== 'anon' && classes && classes.length) {
+      classes.forEach((c) => {
+        cols.push({ id: 'class:' + c.slug, label: c.title, items: classLib.filter((l) => l.classSlug === c.slug), klass: c });
+      });
+    }
+    return cols;
+  }
+  function renderMobileDeriveHead() {
+    return (
+      <div className="mb-dhead">
+        <button type="button" className="mb-ws-btn" onClick={() => setSheet('ws')} title="Switch worksheet">
+          <span className="mb-ws-main">
+            <span className="mb-ws-kicker">{custom ? 'Scratch' : (collectionOf(lib) || 'Worksheets')}</span>
+            <span className="mb-ws-title">{custom ? 'Custom exercise' : (lib ? lib.title : 'No worksheet')}</span>
+          </span>
+          <span className="mb-ws-switch" aria-hidden="true">switch ▾</span>
+        </button>
+        {hasContent && flatNav.length > 0 && (
+          <div className="mb-exnav" role="group" aria-label="Exercise navigation">
+            <button type="button" className="mb-arrow" disabled={flatIdx <= 0} onClick={() => gotoFlat(-1)} aria-label="Previous exercise">‹</button>
+            <span className="mb-score">{doneCount}/{probCount}</span>
+            <button type="button" className="mb-arrow" disabled={flatIdx < 0 || flatIdx >= flatNav.length - 1} onClick={() => gotoFlat(1)} aria-label="Next exercise">›</button>
+          </div>
+        )}
+      </div>
+    );
+  }
+  function renderMobileExercises() {
+    return (
+      <div className="mb-view mb-exview">
+        <div className="mb-tab-head">
+          <div className="mb-th-kicker">{custom ? 'Scratch' : (collectionOf(lib) || 'Worksheets')}</div>
+          <div className="mb-th-row">
+            <div className="mb-th-title">{custom ? 'Custom exercise' : (lib ? lib.title : 'No worksheet')}</div>
+            {probCount > 0 && <span className="mb-th-score">{doneCount}/{probCount}</span>}
+          </div>
+        </div>
+        <div className="mb-scroll mb-ex">
+          {hasContent
+            ? renderExercisesScroll(() => setMtab('derive'))
+            : <div className="empty-note">No worksheet open yet — pick one with the worksheet chip below.</div>}
+        </div>
+      </div>
+    );
+  }
+  function renderMobileReference() {
+    const tab = (refTab === 'notes' && !hasReading) ? 'lexicon' : (refTab === 'rules' || refTab === 'notes' ? refTab : 'lexicon');
+    return (
+      <div className="mb-view mb-ref">
+        <div className="mb-ref-tabs" role="tablist" aria-label="Reference tabs">
+          <button type="button" role="tab" id="mb-ref-tab-lexicon" aria-selected={tab === 'lexicon'} aria-controls="mb-ref-panel"
+            className={'mb-ref-tab' + (tab === 'lexicon' ? ' on' : '')} onClick={() => setRefTab('lexicon')}>
+            Lexicon <span className="rp-count">{filteredLex.length}</span></button>
+          <button type="button" role="tab" id="mb-ref-tab-rules" aria-selected={tab === 'rules'} aria-controls="mb-ref-panel"
+            className={'mb-ref-tab' + (tab === 'rules' ? ' on' : '')} onClick={() => setRefTab('rules')}>Rules</button>
+          {hasReading && <button type="button" role="tab" id="mb-ref-tab-notes" aria-selected={tab === 'notes'} aria-controls="mb-ref-panel"
+            className={'mb-ref-tab' + (tab === 'notes' ? ' on' : '')} onClick={() => setRefTab('notes')}>Notes</button>}
+        </div>
+        <div className="mb-ref-body" role="tabpanel" id="mb-ref-panel" aria-labelledby={'mb-ref-tab-' + tab}>
+          {tab === 'rules' ? (
+            <div className="rp-rules">
+              <div className="rp-rules-intro">{teacherMode
+                ? <React.Fragment>Choose which rules and type-shifts are active for <b>{custom ? 'this custom exercise' : (lib && lib.title)}</b>.</React.Fragment>
+                : 'Rules available in this exercise. Instructors can switch these on or off in the editor.'}</div>
+              <RulesContent allowed={allowed} setAllowed={setAllowed} toggleRule={toggleRule} toggleShift={toggleShift} readOnly={!teacherMode} />
+              {teacherMode && <div className="rp-rules-foot"><button type="button" className="btn-ghost" onClick={() => setAllowedMap((m) => { const n = { ...m }; delete n[allowKey]; return n; })}>Reset to defaults</button></div>}
+            </div>
+          ) : tab === 'notes' && hasReading && window.ReaderPanel
+            ? (() => { const RP = window.ReaderPanel; return <RP set={readingSet} section={problem && problem.section} embedded />; })()
+            : renderLexiconScroll()}
+        </div>
+      </div>
+    );
+  }
+  function mbRow(key, glyph, label, note, onActivate, opts) {
+    const o = opts || {};
+    if (o.href) {
+      return (
+        <a className="mb-row" key={key} href={o.href}>
+          <span className="mb-row-glyph" aria-hidden="true">{glyph}</span>
+          <span className="mb-row-label">{label}</span>
+          {note != null && <span className="mb-row-note">{note}</span>}
+          <span className="mb-row-caret" aria-hidden="true">›</span>
+        </a>
+      );
+    }
+    return (
+      <button type="button" className="mb-row" key={key} onClick={onActivate}>
+        <span className="mb-row-glyph" aria-hidden="true">{glyph}</span>
+        <span className="mb-row-label">{label}</span>
+        {note != null && <span className="mb-row-note">{note}</span>}
+        <span className="mb-row-caret" aria-hidden="true">›</span>
+      </button>
+    );
+  }
+  function renderMobileMenu() {
+    return (
+      <div className="mb-view mb-menu">
+        <div className="mb-scroll">
+          {isFullBuild && (
+            <div className="mb-account">
+              {tier === 'anon' ? (
+                <div>
+                  <div className="mb-account-note">Everything works without an account. Signing in only adds keeping: unlocks and progress follow you between devices.</div>
+                  <button type="button" className="btn btn-primary mb-signin-btn" onClick={() => { setSigninMode('login'); mbPush('signin'); }}>Sign in or create an account</button>
+                </div>
+              ) : (
+                <div>
+                  <div className="mb-id">
+                    <span className="mb-id-avatar" aria-hidden="true">◉</span>
+                    <span className="mb-id-main">
+                      <span className="mb-id-email">{(auth.record && auth.record.email) || 'Signed in'}</span>
+                      <span className="mb-id-tier">{tier === 'instructor' ? 'Instructor' : 'Practice account'}</span>
+                    </span>
+                    <button type="button" className="mb-signout" onClick={() => { setAuth(null); setPage('practice'); }}>Sign out</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          <div className="mb-kicker">Worksheets</div>
+          {mbRow('ws', '❏', 'Switch worksheet', custom ? 'custom' : (lib ? lib.title : null), () => setSheet('ws'))}
+          {mbRow('progress', '✓', 'Your progress', grandSolved + ' solved', () => mbPush('progress'))}
+          {isFullBuild && mbRow('unlock', '⊕', 'Unlock with a code', null, () => { setSheet(null); setUnlockOpen(true); })}
+          {isFullBuild && tier !== 'anon' && classes && classes.length > 0 && (
+            <div>
+              <div className="mb-kicker">My classes</div>
+              {classes.map((c) => {
+                const items = classLib.filter((l) => l.classSlug === c.slug);
+                return mbRow('class:' + c.slug, '❏', c.title, items.length + (items.length === 1 ? ' worksheet' : ' worksheets'),
+                  () => { if (items.length) mbOpenWorksheet(items[0].key); else setSheet('ws'); });
+              })}
+            </div>
+          )}
+          {canAuthor && (
+            <div>
+              <div className="mb-kicker">Author</div>
+              {mbRow('editor', '✎', 'Worksheet editor', null, () => openEditorSurface())}
+              {mbRow('scratch', '♪', 'Scratchpad', 'free', () => setModal('scratch'))}
+              {mbRow('import', '↑', 'Import worksheet…', null, () => { setLoadErr(null); if (fileInput.current) fileInput.current.click(); })}
+            </div>
+          )}
+          {isFullBuild && tier === 'instructor' && (
+            <div>
+              <div className="mb-kicker">Hosting &amp; sharing</div>
+              {mbRow('dash', '◈', 'My versions', null, () => mbPush('dash'))}
+              {mbRow('assign', '☑', 'Assign & share', null, () => mbPush('assign'))}
+            </div>
+          )}
+          <div className="mb-kicker">Display</div>
+          <div className="mb-settings">
+            {!isStudentBuild && (
+              <label className="settings-row">
+                <span className="settings-label">Teacher mode</span>
+                <button className={'beh-toggle' + (teacherMode ? ' on' : '')} role="switch" aria-checked={teacherMode} onClick={() => setTeacherMode((m) => { const next = !m; if (next) { const cur = allowedMap[allowKey] || exerciseDefaults; setAllowedMap((am) => ({ ...am, [allowKey]: Object.assign({}, cur, {}) })); } return next; })}><span className="beh-knob" /></button>
+              </label>
+            )}
+            <label className="settings-row">
+              <span className="settings-label">Dark mode</span>
+              <button className={'beh-toggle' + (darkMode ? ' on' : '')} role="switch" aria-checked={darkMode} onClick={() => setDarkMode((d) => !d)}><span className="beh-knob" /></button>
+            </label>
+            <label className="settings-row">
+              <span className="settings-label">Auto-resolve non-branching</span>
+              <button className={'beh-toggle' + (autoNN ? ' on' : '')} role="switch" aria-checked={autoNN} onClick={() => setAutoNN(v => !v)}><span className="beh-knob" /></button>
+            </label>
+            <label className="settings-row">
+              <span className="settings-label">Collapse resolved subtrees</span>
+              <button className={'beh-toggle' + (collapseResolved ? ' on' : '')} role="switch" aria-checked={collapseResolved} onClick={() => setCollapseResolved(v => !v)}><span className="beh-knob" /></button>
+            </label>
+            <div className="settings-row settings-layout-row">
+              <span className="settings-label">Layout</span>
+              <div className="seg-mini">
+                <button className={'seg-mini-btn' + (getForceLayout() == null ? ' on' : '')} onClick={() => setForceLayout(null)}>Auto</button>
+                <button className={'seg-mini-btn' + (getForceLayout() === 'desktop' ? ' on' : '')} onClick={() => setForceLayout('desktop')}>Desktop</button>
+              </div>
+            </div>
+          </div>
+          {isFullBuild && (
+            <div>
+              <div className="mb-kicker">Guide &amp; help</div>
+              {mbRow('guide', '◆', 'Instructor guide', 'Guide', null, { href: '/guide/' })}
+              {mbRow('help', '?', 'Student help — rules & grading', 'Help', null, { href: '/help/' })}
+              {mbRow('walk', '▷', 'Worked walkthroughs', 'Help', null, { href: '/help/guides/' })}
+              {mbRow('files', '⤓', 'Downloads & site map', 'Files', null, { href: '/files/' })}
+              {mbRow('about', '§', 'About & how to cite', 'About', null, { href: '/about/' })}
+            </div>
+          )}
+          <div className="mb-stamp">{BUILD.label || 'COMPOSE'}{BUILD.version ? ' · v' + BUILD.version : ''}{BUILD.date ? ' · ' + BUILD.date : ''}</div>
+        </div>
+      </div>
+    );
+  }
+  function renderMobileMain() {
+    if (page !== 'practice') {
+      return (
+        <div className="mb-view mb-push">
+          <div className="mb-push-head">
+            <button type="button" className="mb-push-back" onClick={mbBack}>‹ Menu</button>
+            <span className="mb-push-title">{MB_TITLES[page] || ''}</span>
+            <span className="mb-push-pad" aria-hidden="true" />
+          </div>
+          <div className="mb-push-body">{renderPageView()}</div>
+        </div>
+      );
+    }
+    if (mtab === 'derive') return <React.Fragment>{renderMobileDeriveHead()}{renderCenter()}</React.Fragment>;
+    if (mtab === 'exercises') return renderMobileExercises();
+    if (mtab === 'reference') return renderMobileReference();
+    return renderMobileMenu();
+  }
+  function renderMobileFoot() {
+    const pushed = page !== 'practice';
+    const ctx = pushed ? (MB_TITLES[page] || '') : ({ derive: 'Derive', exercises: 'Exercises', reference: 'Reference', menu: 'Menu' })[mtab];
+    const tabs = [
+      { id: 'derive', glyph: '⋔', label: 'Derive' },
+      { id: 'exercises', glyph: '☰', label: 'Exercises' },
+      { id: 'reference', glyph: '❏', label: 'Reference' },
+      { id: 'menu', glyph: '⋯', label: 'Menu' },
+    ];
+    return (
+      <div className="mb-foot">
+        <div className="mb-chips">
+          <button type="button" className={'mb-chip mb-chip-ws' + (sheet === 'ws' ? ' on' : '')}
+            onClick={() => setSheet(sheet === 'ws' ? null : 'ws')} title="Switch worksheet">
+            <span aria-hidden="true">❏</span>
+            <span className="mb-chip-label">{custom ? 'Custom exercise' : (lib ? lib.title : 'Choose a worksheet')}</span>
+            <span aria-hidden="true">▾</span>
+          </button>
+          {isFullBuild && (
+            <button type="button" className={'mb-chip' + (unlockOpen ? ' on' : '')} onClick={() => { setSheet(null); setUnlockOpen(true); }}>⊕ Unlock</button>
+          )}
+          <span className="mb-chip mb-chip-ctx on">{ctx}</span>
+        </div>
+        <nav className="mb-tabbar" role="tablist" aria-label="Main tabs">
+          {tabs.map((tb) => {
+            const on = pushed ? tb.id === 'menu' : mtab === tb.id;
+            return (
+              <button key={tb.id} type="button" role="tab" aria-selected={on}
+                className={'mb-tab' + (on ? ' on' : '')} onClick={() => mbGoTab(tb.id)}>
+                <span className="mb-tab-glyph" aria-hidden="true">{tb.glyph}</span>
+                <span className="mb-tab-label">{tb.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+      </div>
+    );
+  }
+  function renderWsSheet() {
+    return (
+      <Sheet title="Switch worksheet" side="bottom" className="sheet-list mb-ws-sheet" onClose={() => setSheet(null)}>
+        <div className="mb-ws-list">
+          {mbCollections().map((c) => (
+            <div key={c.id}>
+              <div className="mb-kicker">{c.label}</div>
+              {c.items.map((l) => {
+                const on = !custom && l.key === fileKey;
+                const n = l.set.groups.reduce((a, g) => a + g.problems.length, 0);
+                return (
+                  <button type="button" key={l.key} className={'mb-row mb-ws-row' + (on ? ' on' : '')}
+                    aria-current={on ? 'true' : undefined} onClick={() => mbOpenWorksheet(l.key)}>
+                    <span className="mb-ws-dot" aria-hidden="true" />
+                    <span className="mb-row-label">{l.title}</span>
+                    <span className="mb-row-note">{n}</span>
+                  </button>
+                );
+              })}
+              {c.klass && c.items.length === 0 && <div className="empty-note">This class has no worksheets yet.</div>}
+              {c.klass && (
+                <button type="button" className="mb-row mb-leave-row" onClick={() => leaveClass(c.klass)}>
+                  <span className="mb-row-glyph" aria-hidden="true">✕</span>
+                  <span className="mb-row-label">Leave this class…</span>
+                </button>
+              )}
+            </div>
+          ))}
+          <button type="button" className="mb-row" onClick={() => { setSheet(null); setLoadErr(null); if (fileInput.current) fileInput.current.click(); }}>
+            <span className="mb-row-glyph" aria-hidden="true">↑</span>
+            <span className="mb-row-label">Open a file…</span>
+          </button>
+        </div>
+      </Sheet>
+    );
+  }
+
   return (
     <div className={'app' + (isMobile ? ' is-mobile' : '')}
       onDragOver={!hasContent ? (e) => { e.preventDefault(); } : undefined}
@@ -2473,25 +2755,6 @@ function App() {
         onChange={(e) => { importFiles(e.target.files); e.target.value = ''; }} />
       <input ref={progressFileInput} type="file" accept=".json,application/json" style={{ display: 'none' }}
         onChange={(e) => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) composeImportProgress(f); }} />
-      {isMobile && (
-        <header className="topbar topbar-mobile">
-          <button className="mtop-set" onClick={() => setModal('files')} title="Choose a worksheet">
-            <span className="mtop-glyph">λ</span>
-            <span className="mtop-set-name">{custom ? 'Custom exercise' : (lib ? lib.title : 'No worksheet')}</span>
-            <span className="mtop-caret">▾</span>
-          </button>
-          <div className="spacer" />
-          {hasContent && flatNav.length > 0 ? (
-            <div className="mtop-nav">
-              <button className="mtop-arrow" disabled={flatIdx <= 0} onClick={() => gotoFlat(-1)} aria-label="Previous exercise">‹</button>
-              <span className="mtop-score">{doneCount}/{probCount}</span>
-              <button className="mtop-arrow" disabled={flatIdx < 0 || flatIdx >= flatNav.length - 1} onClick={() => gotoFlat(1)} aria-label="Next exercise">›</button>
-            </div>
-          ) : (
-            <div className="mtop-score solo">{doneCount}/{probCount}</div>
-          )}
-        </header>
-      )}
       {!isMobile && <a className="skip-link" href="#main">Skip to content</a>}
 
       <div className={'app-main' + (isMobile ? ' app-main-mobile' : '')}>
@@ -2499,9 +2762,11 @@ function App() {
         {!isMobile && page === 'practice' && hasContent && exOpen && renderExColumn()}
 
         <main id="main" className="col-center">
-          {(isMobile || page === 'practice')
-            ? <React.Fragment>{!isMobile && renderPracticeHead()}{renderCenter()}</React.Fragment>
-            : renderPageView()}
+          {isMobile
+            ? renderMobileMain()
+            : (page === 'practice'
+              ? <React.Fragment>{renderPracticeHead()}{renderCenter()}</React.Fragment>
+              : renderPageView())}
         </main>
 
         {!isMobile && page === 'practice' && (panelOpen ? (() => {
@@ -2541,76 +2806,11 @@ function App() {
             onClick={() => touchPanel(true)}>‹ Lexicon · Rules · Notes</button>
         ))}
 
-        {isMobile && rightTab === 'reading' && hasReading && window.ReaderPanel && (() => {
-          const RP = window.ReaderPanel;
-          return <RP set={readingSet} section={problem && problem.section} onClose={() => setRightTab('lexicon')} />;
-        })()}
       </div>
 
-      {isMobile && (
-        <MobileTabBar
-          active={modal === 'files' ? 'sets' : (modal === 'rules' ? 'rules' : sheet)}
-          onTab={(id) => {
-            if (id === 'sets') { setSheet(null); setModal('files'); }
-            else if (id === 'rules') { setSheet(null); setModal('rules'); }
-            else { setModal(null); setSheet((cur) => (cur === id ? null : id)); }
-          }}
-          items={[
-            { id: 'exercises', label: 'Exercises', ico: '📑', badge: probCount ? (doneCount + '/' + probCount) : '' },
-            { id: 'sets', label: 'Sets', ico: '📚' },
-            { id: 'lexicon', label: 'Lexicon', ico: 'λ', badge: filteredLex.length || '' },
-            ...(hasContent ? [{ id: 'rules', label: 'Rules', ico: '☰' }] : []),
-            { id: 'more', label: 'More', ico: '⋯' },
-          ]} />
-      )}
+      {isMobile && renderMobileFoot()}
 
-      {isMobile && sheet === 'exercises' && (
-        <Sheet title={custom ? 'Custom exercise' : 'Exercises'} side="bottom" className="sheet-list"
-          onClose={() => setSheet(null)}
-          footer={probCount ? <span className="sheet-foot-count">{doneCount} of {probCount} solved</span> : null}>
-          {renderExercisesScroll(() => setSheet(null))}
-        </Sheet>
-      )}
-
-      {isMobile && sheet === 'lexicon' && (
-        <Sheet title="Lexicon" side="bottom" className="sheet-list" onClose={() => setSheet(null)}>
-          {renderLexiconScroll()}
-        </Sheet>
-      )}
-
-      {isMobile && sheet === 'more' && (
-        <Sheet title="More" side="bottom" className="sheet-more" onClose={() => setSheet(null)}
-          footer={<span className="settings-stamp">{BUILD.label || 'COMPOSE'}{BUILD.version ? ' · v' + BUILD.version : ''}{BUILD.date ? ' · ' + BUILD.date : ''}</span>}>
-          <div className="msheet-actions">
-            {hasContent && hasReading && <button className="msheet-btn" onClick={() => { setSheet(null); setRightTab('reading'); }}>
-              <span className="msheet-ico">📝</span><span>Notes</span></button>}
-            <button className="msheet-btn" onClick={() => { setSheet(null); setModal('summary'); }}>
-              <span className="msheet-ico">✓</span><span>Progress summary</span></button>
-          </div>
-          <div className="msheet-settings">
-            {!isStudentBuild && (
-              <label className="settings-row">
-                <span className="settings-label">Teacher mode</span>
-                <button className={'beh-toggle'+(teacherMode?' on':'')} role="switch" aria-checked={teacherMode} onClick={() => setTeacherMode(m => { const next = !m; if (next) { const cur = allowedMap[allowKey] || exerciseDefaults; setAllowedMap(am => ({ ...am, [allowKey]: Object.assign({}, cur, {}) })); } return next; })}><span className="beh-knob" /></button>
-              </label>
-            )}
-            <label className="settings-row">
-              <span className="settings-label">Dark mode</span>
-              <button className={'beh-toggle'+(darkMode?' on':'')} role="switch" aria-checked={darkMode} onClick={() => setDarkMode(d => !d)}><span className="beh-knob" /></button>
-            </label>
-            <label className="settings-row">
-              <span className="settings-label">Auto-resolve non-branching</span>
-              <button className={'beh-toggle'+(autoNN?' on':'')} role="switch" aria-checked={autoNN} onClick={() => setAutoNN(s => !s)}><span className="beh-knob" /></button>
-            </label>
-            <label className="settings-row">
-              <span className="settings-label">Collapse resolved subtrees</span>
-              <button className={'beh-toggle'+(collapseResolved?' on':'')} role="switch" aria-checked={collapseResolved} onClick={() => setCollapseResolved(s => !s)}><span className="beh-knob" /></button>
-            </label>
-          </div>
-          <button className="msheet-btn msheet-layout" onClick={() => { setSheet(null); setForceLayout('desktop'); }}>
-            <span className="msheet-ico">🖥</span><span>Switch to desktop layout</span></button>
-        </Sheet>
-      )}
+      {isMobile && sheet === 'ws' && renderWsSheet()}
 
       {modal === 'files' && (
         <div className="modal-backdrop" onClick={() => setModal(null)}>
@@ -2756,11 +2956,10 @@ function App() {
           onPromote={(window.COMPOSE_HOSTED || canAuthor) ? ((text) => { setEditorInit({ text, key: null }); openEditorSurface(); }) : null} />;
       })()}
 
-      {modal === 'summary' && <SummaryModal lib={LIB} progress={progress} onClose={() => setModal(null)} />}
 
       {!isMobile && renderPalette()}
       {!isMobile && renderShortcuts()}
-      {!isMobile && unlockOpen && (
+      {unlockOpen && (
         <UnlockDialog token={isFullBuild && tier !== 'anon' && auth ? auth.token : null}
           onClose={() => setUnlockOpen(false)}
           onSignin={() => { setUnlockOpen(false); setSigninMode('login'); setPage('signin'); }}
@@ -2792,11 +2991,6 @@ function App() {
         </button>
       )}
 
-      {modal === 'rules' && (
-        <RulesModal allowed={allowed} setAllowed={setAllowed} toggleRule={toggleRule} toggleShift={toggleShift} readOnly={!teacherMode}
-          lib={lib} custom={custom} onClose={() => setModal(null)}
-          onReset={() => setAllowedMap((m) => { const n = {...m}; delete n[allowKey]; return n; })} />
-      )}
 
       {modal === 'export' && (
         <ExportModal library={window.LCData.LIBRARY} userSets={userLib} onClose={() => setModal(null)} />

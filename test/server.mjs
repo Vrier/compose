@@ -273,6 +273,8 @@ async function main() {
   // N5 (S33) — unlock dialog + assign & share page compiled into the site bundle
   contains('root ships the unlock dialog (N5)', r.text, 'ul-dialog');
   contains('root ships the assign & share page (N5)', r.text, 'as-inner');
+  contains('root ships the mobile tab bar (N6)', r.text, 'mb-tabbar');
+  contains('root ships the mobile chip row (N6)', r.text, 'mb-chips');
   r = await req('GET', '/editor/', { raw: true });
   contains('/editor identifies as the sandbox', r.text, '"id":"hosted-sandbox"');
   contains('/editor is an instructor surface', r.text, '"role":"instructor"');

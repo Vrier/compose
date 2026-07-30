@@ -53,9 +53,22 @@ function getForceLayout() {
 
 /* Slide-in panel with a dimmed backdrop.
    side: 'bottom' (default) | 'left' | 'right' | 'full'
-   Locks body scroll while open; closes on backdrop tap or Esc. */
+   Locks body scroll while open; closes on backdrop tap, ✕ or Esc.
+   N6: basic focus management — the first control inside the sheet takes
+   focus on open, and focus returns to the opener on close. */
 function Sheet({ title, side, onClose, children, footer, className }) {
   const s = side || 'bottom';
+  const rootRef = React.useRef(null);
+  React.useEffect(() => {
+    const opener = document.activeElement;
+    try {
+      const root = rootRef.current;
+      const first = root && (root.querySelector('.sheet-body button, .sheet-body a[href], .sheet-body input, .sheet-body select, .sheet-body textarea')
+        || root.querySelector('.sheet-close'));
+      if (first && first.focus) first.focus();
+    } catch (e) {}
+    return () => { try { if (opener && opener.focus) opener.focus(); } catch (e) {} };
+  }, []);
   React.useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onClose && onClose(); };
     window.addEventListener('keydown', onKey);
@@ -65,7 +78,7 @@ function Sheet({ title, side, onClose, children, footer, className }) {
   }, [onClose]);
   return (
     <div className={'sheet-backdrop sheet-back-' + s} onClick={onClose}>
-      <div className={'sheet sheet-' + s + (className ? ' ' + className : '')}
+      <div ref={rootRef} className={'sheet sheet-' + s + (className ? ' ' + className : '')}
         onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={title || 'Panel'}>
         {s === 'bottom' && <div className="sheet-grip" aria-hidden="true"><span /></div>}
         <div className="sheet-head">
@@ -79,19 +92,6 @@ function Sheet({ title, side, onClose, children, footer, className }) {
   );
 }
 
-/* Fixed bottom navigation. items: [{id, label, ico, badge?}]. */
-function MobileTabBar({ items, active, onTab }) {
-  return (
-    <nav className="mtabbar" role="tablist" style={{ gridTemplateColumns: 'repeat(' + items.length + ', 1fr)' }}>
-      {items.map((it) => (
-        <button key={it.id} role="tab" aria-selected={active === it.id}
-          className={'mtab' + (active === it.id ? ' on' : '')}
-          onClick={() => onTab(it.id)}>
-          <span className="mtab-ico" aria-hidden="true">{it.ico}</span>
-          <span className="mtab-label">{it.label}</span>
-          {it.badge != null && it.badge !== '' && <span className="mtab-badge">{it.badge}</span>}
-        </button>
-      ))}
-    </nav>
-  );
-}
+/* The old MobileTabBar (Exercises/Sets/Lexicon/Rules/More) retired in N6 —
+   the tab bar is now app.jsx's mb-tabbar (Derive · Exercises · Reference ·
+   Menu, per the mobile prototype). */

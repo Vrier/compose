@@ -1447,9 +1447,14 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
    plus a few .is-mobile overrides of shared views.
    ========================================================================= */
 
-/* three rows: slim topbar · stage · tab bar */
-.app.is-mobile { display: grid; grid-template-rows: auto 1fr auto; }
-.app-main-mobile { display: grid; grid-template-columns: 1fr; }
+/* two rows since N6: stage · (chip row + tab bar). Flex column, NOT grid:
+   a grid track takes the min-content of a wide practice header (e.g. the
+   chapter pages' eyebrow row) and pushes the fourth tab off-screen. */
+.app.is-mobile { display: flex; flex-direction: column; overflow-x: hidden; }
+.app.is-mobile > .app-main { flex: 1; min-height: 0; min-width: 0; width: 100%; }
+.app.is-mobile > .mb-foot { flex: none; width: 100%; box-sizing: border-box; }
+.app-main-mobile { display: flex; min-height: 0; }
+.app-main-mobile > .col-center { flex: 1; min-width: 0; max-width: 100%; }
 
 /* ---- mobile mini-segment in desktop Settings (layout switch) ----------- */
 .settings-layout-row { cursor: default; }
@@ -1458,49 +1463,178 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .seg-mini-btn + .seg-mini-btn { border-left: 1px solid var(--line); }
 .seg-mini-btn.on { background: var(--accent); color: #fff; }
 
-/* ---- slim mobile top bar ---------------------------------------------- */
-.topbar-mobile {
-  height: 54px; gap: 8px; padding: 0 10px;
-  padding-top: env(safe-area-inset-top, 0);
-}
-.mtop-set {
-  display: flex; align-items: center; gap: 7px; min-width: 0; max-width: 60%;
-  background: none; border: 0; padding: 6px 6px; cursor: pointer; font: inherit; color: var(--ink);
-}
-.mtop-glyph { font-family: Georgia, 'Spectral', serif; color: var(--accent); font-size: 21px; line-height: 1; }
-.mtop-set-name { font-weight: 600; font-size: 15.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mtop-caret { color: var(--muted); font-size: 10px; flex-shrink: 0; }
-.mtop-nav { display: flex; align-items: center; gap: 5px; }
-.mtop-arrow {
-  width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--line);
-  background: var(--panel-2); color: var(--ink); font-size: 22px; line-height: 1; cursor: pointer;
-  display: grid; place-items: center; -webkit-tap-highlight-color: transparent;
-}
-.mtop-arrow:active { background: var(--accent-soft); }
-.mtop-arrow:disabled { opacity: 0.32; }
-.mtop-score { font-size: 13px; font-weight: 700; color: var(--muted); min-width: 48px; text-align: center; font-variant-numeric: tabular-nums; }
-.mtop-score.solo { min-width: 0; padding-right: 6px; }
-
-/* ---- bottom tab bar ---------------------------------------------------- */
-.mtabbar {
-  display: grid; grid-template-columns: repeat(4, 1fr);
+/* ---- N6: chip row + bottom tab bar (Derive · Exercises · Reference ·
+   Menu, per the mobile prototype) ----------------------------------------- */
+.mb-foot {
   border-top: 1px solid var(--line); background: var(--panel);
-  padding-bottom: env(safe-area-inset-bottom, 0);
-  z-index: 30;
+  padding-bottom: env(safe-area-inset-bottom, 0); z-index: 30;
 }
-.mtab {
-  position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px;
-  background: none; border: 0; padding: 9px 4px 8px; cursor: pointer;
-  color: var(--muted); font: inherit; -webkit-tap-highlight-color: transparent;
+.mb-chips {
+  display: flex; align-items: center; gap: 6px; padding: 7px 10px 4px;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
 }
-.mtab-ico { font-size: 19px; line-height: 1; font-family: 'Spectral', serif; }
-.mtab-label { font-size: 11px; font-weight: 600; letter-spacing: 0.01em; }
-.mtab.on { color: var(--accent-ink); }
-.mtab:active { background: var(--hover); }
-.mtab-badge {
-  position: absolute; top: 4px; left: calc(50% + 6px);
-  font-size: 9.5px; font-weight: 700; color: #fff; background: var(--accent);
-  border-radius: 9px; padding: 1px 5px; min-width: 8px; text-align: center; line-height: 1.45;
+.mb-chip {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 32px;
+  padding: 4px 11px; border-radius: 9px; border: 1px solid var(--line);
+  background: transparent; color: var(--ink-soft); font: inherit; font-size: 12.5px;
+  cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent;
+}
+.mb-chip-ws { max-width: 52%; }
+.mb-chip .mb-chip-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.mb-chip.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; }
+.mb-chip-ctx { margin-left: auto; max-width: 36%; overflow: hidden; text-overflow: ellipsis; cursor: default; }
+.mb-tabbar { display: grid; grid-template-columns: repeat(4, 1fr); }
+.mb-tab {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  min-height: 54px; padding: 8px 0 6px; border: 0; background: none;
+  color: var(--muted); font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.mb-tab-glyph { font-size: 17px; line-height: 1; font-family: 'Spectral', serif; }
+.mb-tab-label { font-size: 10.5px; font-weight: 600; letter-spacing: .02em; }
+.mb-tab.on { color: var(--accent-ink); box-shadow: inset 0 2px 0 var(--accent); }
+.mb-tab:active { background: var(--hover); }
+
+/* ---- N6: Derive tab header (worksheet switch + prev/next + score) ------ */
+.mb-dhead {
+  display: flex; align-items: center; gap: 6px; padding: 5px 8px;
+  padding-top: calc(5px + env(safe-area-inset-top, 0px));
+  background: var(--panel); border-bottom: 1px solid var(--line-soft); flex: none;
+}
+.mb-ws-btn {
+  flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px;
+  min-height: 48px; padding: 4px 8px; border: 0; border-radius: 10px;
+  background: transparent; text-align: left; font: inherit; color: var(--ink);
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.mb-ws-btn:active { background: var(--accent-soft); }
+.mb-ws-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.mb-ws-kicker {
+  font-size: 10.5px; letter-spacing: .11em; text-transform: uppercase; color: var(--faint);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.mb-ws-title { font-size: 14.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mb-ws-switch { flex: none; font-size: 10px; color: var(--faint); }
+.mb-exnav { flex: none; display: flex; align-items: center; gap: 1px; }
+.mb-arrow {
+  width: 38px; height: 44px; border: 0; background: transparent; color: var(--ink-soft);
+  font-size: 19px; line-height: 1; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.mb-arrow:active { color: var(--accent-ink); }
+.mb-arrow:disabled { opacity: .32; }
+.mb-score { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--accent-ink); min-width: 34px; text-align: center; }
+
+/* ---- N6: tab views (Exercises / Reference / Menu / pushed) -------------- */
+.mb-view { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.mb-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 14px; }
+.mb-tab-head { flex: none; padding: 9px 16px 11px; background: var(--panel); border-bottom: 1px solid var(--line-soft); }
+.mb-th-kicker { font-size: 10.5px; letter-spacing: .11em; text-transform: uppercase; color: var(--faint); }
+.mb-th-row { display: flex; align-items: baseline; gap: 10px; margin-top: 1px; }
+.mb-th-title { flex: 1; min-width: 0; font-size: 16px; font-weight: 600; line-height: 1.3; }
+.mb-th-score { flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--accent-ink); }
+.mb-ex .nav-item { min-height: 56px; box-sizing: border-box; align-items: center; }
+.mb-ex .col-scroll { overflow: visible; max-height: none; height: auto; }
+
+.mb-ref-tabs { flex: none; display: flex; gap: 2px; padding: 7px 10px 0; background: var(--panel); border-bottom: 1px solid var(--line-soft); }
+.mb-ref-tab {
+  flex: 1; min-height: 44px; border: 0; background: transparent; font: inherit;
+  font-size: 13.5px; color: var(--muted); cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.mb-ref-tab .rp-count { font-size: 10px; color: var(--faint); }
+.mb-ref-tab.on { color: var(--ink); font-weight: 600; box-shadow: inset 0 -2px 0 var(--accent); }
+.mb-ref-body { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.mb-ref-body .col-scroll { overflow: visible; max-height: none; height: auto; }
+
+/* menu rows: ≥56px touch targets */
+.mb-kicker { padding: 14px 16px 4px; font-size: 10.5px; letter-spacing: .11em; text-transform: uppercase; color: var(--faint); }
+.mb-row {
+  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 56px;
+  padding: 6px 16px; border: 0; background: none; font: inherit; font-size: 14px;
+  color: var(--ink-soft); text-align: left; cursor: pointer; text-decoration: none;
+  box-sizing: border-box; -webkit-tap-highlight-color: transparent;
+}
+.mb-row:active { background: var(--accent-soft); }
+.mb-row-glyph { flex: none; width: 20px; text-align: center; font-size: 14px; opacity: .8; }
+.mb-row-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mb-row-note { flex: none; font-size: 11.5px; color: var(--faint); max-width: 38%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mb-row-caret { flex: none; font-size: 12px; color: var(--faint); }
+.mb-account { padding: 12px 16px 2px; }
+.mb-account-note { font-size: 12.5px; color: var(--muted); line-height: 1.55; padding-bottom: 10px; }
+.mb-signin-btn { width: 100%; min-height: 46px; }
+.mb-id { display: flex; align-items: center; gap: 10px; padding: 2px 0 6px; }
+.mb-id-avatar {
+  flex: none; width: 38px; height: 38px; border-radius: 50%; background: var(--accent-soft);
+  color: var(--accent-ink); display: grid; place-items: center; font-size: 15px;
+}
+.mb-id-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.mb-id-email { font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mb-id-tier { font-size: 11.5px; color: var(--muted); }
+.mb-signout {
+  flex: none; min-height: 38px; padding: 0 13px; border: 1px solid var(--line); border-radius: 10px;
+  background: transparent; color: var(--ink-soft); font: inherit; font-size: 12.5px; cursor: pointer;
+}
+.mb-settings { padding: 0 16px; }
+.mb-settings .settings-row { padding: 12px 0; border-bottom: 1px solid var(--line-soft); }
+.mb-settings .settings-row:last-child { border-bottom: 0; }
+.mb-settings .beh-toggle { width: 46px; height: 28px; }
+.mb-settings .beh-toggle .beh-knob { width: 22px; height: 22px; }
+.mb-settings .beh-toggle.on .beh-knob { transform: translateX(18px); }
+.mb-stamp { padding: 18px 16px 8px; font-size: 11.5px; color: var(--faint); text-align: center; }
+
+/* switch-worksheet sheet rows */
+.mb-ws-list { padding-bottom: 20px; }
+.mb-ws-row .mb-ws-dot { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+.mb-ws-row.on { color: var(--ink); font-weight: 600; background: var(--accent-soft); }
+.mb-ws-row.on .mb-ws-dot { background: var(--accent); }
+.mb-leave-row { color: var(--muted); font-size: 13px; min-height: 48px; }
+
+/* pushed views: title + back row over the reused page components */
+.mb-push-head {
+  flex: none; display: flex; align-items: center; gap: 6px; padding: 5px 8px 8px;
+  padding-top: calc(5px + env(safe-area-inset-top, 0px));
+  background: var(--panel); border-bottom: 1px solid var(--line-soft);
+}
+.mb-push-back {
+  flex: none; display: flex; align-items: center; gap: 4px; min-height: 40px; padding: 0 8px;
+  border: 0; background: transparent; color: var(--accent-ink); font: inherit; font-size: 13.5px; cursor: pointer;
+}
+.mb-push-title {
+  flex: 1; min-width: 0; text-align: center; font-size: 14px; font-weight: 600;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.mb-push-pad { flex: none; width: 56px; }
+.mb-push-body { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; }
+.mb-push-body .page-view { flex: 1; overflow: visible; }
+
+/* the reused pages at 390px: the pushed head replaces their crumb rows,
+   gutters shrink, columns stack (as-cols/vd rows already flex-wrap) */
+.app.is-mobile .page-crumb-row { display: none; }
+.app.is-mobile .si-wrap { padding: 18px 14px 30px; }
+.app.is-mobile .vd-inner, .app.is-mobile .pg-inner, .app.is-mobile .as-inner { padding: 16px 12px 34px; }
+.app.is-mobile .pg-head { flex-direction: column; align-items: stretch; gap: 12px; }
+.app.is-mobile .pg-head-main { flex: 0 0 auto; min-width: 0; }
+.app.is-mobile .mb-ws-sheet { height: auto; max-height: 78vh; }
+.app.is-mobile .pg-row { padding: 11px 6px; }
+.app.is-mobile .vd-row-head { flex-wrap: wrap; }
+.app.is-mobile .vd-row-actions { flex-wrap: wrap; }
+.app.is-mobile .as-left, .app.is-mobile .as-right { min-width: 100%; border-right: 0; }
+.app.is-mobile .as-left { border-bottom: 1px solid var(--line); }
+
+/* the unlock dialog rides in as a bottom sheet on phones */
+.app.is-mobile .ul-scrim { align-items: flex-end; padding: 0; }
+.app.is-mobile .ul-dialog {
+  max-width: none; border-radius: 20px 20px 0 0; border-left: 0; border-right: 0; border-bottom: 0;
+  padding: 16px 18px calc(22px + env(safe-area-inset-bottom, 0px));
+  animation: sheet-up 0.26s cubic-bezier(.22,.61,.36,1);
+}
+.app.is-mobile .ul-input { height: 48px; font-size: 16px; }  /* ≥16px stops iOS zoom */
+.app.is-mobile .ul-submit { min-height: 46px; }
+
+/* focus parity (S13.5) for the N6 chrome */
+.mb-tab:focus-visible, .mb-chip:focus-visible, .mb-row:focus-visible,
+.mb-ws-btn:focus-visible, .mb-arrow:focus-visible, .mb-ref-tab:focus-visible,
+.mb-push-back:focus-visible, .mb-signout:focus-visible, .mb-signin-btn:focus-visible,
+.sheet-close:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: -2px;
 }
 
 /* ---- slide-up sheets --------------------------------------------------- */
@@ -1540,21 +1674,6 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .sheet-foot-count { font-size: 12.5px; color: var(--muted); font-weight: 600; }
 .sheet-foot .settings-stamp { margin: 0; padding: 0; border: 0; }
 
-/* ---- More sheet -------------------------------------------------------- */
-.msheet-actions { display: flex; gap: 10px; padding: 14px 16px 8px; }
-.msheet-btn {
-  flex: 1; display: flex; align-items: center; justify-content: center; gap: 9px;
-  padding: 14px 12px; border-radius: 13px; border: 1px solid var(--line);
-  background: var(--panel-2); color: var(--ink); font: inherit; font-size: 14.5px; font-weight: 600;
-  cursor: pointer; -webkit-tap-highlight-color: transparent;
-}
-.msheet-btn:active { background: var(--accent-soft); border-color: var(--accent); }
-.msheet-ico { font-size: 17px; }
-.msheet-settings { padding: 8px 16px 4px; display: flex; flex-direction: column; gap: 2px; }
-.msheet-settings .settings-row { padding: 11px 0; border-bottom: 1px solid var(--line-soft); }
-.msheet-settings .settings-row:last-child { border-bottom: 0; }
-.msheet-layout { margin: 6px 16px 18px; width: calc(100% - 32px); }
-
 /* bigger touch targets for the behaviour toggles inside sheets */
 .sheet .beh-toggle { width: 46px; height: 28px; }
 .sheet .beh-toggle .beh-knob { width: 22px; height: 22px; }
@@ -1562,7 +1681,7 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 
 /* ---- center stage on phones ------------------------------------------- */
 .app.is-mobile .prob-head { padding: 12px 16px 4px; }
-.app.is-mobile .prob-eyebrow { font-size: 11px; }
+.app.is-mobile .prob-eyebrow { font-size: 11px; flex-wrap: wrap; }
 .app.is-mobile .prob-head-row { flex-wrap: wrap; gap: 8px 10px; align-items: center; }
 .app.is-mobile .prob-title { font-size: 18px; flex: 1 1 100%; }
 .app.is-mobile .prob-instr { font-size: 13.5px; }
@@ -1595,7 +1714,7 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .app.is-mobile .modal h3 { padding-top: 22px; }
 
 /* keep the TweaksPanel from colliding with the tab bar */
-.app.is-mobile ~ .tweaks-panel, .app.is-mobile .tweaks-panel { bottom: 70px; }
+.app.is-mobile ~ .tweaks-panel, .app.is-mobile .tweaks-panel { bottom: 108px; }
 
 
 /* S4: editor save-to-server status */

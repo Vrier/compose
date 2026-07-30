@@ -1461,9 +1461,14 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
    plus a few .is-mobile overrides of shared views.
    ========================================================================= */
 
-/* three rows: slim topbar · stage · tab bar */
-.app.is-mobile { display: grid; grid-template-rows: auto 1fr auto; }
-.app-main-mobile { display: grid; grid-template-columns: 1fr; }
+/* two rows since N6: stage · (chip row + tab bar). Flex column, NOT grid:
+   a grid track takes the min-content of a wide practice header (e.g. the
+   chapter pages' eyebrow row) and pushes the fourth tab off-screen. */
+.app.is-mobile { display: flex; flex-direction: column; overflow-x: hidden; }
+.app.is-mobile > .app-main { flex: 1; min-height: 0; min-width: 0; width: 100%; }
+.app.is-mobile > .mb-foot { flex: none; width: 100%; box-sizing: border-box; }
+.app-main-mobile { display: flex; min-height: 0; }
+.app-main-mobile > .col-center { flex: 1; min-width: 0; max-width: 100%; }
 
 /* ---- mobile mini-segment in desktop Settings (layout switch) ----------- */
 .settings-layout-row { cursor: default; }
@@ -1472,49 +1477,178 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .seg-mini-btn + .seg-mini-btn { border-left: 1px solid var(--line); }
 .seg-mini-btn.on { background: var(--accent); color: #fff; }
 
-/* ---- slim mobile top bar ---------------------------------------------- */
-.topbar-mobile {
-  height: 54px; gap: 8px; padding: 0 10px;
-  padding-top: env(safe-area-inset-top, 0);
-}
-.mtop-set {
-  display: flex; align-items: center; gap: 7px; min-width: 0; max-width: 60%;
-  background: none; border: 0; padding: 6px 6px; cursor: pointer; font: inherit; color: var(--ink);
-}
-.mtop-glyph { font-family: Georgia, 'Spectral', serif; color: var(--accent); font-size: 21px; line-height: 1; }
-.mtop-set-name { font-weight: 600; font-size: 15.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mtop-caret { color: var(--muted); font-size: 10px; flex-shrink: 0; }
-.mtop-nav { display: flex; align-items: center; gap: 5px; }
-.mtop-arrow {
-  width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--line);
-  background: var(--panel-2); color: var(--ink); font-size: 22px; line-height: 1; cursor: pointer;
-  display: grid; place-items: center; -webkit-tap-highlight-color: transparent;
-}
-.mtop-arrow:active { background: var(--accent-soft); }
-.mtop-arrow:disabled { opacity: 0.32; }
-.mtop-score { font-size: 13px; font-weight: 700; color: var(--muted); min-width: 48px; text-align: center; font-variant-numeric: tabular-nums; }
-.mtop-score.solo { min-width: 0; padding-right: 6px; }
-
-/* ---- bottom tab bar ---------------------------------------------------- */
-.mtabbar {
-  display: grid; grid-template-columns: repeat(4, 1fr);
+/* ---- N6: chip row + bottom tab bar (Derive · Exercises · Reference ·
+   Menu, per the mobile prototype) ----------------------------------------- */
+.mb-foot {
   border-top: 1px solid var(--line); background: var(--panel);
-  padding-bottom: env(safe-area-inset-bottom, 0);
-  z-index: 30;
+  padding-bottom: env(safe-area-inset-bottom, 0); z-index: 30;
 }
-.mtab {
-  position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px;
-  background: none; border: 0; padding: 9px 4px 8px; cursor: pointer;
-  color: var(--muted); font: inherit; -webkit-tap-highlight-color: transparent;
+.mb-chips {
+  display: flex; align-items: center; gap: 6px; padding: 7px 10px 4px;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
 }
-.mtab-ico { font-size: 19px; line-height: 1; font-family: 'Spectral', serif; }
-.mtab-label { font-size: 11px; font-weight: 600; letter-spacing: 0.01em; }
-.mtab.on { color: var(--accent-ink); }
-.mtab:active { background: var(--hover); }
-.mtab-badge {
-  position: absolute; top: 4px; left: calc(50% + 6px);
-  font-size: 9.5px; font-weight: 700; color: #fff; background: var(--accent);
-  border-radius: 9px; padding: 1px 5px; min-width: 8px; text-align: center; line-height: 1.45;
+.mb-chip {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 32px;
+  padding: 4px 11px; border-radius: 9px; border: 1px solid var(--line);
+  background: transparent; color: var(--ink-soft); font: inherit; font-size: 12.5px;
+  cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent;
+}
+.mb-chip-ws { max-width: 52%; }
+.mb-chip .mb-chip-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.mb-chip.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; }
+.mb-chip-ctx { margin-left: auto; max-width: 36%; overflow: hidden; text-overflow: ellipsis; cursor: default; }
+.mb-tabbar { display: grid; grid-template-columns: repeat(4, 1fr); }
+.mb-tab {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  min-height: 54px; padding: 8px 0 6px; border: 0; background: none;
+  color: var(--muted); font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.mb-tab-glyph { font-size: 17px; line-height: 1; font-family: 'Spectral', serif; }
+.mb-tab-label { font-size: 10.5px; font-weight: 600; letter-spacing: .02em; }
+.mb-tab.on { color: var(--accent-ink); box-shadow: inset 0 2px 0 var(--accent); }
+.mb-tab:active { background: var(--hover); }
+
+/* ---- N6: Derive tab header (worksheet switch + prev/next + score) ------ */
+.mb-dhead {
+  display: flex; align-items: center; gap: 6px; padding: 5px 8px;
+  padding-top: calc(5px + env(safe-area-inset-top, 0px));
+  background: var(--panel); border-bottom: 1px solid var(--line-soft); flex: none;
+}
+.mb-ws-btn {
+  flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px;
+  min-height: 48px; padding: 4px 8px; border: 0; border-radius: 10px;
+  background: transparent; text-align: left; font: inherit; color: var(--ink);
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.mb-ws-btn:active { background: var(--accent-soft); }
+.mb-ws-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.mb-ws-kicker {
+  font-size: 10.5px; letter-spacing: .11em; text-transform: uppercase; color: var(--faint);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.mb-ws-title { font-size: 14.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mb-ws-switch { flex: none; font-size: 10px; color: var(--faint); }
+.mb-exnav { flex: none; display: flex; align-items: center; gap: 1px; }
+.mb-arrow {
+  width: 38px; height: 44px; border: 0; background: transparent; color: var(--ink-soft);
+  font-size: 19px; line-height: 1; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.mb-arrow:active { color: var(--accent-ink); }
+.mb-arrow:disabled { opacity: .32; }
+.mb-score { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--accent-ink); min-width: 34px; text-align: center; }
+
+/* ---- N6: tab views (Exercises / Reference / Menu / pushed) -------------- */
+.mb-view { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.mb-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 14px; }
+.mb-tab-head { flex: none; padding: 9px 16px 11px; background: var(--panel); border-bottom: 1px solid var(--line-soft); }
+.mb-th-kicker { font-size: 10.5px; letter-spacing: .11em; text-transform: uppercase; color: var(--faint); }
+.mb-th-row { display: flex; align-items: baseline; gap: 10px; margin-top: 1px; }
+.mb-th-title { flex: 1; min-width: 0; font-size: 16px; font-weight: 600; line-height: 1.3; }
+.mb-th-score { flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--accent-ink); }
+.mb-ex .nav-item { min-height: 56px; box-sizing: border-box; align-items: center; }
+.mb-ex .col-scroll { overflow: visible; max-height: none; height: auto; }
+
+.mb-ref-tabs { flex: none; display: flex; gap: 2px; padding: 7px 10px 0; background: var(--panel); border-bottom: 1px solid var(--line-soft); }
+.mb-ref-tab {
+  flex: 1; min-height: 44px; border: 0; background: transparent; font: inherit;
+  font-size: 13.5px; color: var(--muted); cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.mb-ref-tab .rp-count { font-size: 10px; color: var(--faint); }
+.mb-ref-tab.on { color: var(--ink); font-weight: 600; box-shadow: inset 0 -2px 0 var(--accent); }
+.mb-ref-body { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.mb-ref-body .col-scroll { overflow: visible; max-height: none; height: auto; }
+
+/* menu rows: ≥56px touch targets */
+.mb-kicker { padding: 14px 16px 4px; font-size: 10.5px; letter-spacing: .11em; text-transform: uppercase; color: var(--faint); }
+.mb-row {
+  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 56px;
+  padding: 6px 16px; border: 0; background: none; font: inherit; font-size: 14px;
+  color: var(--ink-soft); text-align: left; cursor: pointer; text-decoration: none;
+  box-sizing: border-box; -webkit-tap-highlight-color: transparent;
+}
+.mb-row:active { background: var(--accent-soft); }
+.mb-row-glyph { flex: none; width: 20px; text-align: center; font-size: 14px; opacity: .8; }
+.mb-row-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mb-row-note { flex: none; font-size: 11.5px; color: var(--faint); max-width: 38%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mb-row-caret { flex: none; font-size: 12px; color: var(--faint); }
+.mb-account { padding: 12px 16px 2px; }
+.mb-account-note { font-size: 12.5px; color: var(--muted); line-height: 1.55; padding-bottom: 10px; }
+.mb-signin-btn { width: 100%; min-height: 46px; }
+.mb-id { display: flex; align-items: center; gap: 10px; padding: 2px 0 6px; }
+.mb-id-avatar {
+  flex: none; width: 38px; height: 38px; border-radius: 50%; background: var(--accent-soft);
+  color: var(--accent-ink); display: grid; place-items: center; font-size: 15px;
+}
+.mb-id-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.mb-id-email { font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mb-id-tier { font-size: 11.5px; color: var(--muted); }
+.mb-signout {
+  flex: none; min-height: 38px; padding: 0 13px; border: 1px solid var(--line); border-radius: 10px;
+  background: transparent; color: var(--ink-soft); font: inherit; font-size: 12.5px; cursor: pointer;
+}
+.mb-settings { padding: 0 16px; }
+.mb-settings .settings-row { padding: 12px 0; border-bottom: 1px solid var(--line-soft); }
+.mb-settings .settings-row:last-child { border-bottom: 0; }
+.mb-settings .beh-toggle { width: 46px; height: 28px; }
+.mb-settings .beh-toggle .beh-knob { width: 22px; height: 22px; }
+.mb-settings .beh-toggle.on .beh-knob { transform: translateX(18px); }
+.mb-stamp { padding: 18px 16px 8px; font-size: 11.5px; color: var(--faint); text-align: center; }
+
+/* switch-worksheet sheet rows */
+.mb-ws-list { padding-bottom: 20px; }
+.mb-ws-row .mb-ws-dot { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+.mb-ws-row.on { color: var(--ink); font-weight: 600; background: var(--accent-soft); }
+.mb-ws-row.on .mb-ws-dot { background: var(--accent); }
+.mb-leave-row { color: var(--muted); font-size: 13px; min-height: 48px; }
+
+/* pushed views: title + back row over the reused page components */
+.mb-push-head {
+  flex: none; display: flex; align-items: center; gap: 6px; padding: 5px 8px 8px;
+  padding-top: calc(5px + env(safe-area-inset-top, 0px));
+  background: var(--panel); border-bottom: 1px solid var(--line-soft);
+}
+.mb-push-back {
+  flex: none; display: flex; align-items: center; gap: 4px; min-height: 40px; padding: 0 8px;
+  border: 0; background: transparent; color: var(--accent-ink); font: inherit; font-size: 13.5px; cursor: pointer;
+}
+.mb-push-title {
+  flex: 1; min-width: 0; text-align: center; font-size: 14px; font-weight: 600;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.mb-push-pad { flex: none; width: 56px; }
+.mb-push-body { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; }
+.mb-push-body .page-view { flex: 1; overflow: visible; }
+
+/* the reused pages at 390px: the pushed head replaces their crumb rows,
+   gutters shrink, columns stack (as-cols/vd rows already flex-wrap) */
+.app.is-mobile .page-crumb-row { display: none; }
+.app.is-mobile .si-wrap { padding: 18px 14px 30px; }
+.app.is-mobile .vd-inner, .app.is-mobile .pg-inner, .app.is-mobile .as-inner { padding: 16px 12px 34px; }
+.app.is-mobile .pg-head { flex-direction: column; align-items: stretch; gap: 12px; }
+.app.is-mobile .pg-head-main { flex: 0 0 auto; min-width: 0; }
+.app.is-mobile .mb-ws-sheet { height: auto; max-height: 78vh; }
+.app.is-mobile .pg-row { padding: 11px 6px; }
+.app.is-mobile .vd-row-head { flex-wrap: wrap; }
+.app.is-mobile .vd-row-actions { flex-wrap: wrap; }
+.app.is-mobile .as-left, .app.is-mobile .as-right { min-width: 100%; border-right: 0; }
+.app.is-mobile .as-left { border-bottom: 1px solid var(--line); }
+
+/* the unlock dialog rides in as a bottom sheet on phones */
+.app.is-mobile .ul-scrim { align-items: flex-end; padding: 0; }
+.app.is-mobile .ul-dialog {
+  max-width: none; border-radius: 20px 20px 0 0; border-left: 0; border-right: 0; border-bottom: 0;
+  padding: 16px 18px calc(22px + env(safe-area-inset-bottom, 0px));
+  animation: sheet-up 0.26s cubic-bezier(.22,.61,.36,1);
+}
+.app.is-mobile .ul-input { height: 48px; font-size: 16px; }  /* ≥16px stops iOS zoom */
+.app.is-mobile .ul-submit { min-height: 46px; }
+
+/* focus parity (S13.5) for the N6 chrome */
+.mb-tab:focus-visible, .mb-chip:focus-visible, .mb-row:focus-visible,
+.mb-ws-btn:focus-visible, .mb-arrow:focus-visible, .mb-ref-tab:focus-visible,
+.mb-push-back:focus-visible, .mb-signout:focus-visible, .mb-signin-btn:focus-visible,
+.sheet-close:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: -2px;
 }
 
 /* ---- slide-up sheets --------------------------------------------------- */
@@ -1554,21 +1688,6 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .sheet-foot-count { font-size: 12.5px; color: var(--muted); font-weight: 600; }
 .sheet-foot .settings-stamp { margin: 0; padding: 0; border: 0; }
 
-/* ---- More sheet -------------------------------------------------------- */
-.msheet-actions { display: flex; gap: 10px; padding: 14px 16px 8px; }
-.msheet-btn {
-  flex: 1; display: flex; align-items: center; justify-content: center; gap: 9px;
-  padding: 14px 12px; border-radius: 13px; border: 1px solid var(--line);
-  background: var(--panel-2); color: var(--ink); font: inherit; font-size: 14.5px; font-weight: 600;
-  cursor: pointer; -webkit-tap-highlight-color: transparent;
-}
-.msheet-btn:active { background: var(--accent-soft); border-color: var(--accent); }
-.msheet-ico { font-size: 17px; }
-.msheet-settings { padding: 8px 16px 4px; display: flex; flex-direction: column; gap: 2px; }
-.msheet-settings .settings-row { padding: 11px 0; border-bottom: 1px solid var(--line-soft); }
-.msheet-settings .settings-row:last-child { border-bottom: 0; }
-.msheet-layout { margin: 6px 16px 18px; width: calc(100% - 32px); }
-
 /* bigger touch targets for the behaviour toggles inside sheets */
 .sheet .beh-toggle { width: 46px; height: 28px; }
 .sheet .beh-toggle .beh-knob { width: 22px; height: 22px; }
@@ -1576,7 +1695,7 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 
 /* ---- center stage on phones ------------------------------------------- */
 .app.is-mobile .prob-head { padding: 12px 16px 4px; }
-.app.is-mobile .prob-eyebrow { font-size: 11px; }
+.app.is-mobile .prob-eyebrow { font-size: 11px; flex-wrap: wrap; }
 .app.is-mobile .prob-head-row { flex-wrap: wrap; gap: 8px 10px; align-items: center; }
 .app.is-mobile .prob-title { font-size: 18px; flex: 1 1 100%; }
 .app.is-mobile .prob-instr { font-size: 13.5px; }
@@ -1609,7 +1728,7 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .app.is-mobile .modal h3 { padding-top: 22px; }
 
 /* keep the TweaksPanel from colliding with the tab bar */
-.app.is-mobile ~ .tweaks-panel, .app.is-mobile .tweaks-panel { bottom: 70px; }
+.app.is-mobile ~ .tweaks-panel, .app.is-mobile .tweaks-panel { bottom: 108px; }
 
 
 /* S4: editor save-to-server status */
@@ -5613,6 +5732,22 @@ function getForceLayout() {
 }
 function Sheet({ title, side, onClose, children, footer, className }) {
   const s = side || "bottom";
+  const rootRef = React.useRef(null);
+  React.useEffect(() => {
+    const opener = document.activeElement;
+    try {
+      const root = rootRef.current;
+      const first = root && (root.querySelector(".sheet-body button, .sheet-body a[href], .sheet-body input, .sheet-body select, .sheet-body textarea") || root.querySelector(".sheet-close"));
+      if (first && first.focus) first.focus();
+    } catch (e) {
+    }
+    return () => {
+      try {
+        if (opener && opener.focus) opener.focus();
+      } catch (e) {
+      }
+    };
+  }, []);
   React.useEffect(() => {
     const onKey = (e) => {
       if (e.key === "Escape") onClose && onClose();
@@ -5628,6 +5763,7 @@ function Sheet({ title, side, onClose, children, footer, className }) {
   return /* @__PURE__ */ React.createElement("div", { className: "sheet-backdrop sheet-back-" + s, onClick: onClose }, /* @__PURE__ */ React.createElement(
     "div",
     {
+      ref: rootRef,
       className: "sheet sheet-" + s + (className ? " " + className : ""),
       onClick: (e) => e.stopPropagation(),
       role: "dialog",
@@ -5639,21 +5775,6 @@ function Sheet({ title, side, onClose, children, footer, className }) {
     /* @__PURE__ */ React.createElement("div", { className: "sheet-body" }, children),
     footer != null && /* @__PURE__ */ React.createElement("div", { className: "sheet-foot" }, footer)
   ));
-}
-function MobileTabBar({ items, active, onTab }) {
-  return /* @__PURE__ */ React.createElement("nav", { className: "mtabbar", role: "tablist", style: { gridTemplateColumns: "repeat(" + items.length + ", 1fr)" } }, items.map((it) => /* @__PURE__ */ React.createElement(
-    "button",
-    {
-      key: it.id,
-      role: "tab",
-      "aria-selected": active === it.id,
-      className: "mtab" + (active === it.id ? " on" : ""),
-      onClick: () => onTab(it.id)
-    },
-    /* @__PURE__ */ React.createElement("span", { className: "mtab-ico", "aria-hidden": "true" }, it.ico),
-    /* @__PURE__ */ React.createElement("span", { className: "mtab-label" }, it.label),
-    it.badge != null && it.badge !== "" && /* @__PURE__ */ React.createElement("span", { className: "mtab-badge" }, it.badge)
-  )));
 }
 
 </script>
@@ -9864,22 +9985,6 @@ function composeImportProgress(file, onDone) {
     window.location.reload();
   });
 }
-function SummaryModal({ lib, progress, onClose }) {
-  const a = window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment || {};
-  const rows = (lib || []).map((l) => {
-    let total = 0, solved = 0;
-    (l.set.groups || []).forEach((g) => {
-      if (g.kind !== "tree") return;
-      (g.problems || []).forEach((pb) => {
-        total++;
-        if (progress[l.key + "/" + g.id + "/" + pb.id]) solved++;
-      });
-    });
-    return { key: l.key, title: l.title, total, solved };
-  }).filter((r) => r.total > 0);
-  const grand = rows.reduce((acc, r) => ({ t: acc.t + r.total, s: acc.s + r.solved }), { t: 0, s: 0 });
-  return /* @__PURE__ */ React.createElement("div", { className: "modal-back", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal sum-modal", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h3", null, "\u2713 Progress summary"), /* @__PURE__ */ React.createElement("div", { className: "sub" }, a.title || window.COMPOSE_BUILD && window.COMPOSE_BUILD.label || "COMPOSE", " \xB7 ", (/* @__PURE__ */ new Date()).toLocaleDateString()), /* @__PURE__ */ React.createElement("table", { className: "sum-table" }, /* @__PURE__ */ React.createElement("tbody", null, rows.map((r) => /* @__PURE__ */ React.createElement("tr", { key: r.key, className: r.solved >= r.total ? "sum-done" : "" }, /* @__PURE__ */ React.createElement("td", { className: "sum-title" }, r.title), /* @__PURE__ */ React.createElement("td", { className: "sum-count" }, r.solved, " / ", r.total), /* @__PURE__ */ React.createElement("td", { className: "sum-bar" }, /* @__PURE__ */ React.createElement("div", { className: "sum-bar-track" }, /* @__PURE__ */ React.createElement("div", { className: "sum-bar-fill", style: { width: (r.total ? Math.round(100 * r.solved / r.total) : 0) + "%" } }))))), /* @__PURE__ */ React.createElement("tr", { className: "sum-grand" }, /* @__PURE__ */ React.createElement("td", { className: "sum-title" }, "All worksheets"), /* @__PURE__ */ React.createElement("td", { className: "sum-count" }, grand.s, " / ", grand.t), /* @__PURE__ */ React.createElement("td", { className: "sum-bar" })))), /* @__PURE__ */ React.createElement("div", { className: "sum-hint" }, "Derivations solved per worksheet \u2014 screenshot this page for your records or your tutor."), /* @__PURE__ */ React.createElement("div", { className: "sum-actions" }, /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: onClose }, "Close"))));
-}
 function PhoneInterstitial({ onContinue }) {
   const url = window.location.href;
   const a = window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment || {};
@@ -10220,7 +10325,14 @@ function UnlockDialog({ token, onClose, onSignin, onUnlocked }) {
   const [result, setResult] = useState(null);
   const inputRef = useRef(null);
   useEffect(() => {
+    const opener = document.activeElement;
     if (inputRef.current) inputRef.current.focus();
+    return () => {
+      try {
+        if (opener && opener.focus) opener.focus();
+      } catch (e) {
+      }
+    };
   }, []);
   async function submit(ev) {
     ev.preventDefault();
@@ -10460,7 +10572,6 @@ function App() {
   const [allowedMap, setAllowedMap] = useState(() => sanitizeAllowedMap(load("lc2-allowed", {})));
   const [teacherMode, setTeacherMode] = useState(() => isStudentBuild ? false : load("lc2-teacher", ["hosted-teacher", "hosted-sandbox"].includes(String((window.COMPOSE_BUILD || {}).id || ""))));
   const [darkMode, setDarkMode] = useState(() => load("lc2-dark", false));
-  const [rightTab, setRightTab] = useState("lexicon");
   const [panelTouched, setPanelTouched] = useState(() => !!load("lc2-panel-touched", false));
   const [panelOpen, setPanelOpen] = useState(() => load("lc2-panel-touched", false) ? !!load("lc2-panel", true) : typeof window !== "undefined" && window.innerWidth >= 1180);
   const [refTab, setRefTab] = useState(() => load("lc2-ref-tab", "lexicon"));
@@ -10483,6 +10594,7 @@ function App() {
     setPanelOpen(open);
   }, []);
   const isMobile = useIsMobile(760);
+  const [mtab, setMtab] = useState("derive");
   const [sheet, setSheet] = useState(null);
   React.useEffect(() => {
     if (!isMobile) setSheet(null);
@@ -10559,7 +10671,10 @@ function App() {
     });
   }, []);
   useEffect(() => {
-    if (isMobile && page !== "practice") setPage("practice");
+    if (isMobile && page === "editor") {
+      setPage("practice");
+      setModal("editor");
+    }
   }, [isMobile]);
   const [palette, setPalette] = useState(false);
   const [paletteQ, setPaletteQ] = useState("");
@@ -10870,8 +10985,10 @@ function App() {
     if (teacherMode || custom || !set || !set.key) return;
     if (seenSets[set.key]) return;
     setSeenSets((s) => ({ ...s, [set.key]: true }));
-    if (isMobile) setModal("rules");
-    else openPanelTab("rules", false);
+    if (isMobile) {
+      setRefTab("rules");
+      setMtab("reference");
+    } else openPanelTab("rules", false);
   }, [set && set.key, teacherMode, custom]);
   async function importBundle(file) {
     setLoadErr(null);
@@ -11968,6 +12085,7 @@ function App() {
             setAuth(a);
             setPage("practice");
             setNavSection("account");
+            setMtab("menu");
           }
         }
       );
@@ -12010,6 +12128,204 @@ function App() {
     if (page === "editor") return /* @__PURE__ */ React.createElement("div", { className: "page-view page-editor" }, renderEditorSurface(true));
     return null;
   }
+  const MB_TITLES = { signin: "Account", dash: "My versions", assign: "Assign & share", progress: "Your progress", editor: "Worksheet editor" };
+  function mbGoTab(id) {
+    setModal(null);
+    setSheet(null);
+    setUnlockOpen(false);
+    setPage("practice");
+    setMtab(id);
+  }
+  function mbPush(pg) {
+    setSheet(null);
+    setUnlockOpen(false);
+    setPage(pg);
+  }
+  function mbBack() {
+    setPage("practice");
+    setMtab("menu");
+  }
+  function mbOpenWorksheet(key) {
+    openWorksheetKey(key);
+    setSheet(null);
+    setMtab("derive");
+  }
+  function mbCollections() {
+    const cols = sidebarCollections().map((c) => ({ id: c.id, label: c.label, items: c.items }));
+    if (isFullBuild && tier !== "anon" && classes && classes.length) {
+      classes.forEach((c) => {
+        cols.push({ id: "class:" + c.slug, label: c.title, items: classLib.filter((l) => l.classSlug === c.slug), klass: c });
+      });
+    }
+    return cols;
+  }
+  function renderMobileDeriveHead() {
+    return /* @__PURE__ */ React.createElement("div", { className: "mb-dhead" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-ws-btn", onClick: () => setSheet("ws"), title: "Switch worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "mb-ws-main" }, /* @__PURE__ */ React.createElement("span", { className: "mb-ws-kicker" }, custom ? "Scratch" : collectionOf(lib) || "Worksheets"), /* @__PURE__ */ React.createElement("span", { className: "mb-ws-title" }, custom ? "Custom exercise" : lib ? lib.title : "No worksheet")), /* @__PURE__ */ React.createElement("span", { className: "mb-ws-switch", "aria-hidden": "true" }, "switch \u25BE")), hasContent && flatNav.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "mb-exnav", role: "group", "aria-label": "Exercise navigation" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-arrow", disabled: flatIdx <= 0, onClick: () => gotoFlat(-1), "aria-label": "Previous exercise" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "mb-score" }, doneCount, "/", probCount), /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-arrow", disabled: flatIdx < 0 || flatIdx >= flatNav.length - 1, onClick: () => gotoFlat(1), "aria-label": "Next exercise" }, "\u203A")));
+  }
+  function renderMobileExercises() {
+    return /* @__PURE__ */ React.createElement("div", { className: "mb-view mb-exview" }, /* @__PURE__ */ React.createElement("div", { className: "mb-tab-head" }, /* @__PURE__ */ React.createElement("div", { className: "mb-th-kicker" }, custom ? "Scratch" : collectionOf(lib) || "Worksheets"), /* @__PURE__ */ React.createElement("div", { className: "mb-th-row" }, /* @__PURE__ */ React.createElement("div", { className: "mb-th-title" }, custom ? "Custom exercise" : lib ? lib.title : "No worksheet"), probCount > 0 && /* @__PURE__ */ React.createElement("span", { className: "mb-th-score" }, doneCount, "/", probCount))), /* @__PURE__ */ React.createElement("div", { className: "mb-scroll mb-ex" }, hasContent ? renderExercisesScroll(() => setMtab("derive")) : /* @__PURE__ */ React.createElement("div", { className: "empty-note" }, "No worksheet open yet \u2014 pick one with the worksheet chip below.")));
+  }
+  function renderMobileReference() {
+    const tab = refTab === "notes" && !hasReading ? "lexicon" : refTab === "rules" || refTab === "notes" ? refTab : "lexicon";
+    return /* @__PURE__ */ React.createElement("div", { className: "mb-view mb-ref" }, /* @__PURE__ */ React.createElement("div", { className: "mb-ref-tabs", role: "tablist", "aria-label": "Reference tabs" }, /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        role: "tab",
+        id: "mb-ref-tab-lexicon",
+        "aria-selected": tab === "lexicon",
+        "aria-controls": "mb-ref-panel",
+        className: "mb-ref-tab" + (tab === "lexicon" ? " on" : ""),
+        onClick: () => setRefTab("lexicon")
+      },
+      "Lexicon ",
+      /* @__PURE__ */ React.createElement("span", { className: "rp-count" }, filteredLex.length)
+    ), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        role: "tab",
+        id: "mb-ref-tab-rules",
+        "aria-selected": tab === "rules",
+        "aria-controls": "mb-ref-panel",
+        className: "mb-ref-tab" + (tab === "rules" ? " on" : ""),
+        onClick: () => setRefTab("rules")
+      },
+      "Rules"
+    ), hasReading && /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        role: "tab",
+        id: "mb-ref-tab-notes",
+        "aria-selected": tab === "notes",
+        "aria-controls": "mb-ref-panel",
+        className: "mb-ref-tab" + (tab === "notes" ? " on" : ""),
+        onClick: () => setRefTab("notes")
+      },
+      "Notes"
+    )), /* @__PURE__ */ React.createElement("div", { className: "mb-ref-body", role: "tabpanel", id: "mb-ref-panel", "aria-labelledby": "mb-ref-tab-" + tab }, tab === "rules" ? /* @__PURE__ */ React.createElement("div", { className: "rp-rules" }, /* @__PURE__ */ React.createElement("div", { className: "rp-rules-intro" }, teacherMode ? /* @__PURE__ */ React.createElement(React.Fragment, null, "Choose which rules and type-shifts are active for ", /* @__PURE__ */ React.createElement("b", null, custom ? "this custom exercise" : lib && lib.title), ".") : "Rules available in this exercise. Instructors can switch these on or off in the editor."), /* @__PURE__ */ React.createElement(RulesContent, { allowed, setAllowed, toggleRule, toggleShift, readOnly: !teacherMode }), teacherMode && /* @__PURE__ */ React.createElement("div", { className: "rp-rules-foot" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn-ghost", onClick: () => setAllowedMap((m) => {
+      const n = { ...m };
+      delete n[allowKey];
+      return n;
+    }) }, "Reset to defaults"))) : tab === "notes" && hasReading && window.ReaderPanel ? (() => {
+      const RP = window.ReaderPanel;
+      return /* @__PURE__ */ React.createElement(RP, { set: readingSet, section: problem && problem.section, embedded: true });
+    })() : renderLexiconScroll()));
+  }
+  function mbRow(key, glyph, label, note, onActivate, opts) {
+    const o = opts || {};
+    if (o.href) {
+      return /* @__PURE__ */ React.createElement("a", { className: "mb-row", key, href: o.href }, /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, glyph), /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, label), note != null && /* @__PURE__ */ React.createElement("span", { className: "mb-row-note" }, note), /* @__PURE__ */ React.createElement("span", { className: "mb-row-caret", "aria-hidden": "true" }, "\u203A"));
+    }
+    return /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-row", key, onClick: onActivate }, /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, glyph), /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, label), note != null && /* @__PURE__ */ React.createElement("span", { className: "mb-row-note" }, note), /* @__PURE__ */ React.createElement("span", { className: "mb-row-caret", "aria-hidden": "true" }, "\u203A"));
+  }
+  function renderMobileMenu() {
+    return /* @__PURE__ */ React.createElement("div", { className: "mb-view mb-menu" }, /* @__PURE__ */ React.createElement("div", { className: "mb-scroll" }, isFullBuild && /* @__PURE__ */ React.createElement("div", { className: "mb-account" }, tier === "anon" ? /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-account-note" }, "Everything works without an account. Signing in only adds keeping: unlocks and progress follow you between devices."), /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary mb-signin-btn", onClick: () => {
+      setSigninMode("login");
+      mbPush("signin");
+    } }, "Sign in or create an account")) : /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-id" }, /* @__PURE__ */ React.createElement("span", { className: "mb-id-avatar", "aria-hidden": "true" }, "\u25C9"), /* @__PURE__ */ React.createElement("span", { className: "mb-id-main" }, /* @__PURE__ */ React.createElement("span", { className: "mb-id-email" }, auth.record && auth.record.email || "Signed in"), /* @__PURE__ */ React.createElement("span", { className: "mb-id-tier" }, tier === "instructor" ? "Instructor" : "Practice account")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-signout", onClick: () => {
+      setAuth(null);
+      setPage("practice");
+    } }, "Sign out")))), /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Worksheets"), mbRow("ws", "\u274F", "Switch worksheet", custom ? "custom" : lib ? lib.title : null, () => setSheet("ws")), mbRow("progress", "\u2713", "Your progress", grandSolved + " solved", () => mbPush("progress")), isFullBuild && mbRow("unlock", "\u2295", "Unlock with a code", null, () => {
+      setSheet(null);
+      setUnlockOpen(true);
+    }), isFullBuild && tier !== "anon" && classes && classes.length > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "My classes"), classes.map((c) => {
+      const items = classLib.filter((l) => l.classSlug === c.slug);
+      return mbRow(
+        "class:" + c.slug,
+        "\u274F",
+        c.title,
+        items.length + (items.length === 1 ? " worksheet" : " worksheets"),
+        () => {
+          if (items.length) mbOpenWorksheet(items[0].key);
+          else setSheet("ws");
+        }
+      );
+    })), canAuthor && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Author"), mbRow("editor", "\u270E", "Worksheet editor", null, () => openEditorSurface()), mbRow("scratch", "\u266A", "Scratchpad", "free", () => setModal("scratch")), mbRow("import", "\u2191", "Import worksheet\u2026", null, () => {
+      setLoadErr(null);
+      if (fileInput.current) fileInput.current.click();
+    })), isFullBuild && tier === "instructor" && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Hosting & sharing"), mbRow("dash", "\u25C8", "My versions", null, () => mbPush("dash")), mbRow("assign", "\u2611", "Assign & share", null, () => mbPush("assign"))), /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Display"), /* @__PURE__ */ React.createElement("div", { className: "mb-settings" }, !isStudentBuild && /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Teacher mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (teacherMode ? " on" : ""), role: "switch", "aria-checked": teacherMode, onClick: () => setTeacherMode((m) => {
+      const next = !m;
+      if (next) {
+        const cur = allowedMap[allowKey] || exerciseDefaults;
+        setAllowedMap((am) => ({ ...am, [allowKey]: Object.assign({}, cur, {}) }));
+      }
+      return next;
+    }) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Dark mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (darkMode ? " on" : ""), role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode((d) => !d) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-resolve non-branching"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoNN ? " on" : ""), role: "switch", "aria-checked": autoNN, onClick: () => setAutoNN((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Collapse resolved subtrees"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (collapseResolved ? " on" : ""), role: "switch", "aria-checked": collapseResolved, onClick: () => setCollapseResolved((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("div", { className: "settings-row settings-layout-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Layout"), /* @__PURE__ */ React.createElement("div", { className: "seg-mini" }, /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() == null ? " on" : ""), onClick: () => setForceLayout(null) }, "Auto"), /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() === "desktop" ? " on" : ""), onClick: () => setForceLayout("desktop") }, "Desktop")))), isFullBuild && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Guide & help"), mbRow("guide", "\u25C6", "Instructor guide", "Guide", null, { href: "/guide/" }), mbRow("help", "?", "Student help \u2014 rules & grading", "Help", null, { href: "/help/" }), mbRow("walk", "\u25B7", "Worked walkthroughs", "Help", null, { href: "/help/guides/" }), mbRow("files", "\u2913", "Downloads & site map", "Files", null, { href: "/files/" }), mbRow("about", "\xA7", "About & how to cite", "About", null, { href: "/about/" })), /* @__PURE__ */ React.createElement("div", { className: "mb-stamp" }, BUILD.label || "COMPOSE", BUILD.version ? " \xB7 v" + BUILD.version : "", BUILD.date ? " \xB7 " + BUILD.date : "")));
+  }
+  function renderMobileMain() {
+    if (page !== "practice") {
+      return /* @__PURE__ */ React.createElement("div", { className: "mb-view mb-push" }, /* @__PURE__ */ React.createElement("div", { className: "mb-push-head" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-push-back", onClick: mbBack }, "\u2039 Menu"), /* @__PURE__ */ React.createElement("span", { className: "mb-push-title" }, MB_TITLES[page] || ""), /* @__PURE__ */ React.createElement("span", { className: "mb-push-pad", "aria-hidden": "true" })), /* @__PURE__ */ React.createElement("div", { className: "mb-push-body" }, renderPageView()));
+    }
+    if (mtab === "derive") return /* @__PURE__ */ React.createElement(React.Fragment, null, renderMobileDeriveHead(), renderCenter());
+    if (mtab === "exercises") return renderMobileExercises();
+    if (mtab === "reference") return renderMobileReference();
+    return renderMobileMenu();
+  }
+  function renderMobileFoot() {
+    const pushed = page !== "practice";
+    const ctx = pushed ? MB_TITLES[page] || "" : { derive: "Derive", exercises: "Exercises", reference: "Reference", menu: "Menu" }[mtab];
+    const tabs = [
+      { id: "derive", glyph: "\u22D4", label: "Derive" },
+      { id: "exercises", glyph: "\u2630", label: "Exercises" },
+      { id: "reference", glyph: "\u274F", label: "Reference" },
+      { id: "menu", glyph: "\u22EF", label: "Menu" }
+    ];
+    return /* @__PURE__ */ React.createElement("div", { className: "mb-foot" }, /* @__PURE__ */ React.createElement("div", { className: "mb-chips" }, /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "mb-chip mb-chip-ws" + (sheet === "ws" ? " on" : ""),
+        onClick: () => setSheet(sheet === "ws" ? null : "ws"),
+        title: "Switch worksheet"
+      },
+      /* @__PURE__ */ React.createElement("span", { "aria-hidden": "true" }, "\u274F"),
+      /* @__PURE__ */ React.createElement("span", { className: "mb-chip-label" }, custom ? "Custom exercise" : lib ? lib.title : "Choose a worksheet"),
+      /* @__PURE__ */ React.createElement("span", { "aria-hidden": "true" }, "\u25BE")
+    ), isFullBuild && /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-chip" + (unlockOpen ? " on" : ""), onClick: () => {
+      setSheet(null);
+      setUnlockOpen(true);
+    } }, "\u2295 Unlock"), /* @__PURE__ */ React.createElement("span", { className: "mb-chip mb-chip-ctx on" }, ctx)), /* @__PURE__ */ React.createElement("nav", { className: "mb-tabbar", role: "tablist", "aria-label": "Main tabs" }, tabs.map((tb) => {
+      const on = pushed ? tb.id === "menu" : mtab === tb.id;
+      return /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          key: tb.id,
+          type: "button",
+          role: "tab",
+          "aria-selected": on,
+          className: "mb-tab" + (on ? " on" : ""),
+          onClick: () => mbGoTab(tb.id)
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "mb-tab-glyph", "aria-hidden": "true" }, tb.glyph),
+        /* @__PURE__ */ React.createElement("span", { className: "mb-tab-label" }, tb.label)
+      );
+    })));
+  }
+  function renderWsSheet() {
+    return /* @__PURE__ */ React.createElement(Sheet, { title: "Switch worksheet", side: "bottom", className: "sheet-list mb-ws-sheet", onClose: () => setSheet(null) }, /* @__PURE__ */ React.createElement("div", { className: "mb-ws-list" }, mbCollections().map((c) => /* @__PURE__ */ React.createElement("div", { key: c.id }, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, c.label), c.items.map((l) => {
+      const on = !custom && l.key === fileKey;
+      const n = l.set.groups.reduce((a, g) => a + g.problems.length, 0);
+      return /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          key: l.key,
+          className: "mb-row mb-ws-row" + (on ? " on" : ""),
+          "aria-current": on ? "true" : void 0,
+          onClick: () => mbOpenWorksheet(l.key)
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "mb-ws-dot", "aria-hidden": "true" }),
+        /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, l.title),
+        /* @__PURE__ */ React.createElement("span", { className: "mb-row-note" }, n)
+      );
+    }), c.klass && c.items.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-note" }, "This class has no worksheets yet."), c.klass && /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-row mb-leave-row", onClick: () => leaveClass(c.klass) }, /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, "\u2715"), /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, "Leave this class\u2026")))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-row", onClick: () => {
+      setSheet(null);
+      setLoadErr(null);
+      if (fileInput.current) fileInput.current.click();
+    } }, /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, "\u2191"), /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, "Open a file\u2026"))));
+  }
   return /* @__PURE__ */ React.createElement(
     "div",
     {
@@ -12050,9 +12366,8 @@ function App() {
         }
       }
     ),
-    isMobile && /* @__PURE__ */ React.createElement("header", { className: "topbar topbar-mobile" }, /* @__PURE__ */ React.createElement("button", { className: "mtop-set", onClick: () => setModal("files"), title: "Choose a worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "mtop-glyph" }, "\u03BB"), /* @__PURE__ */ React.createElement("span", { className: "mtop-set-name" }, custom ? "Custom exercise" : lib ? lib.title : "No worksheet"), /* @__PURE__ */ React.createElement("span", { className: "mtop-caret" }, "\u25BE")), /* @__PURE__ */ React.createElement("div", { className: "spacer" }), hasContent && flatNav.length > 0 ? /* @__PURE__ */ React.createElement("div", { className: "mtop-nav" }, /* @__PURE__ */ React.createElement("button", { className: "mtop-arrow", disabled: flatIdx <= 0, onClick: () => gotoFlat(-1), "aria-label": "Previous exercise" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "mtop-score" }, doneCount, "/", probCount), /* @__PURE__ */ React.createElement("button", { className: "mtop-arrow", disabled: flatIdx < 0 || flatIdx >= flatNav.length - 1, onClick: () => gotoFlat(1), "aria-label": "Next exercise" }, "\u203A")) : /* @__PURE__ */ React.createElement("div", { className: "mtop-score solo" }, doneCount, "/", probCount)),
     !isMobile && /* @__PURE__ */ React.createElement("a", { className: "skip-link", href: "#main" }, "Skip to content"),
-    /* @__PURE__ */ React.createElement("div", { className: "app-main" + (isMobile ? " app-main-mobile" : "") }, !isMobile && renderSidebar(), !isMobile && page === "practice" && hasContent && exOpen && renderExColumn(), /* @__PURE__ */ React.createElement("main", { id: "main", className: "col-center" }, isMobile || page === "practice" ? /* @__PURE__ */ React.createElement(React.Fragment, null, !isMobile && renderPracticeHead(), renderCenter()) : renderPageView()), !isMobile && page === "practice" && (panelOpen ? (() => {
+    /* @__PURE__ */ React.createElement("div", { className: "app-main" + (isMobile ? " app-main-mobile" : "") }, !isMobile && renderSidebar(), !isMobile && page === "practice" && hasContent && exOpen && renderExColumn(), /* @__PURE__ */ React.createElement("main", { id: "main", className: "col-center" }, isMobile ? renderMobileMain() : page === "practice" ? /* @__PURE__ */ React.createElement(React.Fragment, null, renderPracticeHead(), renderCenter()) : renderPageView()), !isMobile && page === "practice" && (panelOpen ? (() => {
       const panelTab = refTab === "notes" && !hasReading ? "lexicon" : refTab;
       return /* @__PURE__ */ React.createElement("aside", { className: "col col-right rp-panel", "aria-label": "Reference panel" }, /* @__PURE__ */ React.createElement("div", { className: "rp-tabs", role: "tablist", "aria-label": "Reference panel tabs" }, /* @__PURE__ */ React.createElement(
         "button",
@@ -12109,76 +12424,9 @@ function App() {
         onClick: () => touchPanel(true)
       },
       "\u2039 Lexicon \xB7 Rules \xB7 Notes"
-    )), isMobile && rightTab === "reading" && hasReading && window.ReaderPanel && (() => {
-      const RP = window.ReaderPanel;
-      return /* @__PURE__ */ React.createElement(RP, { set: readingSet, section: problem && problem.section, onClose: () => setRightTab("lexicon") });
-    })()),
-    isMobile && /* @__PURE__ */ React.createElement(
-      MobileTabBar,
-      {
-        active: modal === "files" ? "sets" : modal === "rules" ? "rules" : sheet,
-        onTab: (id) => {
-          if (id === "sets") {
-            setSheet(null);
-            setModal("files");
-          } else if (id === "rules") {
-            setSheet(null);
-            setModal("rules");
-          } else {
-            setModal(null);
-            setSheet((cur) => cur === id ? null : id);
-          }
-        },
-        items: [
-          { id: "exercises", label: "Exercises", ico: "\u{1F4D1}", badge: probCount ? doneCount + "/" + probCount : "" },
-          { id: "sets", label: "Sets", ico: "\u{1F4DA}" },
-          { id: "lexicon", label: "Lexicon", ico: "\u03BB", badge: filteredLex.length || "" },
-          ...hasContent ? [{ id: "rules", label: "Rules", ico: "\u2630" }] : [],
-          { id: "more", label: "More", ico: "\u22EF" }
-        ]
-      }
-    ),
-    isMobile && sheet === "exercises" && /* @__PURE__ */ React.createElement(
-      Sheet,
-      {
-        title: custom ? "Custom exercise" : "Exercises",
-        side: "bottom",
-        className: "sheet-list",
-        onClose: () => setSheet(null),
-        footer: probCount ? /* @__PURE__ */ React.createElement("span", { className: "sheet-foot-count" }, doneCount, " of ", probCount, " solved") : null
-      },
-      renderExercisesScroll(() => setSheet(null))
-    ),
-    isMobile && sheet === "lexicon" && /* @__PURE__ */ React.createElement(Sheet, { title: "Lexicon", side: "bottom", className: "sheet-list", onClose: () => setSheet(null) }, renderLexiconScroll()),
-    isMobile && sheet === "more" && /* @__PURE__ */ React.createElement(
-      Sheet,
-      {
-        title: "More",
-        side: "bottom",
-        className: "sheet-more",
-        onClose: () => setSheet(null),
-        footer: /* @__PURE__ */ React.createElement("span", { className: "settings-stamp" }, BUILD.label || "COMPOSE", BUILD.version ? " \xB7 v" + BUILD.version : "", BUILD.date ? " \xB7 " + BUILD.date : "")
-      },
-      /* @__PURE__ */ React.createElement("div", { className: "msheet-actions" }, hasContent && hasReading && /* @__PURE__ */ React.createElement("button", { className: "msheet-btn", onClick: () => {
-        setSheet(null);
-        setRightTab("reading");
-      } }, /* @__PURE__ */ React.createElement("span", { className: "msheet-ico" }, "\u{1F4DD}"), /* @__PURE__ */ React.createElement("span", null, "Notes")), /* @__PURE__ */ React.createElement("button", { className: "msheet-btn", onClick: () => {
-        setSheet(null);
-        setModal("summary");
-      } }, /* @__PURE__ */ React.createElement("span", { className: "msheet-ico" }, "\u2713"), /* @__PURE__ */ React.createElement("span", null, "Progress summary"))),
-      /* @__PURE__ */ React.createElement("div", { className: "msheet-settings" }, !isStudentBuild && /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Teacher mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (teacherMode ? " on" : ""), role: "switch", "aria-checked": teacherMode, onClick: () => setTeacherMode((m) => {
-        const next = !m;
-        if (next) {
-          const cur = allowedMap[allowKey] || exerciseDefaults;
-          setAllowedMap((am) => ({ ...am, [allowKey]: Object.assign({}, cur, {}) }));
-        }
-        return next;
-      }) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Dark mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (darkMode ? " on" : ""), role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode((d) => !d) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-resolve non-branching"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoNN ? " on" : ""), role: "switch", "aria-checked": autoNN, onClick: () => setAutoNN((s) => !s) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Collapse resolved subtrees"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (collapseResolved ? " on" : ""), role: "switch", "aria-checked": collapseResolved, onClick: () => setCollapseResolved((s) => !s) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" })))),
-      /* @__PURE__ */ React.createElement("button", { className: "msheet-btn msheet-layout", onClick: () => {
-        setSheet(null);
-        setForceLayout("desktop");
-      } }, /* @__PURE__ */ React.createElement("span", { className: "msheet-ico" }, "\u{1F5A5}"), /* @__PURE__ */ React.createElement("span", null, "Switch to desktop layout"))
-    ),
+    ))),
+    isMobile && renderMobileFoot(),
+    isMobile && sheet === "ws" && renderWsSheet(),
     modal === "files" && /* @__PURE__ */ React.createElement("div", { className: "modal-backdrop", onClick: () => setModal(null) }, /* @__PURE__ */ React.createElement(
       "div",
       {
@@ -12325,10 +12573,9 @@ function App() {
         }
       );
     })(),
-    modal === "summary" && /* @__PURE__ */ React.createElement(SummaryModal, { lib: LIB, progress, onClose: () => setModal(null) }),
     !isMobile && renderPalette(),
     !isMobile && renderShortcuts(),
-    !isMobile && unlockOpen && /* @__PURE__ */ React.createElement(
+    unlockOpen && /* @__PURE__ */ React.createElement(
       UnlockDialog,
       {
         token: isFullBuild && tier !== "anon" && auth ? auth.token : null,
@@ -12377,24 +12624,6 @@ function App() {
       },
       "\u2715"
     )),
-    modal === "rules" && /* @__PURE__ */ React.createElement(
-      RulesModal,
-      {
-        allowed,
-        setAllowed,
-        toggleRule,
-        toggleShift,
-        readOnly: !teacherMode,
-        lib,
-        custom,
-        onClose: () => setModal(null),
-        onReset: () => setAllowedMap((m) => {
-          const n = { ...m };
-          delete n[allowKey];
-          return n;
-        })
-      }
-    ),
     modal === "export" && /* @__PURE__ */ React.createElement(ExportModal, { library: window.LCData.LIBRARY, userSets: userLib, onClose: () => setModal(null) }),
     /* @__PURE__ */ React.createElement(TweaksPanel, { title: "Tweaks" }, /* @__PURE__ */ React.createElement(TweakSection, { label: "Notation" }), /* @__PURE__ */ React.createElement(TweakSlider, { label: "Expression size", value: t.notation, min: 0.85, max: 1.4, step: 0.05, onChange: (v) => setTweak("notation", v) }), /* @__PURE__ */ React.createElement(TweakSection, { label: "Tree" }), /* @__PURE__ */ React.createElement(TweakRadio, { label: "Spacing", value: t.spacing, options: ["compact", "regular", "roomy"], onChange: (v) => setTweak("spacing", v) }), /* @__PURE__ */ React.createElement(TweakToggle, { label: "Show leaf denotations", value: t.leaves, onChange: (v) => setTweak("leaves", v) }), /* @__PURE__ */ React.createElement(TweakSection, { label: "Practice" }))
   );
