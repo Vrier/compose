@@ -933,10 +933,41 @@ function App() {
   useEffect(() => { save('lc2-nav-section', navSection); }, [navSection]);
   useEffect(() => { save('lc2-recents', recents); }, [recents]);
   // ---- N2 (S30): auth tier + in-app pages ---------------------------------
-  // page: 'practice' | 'signin' | 'editor' | 'dash' | 'assign' | 'progress'.
+  // page: 'practice' | 'signin' | 'editor' | 'dash' | 'assign' | 'progress' | 'doc'.
   // Desktop renders non-practice pages in the centre column; mobile (N6)
   // renders them as pushed views with a title + back row (back -> Menu tab).
   const [page, setPage] = useState('practice');
+  // N7/A1: in-app doc pages. The standalone /guide /help /files /about pages
+  // keep serving (SEO, deep links, /v users) — but the sidebar's Guide & help
+  // rows and the palette's page rows render them INSIDE the shell: fetch the
+  // same-origin page, extract its <main>, cache per session, and show it in
+  // the centre column with a breadcrumb, back button and an
+  // "open standalone" affordance.
+  const DOC_PAGES = [
+    { path: '/guide/', title: 'Instructor guide', glyph: '\u25c6', hay: 'guide instructor hosting authoring' },
+    { path: '/help/', title: 'Student help', glyph: '?', hay: 'help student rules symbols grading' },
+    { path: '/help/guides/', title: 'Worked walkthroughs', glyph: '\u25b7', hay: 'help videos walkthrough derivation guides' },
+    { path: '/files/', title: 'Downloads & site map', glyph: '\u2913', hay: 'files downloads site map worksheets json' },
+    { path: '/about/', title: 'About & how to cite', glyph: '\u00a7', hay: 'about cite citation credits accounts' },
+  ];
+  const [docPath, setDocPath] = useState(null);
+  const [, setDocTick] = useState(0); // bump when a fetch settles
+  const docCache = useRef({});        // path -> { status, html } for this session
+  function openDoc(path) {
+    setPage('doc'); setDocPath(path);
+    const cache = docCache.current;
+    if (cache[path] && cache[path].status !== 'error') return;
+    cache[path] = { status: 'loading' };
+    fetch(path, { credentials: 'same-origin' })
+      .then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+      .then((t) => {
+        const dom = new DOMParser().parseFromString(t, 'text/html');
+        const main = dom.querySelector('main');
+        cache[path] = main ? { status: 'ready', html: main.outerHTML } : { status: 'error' };
+        setDocTick((n) => n + 1);
+      })
+      .catch(() => { cache[path] = { status: 'error' }; setDocTick((n) => n + 1); });
+  }
   const [signinMode, setSigninMode] = useState('login');
   const [auth, setAuthState] = useState(() => composeReadAuth());
   const setAuth = useCallback((a) => { setAuthState(a); composeWriteAuth(a); }, []);
@@ -1980,11 +2011,17 @@ function App() {
               ))}
               {isFullBuild && sbSection('help', 'ⓘ', 'Guide & help', null, (
                 <div>
-                  <a className="sb-row" href="/guide/"><span className="sb-ico" aria-hidden="true">◆</span><span className="sb-row-label">Instructor guide</span></a>
-                  <a className="sb-row" href="/help/"><span className="sb-ico" aria-hidden="true">?</span><span className="sb-row-label">Student help</span></a>
-                  <a className="sb-row" href="/help/guides/"><span className="sb-ico" aria-hidden="true">▷</span><span className="sb-row-label">Worked walkthroughs</span></a>
-                  <a className="sb-row" href="/files/"><span className="sb-ico" aria-hidden="true">⤓</span><span className="sb-row-label">Downloads &amp; site map</span></a>
-                  <a className="sb-row" href="/about/"><span className="sb-ico" aria-hidden="true">§</span><span className="sb-row-label">About &amp; how to cite</span></a>
+                  {DOC_PAGES.map((d) => {
+                    const on = page === 'doc' && docPath === d.path;
+                    return (
+                      <button type="button" key={d.path} className={'sb-row' + (on ? ' on' : '')}
+                        aria-current={on ? 'true' : undefined}
+                        onClick={() => openDoc(d.path)}>
+                        <span className="sb-ico" aria-hidden="true">{d.glyph}</span>
+                        <span className="sb-row-label">{d.title}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               ))}
               {isFullBuild && sbSection('account', '◉', tier === 'anon' ? 'Account' : 'Account · ' + (tier === 'instructor' ? 'instructor' : 'student'), null, (
@@ -2043,8 +2080,8 @@ function App() {
           onClick={() => openPalette()}>⌕</button>
         <button type="button" className={'rail-btn' + (sidebarExpanded && navSection === 'library' ? ' on' : '')} title="All worksheets" aria-label="All worksheets"
           onClick={() => drillOut('library')}>❏</button>
-        {hasContent && <button type="button" className={'rail-btn' + (exOpen ? ' on' : '')} title="Exercises in this worksheet" aria-label="Exercises in this worksheet"
-          onClick={() => setExOpen(true)}>☰</button>}
+        {hasContent && <button type="button" className={'rail-btn' + (exOpen && page === 'practice' ? ' on' : '')} title="Exercises in this worksheet" aria-label="Exercises in this worksheet"
+          onClick={() => { setPage('practice'); setExOpen(true); }}>☰</button>}
         {canAuthor && <button type="button" className="rail-btn" title="Author" aria-label="Author"
           onClick={() => drillOut('author')}>✎</button>}
         {isFullBuild && tier === 'instructor' && <button type="button" className="rail-btn" title="Assign & share" aria-label="Assign & share"
@@ -2206,11 +2243,9 @@ function App() {
     }
     if (tier === 'instructor') rows.push({ glyph: '◈', label: 'My versions', kicker: 'page', hay: 'dash versions hosting account', act: () => setPage('dash') });
     if (isFullBuild) {
-      rows.push({ glyph: '◆', label: 'Instructor guide', kicker: 'page', hay: 'guide instructor', act: () => { window.location.href = '/guide/'; } });
-      rows.push({ glyph: '?', label: 'Student help', kicker: 'page', hay: 'help student', act: () => { window.location.href = '/help/'; } });
-      rows.push({ glyph: '▷', label: 'Worked walkthroughs', kicker: 'page', hay: 'help videos walkthrough', act: () => { window.location.href = '/help/guides/'; } });
-      rows.push({ glyph: '⤓', label: 'Downloads & site map', kicker: 'page', hay: 'files downloads site map', act: () => { window.location.href = '/files/'; } });
-      rows.push({ glyph: '§', label: 'About & how to cite', kicker: 'page', hay: 'about cite citation', act: () => { window.location.href = '/about/'; } });
+      // N7/A1: doc pages open in-app (the standalone URLs stay reachable from
+      // the doc view's "open standalone" affordance).
+      DOC_PAGES.forEach((d) => rows.push({ glyph: d.glyph, label: d.title, kicker: 'page', hay: d.hay, act: () => openDoc(d.path) }));
     }
     return q ? rows.filter((r) => (r.label + ' ' + r.hay).toLowerCase().includes(q)) : rows;
   }
@@ -2422,6 +2457,40 @@ function App() {
       </div>
     );
   }
+  // N7/A1 — the in-app doc view. Embedded links to sibling doc pages stay
+  // in-app; everything else (worksheet pages, downloads, external links,
+  // pure #anchors) keeps its default behaviour.
+  function docLinkClick(e) {
+    const a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a || a.target === '_blank' || a.hasAttribute('download')) return;
+    const href = a.getAttribute('href') || '';
+    if (/^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith('//') || href.startsWith('#')) return;
+    const clean = href.split('#')[0].split('?')[0];
+    if (!clean) return;
+    const norm = clean.endsWith('/') ? clean : clean + '/';
+    const hit = DOC_PAGES.find((d) => d.path === norm);
+    if (hit) { e.preventDefault(); openDoc(hit.path); }
+  }
+  function renderDocPage() {
+    const meta = DOC_PAGES.find((d) => d.path === docPath) || { title: 'Page' };
+    const ent = docCache.current[docPath] || { status: 'loading' };
+    return (
+      <div className="page-view doc-view">
+        <div className="doc-inner">
+          <div className="page-crumb-row doc-crumb-row">
+            <button type="button" className="page-back" onClick={() => setPage('practice')} title="Back to practice" aria-label="Back to practice">‹</button>
+            <span className="page-crumb">Guide &amp; help · {meta.title}</span>
+            <a className="doc-standalone" href={docPath} target="_blank" rel="noopener">open standalone ↗</a>
+          </div>
+          {ent.status === 'ready'
+            ? <div className="doc-embed" onClick={docLinkClick} dangerouslySetInnerHTML={{ __html: ent.html }} />
+            : ent.status === 'error'
+              ? <div className="doc-fallback">This page could not be loaded here. <a href={docPath}>Open it as its own page instead.</a></div>
+              : <div className="doc-fallback">Loading…</div>}
+        </div>
+      </div>
+    );
+  }
   function renderPageView() {
     if (page === 'signin' || ((page === 'dash' || page === 'assign') && tier !== 'instructor')) {
       return <SigninPage key={signinMode} initialMode={signinMode}
@@ -2440,6 +2509,7 @@ function App() {
         onAuthGone={() => { setAuth(null); setSigninMode('login'); setPage('signin'); }} />;
     }
     if (page === 'progress') return renderProgressPage();
+    if (page === 'doc') return renderDocPage();
     if (page === 'editor') return <div className="page-view page-editor">{renderEditorSurface(true)}</div>;
     return null;
   }

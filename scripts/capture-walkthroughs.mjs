@@ -1,23 +1,28 @@
 /* ===========================================================================
-   COMPOSE — video walkthrough recorder for /help/guides (S24).
+   COMPOSE — video walkthrough recorder (S24, rewritten S35/N7 for the §11
+   redesign: sidebar/drill-in navigation, reference-panel tabs, editor page,
+   in-app hosting flow).
 
    Drives the real app in headless Chrome with a synthetic cursor overlay and
    captures JPEG frames; ffmpeg assembles them into short MP4 click-throughs.
    One scene per invocation (each fits a sandbox call):
 
      PUPPETEER_EXECUTABLE_PATH=<chrome> node scripts/capture-walkthroughs.mjs first
-     ... first | tv | pm
-     ffmpeg -y -framerate 8 -i /tmp/wt-first/%05d.jpg -c:v libx264 \
-       -pix_fmt yuv420p -crf 27 server/guide-assets/wt-first.mp4
+     ... first | tv | pm | editor | host
+     ffmpeg -y -framerate 9 -i /tmp/wt-first/%05d.jpg -c:v libx264 \
+       -pix_fmt yuv420p -crf 27 -movflags +faststart server/guide-assets/wt-first.mp4
 
-   Scenes (must match the /help/guides walkthrough text):
+   Scenes (must match the /help/guides + /guide walkthrough text):
      first  — demo "Frodo runs": NN, NN, then FA typing run(f)
-     tv     — "Frodo greets Gandalf": FA at VP (object first), FA at S
-     pm     — /cc/ch7 "mischievous hobbit": FA refused with reason, then PM
-     editor — /editor: Tools → Exercise editor, title, lexicon rows, a tree
-              with live validation, ▶ Load into app  (for /guide)
-     host   — /dash on a THROWAWAY local PocketBase (capture-dash.mjs
-              pattern): login, version card, Share dialog with QR  (for /guide)
+     tv     — demo, switching to "Frodo greets Gandalf" in the drill-in
+              exercises column; FA at VP (object first), FA at S
+     pm     — /cc/ch7 "mischievous hobbit": the first-visit reference panel
+              opens on Rules; FA refused with the reason, then PM
+     editor — sidebar Author → the editor PAGE: title, two lexicon rows, a
+              tree with the live ✓ badge, ▶ Load into app  (for /guide)
+     host   — THROWAWAY local PocketBase: in-app sign-in → My versions →
+              expand the row → copy the unlock code → the Assign & share
+              page → ends on the code  (for /guide)
    (Run `npm run build:server` first so server/pb_public is current.)
    =========================================================================== */
 import puppeteer from 'puppeteer';
@@ -46,8 +51,8 @@ for (let i = 0; i < 40; i++) {
   catch (e) { await new Promise((r) => setTimeout(r, 300)); }
 }
 
-/* host scene: seed an instructor + one hosted version over the API (same
-   flow as scripts/capture-dash.mjs) BEFORE recording starts */
+/* host scene: seed an instructor + one hosted version over the API BEFORE
+   recording starts — the video shows the UI flow, not the seeding */
 const EMAIL = 'a.instructor@university.edu', PW = 'correct-horse-battery';
 if (SCENE === 'host') {
   let r = await fetch(`http://127.0.0.1:${PORT}/api/compose/register`, {
@@ -122,20 +127,16 @@ const center = (sel, fnBody) => page.evaluate((fnBody) => {
 
 const nodeByLabel = (label) => center(null, `() => [...document.querySelectorAll('.node-box.available[role="button"]')]
   .find(nd => { const l = nd.querySelector('.node-label'); return l && l.textContent.trim() === ${JSON.stringify(label)}; })`);
-const ruleCard = (abbr) => center(null, `() => [...document.querySelectorAll('.rule-card')]
+/* dock rule cards ONLY — the reference panel's read-only Rules inventory
+   (N3) also renders .rule-card lookalikes; never match those */
+const ruleCard = (abbr) => center(null, `() => [...document.querySelectorAll('.dock .rule-card')]
   .find(c => { const a = c.querySelector('.rc-abbr'); return a && a.textContent.trim() === ${JSON.stringify(abbr)}; })`);
 const dockInput = () => center(null, `() => document.querySelector('.dock .entry input')`);
 const checkBtn = () => center(null, `() => [...document.querySelectorAll('.dock button')].find(b => /Check answer/.test(b.textContent))`);
-const navItem = (text) => center(null, `() => [...document.querySelectorAll('.nav-item')].find(b => b.textContent.includes(${JSON.stringify(text)}))`);
+const colxItem = (text) => center(null, `() => [...document.querySelectorAll('.colx-item')].find(b => b.textContent.includes(${JSON.stringify(text)}))`);
 const closeBtn = () => center(null, `() => [...document.querySelectorAll('.dock button')].find(b => /Close|Cancel/.test(b.textContent))`);
-
-async function dismissRulesModal() {
-  await page.evaluate(() => {
-    const b = [...document.querySelectorAll('.modal button')].find((x) => /Done/.test(x.textContent));
-    if (b) b.click();
-  });
-  await new Promise((r) => setTimeout(r, 500));
-}
+const refTab = (label) => center(null, `() => [...document.querySelectorAll('.rp-tab')].find(t => t.textContent.includes(${JSON.stringify(label)}))`);
+const sbRow = (text) => center(null, `() => [...document.querySelectorAll('.sb-row')].find(b => b.textContent.includes(${JSON.stringify(text)}))`);
 
 /* move to a target, then RE-RESOLVE it just before clicking — layout can
    shift (zoom-to-fit, dock opening) between the query and the click */
@@ -195,6 +196,11 @@ async function solve(label, abbr, answer) {
     dock: ((document.querySelector('.dock') || {}).textContent || '').slice(0, 80),
   })));
 }
+/* the first visit opens the reference panel on Rules (N3); for derivation
+   scenes switch it to Lexicon so the leaves' denotations are on screen */
+async function panelToLexicon() {
+  if (await refTab('Lexicon')) { await act(() => refTab('Lexicon'), 'Lexicon tab'); await rec(2); }
+}
 
 /* ---- scenes --------------------------------------------------------------- */
 const B = `http://127.0.0.1:${PORT}`;
@@ -202,10 +208,9 @@ const dumpFail = async (e) => {
   console.error('SCENE FAILED:', e.message);
   try {
     console.error(await page.evaluate(() => JSON.stringify({
-      title: (document.querySelector('.prob-title') || {}).textContent,
       clickable: [...document.querySelectorAll('.node-box[role="button"]')].map((x) => ((x.querySelector('.node-label') || {}).textContent || '') + (x.querySelector('.node-meaning') ? '=OK' : '')),
       dock: ((document.querySelector('.dock') || {}).textContent || '').slice(0, 200),
-      modal: !!document.querySelector('.modal'),
+      page: (document.querySelector('.page-crumb') || {}).textContent || '(practice)',
     })));
   } catch (e2) {}
   process.exit(1);
@@ -215,9 +220,9 @@ process.on('uncaughtException', dumpFail);
 if (SCENE === 'first') {
   await page.goto(B + '/', { waitUntil: 'networkidle2' });
   await new Promise((r) => setTimeout(r, 900));
-  await dismissRulesModal();
   await installCursor();
   await rec(6);
+  await panelToLexicon();
   await solve('VP', 'NN');                 // NN auto-resolves: nothing to β-reduce
   await solve('DP', 'NN');
   await solve('S', 'FA', 'run(f)');
@@ -225,9 +230,10 @@ if (SCENE === 'first') {
 } else if (SCENE === 'tv') {
   await page.goto(B + '/', { waitUntil: 'networkidle2' });
   await new Promise((r) => setTimeout(r, 900));
-  await dismissRulesModal();
   await installCursor();
-  await act(() => navItem('Frodo greets Gandalf'), 'nav item');
+  await panelToLexicon();
+  // switch exercise in the drill-in exercises column
+  await act(() => colxItem('Frodo greets Gandalf'), 'exercises-column item');
   await new Promise((r) => setTimeout(r, 700));  // tree re-layout settles
   await rec(6);
   await solve('DP', 'NN');                 // Frodo
@@ -239,9 +245,10 @@ if (SCENE === 'first') {
 } else if (SCENE === 'pm') {
   await page.goto(B + '/cc/ch7/', { waitUntil: 'networkidle2' });
   await new Promise((r) => setTimeout(r, 1100));
-  await dismissRulesModal();
   await installCursor();
-  await rec(6);
+  await rec(14);                           // first visit: the panel opens on the Rules tab — linger
+  await panelToLexicon();
+  await rec(4);
   await solve('AP', 'NN');                 // mischievous
   await solve('NP', 'NN');                 // hobbit (the leaf NP)
   await pickNode('NP');                    // the branching NP is now available
@@ -256,15 +263,16 @@ if (SCENE === 'first') {
   await new Promise((r) => setTimeout(r, 1000));
   await installCursor();
   await rec(4);
-  // Tools → Exercise editor
-  await page.evaluate(() => { document.querySelector('.settings-details').open = true; });
+  // sidebar → Author → Worksheet editor (the editor PAGE)
+  await act(() => center(null, `() => document.querySelector('.rail-btn[title="Author"]') || [...document.querySelectorAll('.sb-sec-head')].find(h => h.textContent.includes('Author'))`), 'Author');
   await rec(3);
-  await act(() => center(null, `() => [...document.querySelectorAll('.tool-btn')].find(b => /Exercise editor/.test(b.textContent))`), 'editor tool');
+  await act(() => sbRow('Worksheet editor'), 'Worksheet editor row');
   await new Promise((r) => setTimeout(r, 700));
   await rec(4);
-  // title
+  // clean sheet, then author: title, two lexicon rows (live type-checking)
+  await act(() => center(null, `() => [...document.querySelectorAll('button')].find(b => b.textContent.trim() === '✕ Clear')`), 'clear');
+  await rec(3);
   await typeInto(() => center(null, `() => document.querySelector('.fe-title-input')`), 'title', 'Week 1 — first derivations');
-  // lexicon rows: fill the first two empty word/den pairs
   await typeInto(() => center(null, `() => [...document.querySelectorAll('.fe-lex-word')].find(i => !i.value)`), 'lex word 1', 'Frodo');
   await typeInto(() => center(null, `() => [...document.querySelectorAll('.fe-lex-den')].find(i => !i.value)`), 'lex den 1', 'f');
   await act(() => center(null, `() => [...document.querySelectorAll('button')].find(b => b.textContent.trim() === '+ Add entry')`), 'add entry');
@@ -272,7 +280,7 @@ if (SCENE === 'first') {
   await typeInto(() => center(null, `() => [...document.querySelectorAll('.fe-lex-word')].find(i => !i.value)`), 'lex word 2', 'runs,run');
   await typeInto(() => center(null, `() => [...document.querySelectorAll('.fe-lex-den')].find(i => !i.value)`), 'lex den 2', 'Lx.run(x)');
   await rec(3);
-  // an exercise with one derivation tree — live validation appears
+  // an exercise with one derivation tree — the live ✓ badge computes
   await act(() => center(null, `() => [...document.querySelectorAll('button')].find(b => b.textContent.trim() === '+ Add exercise')`), 'add exercise');
   await rec(3);
   await act(() => center(null, `() => [...document.querySelectorAll('button')].find(b => b.textContent.trim() === '+ Add derivation')`), 'add derivation');
@@ -284,17 +292,37 @@ if (SCENE === 'first') {
   await new Promise((r) => setTimeout(r, 900));
   await rec(14);
 } else if (SCENE === 'host') {
-  await page.goto(B + '/dash/', { waitUntil: 'networkidle2' });
-  await new Promise((r) => setTimeout(r, 800));
+  // in-app hosting flow: sign in → My versions → unlock code → Assign & share
+  await page.goto(B + '/cc/ch6/', { waitUntil: 'networkidle2' });
+  await new Promise((r) => setTimeout(r, 900));
   await installCursor();
   await rec(4);
-  await typeInto(() => center(null, `() => document.querySelector('.dash-input[type="email"]')`), 'email', EMAIL);
-  await typeInto(() => center(null, `() => document.querySelector('.dash-input[type="password"]')`), 'password', PW);
-  await act(() => center(null, `() => document.querySelector('.dash-submit')`), 'log in');
+  await act(() => center(null, `() => document.querySelector('.rail-btn[title="Account"]')`), 'Account rail');
+  await rec(4);
+  await act(() => center(null, `() => [...document.querySelectorAll('.sb-signin-btn')].find(b => b.textContent.trim() === 'Sign in')`), 'Sign in');
+  await new Promise((r) => setTimeout(r, 700));
+  await rec(4);
+  await typeInto(() => center(null, `() => document.querySelector('.si-input[type="email"]')`), 'email', EMAIL);
+  await typeInto(() => center(null, `() => document.querySelector('.si-input[type="password"]')`), 'password', PW);
+  await act(() => center(null, `() => document.querySelector('.si-submit')`), 'log in');
   await new Promise((r) => setTimeout(r, 1400));
-  await rec(8); // the versions list with its card
-  await act(() => center(null, `() => [...document.querySelectorAll('button')].find(b => /Share/.test(b.textContent))`), 'share');
-  await new Promise((r) => setTimeout(r, 1200)); // QR canvas draws async
+  await rec(6); // back in practice, Account section open with the identity card
+  await act(() => sbRow('My versions'), 'My versions row');
+  await new Promise((r) => setTimeout(r, 900));
+  await rec(6);
+  await act(() => center(null, `() => document.querySelector('.vd-row-head')`), 'version row');
+  await new Promise((r) => setTimeout(r, 600));
+  await rec(6); // expanded: worksheets + the unlock code box
+  await act(() => center(null, `() => [...document.querySelectorAll('.vd-code-box .vd-btn')].find(b => /Copy/.test(b.textContent))`), 'copy code');
+  await rec(8); // "✓ copied"
+  await act(() => center(null, `() => [...document.querySelectorAll('.vd-btn')].find(b => /Assign/.test(b.textContent))`), 'assign');
+  await new Promise((r) => setTimeout(r, 1000));
+  await rec(8); // the Assign & share page: picker left, student-visible set right
+  await act(() => center(null, `() => [...document.querySelectorAll('.as-item')].find(x => !x.className.includes('on'))`), 'pick a worksheet');
+  await rec(6);
+  // end on the unlock code, large in the right column
+  const codePos = await center(null, `() => document.querySelector('.as-code')`);
+  if (codePos) await moveTo(codePos.x, codePos.y);
   await rec(16);
 } else {
   throw new Error('unknown scene: ' + SCENE);

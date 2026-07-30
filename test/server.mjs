@@ -236,7 +236,7 @@ async function main() {
   contains('service-worker registration shipped', page, 'serviceWorker.register');
   r = await req('GET', '/sw.js', { raw: true });
   expect('sw.js served', r.status === 200, r.status);
-  contains('sw cache name is versioned', r.text, "CACHE = 'compose-v1.0.0'");
+  contains('sw cache name is versioned', r.text, "CACHE = 'compose-v1.1.0'");
   contains('sw never touches dash/edit/admin/api', r.text, "p.startsWith('/dash') || p.startsWith('/edit') || p.startsWith('/_') || p.startsWith('/api')");
   r = await req('GET', '/manifest.json', { raw: true });
   contains('web manifest served', r.text, '"short_name": "COMPOSE"');
@@ -267,6 +267,8 @@ async function main() {
   // NB esbuild ASCII-escapes the middots in the strip's label — assert the
   // ASCII aria-label instead.
   contains('root ships the panel reopen affordance (N3)', r.text, 'Open the reference panel (Lexicon, Rules, Notes)');
+  // N7/A1 — in-app doc pages compiled into the site bundle
+  contains('root ships the in-app doc view (N7/A1)', r.text, 'open standalone');
   // N4 (S32) — command palette + progress page compiled into the site bundle
   contains('root ships the command palette (N4)', r.text, 'pal-list');
   contains('root ships the progress page (N4)', r.text, 'pg-inner');
@@ -324,9 +326,9 @@ async function main() {
   r = await req('GET', '/help/guides/', { raw: true });
   contains('/help/guides serves the walkthroughs (S23)', r.text, 'your first derivation');
   contains('/help/guides embeds the walkthrough videos (S24)', r.text, '/guide/wt-first.mp4');
-  for (const v of ['wt-first', 'wt-tv', 'wt-pm']) {
+  for (const v of ['wt-first', 'wt-tv', 'wt-pm', 'wt-editor', 'wt-host']) {
     r = await req('GET', '/guide/' + v + '.mp4', { raw: true });
-    ok('/guide/' + v + '.mp4 served (S24)', r.status === 200 && r.text.length > 50000, 'status ' + r.status + ' len ' + r.text.length);
+    ok('/guide/' + v + '.mp4 served (S24/N7)', r.status === 200 && r.text.length > 50000, 'status ' + r.status + ' len ' + r.text.length);
   }
   r = await req('GET', '/lingdown.css', { raw: true });
   ok('/lingdown.css serves real CSS, not the SPA fallback (S23)', r.status === 200 && !/^\s*</.test(r.text) && r.text.includes('.ld-'), 'status ' + r.status);
@@ -367,9 +369,11 @@ async function main() {
   contains('/guide embeds screenshots', r.text, '/guide/student-view.jpg');
   contains('/guide is scrollable (S17.2 fix)', r.text, 'height: auto !important');
   contains('/guide carries the notes input reference (S17.3)', r.text, 'Notes input reference');
-  contains('/guide embeds the share-dialog capture (S17.3)', r.text, '/guide/dash-share.jpg');
-  r = await req('GET', '/guide/dash-share.jpg', { raw: true });
-  expect('share screenshot serves', r.status === 200, r.status);
+  contains('/guide embeds the My-versions capture (N7)', r.text, '/guide/my-versions.jpg');
+  contains('/guide embeds the assign-page capture (N7)', r.text, '/guide/assign-page.jpg');
+  contains('/guide embeds the instructor walkthrough videos (N7)', r.text, '/guide/wt-host.mp4');
+  r = await req('GET', '/guide/my-versions.jpg', { raw: true });
+  expect('My-versions screenshot serves (N7)', r.status === 200, r.status);
   r = await req('GET', '/guide/student-view.jpg', { raw: true });
   expect('guide screenshot serves', r.status === 200, r.status);
   r = await req('GET', '/sitemap.xml', { raw: true });
@@ -381,7 +385,8 @@ async function main() {
   // W9 — about page (S8)
   r = await req('GET', '/about/', { raw: true });
   contains('about page serves', r.text, 'How to cite');
-  contains('about page carries the canonical version', r.text, 'version 1.0.0');
+  contains('about page carries the canonical version', r.text, 'version 1.1.0');
+  contains('about page states what accounts store (N7)', r.text, 'password hash');
 
   // N0 (§11) — student accounts, unlock codes, enrollments, progress, drafts
   r = await req('POST', '/api/compose/register-student', { body: { email: 'stu@suite.org', password: 'short' } });

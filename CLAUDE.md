@@ -29,20 +29,32 @@ Champollion's *Invitation to Formal Semantics*.
   flagged rendering/implementation notes (the PTQ-B TY2 §0 pattern), and
   (d) minimal signposting. No unsourced paraphrase presented as fact.
 
-## Architecture (hosted V1 — LIVE at compose.tstephen.com)
+## Architecture (hosted V1.1 — LIVE at compose.tstephen.com)
 
 One Hetzner VPS (167.233.233.109) runs PocketBase (pinned, `server/get-pocketbase.sh`)
-behind Caddy (auto-TLS). `/` = bare starter (demo worksheet only, S13);
+behind Caddy (auto-TLS). v1.1.0 is the §11 navigation & accounts redesign
+(N0–N7): app navigation is a left sidebar (Worksheets/Continue/Author/
+Assign/Display/Guide & help/Account) with drill-in exercises column, a
+right reference panel (Lexicon/Rules/Notes tabs), a ⌘K palette, and — on
+phones — a bottom tab bar; the sidebar's Guide & help rows render the doc
+pages IN-APP (page:'doc' fetches the standalone page's <main>). Accounts:
+open student registration (`/api/compose/register-student`, no email ever
+sent), invite-gated instructor registration; instructors manage versions on
+the in-app My versions + Assign & share pages and hand out per-version
+six-char **unlock codes** (`/api/compose/redeem` → enrollment; progress
+syncs per account). `/` = bare starter (demo worksheet only, S13);
 `/cc` `/hk` `/papers` (+ per-chapter pages) = curated library with shared
-per-family progress islands; `/v/:slug` = per-version student pages
-(server-side template substitution, isolated localStorage via `island`);
-`/dash/` = instructor dashboard; `/edit/:id` = hosted editor (version's own
-worksheets only, S13.4); `/editor/` = account-less editor sandbox;
-`/files/` = worksheet downloads + site map; `/help/` (+`/help/guides/`, with
-video walkthroughs) = student help (S23/S24); `/guide/` = instructor guide
-(screenshots regenerate via scripts/capture-guide.mjs + capture-dash.mjs);
-`/about/` = citation page; `/_/` = PB admin; `/template.html` = public
-tokenized template (client-side export substitution, S13.3).
+per-family progress islands; `/v/:slug` = per-version student pages, kept as
+the no-account path (server-side template substitution, isolated
+localStorage via `island`); `/dash/` = legacy instructor dashboard (notes
+editing); `/edit/:id` = hosted editor (version's own worksheets only,
+S13.4); `/editor/` = account-less editor sandbox; `/files/` = worksheet
+downloads + site map; `/help/` (+`/help/guides/`, with video walkthroughs)
+= student help (S23/S24); `/guide/` = instructor guide (screenshots
+regenerate via scripts/capture-guide.mjs + capture-dash.mjs; videos via
+scripts/capture-walkthroughs.mjs); `/about/` = citation page + what
+accounts store; `/_/` = PB admin; `/template.html` = public tokenized
+template (client-side export substitution, S13.3).
 Instructor content lives in the `versions` collection (bundle JSON), validated
 on save by the real engine running inside PB's goja VM. Deploys: push to
 `main` → GitHub Actions runs all five test suites → SSH → `deploy/deploy.sh`

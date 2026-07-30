@@ -2461,3 +2461,63 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .as-filter input:focus-visible {
   outline: 2px solid var(--accent); outline-offset: 2px;
 }
+
+
+/* ===========================================================================
+   N7/A1 — in-app doc pages. The doc view embeds the <main> of the standalone
+   /guide /help /help/guides /files /about pages, which keep their own class
+   names (.about-wrap / .guide-* / .files-table). These are the base rules for
+   that content INSIDE the app shell; the standalone pages carry their own
+   later <style> overrides where their metrics differ, so nothing there moves.
+   =========================================================================== */
+.doc-view { scroll-behavior: smooth; }
+.doc-inner { max-width: 1080px; margin: 0 auto; padding: 22px 28px 40px; }
+.doc-crumb-row { margin-bottom: 4px; }
+.doc-standalone {
+  margin-left: auto; flex: none; font-size: 11px; letter-spacing: .04em;
+  color: var(--accent-ink); text-decoration: none;
+  border: 1px solid var(--line); border-radius: 7px; padding: 3px 9px;
+}
+.doc-standalone:hover { border-color: var(--accent); background: var(--panel-2); }
+.doc-standalone:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.doc-fallback { padding: 34px 4px; color: var(--muted); font-size: 14px; }
+.doc-fallback a { color: var(--accent-ink); }
+
+/* base doc-content rules (shared class names with the standalone pages) */
+.doc-embed .about-wrap, .about-wrap { max-width: 820px; margin: 0 auto; line-height: 1.65; }
+.doc-embed .about-wrap { padding: 10px 0 30px; }
+.about-wrap h1 { font-size: 32px; letter-spacing: .03em; margin-bottom: 4px; }
+.about-sub { color: var(--ink-soft); margin-bottom: 20px; }
+.about-wrap h2 { font-size: 20px; margin: 38px 0 10px; padding-top: 8px; border-top: 1px solid var(--line); scroll-margin-top: 24px; }
+.about-wrap h3 { font-size: 16.5px; margin: 26px 0 8px; }
+.about-wrap p, .about-wrap li, .about-wrap td, .about-wrap th { font-size: 15px; color: var(--ink); }
+.about-wrap a { color: var(--accent-ink, #b5532f); }
+.about-cite {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+  padding: 14px 16px; font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 12.5px; white-space: pre-wrap; margin: 10px 0;
+}
+.about-foot { margin-top: 40px; font-size: 12.5px; color: var(--ink-soft); }
+.files-table { width: 100%; border-collapse: collapse; margin: 6px 0 14px; }
+.files-table th, .files-table td { text-align: left; padding: 6px 12px 6px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.files-table th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); }
+.files-table .fnum { text-align: right; padding-right: 0; }
+.guide-wrap { max-width: 1080px; }
+.guide-wrap h2 { scroll-margin-top: 24px; }
+.guide-layout { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 34px; align-items: start; }
+.guide-side { position: sticky; top: 12px; }
+.guide-toc { display: flex; flex-direction: column; gap: 7px; font-size: 13.5px; line-height: 1.35; border-left: 2px solid var(--line); padding-left: 14px; }
+.guide-toc-head { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-soft); margin-bottom: 2px; }
+.guide-toc a { text-decoration: none; }
+.guide-toc a:hover { text-decoration: underline; }
+.guide-toc .guide-top { margin-top: 10px; color: var(--ink-soft); }
+@media (max-width: 860px) {
+  .guide-layout { display: block; }
+  .guide-side { position: static; margin-bottom: 18px; }
+  .guide-toc { flex-direction: row; flex-wrap: wrap; gap: 6px 14px; border-left: 0; padding-left: 0; }
+  .guide-toc .guide-top { display: none; }
+}
+.guide-fig { margin: 18px 0 26px; }
+.guide-fig img, .guide-fig video { width: 100%; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 2px 10px rgba(60,40,20,.07); }
+.guide-fig figcaption { font-size: 13px; color: var(--ink-soft); margin-top: 8px; line-height: 1.5; }
+.guide-pre { background: var(--panel, rgba(0,0,0,.03)); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; font-size: 13px; line-height: 1.55; overflow-x: auto; }

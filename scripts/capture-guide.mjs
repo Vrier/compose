@@ -1,66 +1,59 @@
-import puppeteer from 'puppeteer';
-import fs from 'node:fs';
+/* ===========================================================================
+   COMPOSE — /guide screenshots (S17, rewritten S35/N7 for the §11 redesign).
 
+   Shoots the CURRENT build: serves server/pb_public statically, so run
+   `npm run build:server` first. One scene per invocation (each fits a
+   sandbox call); instructor-page shots (my-versions, assign-page,
+   student-version) live in scripts/capture-dash.mjs, which needs PocketBase.
+
+     PUPPETEER_EXECUTABLE_PATH=<chrome> node scripts/capture-guide.mjs <scene>
+       student   rules-panel, student-view, rule-dock, hint, notes-panel  (/cc/ch7)
+       pages     root-starter, files-page, signin
+       mobile    mobile-view (390×760, forced mobile layout)
+       editor    editor-page, editor-lexicon, editor-derivation,
+                 editor-notes, export-modal                        (/editor)
+   =========================================================================== */
+import puppeteer from 'puppeteer';
+import { spawn } from 'node:child_process';
+
+const SCENE = process.argv[2] || 'student';
 const OUT = 'server/guide-assets';
-const BASE = 'https://compose.tstephen.com';
-// Regenerate the /guide screenshots after UI changes:
-//   PUPPETEER_EXECUTABLE_PATH=<chrome> node scripts/capture-guide.mjs
-// (npm i --no-save puppeteer; any Chrome/chrome-headless-shell works.)
+const PORT = 8196;
+const B = `http://127.0.0.1:${PORT}`;
+const MOBILE = SCENE === 'mobile';
+
+const srv = spawn('python3', ['-m', 'http.server', String(PORT), '--bind', '127.0.0.1', '-d', 'server/pb_public']);
+process.on('exit', () => { try { srv.kill(); } catch (e) {} });
+for (let i = 0; i < 40; i++) {
+  try { const r = await fetch(B + '/robots.txt'); if (r.ok) break; } catch (e) {}
+  await new Promise((r) => setTimeout(r, 250));
+}
+
 const browser = await puppeteer.launch({
   headless: 'shell',
   executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
   args: ['--no-sandbox'],
-  defaultViewport: { width: 1440, height: 900, deviceScaleFactor: 1.5 },
+  defaultViewport: MOBILE
+    ? { width: 390, height: 760, deviceScaleFactor: 2 }
+    : { width: 1440, height: 900, deviceScaleFactor: 1.5 },
 });
 const page = await browser.newPage();
-await page.evaluateOnNewDocument(() => { try { localStorage.setItem('lc2-force-layout', 'desktop'); } catch (e) {} });
+await page.evaluateOnNewDocument((layout) => { try { localStorage.setItem('lc2-force-layout', layout); } catch (e) {} }, MOBILE ? 'mobile' : 'desktop');
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const shot = async (name) => {
-  await new Promise(r => setTimeout(r, 600));
+  await sleep(650);
   await page.screenshot({ path: `${OUT}/${name}.jpg`, type: 'jpeg', quality: 82 });
   console.log('  captured', name);
 };
 const clickText = async (selector, text) => {
   const ok = await page.evaluate((sel, t) => {
-    const els = [...document.querySelectorAll(sel)];
-    const el = els.find(e => (e.textContent || '').includes(t));
+    const el = [...document.querySelectorAll(sel)].find((e) => (e.textContent || '').includes(t));
     if (el) { el.click(); return true; }
     return false;
   }, selector, text);
   if (!ok) throw new Error('not found: ' + selector + ' ~ ' + text);
 };
-
-// ---- 1-5 · student surfaces on /cc/ch7 (fresh profile → rules modal opens)
-await page.goto(BASE + '/cc/ch7/', { waitUntil: 'networkidle2' });
-await page.waitForSelector('.rules-modal', { timeout: 15000 });
-await shot('rules-modal');
-await clickText('button', 'Done');
-await new Promise(r => setTimeout(r, 800));
-await shot('student-view');
-await page.click('.node-box.available');
-await new Promise(r => setTimeout(r, 500));
-await shot('rule-dock');
-await page.keyboard.press('Escape');
-await clickText('button', 'Hint');
-await new Promise(r => setTimeout(r, 400));
-await shot('hint');
-await clickText('button', 'Notes');
-await new Promise(r => setTimeout(r, 800));
-await shot('notes-panel');
-
-// ---- 6-7 · editor sandbox + export modal
-await page.goto(BASE + '/editor/', { waitUntil: 'networkidle2' });
-await new Promise(r => setTimeout(r, 1200));
-await shot('editor-sandbox');
-try {
-  await clickText('summary, button', 'Tools');
-  await new Promise(r => setTimeout(r, 300));
-  await clickText('button', 'Export assignment');
-  await new Promise(r => setTimeout(r, 600));
-  await shot('export-modal');
-} catch (e) { console.log('  export modal skipped:', e.message); }
-
-// ---- 7b · editor walkthrough (S17.1): authoring in action
 const setVal = async (sel, idx, value) => {
   await page.evaluate((sel, idx, value) => {
     const el = [...document.querySelectorAll(sel)][idx];
@@ -72,65 +65,115 @@ const setVal = async (sel, idx, value) => {
 };
 const scrollToSel = async (sel) => {
   await page.evaluate((sel) => { const el = document.querySelector(sel); if (el) el.scrollIntoView({ block: 'center' }); }, sel);
-  await new Promise(r => setTimeout(r, 400));
+  await sleep(400);
 };
 
-await page.goto(BASE + '/editor/', { waitUntil: 'networkidle2' });
-await new Promise(r => setTimeout(r, 1200));
-await clickText('button', 'Getting Started');           // worksheet picker
-await new Promise(r => setTimeout(r, 600));
-await shot('editor-files');
-await clickText('button', '+ New');                     // blank editor
-await new Promise(r => setTimeout(r, 800));
-await setVal('.fe-title-input', 0, 'Week 3 — Transitive verbs');
-// domain constants: f g of type e (section is collapsed by default)
-await clickText('button.fe-vt-toggle', 'Constants');
-await new Promise(r => setTimeout(r, 200));
-await clickText('button', '+ Add constant');
-await new Promise(r => setTimeout(r, 200));
-await setVal('input[placeholder="fi john dog"]', 0, 'f g');
-// lexicon: Frodo/f, then greets with a curried denotation (live type appears)
-await setVal('.fe-lex-word', 0, 'Frodo');
-await setVal('.fe-lex-den', 0, 'f');
-await clickText('button', '+ Add entry');
-await new Promise(r => setTimeout(r, 200));
-await setVal('.fe-lex-word', 1, 'runs,run');
-await setVal('.fe-lex-den', 1, 'Lx.run(x)');
-await clickText('button', '+ Add entry');
-await new Promise(r => setTimeout(r, 200));
-await setVal('.fe-lex-word', 2, 'greets,greet');
-await setVal('.fe-lex-den', 2, 'Lx.Ly.greet(y,x)');
-await new Promise(r => setTimeout(r, 500));
-await scrollToSel('.fe-lex-word');
-await shot('editor-lexicon');
-// an exercise with a tree, expected denotation, and staged hints
-await setVal('.fe-group-title', 0, 'A. Intransitives');
-await setVal('textarea[placeholder^="[.S"]', 0, '[.S [.DP Frodo ] [.VP runs ] ]');
-await setVal('.fe-exp-input', 0, 'run(f)');
-await new Promise(r => setTimeout(r, 600));
-await scrollToSel('.fe-group-title');
-await shot('editor-derivation');
-// the notes editor: LaTeX with live preview
-await clickText('button', 'Notes');
-await new Promise(r => setTimeout(r, 600));
-const notesTa = await page.evaluate(() => {
-  const tas = [...document.querySelectorAll('textarea')];
-  const i = tas.findIndex(t => t.offsetParent && (t.placeholder || '').length >= 0 && t.closest('.reading-editor, .re-shell, [class*="read"]'));
-  return i;
-});
-await setVal('textarea', notesTa >= 0 ? notesTa : 0,
-  '# Week 3 notes\n\n## 1 Transitives\n\nRecall \\llbracket runs \\rrbracket = $\\lambda x.run(x)$ : $<e,t>$.\n\n\\ex Frodo runs.\n\\xe\n\n\\begin{derivation}\n[[runs]] = Lx.run(x) : <e,t>\n[[Frodo runs]] = run(f) : t\n\\end{derivation}');
-await new Promise(r => setTimeout(r, 900));
-await shot('editor-notes');
-
-// ---- 8-10 · dash login, files, root
-await page.goto(BASE + '/dash/', { waitUntil: 'networkidle2' });
-await shot('dash-login');
-await page.goto(BASE + '/files/', { waitUntil: 'networkidle2' });
-await shot('files-page');
-await page.goto(BASE + '/', { waitUntil: 'networkidle2' });
-await new Promise(r => setTimeout(r, 1000));
-await shot('root-starter');
+if (SCENE === 'student') {
+  // /cc/ch7, fresh profile: the reference panel opens on the Rules tab once
+  await page.goto(B + '/cc/ch7/', { waitUntil: 'networkidle2' });
+  await page.waitForSelector('.rp-panel', { timeout: 15000 });
+  await sleep(900);
+  await shot('rules-panel');
+  await clickText('.rp-tab', 'Lexicon');
+  await sleep(500);
+  await shot('student-view');
+  await page.click('.node-box.available');
+  await sleep(600);
+  await shot('rule-dock');
+  await page.keyboard.press('Escape');
+  await sleep(400);
+  await clickText('button', 'Hint');
+  await sleep(400);
+  await shot('hint');
+  await clickText('.rp-tab', 'Notes');
+  await sleep(900);
+  await shot('notes-panel');
+} else if (SCENE === 'pages') {
+  await page.goto(B + '/', { waitUntil: 'networkidle2' });
+  await sleep(1200);
+  await shot('root-starter');
+  // the sign-in page, reached from the sidebar's Account section
+  await page.evaluate(() => { const b = document.querySelector('.rail-btn[title="Account"]'); if (b) b.click(); });
+  await sleep(400);
+  await clickText('.sb-signin-btn', 'Sign in');
+  await page.waitForSelector('.si-card', { timeout: 8000 });
+  await shot('signin');
+  await page.goto(B + '/files/', { waitUntil: 'networkidle2' });
+  await shot('files-page');
+} else if (SCENE === 'mobile') {
+  await page.goto(B + '/cc/ch7/', { waitUntil: 'networkidle2' });
+  await sleep(1200);
+  // dismiss the phone interstitial, then: first visit lands on
+  // Reference·Rules once — the guide figure shows Derive
+  await clickText('button, a', 'Continue on this phone anyway');
+  await sleep(900);
+  await clickText('.mb-tab', 'Derive');
+  await sleep(700);
+  await shot('mobile-view');
+} else if (SCENE === 'editor') {
+  await page.goto(B + '/editor/', { waitUntil: 'networkidle2' });
+  await sleep(1000);
+  // sidebar → Author → Worksheet editor (page), then a clean sheet
+  await page.keyboard.down('Control'); await page.keyboard.press('e'); await page.keyboard.up('Control');
+  await page.waitForSelector('.fe-title-input', { timeout: 8000 });
+  await clickText('button', '✕ Clear');
+  await sleep(400);
+  await setVal('.fe-title-input', 0, 'Week 3 — Transitive verbs');
+  await clickText('button.fe-vt-toggle', 'Constants');
+  await sleep(200);
+  await clickText('button', '+ Add constant');
+  await sleep(200);
+  await setVal('input[placeholder="fi john dog"]', 0, 'f g');
+  await setVal('.fe-lex-word', 0, 'Frodo');
+  await setVal('.fe-lex-den', 0, 'f');
+  await clickText('button', '+ Add entry');
+  await sleep(200);
+  await setVal('.fe-lex-word', 1, 'runs,run');
+  await setVal('.fe-lex-den', 1, 'Lx.run(x)');
+  await clickText('button', '+ Add entry');
+  await sleep(200);
+  await setVal('.fe-lex-word', 2, 'greets,greet');
+  await setVal('.fe-lex-den', 2, 'Lx.Ly.greet(y,x)');
+  await sleep(600);
+  await shot('editor-page');
+  // editor-lexicon: just the lexicon panel, so the figure differs from the
+  // whole-page shot above
+  await scrollToSel('.fe-lex-word');
+  await sleep(650);
+  const lexEl = await page.$('.fe-lex-panel');
+  await lexEl.screenshot({ path: `${OUT}/editor-lexicon.jpg`, type: 'jpeg', quality: 82 });
+  console.log('  captured editor-lexicon');
+  await setVal('.fe-group-title', 0, 'A. Intransitives');
+  await setVal('textarea[placeholder^="[.S"]', 0, '[.S [.DP Frodo ] [.VP runs ] ]');
+  await setVal('.fe-exp-input', 0, 'run(f)');
+  await sleep(700);
+  await scrollToSel('.fe-group-title');
+  await shot('editor-derivation');
+  // the two-pane notes editor
+  await clickText('button', 'Notes');
+  await sleep(700);
+  await page.waitForSelector('.re-ta', { timeout: 8000 });
+  await setVal('.re-ta', 0,
+    '# Week 3 notes\n\n## 1 Transitives\n\nRecall \\llbracket runs \\rrbracket = $\\lambda x.run(x)$ : $<e,t>$.\n\n\\ex Frodo runs.\n\\xe\n\n\\begin{derivation}\n[[runs]] = Lx.run(x) : <e,t>\n[[Frodo runs]] = run(f) : t\n\\end{derivation}');
+  await sleep(900);
+  await shot('editor-notes');
+  await page.keyboard.press('Escape');
+  await sleep(400);
+  // Export assignment lives in the sidebar's Display section now
+  await page.evaluate(() => { const b = [...document.querySelectorAll('.fe-page-back')]; if (b[0]) b[0].click(); });
+  await sleep(500);
+  // the sidebar may be in its rail state (drilled) — expand it first
+  await page.evaluate(() => { if (document.querySelector('.sb-rail')) document.querySelector('.rail-btn[title="All worksheets"]').click(); });
+  await sleep(400);
+  await clickText('.sb-sec-head', 'Display');
+  await sleep(300);
+  await clickText('.sb-row', 'Export assignment');
+  await sleep(700);
+  await shot('export-modal');
+} else {
+  throw new Error('unknown scene: ' + SCENE);
+}
 
 await browser.close();
-console.log('done:', fs.readdirSync(OUT).join(', '));
+srv.kill();
+console.log('done:', SCENE);

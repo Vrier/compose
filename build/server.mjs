@@ -238,11 +238,19 @@ ${CC_CHAPTERS.map(([pfx]) => '<a href="/cc/' + pfx + '/">/cc/' + pfx + '</a>').j
 <li><a href="/hk/">/hk</a> — the Heim &amp; Kratzer companion; per chapter:
 ${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk/' + pfx.replace('hk', 'ch') + '</a>').join(' · ')}</li>
 <li><a href="/papers/">/papers</a> — classic papers: <a href="/papers/partee/">/papers/partee</a> · <a href="/papers/partee-rooth/">/papers/partee-rooth</a> · <a href="/papers/ptq/">/papers/ptq</a> · <a href="/papers/davidson/">/papers/davidson</a> · <a href="/papers/krifka/">/papers/krifka</a> · <a href="/papers/barwise-cooper/">/papers/barwise-cooper</a> · <a href="/papers/link/">/papers/link</a></li>
-<li><a href="/editor/">/editor</a> — the editor sandbox: author worksheets and export them as JSON, no account needed (to host worksheets for students, instructors use <a href="/dash/">/dash</a>)</li>
+<li><a href="/editor/">/editor</a> — the editor sandbox: author worksheets and export them as JSON, no account needed (to host worksheets for a class, instructors sign in inside the app — see the <a href="/guide/">guide</a>)</li>
 <li><a href="/files/">/files</a> — download every worksheet and bundle as .compose.json, plus the full site map</li>
 <li><a href="/guide/">/guide</a> — the instructor guide: what students see, authoring, and hosting your own course</li>
 <li><a href="/help/">/help</a> — student help: rules, symbols, grading, and worked derivation guides</li>
 </ul>
+<h2>Accounts</h2>
+<p>Everything above works without an account. An optional account (created from
+the app's sign-in page) stores: your email address, a password hash, your
+exercise progress, and — for class codes you redeem — which versions you are
+enrolled in. Instructor accounts additionally own the versions they host. The
+server sends no email of any kind: there is no address verification and no
+self-service password reset (a forgotten password is reset by the
+administrator).</p>
 <h2>Credits and lineage</h2>
 <p>The bundled worksheet library tracks Elizabeth Coppock &amp; Lucas
 Champollion's <em>Invitation to Formal Semantics</em> (§6–§13) and Irene Heim &amp;

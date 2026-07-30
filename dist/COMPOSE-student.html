@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>COMPOSE - Student</title>
 <script>
-window.COMPOSE_BUILD = {"id":"student-clean","role":"student","preload":"none","label":"COMPOSE - Student","version":"1.0.0","date":"2026"};
+window.COMPOSE_BUILD = {"id":"student-clean","role":"student","preload":"none","label":"COMPOSE - Student","version":"1.1.0","date":"2026"};
 window.COMPOSE_CONFIG = {"role":"student","assignment":null};
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -2478,6 +2478,66 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 
 
 /* ===========================================================================
+   N7/A1 — in-app doc pages. The doc view embeds the <main> of the standalone
+   /guide /help /help/guides /files /about pages, which keep their own class
+   names (.about-wrap / .guide-* / .files-table). These are the base rules for
+   that content INSIDE the app shell; the standalone pages carry their own
+   later <style> overrides where their metrics differ, so nothing there moves.
+   =========================================================================== */
+.doc-view { scroll-behavior: smooth; }
+.doc-inner { max-width: 1080px; margin: 0 auto; padding: 22px 28px 40px; }
+.doc-crumb-row { margin-bottom: 4px; }
+.doc-standalone {
+  margin-left: auto; flex: none; font-size: 11px; letter-spacing: .04em;
+  color: var(--accent-ink); text-decoration: none;
+  border: 1px solid var(--line); border-radius: 7px; padding: 3px 9px;
+}
+.doc-standalone:hover { border-color: var(--accent); background: var(--panel-2); }
+.doc-standalone:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.doc-fallback { padding: 34px 4px; color: var(--muted); font-size: 14px; }
+.doc-fallback a { color: var(--accent-ink); }
+
+/* base doc-content rules (shared class names with the standalone pages) */
+.doc-embed .about-wrap, .about-wrap { max-width: 820px; margin: 0 auto; line-height: 1.65; }
+.doc-embed .about-wrap { padding: 10px 0 30px; }
+.about-wrap h1 { font-size: 32px; letter-spacing: .03em; margin-bottom: 4px; }
+.about-sub { color: var(--ink-soft); margin-bottom: 20px; }
+.about-wrap h2 { font-size: 20px; margin: 38px 0 10px; padding-top: 8px; border-top: 1px solid var(--line); scroll-margin-top: 24px; }
+.about-wrap h3 { font-size: 16.5px; margin: 26px 0 8px; }
+.about-wrap p, .about-wrap li, .about-wrap td, .about-wrap th { font-size: 15px; color: var(--ink); }
+.about-wrap a { color: var(--accent-ink, #b5532f); }
+.about-cite {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+  padding: 14px 16px; font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 12.5px; white-space: pre-wrap; margin: 10px 0;
+}
+.about-foot { margin-top: 40px; font-size: 12.5px; color: var(--ink-soft); }
+.files-table { width: 100%; border-collapse: collapse; margin: 6px 0 14px; }
+.files-table th, .files-table td { text-align: left; padding: 6px 12px 6px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.files-table th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); }
+.files-table .fnum { text-align: right; padding-right: 0; }
+.guide-wrap { max-width: 1080px; }
+.guide-wrap h2 { scroll-margin-top: 24px; }
+.guide-layout { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 34px; align-items: start; }
+.guide-side { position: sticky; top: 12px; }
+.guide-toc { display: flex; flex-direction: column; gap: 7px; font-size: 13.5px; line-height: 1.35; border-left: 2px solid var(--line); padding-left: 14px; }
+.guide-toc-head { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-soft); margin-bottom: 2px; }
+.guide-toc a { text-decoration: none; }
+.guide-toc a:hover { text-decoration: underline; }
+.guide-toc .guide-top { margin-top: 10px; color: var(--ink-soft); }
+@media (max-width: 860px) {
+  .guide-layout { display: block; }
+  .guide-side { position: static; margin-bottom: 18px; }
+  .guide-toc { flex-direction: row; flex-wrap: wrap; gap: 6px 14px; border-left: 0; padding-left: 0; }
+  .guide-toc .guide-top { display: none; }
+}
+.guide-fig { margin: 18px 0 26px; }
+.guide-fig img, .guide-fig video { width: 100%; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 2px 10px rgba(60,40,20,.07); }
+.guide-fig figcaption { font-size: 13px; color: var(--ink-soft); margin-top: 8px; line-height: 1.5; }
+.guide-pre { background: var(--panel, rgba(0,0,0,.03)); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; font-size: 13px; line-height: 1.55; overflow-x: auto; }
+
+
+/* ===========================================================================
    lingdown.css — typesetting for the lingdown engine. Themable via --ld-*
    custom properties; defaults tuned to the COMPOSE parchment palette.
    =========================================================================== */
@@ -3121,11 +3181,13 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
 <script>
 /* ===========================================================================
    COMPOSE — the ONE canonical version string (S8/W9).
+   1.1.0 (S35/N7, 2026-07-16): the §11 navigation & accounts redesign —
+   sidebar navigation, student accounts, unlock-code sharing, mobile tab bar.
    Loaded first in every page's script chain; required by the build scripts
    and (via the vendored copy) by the PocketBase serving hooks. Bump here and
    nowhere else.
    =========================================================================== */
-const COMPOSE_VERSION = '1.0.0';
+const COMPOSE_VERSION = '1.1.0';
 const COMPOSE_DATE = '2026';
 if (typeof window !== 'undefined') { window.COMPOSE_VERSION = COMPOSE_VERSION; window.COMPOSE_DATE = COMPOSE_DATE; }
 if (typeof module !== 'undefined' && module.exports) module.exports = { COMPOSE_VERSION, COMPOSE_DATE };
@@ -5234,14 +5296,18 @@ if (typeof module !== 'undefined' && module.exports) module.exports = LC_API;
         '',
         '## 4 Where to go next',
         '',
-        'This demo is the smallest possible worksheet. The full library —',
-        'Coppock & Champollion \u00a76\u201313, all of Heim & Kratzer, and classic',
-        'papers (Montague, Partee, Davidson, Krifka, Barwise & Cooper, Link) —',
-        'is at [compose.tstephen.com/files](https://compose.tstephen.com/files/),',
-        'with per-chapter pages at [/cc](https://compose.tstephen.com/cc/),',
+        'This demo is the smallest possible worksheet. On the site, the full',
+        'library — Coppock & Champollion \u00a76\u201313, all of Heim & Kratzer, and',
+        'classic papers (Montague, Partee, Davidson, Krifka, Barwise & Cooper,',
+        'Link) — lives in the sidebar\u2019s **Worksheets** section, with',
+        'per-chapter pages at [/cc](https://compose.tstephen.com/cc/),',
         '[/hk](https://compose.tstephen.com/hk/) and',
-        '[/papers](https://compose.tstephen.com/papers/). Stuck mid-derivation?',
-        'See [/help](https://compose.tstephen.com/help/).',
+        '[/papers](https://compose.tstephen.com/papers/); every worksheet is',
+        'also downloadable at',
+        '[compose.tstephen.com/files](https://compose.tstephen.com/files/).',
+        'Stuck mid-derivation? The sidebar\u2019s Guide & help section (or',
+        '[/help](https://compose.tstephen.com/help/)) has the rule reference',
+        'and worked walkthroughs.',
       ].join('\n'),
     },
     exercises: [
@@ -10648,6 +10714,35 @@ function App() {
     save("lc2-recents", recents);
   }, [recents]);
   const [page, setPage] = useState("practice");
+  const DOC_PAGES = [
+    { path: "/guide/", title: "Instructor guide", glyph: "\u25C6", hay: "guide instructor hosting authoring" },
+    { path: "/help/", title: "Student help", glyph: "?", hay: "help student rules symbols grading" },
+    { path: "/help/guides/", title: "Worked walkthroughs", glyph: "\u25B7", hay: "help videos walkthrough derivation guides" },
+    { path: "/files/", title: "Downloads & site map", glyph: "\u2913", hay: "files downloads site map worksheets json" },
+    { path: "/about/", title: "About & how to cite", glyph: "\xA7", hay: "about cite citation credits accounts" }
+  ];
+  const [docPath, setDocPath] = useState(null);
+  const [, setDocTick] = useState(0);
+  const docCache = useRef({});
+  function openDoc(path) {
+    setPage("doc");
+    setDocPath(path);
+    const cache = docCache.current;
+    if (cache[path] && cache[path].status !== "error") return;
+    cache[path] = { status: "loading" };
+    fetch(path, { credentials: "same-origin" }).then((r) => {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.text();
+    }).then((t2) => {
+      const dom = new DOMParser().parseFromString(t2, "text/html");
+      const main = dom.querySelector("main");
+      cache[path] = main ? { status: "ready", html: main.outerHTML } : { status: "error" };
+      setDocTick((n) => n + 1);
+    }).catch(() => {
+      cache[path] = { status: "error" };
+      setDocTick((n) => n + 1);
+    });
+  }
   const [signinMode, setSigninMode] = useState("login");
   const [auth, setAuthState] = useState(() => composeReadAuth());
   const setAuth = useCallback((a) => {
@@ -11697,7 +11792,21 @@ function App() {
       /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, "page")
     ), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row" + (page === "dash" ? " on" : ""), onClick: () => setPage("dash") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25C8"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "My versions")))), sbSection("display", "\u25D0", "Display", null, /* @__PURE__ */ React.createElement("div", { className: "sb-display" }, /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Dark mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (darkMode ? " on" : ""), role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode((d) => !d) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-resolve non-branching"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoNN ? " on" : ""), role: "switch", "aria-checked": autoNN, onClick: () => setAutoNN((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), !isStudentBuild && /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-apply composition rules"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoCompose ? " on" : ""), role: "switch", "aria-checked": autoCompose, onClick: () => setAutoCompose((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Collapse resolved subtrees"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (collapseResolved ? " on" : ""), role: "switch", "aria-checked": collapseResolved, onClick: () => setCollapseResolved((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("div", { className: "settings-row settings-layout-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Layout"), /* @__PURE__ */ React.createElement("div", { className: "seg-mini" }, /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() == null ? " on" : ""), onClick: () => setForceLayout(null) }, "Auto"), /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() === "mobile" ? " on" : ""), onClick: () => setForceLayout("mobile") }, "Mobile"))), /* @__PURE__ */ React.createElement("div", { className: "sb-kicker sb-actions-kicker" }, "Actions"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setPage("progress") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, doneCount, "/", probCount)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => composeExportProgress() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Save progress to a file")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
       if (progressFileInput.current) progressFileInput.current.click();
-    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2912"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Restore progress from a file\u2026")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", disabled: exporting, onClick: exportDerivation }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u29C9"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, exporting ? "Rendering\u2026" : "Export derivation (PNG)")), !isStudentBuild && !(BID.indexOf("hosted") === 0 && BID !== "hosted-sandbox") && /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("export") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2193"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Export assignment")))), isFullBuild && sbSection("help", "\u24D8", "Guide & help", null, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/guide/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25C6"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Instructor guide")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/help/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "?"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Student help")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/help/guides/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25B7"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Worked walkthroughs")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/files/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Downloads & site map")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/about/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\xA7"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "About & how to cite")))), isFullBuild && sbSection("account", "\u25C9", tier === "anon" ? "Account" : "Account \xB7 " + (tier === "instructor" ? "instructor" : "student"), null, tier === "anon" ? /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Everything works without an account \u2014 an account only keeps your unlocks and progress. An invite code turns it into an instructor account."), /* @__PURE__ */ React.createElement("div", { className: "sb-account-btns" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary sb-signin-btn", onClick: () => {
+    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2912"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Restore progress from a file\u2026")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", disabled: exporting, onClick: exportDerivation }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u29C9"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, exporting ? "Rendering\u2026" : "Export derivation (PNG)")), !isStudentBuild && !(BID.indexOf("hosted") === 0 && BID !== "hosted-sandbox") && /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("export") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2193"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Export assignment")))), isFullBuild && sbSection("help", "\u24D8", "Guide & help", null, /* @__PURE__ */ React.createElement("div", null, DOC_PAGES.map((d) => {
+      const on = page === "doc" && docPath === d.path;
+      return /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          key: d.path,
+          className: "sb-row" + (on ? " on" : ""),
+          "aria-current": on ? "true" : void 0,
+          onClick: () => openDoc(d.path)
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, d.glyph),
+        /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, d.title)
+      );
+    }))), isFullBuild && sbSection("account", "\u25C9", tier === "anon" ? "Account" : "Account \xB7 " + (tier === "instructor" ? "instructor" : "student"), null, tier === "anon" ? /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Everything works without an account \u2014 an account only keeps your unlocks and progress. An invite code turns it into an instructor account."), /* @__PURE__ */ React.createElement("div", { className: "sb-account-btns" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary sb-signin-btn", onClick: () => {
       setSigninMode("login");
       setPage("signin");
     } }, "Sign in"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn-ghost sb-signin-btn", onClick: () => {
@@ -11750,10 +11859,13 @@ function App() {
       "button",
       {
         type: "button",
-        className: "rail-btn" + (exOpen ? " on" : ""),
+        className: "rail-btn" + (exOpen && page === "practice" ? " on" : ""),
         title: "Exercises in this worksheet",
         "aria-label": "Exercises in this worksheet",
-        onClick: () => setExOpen(true)
+        onClick: () => {
+          setPage("practice");
+          setExOpen(true);
+        }
       },
       "\u2630"
     ), canAuthor && /* @__PURE__ */ React.createElement(
@@ -11901,21 +12013,7 @@ function App() {
     }
     if (tier === "instructor") rows.push({ glyph: "\u25C8", label: "My versions", kicker: "page", hay: "dash versions hosting account", act: () => setPage("dash") });
     if (isFullBuild) {
-      rows.push({ glyph: "\u25C6", label: "Instructor guide", kicker: "page", hay: "guide instructor", act: () => {
-        window.location.href = "/guide/";
-      } });
-      rows.push({ glyph: "?", label: "Student help", kicker: "page", hay: "help student", act: () => {
-        window.location.href = "/help/";
-      } });
-      rows.push({ glyph: "\u25B7", label: "Worked walkthroughs", kicker: "page", hay: "help videos walkthrough", act: () => {
-        window.location.href = "/help/guides/";
-      } });
-      rows.push({ glyph: "\u2913", label: "Downloads & site map", kicker: "page", hay: "files downloads site map", act: () => {
-        window.location.href = "/files/";
-      } });
-      rows.push({ glyph: "\xA7", label: "About & how to cite", kicker: "page", hay: "about cite citation", act: () => {
-        window.location.href = "/about/";
-      } });
+      DOC_PAGES.forEach((d) => rows.push({ glyph: d.glyph, label: d.title, kicker: "page", hay: d.hay, act: () => openDoc(d.path) }));
     }
     return q ? rows.filter((r) => (r.label + " " + r.hay).toLowerCase().includes(q)) : rows;
   }
@@ -12073,6 +12171,25 @@ function App() {
       setPage("signin");
     } }, "Create an account"))));
   }
+  function docLinkClick(e) {
+    const a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+    if (!a || a.target === "_blank" || a.hasAttribute("download")) return;
+    const href = a.getAttribute("href") || "";
+    if (/^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith("//") || href.startsWith("#")) return;
+    const clean = href.split("#")[0].split("?")[0];
+    if (!clean) return;
+    const norm = clean.endsWith("/") ? clean : clean + "/";
+    const hit = DOC_PAGES.find((d) => d.path === norm);
+    if (hit) {
+      e.preventDefault();
+      openDoc(hit.path);
+    }
+  }
+  function renderDocPage() {
+    const meta = DOC_PAGES.find((d) => d.path === docPath) || { title: "Page" };
+    const ent = docCache.current[docPath] || { status: "loading" };
+    return /* @__PURE__ */ React.createElement("div", { className: "page-view doc-view" }, /* @__PURE__ */ React.createElement("div", { className: "doc-inner" }, /* @__PURE__ */ React.createElement("div", { className: "page-crumb-row doc-crumb-row" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "page-back", onClick: () => setPage("practice"), title: "Back to practice", "aria-label": "Back to practice" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "page-crumb" }, "Guide & help \xB7 ", meta.title), /* @__PURE__ */ React.createElement("a", { className: "doc-standalone", href: docPath, target: "_blank", rel: "noopener" }, "open standalone \u2197")), ent.status === "ready" ? /* @__PURE__ */ React.createElement("div", { className: "doc-embed", onClick: docLinkClick, dangerouslySetInnerHTML: { __html: ent.html } }) : ent.status === "error" ? /* @__PURE__ */ React.createElement("div", { className: "doc-fallback" }, "This page could not be loaded here. ", /* @__PURE__ */ React.createElement("a", { href: docPath }, "Open it as its own page instead.")) : /* @__PURE__ */ React.createElement("div", { className: "doc-fallback" }, "Loading\u2026")));
+  }
   function renderPageView() {
     if (page === "signin" || (page === "dash" || page === "assign") && tier !== "instructor") {
       return /* @__PURE__ */ React.createElement(
@@ -12125,6 +12242,7 @@ function App() {
       );
     }
     if (page === "progress") return renderProgressPage();
+    if (page === "doc") return renderDocPage();
     if (page === "editor") return /* @__PURE__ */ React.createElement("div", { className: "page-view page-editor" }, renderEditorSurface(true));
     return null;
   }

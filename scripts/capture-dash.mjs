@@ -1,13 +1,17 @@
 /* ===========================================================================
-   COMPOSE — dashboard screenshots for /guide (S17.3).
+   COMPOSE — instructor-page screenshots for /guide (S17.3, rewritten
+   S35/N7: the dashboard shots are retired; version management now lives
+   in the app).
 
-   The dash internals need an instructor login, so this boots a THROWAWAY
-   local PocketBase (same hooks/migrations/pb_public as production — the
-   screenshots show the identical build), registers an instructor with the
-   seeded invite code, creates a version over the API, and photographs:
-     dash-versions   — the dashboard with a version card
-     dash-share      — the Share dialog (QR, link, handout button)
-     student-version — what the shared /v/<slug> link opens to
+   Boots a THROWAWAY local PocketBase (same hooks/migrations/pb_public as
+   production), registers an instructor with the seeded invite code, creates
+   a version over the API, then photographs the IN-APP pages:
+     my-versions     — the My versions page, one row expanded (unlock code,
+                       Copy / New code, bundle download/replace)
+     assign-page     — the Assign & share page (picker left, student-visible
+                       set + unlock code right)
+     student-version — what the version's /v/<slug> link opens
+     my-versions.jpg etc. land in server/guide-assets/.
 
      PUPPETEER_EXECUTABLE_PATH=<chrome> node scripts/capture-dash.mjs
    (Run `npm run build:server` first so server/pb_public is current.)
@@ -44,12 +48,12 @@ r = await fetch(B + '/api/collections/users/auth-with-password', {
   method: 'POST', headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ identity: EMAIL, password: PW }),
 });
-const { token } = await r.json();
+const auth = await r.json();
 
 const ws = (key) => ({ key, title: JSON.parse(fs.readFileSync(`compose/exercises/${key}.compose.json`, 'utf8')).title,
   content: JSON.parse(fs.readFileSync(`compose/exercises/${key}.compose.json`, 'utf8')) });
 r = await fetch(B + '/api/collections/versions/records', {
-  method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: token },
+  method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: auth.token },
   body: JSON.stringify({
     title: 'Semantics I — Weeks 1–3',
     bundle: { compose_bundle: 1, title: 'Semantics I — Weeks 1–3', chapters: [],
@@ -60,7 +64,7 @@ if (!r.ok) throw new Error('version create failed: ' + await r.text());
 const version = await r.json();
 console.log('version:', version.slug);
 
-/* ---- photograph the dash + the student link ----------------------------- */
+/* ---- photograph the in-app pages + the student link --------------------- */
 const browser = await puppeteer.launch({
   headless: 'shell',
   executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
@@ -69,7 +73,8 @@ const browser = await puppeteer.launch({
 });
 const page = await browser.newPage();
 await page.evaluateOnNewDocument(() => { try { localStorage.setItem('lc2-force-layout', 'desktop'); } catch (e) {} });
-const shot = async (name) => { await new Promise(r => setTimeout(r, 700)); await page.screenshot({ path: `${OUT}/${name}.jpg`, type: 'jpeg', quality: 82 }); console.log('  captured', name); };
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+const shot = async (name) => { await sleep(700); await page.screenshot({ path: `${OUT}/${name}.jpg`, type: 'jpeg', quality: 82 }); console.log('  captured', name); };
 const clickText = async (sel, text) => {
   const ok = await page.evaluate((sel, t) => {
     const el = [...document.querySelectorAll(sel)].find(e => (e.textContent || '').includes(t));
@@ -78,20 +83,24 @@ const clickText = async (sel, text) => {
   if (!ok) throw new Error('not found: ' + sel + ' ~ ' + text);
 };
 
-await page.goto(B + '/dash/', { waitUntil: 'networkidle2' });
-await page.type('input[type="email"]', EMAIL);
-await page.type('input[type="password"]', PW);
-await page.click('.dash-submit');
-await new Promise(r => setTimeout(r, 1500));
-await shot('dash-versions');
-await clickText('button', 'Share');
-await new Promise(r => setTimeout(r, 1200));   // QR canvas draws async
-await shot('dash-share');
+await page.goto(B + '/cc/ch6/', { waitUntil: 'networkidle2' });
+await page.evaluate((a) => localStorage.setItem('lc2-auth', a), JSON.stringify({ token: auth.token, record: auth.record }));
+await page.reload({ waitUntil: 'networkidle2' });
+await sleep(900);
+// sidebar → Account → My versions; expand the row so the unlock code shows
+await page.evaluate(() => { const b = document.querySelector('.rail-btn[title="Account"]'); if (b) b.click(); });
+await sleep(400);
+await clickText('.sb-row', 'My versions');
+await page.waitForSelector('.vd-row', { timeout: 10000 });
+await page.click('.vd-row-head');
+await page.waitForSelector('.vd-code', { timeout: 8000 });
+await shot('my-versions');
+await clickText('.vd-btn', 'Assign');
+await page.waitForSelector('.as-code', { timeout: 10000 });
+await shot('assign-page');
 
 await page.goto(B + '/v/' + version.slug, { waitUntil: 'networkidle2' });
-await new Promise(r => setTimeout(r, 1500));
-// dismiss the first-visit rules card so the worksheet is visible
-try { await clickText('button', 'Done'); await new Promise(r => setTimeout(r, 600)); } catch (e) {}
+await sleep(1500);
 await shot('student-version');
 
 await browser.close();

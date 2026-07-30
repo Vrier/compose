@@ -43,6 +43,10 @@ for (const pg of pages) {
   for (const m of s.matchAll(/(?:href|src)="([^"]+)"/g)) {
     const url = m[1].replace(/&amp;/g, '&');
     if (/^(https?:|mailto:|#|data:|javascript:)/.test(url)) continue;
+    // skip JS string concatenations inside inline <script> (e.g. the QR
+    // handout's src="' + png + '" — N2's in-app Share modal); they are
+    // code, not document links
+    if (url.includes("'")) continue;
     let p = url.split('#')[0].split('?')[0];
     if (!p) continue;
     if (!p.startsWith('/')) p = path.posix.normalize(path.posix.join(path.posix.dirname(rel), p));
