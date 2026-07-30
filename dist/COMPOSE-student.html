@@ -2224,6 +2224,139 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .pg-sync-err { font-size: 11.5px; color: var(--bad); margin-top: 5px; }
 .pg-signup { flex: none; align-self: center; white-space: nowrap; }
 
+/* =========================================================================
+   N5 (S33) — unlock dialog (ul-*), My classes sidebar rows, assign & share
+   page (as-*). Theme tokens only. Metrics per the navigation-redesign
+   prototype: 392px unlock dialog (radius 12, input 38px/mono), assign
+   columns flex 1 1 420px / 1 1 400px with the right column sunken.
+   ========================================================================= */
+.ul-scrim { align-items: center; padding: 20px; }
+.ul-dialog {
+  width: 100%; max-width: 392px; border: 1px solid var(--line); border-radius: 12px;
+  background: var(--panel); padding: 18px 20px 20px; box-shadow: var(--shadow);
+  animation: palPop .16s ease;
+}
+.ul-head { display: flex; align-items: baseline; gap: 9px; }
+.ul-title { font-size: 17px; font-weight: 600; flex: 1; color: var(--ink); }
+.ul-x { border: 0; background: transparent; padding: 0 2px; font-size: 13px; color: var(--faint); cursor: pointer; font-family: inherit; }
+.ul-x:hover { color: var(--ink-soft); }
+.ul-sub { font-size: 12.5px; color: var(--muted); line-height: 1.5; margin-top: 5px; }
+.ul-input {
+  display: block; width: 100%; height: 38px; margin-top: 13px; padding: 0 11px;
+  box-sizing: border-box; border: 1px solid var(--line); border-radius: 9px;
+  background: var(--bg); color: var(--ink); outline: none;
+  font-family: var(--mono); font-size: 14px; letter-spacing: .06em;
+}
+.ul-input:focus { border-color: var(--accent); }
+.ul-input::placeholder { color: var(--faint); letter-spacing: normal; }
+.ul-msg { font-size: 12px; line-height: 1.45; margin-top: 8px; }
+.ul-msg.err { color: var(--bad); }
+.ul-msg.ok { color: var(--good); }
+.ul-submit { width: 100%; min-height: 35px; margin-top: 12px; border-radius: 9px !important; font-size: 13px !important; }
+.ul-foot { display: flex; gap: 8px; align-items: flex-start; margin-top: 12px; padding-top: 11px; border-top: 1px solid var(--line-soft); }
+.ul-foot-glyph { font-size: 11px; color: var(--faint); flex: none; }
+.ul-foot span:last-child { font-size: 11.5px; color: var(--muted); line-height: 1.45; }
+
+/* sidebar: unlock affordance + class rows */
+.sb-unlock-wrap { padding: 8px 14px 2px; }
+.sb-unlock-btn {
+  width: 100%; min-height: 30px; padding: 5px 10px; white-space: nowrap;
+  border: 1px solid var(--accent); border-radius: 8px; background: var(--accent-soft);
+  color: var(--accent-ink); font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.sb-unlock-btn:hover { filter: brightness(1.02); }
+.sb-leave-row .sb-row-label { color: var(--muted); }
+.pg-unlock { margin-top: 12px; }
+
+/* assign & share page */
+.as-inner { max-width: 1200px; margin: 0 auto; padding: 30px 28px 44px; }
+.as-head { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
+.as-head-main { flex: 1 1 320px; min-width: 260px; }
+.as-title { font-size: 21px; font-weight: 600; margin: 3px 0 0; color: var(--ink); }
+.as-sub { font-size: 13px; color: var(--muted); margin-top: 5px; max-width: 60ch; line-height: 1.5; }
+.as-head-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.as-count { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.as-switch {
+  height: 31px; max-width: 200px; padding: 0 8px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--panel-2); color: var(--ink-soft); font-family: inherit; font-size: 12.5px;
+}
+.as-open, .as-save { white-space: nowrap; }
+.as-save:disabled { opacity: .55; cursor: default; }
+.as-cols {
+  display: flex; align-items: stretch; flex-wrap: wrap; margin-top: 18px;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--panel); overflow: hidden;
+}
+.as-left { flex: 1 1 420px; min-width: 320px; border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 320px; }
+.as-right { flex: 1 1 400px; min-width: 320px; display: flex; flex-direction: column; min-height: 0; background: var(--panel-2); }
+.as-col-head { display: flex; align-items: center; gap: 9px; padding: 11px 16px; border-bottom: 1px solid var(--line-soft); }
+.as-col-title { font-size: 12.5px; font-weight: 600; flex: 1; color: var(--ink); }
+.as-col-note { font-size: 11px; color: var(--faint); }
+.as-filter {
+  display: flex; align-items: center; gap: 7px; padding: 0 9px; height: 28px; flex: none;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--panel-2); color: var(--faint); font-size: 12px;
+}
+.as-filter input { width: 110px; border: 0; background: transparent; outline: none; font: inherit; font-size: 12px; color: var(--ink); }
+.as-filter input::placeholder { color: var(--faint); }
+.as-left-scroll { flex: 1; min-height: 0; max-height: 62vh; overflow-y: auto; overflow-x: hidden; padding-bottom: 14px; }
+.as-right-scroll { flex: 1; min-height: 0; max-height: 62vh; overflow-y: auto; overflow-x: hidden; padding: 12px 16px 18px; }
+.as-group { display: flex; align-items: center; gap: 9px; padding: 9px 16px 6px; background: var(--panel-2); border-bottom: 1px solid var(--line-soft); }
+.as-group-label { font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-ink); flex: 1; }
+.as-group-note { font-size: 11px; color: var(--faint); }
+.as-item {
+  display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 16px;
+  border: 0; background: transparent; text-align: left; font-family: inherit; cursor: pointer;
+}
+.as-item:hover { background: var(--panel-2); }
+.as-box {
+  width: 16px; height: 16px; flex: none; border-radius: 5px; border: 1px solid var(--line);
+  background: var(--bg); color: var(--on-accent); font-size: 10px; display: grid; place-items: center;
+}
+.as-box.on { border-color: var(--accent); background: var(--accent); }
+.as-item-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.as-item-title { font-size: 13px; color: var(--ink); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.as-item-meta { font-size: 10.5px; color: var(--faint); margin-top: 1px; }
+.as-badge { flex: none; font-size: 11px; color: var(--muted); border: 1px solid var(--line-soft); border-radius: 6px; padding: 2px 7px; white-space: nowrap; }
+.as-card { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); overflow: hidden; }
+.as-card + .as-card { margin-top: 14px; }
+.as-card-head { padding: 10px 12px 8px; border-bottom: 1px solid var(--line-soft); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
+.as-picked { padding: 6px 0; }
+.as-picked-row { display: flex; align-items: center; gap: 9px; padding: 6px 12px; font-size: 12.5px; color: var(--ink-soft); }
+.as-picked-ring { flex: none; width: 15px; height: 15px; border-radius: 50%; border: 1px solid var(--line); }
+.as-picked-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.as-picked-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.as-picked-key { font-size: 10.5px; color: var(--accent-ink); margin-top: 1px; }
+.as-picked-n { flex: none; font-size: 10.5px; color: var(--faint); white-space: nowrap; }
+.as-picked-x { flex: none; border: 0; background: transparent; padding: 0 2px; font-size: 11px; color: var(--faint); cursor: pointer; font-family: inherit; }
+.as-picked-x:hover { color: var(--bad); }
+.as-none { padding: 20px 14px; text-align: center; font-size: 12.5px; color: var(--faint); line-height: 1.5; }
+.as-card-foot { padding: 9px 12px; border-top: 1px solid var(--line-soft); font-size: 11.5px; color: var(--muted); line-height: 1.45; }
+.as-code-card { padding-bottom: 12px; }
+.as-code-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 12px 0; }
+.as-code {
+  font-size: 20px; font-weight: 600; letter-spacing: .14em; color: var(--accent-ink);
+  background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 4px 12px;
+}
+.as-code-note { padding: 9px 12px 0; font-size: 11.5px; color: var(--muted); line-height: 1.45; }
+.as-link-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 9px 12px 0; }
+.as-pick-row {
+  display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 12px; padding: 13px 16px;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--panel);
+  font-family: inherit; cursor: pointer; text-align: left;
+}
+.as-pick-row:hover { border-color: var(--accent); }
+.as-pick-row:first-of-type { margin-top: 20px; }
+.as-pick-title { font-size: 15px; font-weight: 600; color: var(--ink); flex: none; }
+.as-pick-meta { flex: 1; min-width: 0; font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.as-pick-go { flex: none; color: var(--faint); }
+/* focus parity (S13.5) */
+.ul-x:focus-visible, .ul-input:focus-visible, .ul-submit:focus-visible,
+.sb-unlock-btn:focus-visible, .pg-unlock:focus-visible,
+.as-item:focus-visible, .as-picked-x:focus-visible, .as-save:focus-visible,
+.as-open:focus-visible, .as-switch:focus-visible, .as-pick-row:focus-visible,
+.as-filter input:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+
 
 /* ===========================================================================
    lingdown.css — typesetting for the lingdown engine. Themable via --ld-*
@@ -9902,7 +10035,7 @@ function VersionShareModal({ v, onClose }) {
   }
   return /* @__PURE__ */ React.createElement("div", { className: "modal-backdrop", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal vd-share", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h3", { className: "vd-share-title" }, v.title), window.QRCode ? /* @__PURE__ */ React.createElement("canvas", { ref: canvasRef, className: "vd-qr", width: 300, height: 300 }) : null, /* @__PURE__ */ React.createElement("div", { className: "vd-share-url mono" }, url), /* @__PURE__ */ React.createElement("div", { className: "vd-share-actions" }, /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", onClick: copy }, copied ? "\u2713 Copied" : "\u29C9 Copy link"), window.QRCode ? /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: downloadPng }, "\u2B07 QR as PNG") : null, window.QRCode ? /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: printHandout }, "\u{1F5A8} Print A4 handout") : null, /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: onClose }, "Close")), /* @__PURE__ */ React.createElement("div", { className: "vd-share-note" }, "Links are live: editing the version updates what students see at this same URL \u2014 printed QR codes stay valid.")));
 }
-function VersionsPage({ token, onBack, onAuthGone }) {
+function VersionsPage({ token, onBack, onAssign, onAuthGone }) {
   const [versions, setVersions] = useState(null);
   const [err, setErr] = useState(null);
   const [openId, setOpenId] = useState(null);
@@ -10075,11 +10208,227 @@ function VersionsPage({ token, onBack, onAuthGone }) {
     )), /* @__PURE__ */ React.createElement("div", { className: "vd-row-meta" }, /* @__PURE__ */ React.createElement("a", { className: "vd-slug mono", href: "/v/" + v.slug, target: "_blank", rel: "noopener", onClick: (e) => e.stopPropagation() }, "/v/", v.slug), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-link-btn", onClick: (e) => {
       e.stopPropagation();
       copy(v.id + ":url", window.location.origin + "/v/" + v.slug);
-    } }, copiedWhat === v.id + ":url" ? "\u2713 copied" : "\u29C9 copy link"), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", null, sheets.length, " worksheet", sheets.length === 1 ? "" : "s", ", ", derivN, " derivation", derivN === 1 ? "" : "s"), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", { title: "Times the student link has been opened" }, v.opens || 0, " opens"), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", null, "updated ", String(v.updated || "").slice(0, 10)))), /* @__PURE__ */ React.createElement("div", { className: "vd-row-actions", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("a", { className: "vd-btn", href: "/edit/" + v.id, title: "Open this version's worksheets in the hosted editor" }, "\u270E Editor"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Share: QR code, link, printable handout", onClick: () => setSharing(v) }, "\u21D7 Share"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn vd-del", title: "Delete this version", onClick: () => del(v) }, "\u2715"))), isOpen && /* @__PURE__ */ React.createElement("div", { className: "vd-row-body" }, sheets.map((w) => /* @__PURE__ */ React.createElement("div", { className: "vd-ws", key: w.key }, /* @__PURE__ */ React.createElement("div", { className: "vd-ws-main" }, /* @__PURE__ */ React.createElement("div", { className: "vd-ws-title" }, w.title), /* @__PURE__ */ React.createElement("div", { className: "vd-ws-meta" }, /* @__PURE__ */ React.createElement("span", { className: "mono" }, w.key), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", null, w.n, " derivation", w.n === 1 ? "" : "s"))))), sheets.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "vd-ws-none" }, "No worksheets yet \u2014 open the editor and \u201C\u2601 Save to server\u201D, or import a bundle below."), /* @__PURE__ */ React.createElement("div", { className: "vd-row-foot" }, /* @__PURE__ */ React.createElement("div", { className: "vd-code-box" }, /* @__PURE__ */ React.createElement("span", { className: "vd-code-kicker" }, "Unlock code"), /* @__PURE__ */ React.createElement("span", { className: "vd-code mono" }, v.unlockCode || "\u2014"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Copy the unlock code", onClick: () => copy(v.id + ":code", v.unlockCode || "") }, copiedWhat === v.id + ":code" ? "\u2713 copied" : "\u29C9 Copy"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", disabled: busyId === v.id, title: "Generate a new code \u2014 the old one stops working", onClick: () => newCode(v) }, busyId === v.id ? "\u2026" : "\u21BB New code")), /* @__PURE__ */ React.createElement("span", { className: "vd-flex" }), /* @__PURE__ */ React.createElement("span", { className: "vd-notes-state" }, (v.notes || "").trim() ? "Notes \u25CF" : "No notes"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Download the companion bundle as a file", onClick: () => window.composeDownload((v.slug || "version") + ".compose-bundle.json", JSON.stringify(v.bundle, null, 2), "application/json") }, "\u2B07 bundle.json"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Import a bundle file (replaces this version's worksheets)", onClick: () => {
+    } }, copiedWhat === v.id + ":url" ? "\u2713 copied" : "\u29C9 copy link"), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", null, sheets.length, " worksheet", sheets.length === 1 ? "" : "s", ", ", derivN, " derivation", derivN === 1 ? "" : "s"), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", { title: "Times the student link has been opened" }, v.opens || 0, " opens"), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", null, "updated ", String(v.updated || "").slice(0, 10)))), /* @__PURE__ */ React.createElement("div", { className: "vd-row-actions", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("a", { className: "vd-btn", href: "/edit/" + v.id, title: "Open this version's worksheets in the hosted editor" }, "\u270E Editor"), onAssign && /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Choose which worksheets this class sees (Assign & share)", onClick: () => onAssign(v.id) }, "\u2611 Assign"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Share: QR code, link, printable handout", onClick: () => setSharing(v) }, "\u21D7 Share"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn vd-del", title: "Delete this version", onClick: () => del(v) }, "\u2715"))), isOpen && /* @__PURE__ */ React.createElement("div", { className: "vd-row-body" }, sheets.map((w) => /* @__PURE__ */ React.createElement("div", { className: "vd-ws", key: w.key }, /* @__PURE__ */ React.createElement("div", { className: "vd-ws-main" }, /* @__PURE__ */ React.createElement("div", { className: "vd-ws-title" }, w.title), /* @__PURE__ */ React.createElement("div", { className: "vd-ws-meta" }, /* @__PURE__ */ React.createElement("span", { className: "mono" }, w.key), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", null, w.n, " derivation", w.n === 1 ? "" : "s"))))), sheets.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "vd-ws-none" }, "No worksheets yet \u2014 open the editor and \u201C\u2601 Save to server\u201D, or import a bundle below."), /* @__PURE__ */ React.createElement("div", { className: "vd-row-foot" }, /* @__PURE__ */ React.createElement("div", { className: "vd-code-box" }, /* @__PURE__ */ React.createElement("span", { className: "vd-code-kicker" }, "Unlock code"), /* @__PURE__ */ React.createElement("span", { className: "vd-code mono" }, v.unlockCode || "\u2014"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Copy the unlock code", onClick: () => copy(v.id + ":code", v.unlockCode || "") }, copiedWhat === v.id + ":code" ? "\u2713 copied" : "\u29C9 Copy"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", disabled: busyId === v.id, title: "Generate a new code \u2014 the old one stops working", onClick: () => newCode(v) }, busyId === v.id ? "\u2026" : "\u21BB New code")), /* @__PURE__ */ React.createElement("span", { className: "vd-flex" }), /* @__PURE__ */ React.createElement("span", { className: "vd-notes-state" }, (v.notes || "").trim() ? "Notes \u25CF" : "No notes"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Download the companion bundle as a file", onClick: () => window.composeDownload((v.slug || "version") + ".compose-bundle.json", JSON.stringify(v.bundle, null, 2), "application/json") }, "\u2B07 bundle.json"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Import a bundle file (replaces this version's worksheets)", onClick: () => {
       importForRef.current = v;
       if (bundleReplaceRef.current) bundleReplaceRef.current.click();
     } }, "\u2B06 Replace bundle\u2026"))));
   }), /* @__PURE__ */ React.createElement("input", { ref: bundleNewRef, type: "file", accept: ".json,application/json", style: { display: "none" }, onChange: createFromBundle }), /* @__PURE__ */ React.createElement("input", { ref: bundleReplaceRef, type: "file", accept: ".json,application/json", style: { display: "none" }, onChange: replaceBundle }), sharing && /* @__PURE__ */ React.createElement(VersionShareModal, { v: sharing, onClose: () => setSharing(null) }), /* @__PURE__ */ React.createElement("div", { className: "vd-foot" }, "The standalone dashboard at ", /* @__PURE__ */ React.createElement("a", { href: "/dash/" }, "/dash"), " keeps working \u2014 notes editing lives there for now.")));
+}
+function UnlockDialog({ token, onClose, onSignin, onUnlocked }) {
+  const [code, setCode] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [result, setResult] = useState(null);
+  const inputRef = useRef(null);
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus();
+  }, []);
+  async function submit(ev) {
+    ev.preventDefault();
+    if (!code.trim() || busy) return;
+    setBusy(true);
+    setResult(null);
+    try {
+      const r = await fetch("/api/compose/redeem", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: token },
+        body: JSON.stringify({ code: code.trim() })
+      });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.error || j.message || "That code did not work \u2014 check it with your instructor.");
+      const title = j.version && j.version.title || "the worksheet set";
+      setResult({ kind: "ok", msg: (j.enrolled ? "Unlocked \u2014 \u201C" : "Already unlocked \u2014 \u201C") + title + "\u201D is in My classes in the sidebar." });
+      onUnlocked(j.version || null);
+    } catch (e) {
+      setResult({ kind: "err", msg: e.message || String(e) });
+    }
+    setBusy(false);
+  }
+  return /* @__PURE__ */ React.createElement("div", { className: "pal-scrim ul-scrim", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "ul-dialog", role: "dialog", "aria-modal": "true", "aria-label": "Unlock a worksheet", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("div", { className: "ul-head" }, /* @__PURE__ */ React.createElement("div", { className: "ul-title" }, "Unlock a worksheet"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "ul-x", "aria-label": "Close", onClick: onClose }, "\u2715")), !token ? /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "ul-sub" }, "Your instructor gives you a code word. Unlocks stick to your account, so sign in first \u2014 a practice account takes half a minute and needs only an email."), /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary ul-submit", onClick: onSignin }, "Sign in to unlock"), /* @__PURE__ */ React.createElement("div", { className: "ul-foot" }, /* @__PURE__ */ React.createElement("span", { className: "ul-foot-glyph", "aria-hidden": "true" }, "\u2317"), /* @__PURE__ */ React.createElement("span", null, "Signed in, everything you unlock \u2014 and your progress in it \u2014 follows you to any device."))) : /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, /* @__PURE__ */ React.createElement("div", { className: "ul-sub" }, "Your instructor gives you a code word. Only what you unlock appears in your worksheet list."), /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      ref: inputRef,
+      className: "ul-input",
+      value: code,
+      onChange: (e) => {
+        setCode(e.target.value);
+        if (result) setResult(null);
+      },
+      placeholder: "e.g. Q7TPKX",
+      "aria-label": "Unlock code",
+      autoComplete: "off",
+      spellCheck: "false"
+    }
+  ), result && /* @__PURE__ */ React.createElement("div", { className: "ul-msg " + result.kind, role: result.kind === "err" ? "alert" : "status" }, result.msg), result && result.kind === "ok" ? /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary ul-submit", onClick: onClose }, "Done") : /* @__PURE__ */ React.createElement("button", { type: "submit", className: "btn btn-primary ul-submit", disabled: busy || !code.trim() }, busy ? "\u2026" : "Unlock"), /* @__PURE__ */ React.createElement("div", { className: "ul-foot" }, /* @__PURE__ */ React.createElement("span", { className: "ul-foot-glyph", "aria-hidden": "true" }, "\u2317"), /* @__PURE__ */ React.createElement("span", null, "Unlocks are kept on your account and follow you to any device you sign in on.")))));
+}
+function AssignPage({ token, initialVersionId, catalogue, onBack, onAuthGone }) {
+  const [versions, setVersions] = useState(null);
+  const [err, setErr] = useState(null);
+  const [vid, setVid] = useState(initialVersionId || null);
+  const [sel, setSel] = useState(null);
+  const [filter, setFilter] = useState("");
+  const [saveState, setSaveState] = useState(null);
+  const [copied, setCopied] = useState(false);
+  const [busyCode, setBusyCode] = useState(false);
+  async function api(method, path, body) {
+    const headers = { Authorization: token };
+    if (body !== void 0) headers["Content-Type"] = "application/json";
+    const r = await fetch(path, { method, headers, body: body === void 0 ? void 0 : JSON.stringify(body) });
+    if (r.status === 401) {
+      onAuthGone();
+      throw new Error("Signed out \u2014 please sign in again.");
+    }
+    const text = await r.text();
+    let j = null;
+    try {
+      j = JSON.parse(text);
+    } catch (e) {
+    }
+    if (!r.ok) throw new Error(j && (j.error || j.message) || "Request failed (" + r.status + ")");
+    return j;
+  }
+  function derivCountOf(text) {
+    try {
+      const obj = JSON.parse(text);
+      return Array.isArray(obj.exercises) ? obj.exercises.reduce((a, g) => a + (g.items || g.derivations || g.trees || []).length, 0) : 0;
+    } catch (e) {
+      return 0;
+    }
+  }
+  function selectionFrom(version) {
+    const list = version.bundle && (version.bundle.worksheets || version.bundle.exercises) || [];
+    return list.map((w) => {
+      if (!w || !w.key) return null;
+      const cat = catalogue.find((c) => c.key === w.key);
+      if (cat) return { key: cat.key, title: cat.title, text: cat.text, n: cat.n };
+      const text = typeof w.text === "string" ? w.text : JSON.stringify(w.content);
+      return { key: w.key, title: w.title || w.key, text, n: derivCountOf(text), extra: true };
+    }).filter(Boolean);
+  }
+  function pick(version) {
+    setVid(version.id);
+    setSel(selectionFrom(version));
+    setSaveState(null);
+    setErr(null);
+  }
+  useEffect(() => {
+    api("GET", "/api/collections/versions/records?sort=-updated&perPage=200").then((j) => setVersions(j && j.items || [])).catch((e) => setErr("Could not load your versions: " + e.message));
+  }, []);
+  useEffect(() => {
+    if (!versions) return;
+    if (!vid && versions.length === 1) {
+      pick(versions[0]);
+      return;
+    }
+    if (vid && sel === null) {
+      const vv = versions.find((x) => x.id === vid);
+      if (vv) pick(vv);
+    }
+  }, [versions]);
+  const v = (versions || []).find((x) => x.id === vid) || null;
+  const selKeys = new Set((sel || []).map((x) => x.key));
+  function toggle(item) {
+    setSaveState(null);
+    setSel((s) => selKeys.has(item.key) ? (s || []).filter((x) => x.key !== item.key) : [...s || [], item]);
+  }
+  async function save2() {
+    if (!v || !sel) return;
+    setSaveState("saving");
+    setErr(null);
+    try {
+      const bundle = {
+        compose_bundle: 1,
+        title: v.title,
+        chapters: [],
+        worksheets: sel.map((it) => ({ key: it.key, title: it.title, text: it.text })),
+        engineVersion: window.LC && window.LC.VERSION || void 0
+      };
+      const j = await api("PATCH", "/api/collections/versions/records/" + v.id, { bundle });
+      setVersions((list) => (list || []).map((x) => x.id === v.id ? j : x));
+      setSaveState("saved");
+    } catch (e) {
+      setSaveState(null);
+      setErr("Save failed: " + e.message);
+    }
+  }
+  async function togglePublished() {
+    if (!v) return;
+    try {
+      const j = await api("PATCH", "/api/collections/versions/records/" + v.id, { published: !v.published });
+      setVersions((list) => (list || []).map((x) => x.id === v.id ? j : x));
+    } catch (e) {
+      setErr("Update failed: " + e.message);
+    }
+  }
+  async function newCode() {
+    if (!v) return;
+    if (!window.confirm('Generate a new unlock code for "' + v.title + '"? The old code stops working immediately; students already enrolled keep their access.')) return;
+    setBusyCode(true);
+    try {
+      const j = await api("POST", "/api/compose/new-code", { version: v.id });
+      setVersions((list) => (list || []).map((x) => x.id === v.id ? Object.assign({}, x, { unlockCode: j.unlockCode }) : x));
+    } catch (e) {
+      setErr("New code failed: " + e.message);
+    }
+    setBusyCode(false);
+  }
+  if (!v) {
+    return /* @__PURE__ */ React.createElement("div", { className: "page-view as-wrap" }, /* @__PURE__ */ React.createElement("div", { className: "as-inner" }, /* @__PURE__ */ React.createElement("div", { className: "page-crumb-row" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "page-back", onClick: onBack, title: "Back to practice", "aria-label": "Back to practice" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "page-crumb" }, "Assign & share")), /* @__PURE__ */ React.createElement("h1", { className: "as-title" }, "Choose what a class sees"), /* @__PURE__ */ React.createElement("div", { className: "as-sub" }, "Pick one of your versions \u2014 each version is one class's worksheet list, student link and unlock code."), err && /* @__PURE__ */ React.createElement("div", { className: "vd-err", onClick: () => setErr(null), title: "Click to dismiss" }, err), versions === null ? /* @__PURE__ */ React.createElement("div", { className: "vd-empty" }, "Loading\u2026") : versions.length === 0 ? /* @__PURE__ */ React.createElement("div", { className: "vd-none" }, /* @__PURE__ */ React.createElement("div", { className: "vd-none-glyph", "aria-hidden": "true" }, "\u25C8"), /* @__PURE__ */ React.createElement("div", { className: "vd-none-title" }, "No versions yet"), /* @__PURE__ */ React.createElement("div", { className: "vd-none-sub" }, "Create one on the My versions page first \u2014 then choose here what its students see.")) : versions.map((x) => /* @__PURE__ */ React.createElement("button", { type: "button", className: "as-pick-row", key: x.id, onClick: () => pick(x) }, /* @__PURE__ */ React.createElement("span", { className: "as-pick-title" }, x.title), /* @__PURE__ */ React.createElement("span", { className: "as-pick-meta" }, (x.bundle && (x.bundle.worksheets || x.bundle.exercises) || []).length, " worksheets \xB7 code ", /* @__PURE__ */ React.createElement("span", { className: "mono" }, x.unlockCode || "\u2014"), " \xB7 ", x.published ? "live" : "hidden"), /* @__PURE__ */ React.createElement("span", { className: "as-pick-go", "aria-hidden": "true" }, "\u203A")))));
+  }
+  const q = filter.trim().toLowerCase();
+  const groups = [];
+  catalogue.forEach((c) => {
+    if (q && !c.title.toLowerCase().includes(q)) return;
+    let g = groups.find((x) => x.label === c.coll);
+    if (!g) {
+      g = { label: c.coll, items: [] };
+      groups.push(g);
+    }
+    g.items.push(c);
+  });
+  const extras = (sel || []).filter((x) => x.extra && (!q || x.title.toLowerCase().includes(q)));
+  const total = catalogue.length + (sel || []).filter((x) => x.extra).length;
+  const derivTotal = (sel || []).reduce((a, x) => a + (x.n || 0), 0);
+  const savedKeys = (v.bundle && (v.bundle.worksheets || v.bundle.exercises) || []).map((w) => w && w.key).join("\n");
+  const dirty = sel !== null && sel.map((x) => x.key).join("\n") !== savedKeys;
+  return /* @__PURE__ */ React.createElement("div", { className: "page-view as-wrap" }, /* @__PURE__ */ React.createElement("div", { className: "as-inner" }, /* @__PURE__ */ React.createElement("div", { className: "as-head" }, /* @__PURE__ */ React.createElement("div", { className: "as-head-main" }, /* @__PURE__ */ React.createElement("div", { className: "page-crumb-row" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "page-back", onClick: onBack, title: "Back to practice", "aria-label": "Back to practice" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "page-crumb" }, "Assign & share \xB7 ", v.title)), /* @__PURE__ */ React.createElement("h1", { className: "as-title" }, "Choose what this class sees"), /* @__PURE__ */ React.createElement("div", { className: "as-sub" }, "Pick from every worksheet you can reach. Students at the link see only your selection, in this order \u2014 never the full library.")), /* @__PURE__ */ React.createElement("div", { className: "as-head-actions" }, versions && versions.length > 1 && /* @__PURE__ */ React.createElement(
+    "select",
+    {
+      className: "as-switch",
+      "aria-label": "Switch version",
+      value: vid,
+      onChange: (e) => {
+        const vv = versions.find((x) => x.id === e.target.value);
+        if (vv) pick(vv);
+      }
+    },
+    versions.map((x) => /* @__PURE__ */ React.createElement("option", { key: x.id, value: x.id }, x.title))
+  ), /* @__PURE__ */ React.createElement("span", { className: "as-count" }, (sel || []).length, " of ", total, " selected"), /* @__PURE__ */ React.createElement("a", { className: "btn-ghost as-open", href: "/v/" + v.slug, target: "_blank", rel: "noopener" }, "Open as a student"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary as-save", disabled: !dirty || saveState === "saving", onClick: save2 }, saveState === "saving" ? "Saving\u2026" : saveState === "saved" && !dirty ? "\u2713 Saved" : "Save changes"))), err && /* @__PURE__ */ React.createElement("div", { className: "vd-err", onClick: () => setErr(null), title: "Click to dismiss" }, err), /* @__PURE__ */ React.createElement("div", { className: "as-cols" }, /* @__PURE__ */ React.createElement("div", { className: "as-left" }, /* @__PURE__ */ React.createElement("div", { className: "as-col-head" }, /* @__PURE__ */ React.createElement("span", { className: "as-col-title" }, "All worksheets you can reach"), /* @__PURE__ */ React.createElement("div", { className: "as-filter" }, /* @__PURE__ */ React.createElement("span", { "aria-hidden": "true" }, "\u2315"), /* @__PURE__ */ React.createElement("input", { value: filter, onChange: (e) => setFilter(e.target.value), placeholder: "Filter\u2026", "aria-label": "Filter worksheets" }))), /* @__PURE__ */ React.createElement("div", { className: "as-left-scroll" }, groups.map((g) => /* @__PURE__ */ React.createElement("div", { key: g.label }, /* @__PURE__ */ React.createElement("div", { className: "as-group" }, /* @__PURE__ */ React.createElement("span", { className: "as-group-label" }, g.label), /* @__PURE__ */ React.createElement("span", { className: "as-group-note" }, g.items.length)), g.items.map((c) => {
+    const on = selKeys.has(c.key);
+    return /* @__PURE__ */ React.createElement("button", { type: "button", key: c.key, className: "as-item" + (on ? " on" : ""), role: "checkbox", "aria-checked": on, onClick: () => toggle(c) }, /* @__PURE__ */ React.createElement("span", { className: "as-box" + (on ? " on" : ""), "aria-hidden": "true" }, on ? "\u2713" : ""), /* @__PURE__ */ React.createElement("span", { className: "as-item-main" }, /* @__PURE__ */ React.createElement("span", { className: "as-item-title" }, c.title), /* @__PURE__ */ React.createElement("span", { className: "as-item-meta mono" }, c.key)), /* @__PURE__ */ React.createElement("span", { className: "as-badge" }, c.n, " derivation", c.n === 1 ? "" : "s"));
+  }))), extras.length > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "as-group" }, /* @__PURE__ */ React.createElement("span", { className: "as-group-label" }, "Already in this version"), /* @__PURE__ */ React.createElement("span", { className: "as-group-note" }, "saved on the server")), extras.map((x) => /* @__PURE__ */ React.createElement("button", { type: "button", key: x.key, className: "as-item on", role: "checkbox", "aria-checked": "true", onClick: () => toggle(x) }, /* @__PURE__ */ React.createElement("span", { className: "as-box on", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "as-item-main" }, /* @__PURE__ */ React.createElement("span", { className: "as-item-title" }, x.title), /* @__PURE__ */ React.createElement("span", { className: "as-item-meta mono" }, x.key)), /* @__PURE__ */ React.createElement("span", { className: "as-badge" }, x.n, " derivation", x.n === 1 ? "" : "s")))), groups.length === 0 && extras.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "as-none" }, "Nothing matches \u201C", filter.trim(), "\u201D."))), /* @__PURE__ */ React.createElement("div", { className: "as-right" }, /* @__PURE__ */ React.createElement("div", { className: "as-col-head" }, /* @__PURE__ */ React.createElement("span", { className: "as-col-title" }, "What students get"), /* @__PURE__ */ React.createElement("span", { className: "as-col-note" }, "in this order")), /* @__PURE__ */ React.createElement("div", { className: "as-right-scroll" }, /* @__PURE__ */ React.createElement("div", { className: "as-card" }, /* @__PURE__ */ React.createElement("div", { className: "as-card-head" }, "Their sidebar will show"), (sel || []).length > 0 ? /* @__PURE__ */ React.createElement("div", { className: "as-picked" }, (sel || []).map((x) => /* @__PURE__ */ React.createElement("div", { className: "as-picked-row", key: x.key }, /* @__PURE__ */ React.createElement("span", { className: "as-picked-ring", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("span", { className: "as-picked-main" }, /* @__PURE__ */ React.createElement("span", { className: "as-picked-title" }, x.title), /* @__PURE__ */ React.createElement("span", { className: "as-picked-key mono" }, x.key)), /* @__PURE__ */ React.createElement("span", { className: "as-picked-n" }, x.n, " derivation", x.n === 1 ? "" : "s"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "as-picked-x", title: "Remove from this class", "aria-label": "Remove " + x.title, onClick: () => toggle(x) }, "\u2715")))) : /* @__PURE__ */ React.createElement("div", { className: "as-none" }, "Nothing selected \u2014 students would see an empty worksheet list."), /* @__PURE__ */ React.createElement("div", { className: "as-card-foot" }, "Nothing else in the library is visible to them. ", derivTotal, " derivation", derivTotal === 1 ? "" : "s", " in total.", dirty ? " Unsaved changes \u2014 students still see the last saved list." : "")), /* @__PURE__ */ React.createElement("div", { className: "as-card as-code-card" }, /* @__PURE__ */ React.createElement("div", { className: "as-card-head" }, "Unlock code"), /* @__PURE__ */ React.createElement("div", { className: "as-code-row" }, /* @__PURE__ */ React.createElement("span", { className: "as-code mono" }, v.unlockCode || "\u2014"), /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      type: "button",
+      className: "vd-btn",
+      title: "Copy the unlock code",
+      onClick: () => {
+        navigator.clipboard.writeText(v.unlockCode || "").then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 1500);
+        });
+      }
+    },
+    copied ? "\u2713 copied" : "\u29C9 Copy"
+  ), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", disabled: busyCode, title: "Generate a new code \u2014 the old one stops working", onClick: newCode }, busyCode ? "\u2026" : "\u21BB New code")), /* @__PURE__ */ React.createElement("div", { className: "as-code-note" }, "Students sign in and enter this code \u2014 the class then appears in their \u201CMy classes\u201D. The student link keeps working too:"), /* @__PURE__ */ React.createElement("div", { className: "as-link-row" }, /* @__PURE__ */ React.createElement("a", { className: "vd-slug mono", href: "/v/" + v.slug, target: "_blank", rel: "noopener" }, "/v/", v.slug), /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      type: "button",
+      className: "vd-state" + (v.published ? "" : " off"),
+      onClick: togglePublished,
+      title: v.published ? "Published \u2014 students can open the link and redeem the code. Click to unpublish." : "Unpublished \u2014 the link 404s and the code is refused. Click to publish."
+    },
+    v.published ? "\u25CF live" : "\u25CB hidden"
+  ))))))));
 }
 function App() {
   const ROLE = window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.role || "instructor";
@@ -10298,6 +10647,30 @@ function App() {
     }, 2e3);
     return () => clearTimeout(timer);
   }, [progress, canSync, authId, pullDone]);
+  const [unlockOpen, setUnlockOpen] = useState(false);
+  const [classes, setClasses] = useState(null);
+  const [assignFor, setAssignFor] = useState(null);
+  const classesFor = useRef(null);
+  const classIslandsIn = useRef({});
+  const refreshClasses = useCallback(() => {
+    if (!canSync) return;
+    fetch("/api/compose/my-classes", { headers: { Authorization: auth.token } }).then((r) => r.ok ? r.json() : null).then((j) => {
+      if (j && Array.isArray(j.classes)) setClasses(j.classes);
+    }).catch(() => {
+    });
+  }, [canSync, auth && auth.token]);
+  useEffect(() => {
+    if (!canSync || !authId) {
+      setClasses(null);
+      classesFor.current = null;
+      classIslandsIn.current = {};
+      return;
+    }
+    if (classesFor.current === authId) return;
+    classesFor.current = authId;
+    classIslandsIn.current = {};
+    refreshClasses();
+  }, [canSync, authId]);
   function openEditorSurface() {
     if (isMobile) {
       setModal("editor");
@@ -10341,7 +10714,74 @@ function App() {
       }
     }).filter(Boolean)
   ), [bundles]);
-  const LIB = React.useMemo(() => [...BUILTIN, ...userLib, ...bundleLib], [userLib, bundleLib]);
+  const classLib = React.useMemo(() => (classes || []).flatMap((c) => {
+    const list = c.bundle && (c.bundle.worksheets || c.bundle.exercises) || [];
+    return list.map((w) => {
+      if (!w || !w.key) return null;
+      const text = typeof w.text === "string" ? w.text : JSON.stringify(w.content);
+      try {
+        const { set: set2 } = window.LCData.loadText(text, w.title || w.key);
+        set2.key = "class:" + c.slug + ":" + w.key;
+        return {
+          key: set2.key,
+          title: w.title || set2.title || w.key,
+          set: set2,
+          classSlug: c.slug,
+          classTitle: c.title,
+          classNotes: c.notes,
+          text
+        };
+      } catch (e) {
+        return null;
+      }
+    }).filter(Boolean);
+  }), [classes]);
+  const LIB = React.useMemo(() => [...BUILTIN, ...userLib, ...bundleLib, ...classLib], [userLib, bundleLib, classLib]);
+  useEffect(() => {
+    if (!classes || !classes.length) return;
+    const found = {};
+    classes.forEach((c) => {
+      if (classIslandsIn.current[c.slug]) return;
+      let ext = null;
+      try {
+        ext = JSON.parse(localStorage.getItem(c.slug + ":lc2-progress") || "null");
+      } catch (e) {
+      }
+      const keys = ext && typeof ext === "object" && !Array.isArray(ext) ? Object.keys(ext).filter((k) => ext[k]) : [];
+      if (keys.length) {
+        found[c.slug] = keys;
+        classIslandsIn.current[c.slug] = keys;
+      } else classIslandsIn.current[c.slug] = true;
+    });
+    if (!Object.keys(found).length) return;
+    setProgress((pr) => {
+      const next = Object.assign({}, pr);
+      Object.keys(found).forEach((slug) => found[slug].forEach((k) => {
+        next["class:" + slug + ":" + k] = true;
+      }));
+      return next;
+    });
+  }, [classes]);
+  useEffect(() => {
+    (classes || []).forEach((c) => {
+      const st = classIslandsIn.current[c.slug];
+      if (!st) return;
+      const pre = "class:" + c.slug + ":";
+      if (st !== true) {
+        if (!st.every((k) => progress[pre + k])) return;
+        classIslandsIn.current[c.slug] = true;
+      }
+      const mine = {};
+      Object.keys(progress).forEach((k) => {
+        if (progress[k] && k.indexOf(pre) === 0) mine[k.slice(pre.length)] = true;
+      });
+      try {
+        const next = JSON.stringify(mine);
+        if (localStorage.getItem(c.slug + ":lc2-progress") !== next) localStorage.setItem(c.slug + ":lc2-progress", next);
+      } catch (e) {
+      }
+    });
+  }, [progress, classes]);
   useEffect(() => {
     try {
       localStorage.setItem(LC_NS + "lc2-userfiles", JSON.stringify(userFiles));
@@ -10414,13 +10854,17 @@ function App() {
   if (window.LC && window.LC.setNotation) window.LC.setNotation(set && set.notation || "cc");
   const readingSet = React.useMemo(() => {
     if (set && set.reading && set.reading.markdown && set.reading.markdown.trim()) return set;
+    const cn = lib && lib.classNotes;
+    if (cn && String(cn).trim()) {
+      return { key: "__class-notes-" + lib.classSlug, title: lib.classTitle || "Notes", reading: { format: "latex", markdown: String(cn) } };
+    }
     const vn = typeof window !== "undefined" && window.COMPOSE_NOTES;
     if (vn && String(vn).trim()) {
       const title = window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment && window.COMPOSE_CONFIG.assignment.title || "Notes";
       return { key: "__version-notes", title, reading: { format: "latex", markdown: String(vn) } };
     }
     return null;
-  }, [set]);
+  }, [set, lib]);
   const hasReading = !!readingSet;
   useEffect(() => {
     if (teacherMode || custom || !set || !set.key) return;
@@ -10783,6 +11227,11 @@ function App() {
           closePalette();
           return;
         }
+        if (unlockOpen) {
+          e.preventDefault();
+          setUnlockOpen(false);
+          return;
+        }
         if (shortcutsOpen) {
           e.preventDefault();
           setShortcutsOpen(false);
@@ -10805,7 +11254,7 @@ function App() {
         openEditorSurface();
         return;
       }
-      if (e.metaKey || e.ctrlKey || e.altKey || modal || palette || shortcutsOpen || page !== "practice") return;
+      if (e.metaKey || e.ctrlKey || e.altKey || modal || palette || shortcutsOpen || unlockOpen || page !== "practice") return;
       if (e.key === "j" || e.key === "J") {
         e.preventDefault();
         gotoFlat(-1);
@@ -10931,12 +11380,37 @@ function App() {
   }
   function collectionOf(l) {
     if (!l) return null;
+    if (l.classTitle) return l.classTitle;
     if (l.bundleTitle) return l.bundleTitle;
     if (l.user) return "My worksheets";
     const CH = window.LCData && window.LCData.CHAPTERS || [];
     const ch = CH.find((c) => l.key === c.prefix || l.key.startsWith(c.prefix + ".") || l.key.startsWith(c.prefix + "-"));
     return ch ? ch.title : BUILD.label || "COMPOSE";
   }
+  async function leaveClass(c) {
+    if (!window.confirm("Leave \u201C" + c.title + "\u201D? Its worksheets disappear from your list; your progress stays saved, and the code unlocks it again any time.")) return;
+    try {
+      await fetch("/api/collections/enrollments/records/" + c.enrollment, { method: "DELETE", headers: { Authorization: auth.token } });
+    } catch (e) {
+    }
+    setClasses((cs) => (cs || []).filter((x) => x.id !== c.id));
+    if (lib && lib.classSlug === c.slug) {
+      setFileKey(BUILTIN[0] ? BUILTIN[0].key : null);
+      setSel({ gi: 0, pi: 0 });
+    }
+  }
+  const assignCatalogue = React.useMemo(() => LIB.map((l) => {
+    if (l.classSlug) return null;
+    const text = l.text || window.LC_FILES && window.LC_FILES[l.key] && window.LC_FILES[l.key].text || null;
+    if (!text) return null;
+    return {
+      key: l.key,
+      title: l.title,
+      coll: collectionOf(l) || "Worksheets",
+      n: l.set.groups.reduce((a, g) => a + g.problems.length, 0),
+      text
+    };
+  }).filter(Boolean), [LIB]);
   function openWorksheetKey(key) {
     setPage("practice");
     setCustom(null);
@@ -10994,7 +11468,7 @@ function App() {
     const CH = window.LCData && window.LCData.CHAPTERS || [];
     const inCh = (l, ch) => l.key === ch.prefix || l.key.startsWith(ch.prefix + ".") || l.key.startsWith(ch.prefix + "-");
     const cols = [];
-    const loose = LIB.filter((l) => !l.user && !CH.some((ch) => inCh(l, ch)));
+    const loose = LIB.filter((l) => !l.user && !l.classSlug && !CH.some((ch) => inCh(l, ch)));
     if (loose.length) cols.push({ id: "__loose", label: ASSIGNMENT && ASSIGNMENT.title || "Worksheets", items: loose });
     CH.forEach((ch) => {
       const items = LIB.filter((l) => !l.user && inCh(l, ch));
@@ -11055,7 +11529,22 @@ function App() {
     ), openId === c.id && c.items.map((l) => renderWsRow(l)))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
       setLoadErr(null);
       setModal("files");
-    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2191"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Open a file\u2026")), /* @__PURE__ */ React.createElement(
+    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2191"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Open a file\u2026")), isFullBuild && tier !== "anon" && classes && classes.length > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, "My classes"), classes.map((c) => {
+      const items = classLib.filter((l) => l.classSlug === c.slug);
+      const cid = "class:" + c.slug;
+      return /* @__PURE__ */ React.createElement("div", { key: cid }, /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          className: "sb-coll-head",
+          "aria-expanded": openId === cid,
+          onClick: () => setOpenColl(openId === cid ? "" : cid)
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "sb-coll-caret", "aria-hidden": "true" }, openId === cid ? "\u25BE" : "\u25B8"),
+        /* @__PURE__ */ React.createElement("span", { className: "sb-coll-label" }, c.title),
+        /* @__PURE__ */ React.createElement("span", { className: "sb-coll-count" }, items.length)
+      ), openId === cid && items.map((l) => renderWsRow(l)), openId === cid && items.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "This class has no worksheets yet."), openId === cid && /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row sb-leave-row", title: "Remove this class from your list", onClick: () => leaveClass(c) }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2715"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Leave this class\u2026")));
+    })), /* @__PURE__ */ React.createElement(
       "button",
       {
         type: "button",
@@ -11066,7 +11555,7 @@ function App() {
       /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"),
       /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Your progress"),
       /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, grandSolved, " solved")
-    ), isFullBuild && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, "Full library"), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/cc/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Coppock & Champollion")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/hk/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Heim & Kratzer")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/papers/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Classic papers"))))), sbSection("continue", "\u21BB", "Continue", recents.length ? String(recents.length) : null, /* @__PURE__ */ React.createElement("div", null, recents.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Open an exercise and it appears here, most recent first."), recents.slice(0, 6).map((r) => {
+    ), isFullBuild && /* @__PURE__ */ React.createElement("div", { className: "sb-unlock-wrap" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-unlock-btn", onClick: () => setUnlockOpen(true) }, "\u2295 Unlock with a code")), isFullBuild && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, "Full library"), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/cc/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Coppock & Champollion")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/hk/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Heim & Kratzer")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/papers/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Classic papers"))))), sbSection("continue", "\u21BB", "Continue", recents.length ? String(recents.length) : null, /* @__PURE__ */ React.createElement("div", null, recents.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Open an exercise and it appears here, most recent first."), recents.slice(0, 6).map((r) => {
       const l = LIB.find((x) => x.key === r.ws);
       if (!l) return null;
       const gs = l.set.groups.filter((g2) => g2.kind === "tree");
@@ -11078,7 +11567,18 @@ function App() {
     }))), canAuthor && sbSection("author", "\u270E", "Author", null, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row" + (page === "editor" ? " on" : ""), onClick: () => openEditorSurface() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u270E"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Worksheet editor"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, "page")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("scratch") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u266A"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Scratchpad"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, "free")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("reading") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4DD}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Notes")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
       setLoadErr(null);
       if (fileInput.current) fileInput.current.click();
-    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2191"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Import worksheet\u2026")))), sbSection("display", "\u25D0", "Display", null, /* @__PURE__ */ React.createElement("div", { className: "sb-display" }, /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Dark mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (darkMode ? " on" : ""), role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode((d) => !d) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-resolve non-branching"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoNN ? " on" : ""), role: "switch", "aria-checked": autoNN, onClick: () => setAutoNN((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), !isStudentBuild && /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-apply composition rules"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoCompose ? " on" : ""), role: "switch", "aria-checked": autoCompose, onClick: () => setAutoCompose((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Collapse resolved subtrees"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (collapseResolved ? " on" : ""), role: "switch", "aria-checked": collapseResolved, onClick: () => setCollapseResolved((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("div", { className: "settings-row settings-layout-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Layout"), /* @__PURE__ */ React.createElement("div", { className: "seg-mini" }, /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() == null ? " on" : ""), onClick: () => setForceLayout(null) }, "Auto"), /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() === "mobile" ? " on" : ""), onClick: () => setForceLayout("mobile") }, "Mobile"))), /* @__PURE__ */ React.createElement("div", { className: "sb-kicker sb-actions-kicker" }, "Actions"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setPage("progress") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, doneCount, "/", probCount)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => composeExportProgress() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Save progress to a file")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
+    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2191"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Import worksheet\u2026")))), isFullBuild && tier === "instructor" && sbSection("assign", "\u2611", "Assign & share", null, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "sb-row" + (page === "assign" ? " on" : ""),
+        "aria-current": page === "assign" ? "true" : void 0,
+        onClick: () => setPage("assign")
+      },
+      /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2611"),
+      /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Choose what a class sees"),
+      /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, "page")
+    ), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row" + (page === "dash" ? " on" : ""), onClick: () => setPage("dash") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25C8"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "My versions")))), sbSection("display", "\u25D0", "Display", null, /* @__PURE__ */ React.createElement("div", { className: "sb-display" }, /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Dark mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (darkMode ? " on" : ""), role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode((d) => !d) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-resolve non-branching"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoNN ? " on" : ""), role: "switch", "aria-checked": autoNN, onClick: () => setAutoNN((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), !isStudentBuild && /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-apply composition rules"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoCompose ? " on" : ""), role: "switch", "aria-checked": autoCompose, onClick: () => setAutoCompose((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Collapse resolved subtrees"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (collapseResolved ? " on" : ""), role: "switch", "aria-checked": collapseResolved, onClick: () => setCollapseResolved((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("div", { className: "settings-row settings-layout-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Layout"), /* @__PURE__ */ React.createElement("div", { className: "seg-mini" }, /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() == null ? " on" : ""), onClick: () => setForceLayout(null) }, "Auto"), /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() === "mobile" ? " on" : ""), onClick: () => setForceLayout("mobile") }, "Mobile"))), /* @__PURE__ */ React.createElement("div", { className: "sb-kicker sb-actions-kicker" }, "Actions"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setPage("progress") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, doneCount, "/", probCount)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => composeExportProgress() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Save progress to a file")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
       if (progressFileInput.current) progressFileInput.current.click();
     } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2912"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Restore progress from a file\u2026")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", disabled: exporting, onClick: exportDerivation }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u29C9"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, exporting ? "Rendering\u2026" : "Export derivation (PNG)")), !isStudentBuild && !(BID.indexOf("hosted") === 0 && BID !== "hosted-sandbox") && /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("export") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2193"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Export assignment")))), isFullBuild && sbSection("help", "\u24D8", "Guide & help", null, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/guide/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25C6"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Instructor guide")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/help/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "?"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Student help")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/help/guides/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25B7"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Worked walkthroughs")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/files/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Downloads & site map")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/about/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\xA7"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "About & how to cite")))), isFullBuild && sbSection("account", "\u25C9", tier === "anon" ? "Account" : "Account \xB7 " + (tier === "instructor" ? "instructor" : "student"), null, tier === "anon" ? /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Everything works without an account \u2014 an account only keeps your unlocks and progress. An invite code turns it into an instructor account."), /* @__PURE__ */ React.createElement("div", { className: "sb-account-btns" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary sb-signin-btn", onClick: () => {
       setSigninMode("login");
@@ -11149,6 +11649,16 @@ function App() {
         onClick: () => drillOut("author")
       },
       "\u270E"
+    ), isFullBuild && tier === "instructor" && /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "rail-btn",
+        title: "Assign & share",
+        "aria-label": "Assign & share",
+        onClick: () => drillOut("assign")
+      },
+      "\u2611"
     ), /* @__PURE__ */ React.createElement("div", { className: "rail-spacer" }), isFullBuild && /* @__PURE__ */ React.createElement(
       "button",
       {
@@ -11297,6 +11807,7 @@ function App() {
       { glyph: "\u2318", label: "Keyboard shortcuts", kicker: "action", hay: "keyboard shortcuts keys", act: () => setShortcutsOpen(true) }
     ];
     if (isFullBuild) {
+      rows.push({ glyph: "\u2295", label: "Unlock a worksheet set", kicker: "action", hay: "unlock code class enrol redeem worksheet set", act: () => setUnlockOpen(true) });
       if (tier === "anon") rows.push({ glyph: "\u25C9", label: "Sign in or create an account", kicker: "action", hay: "sign in account register", act: () => {
         setSigninMode("login");
         setPage("signin");
@@ -11440,13 +11951,13 @@ function App() {
       const cur = !custom && r.key === fileKey;
       const pct = r.total ? Math.round(100 * r.solved / r.total) : 0;
       return /* @__PURE__ */ React.createElement("div", { className: "pg-row", key: r.key }, /* @__PURE__ */ React.createElement("div", { className: "pg-row-main" }, /* @__PURE__ */ React.createElement("div", { className: "pg-row-title" }, r.title), /* @__PURE__ */ React.createElement("div", { className: "pg-row-sub" }, (r.coll || "Worksheets") + (cur ? " \xB7 open now" : r.solved ? "" : " \xB7 not started"))), /* @__PURE__ */ React.createElement("div", { className: "pg-bar", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("span", { className: "pg-bar-fill" + (r.solved ? " has" : ""), style: { width: pct + "%" } })), /* @__PURE__ */ React.createElement("span", { className: "pg-count" }, r.solved, "/", r.total), /* @__PURE__ */ React.createElement("button", { type: "button", className: "pg-go", onClick: () => openWorksheetKey(r.key) }, r.solved ? "Resume" : "Start"));
-    }), rows.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "pg-none" }, /* @__PURE__ */ React.createElement("div", { className: "pg-none-title" }, "No worksheets unlocked yet"), /* @__PURE__ */ React.createElement("div", { className: "pg-none-sub" }, "Enter the code your instructor gave you and the worksheet \u2014 and your progress through it \u2014 appears here."))), /* @__PURE__ */ React.createElement("div", { className: "pg-callout" }, /* @__PURE__ */ React.createElement("span", { className: "pg-callout-glyph" + (anon ? " warn" : " ok"), "aria-hidden": "true" }, anon ? "\u25B3" : "\u2713"), /* @__PURE__ */ React.createElement("div", { className: "pg-callout-main" }, /* @__PURE__ */ React.createElement("div", { className: "pg-callout-title" }, anon ? "This progress lives in this browser only" : "Progress is saved to your account"), /* @__PURE__ */ React.createElement("div", { className: "pg-callout-body" }, anon ? "Clearing site data loses it, and it will not follow you to another device. Export a file as a backup" + (isFullBuild ? ", or create an account." : ".") : "It follows you to any device you sign in on. A file export is still worth keeping as a backup."), !anon && syncState === "synced" && /* @__PURE__ */ React.createElement("div", { className: "pg-synced" }, "\u2713 Synced to your account"), !anon && syncState === "error" && /* @__PURE__ */ React.createElement("div", { className: "pg-sync-err" }, "Could not reach the server just now \u2014 progress is safe in this browser and syncs when you are back online.")), anon && isFullBuild && /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary pg-signup", onClick: () => {
+    }), rows.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "pg-none" }, /* @__PURE__ */ React.createElement("div", { className: "pg-none-title" }, "No worksheets unlocked yet"), /* @__PURE__ */ React.createElement("div", { className: "pg-none-sub" }, "Enter the code your instructor gave you and the worksheet \u2014 and your progress through it \u2014 appears here."), isFullBuild && /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn-ghost pg-unlock", onClick: () => setUnlockOpen(true) }, "\u2295 Unlock with a code"))), /* @__PURE__ */ React.createElement("div", { className: "pg-callout" }, /* @__PURE__ */ React.createElement("span", { className: "pg-callout-glyph" + (anon ? " warn" : " ok"), "aria-hidden": "true" }, anon ? "\u25B3" : "\u2713"), /* @__PURE__ */ React.createElement("div", { className: "pg-callout-main" }, /* @__PURE__ */ React.createElement("div", { className: "pg-callout-title" }, anon ? "This progress lives in this browser only" : "Progress is saved to your account"), /* @__PURE__ */ React.createElement("div", { className: "pg-callout-body" }, anon ? "Clearing site data loses it, and it will not follow you to another device. Export a file as a backup" + (isFullBuild ? ", or create an account." : ".") : "It follows you to any device you sign in on. A file export is still worth keeping as a backup."), !anon && syncState === "synced" && /* @__PURE__ */ React.createElement("div", { className: "pg-synced" }, "\u2713 Synced to your account"), !anon && syncState === "error" && /* @__PURE__ */ React.createElement("div", { className: "pg-sync-err" }, "Could not reach the server just now \u2014 progress is safe in this browser and syncs when you are back online.")), anon && isFullBuild && /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary pg-signup", onClick: () => {
       setSigninMode("register");
       setPage("signin");
     } }, "Create an account"))));
   }
   function renderPageView() {
-    if (page === "signin" || page === "dash" && tier !== "instructor") {
+    if (page === "signin" || (page === "dash" || page === "assign") && tier !== "instructor") {
       return /* @__PURE__ */ React.createElement(
         SigninPage,
         {
@@ -11466,6 +11977,26 @@ function App() {
         VersionsPage,
         {
           token: auth.token,
+          onBack: () => setPage("practice"),
+          onAssign: (id) => {
+            setAssignFor(id);
+            setPage("assign");
+          },
+          onAuthGone: () => {
+            setAuth(null);
+            setSigninMode("login");
+            setPage("signin");
+          }
+        }
+      );
+    }
+    if (page === "assign") {
+      return /* @__PURE__ */ React.createElement(
+        AssignPage,
+        {
+          token: auth.token,
+          initialVersionId: assignFor,
+          catalogue: assignCatalogue,
           onBack: () => setPage("practice"),
           onAuthGone: () => {
             setAuth(null);
@@ -11677,7 +12208,7 @@ function App() {
         const CHAPTERS = window.LCData.CHAPTERS || [];
         const builtinKeys = new Set(BUILTIN.map((l) => l.key));
         const userItems = LIB.filter((l) => l.user);
-        return /* @__PURE__ */ React.createElement(React.Fragment, null, LIB.filter((l) => !l.user && !CHAPTERS.some((ch) => l.key === ch.prefix || l.key.startsWith(ch.prefix + ".") || l.key.startsWith(ch.prefix + "-"))).map((l) => {
+        return /* @__PURE__ */ React.createElement(React.Fragment, null, LIB.filter((l) => !l.user && !l.classSlug && !CHAPTERS.some((ch) => l.key === ch.prefix || l.key.startsWith(ch.prefix + ".") || l.key.startsWith(ch.prefix + "-"))).map((l) => {
           const counts = l.set.groups.reduce((a, g) => a + g.problems.length, 0);
           const active = !custom && l.key === fileKey;
           return /* @__PURE__ */ React.createElement(
@@ -11797,6 +12328,23 @@ function App() {
     modal === "summary" && /* @__PURE__ */ React.createElement(SummaryModal, { lib: LIB, progress, onClose: () => setModal(null) }),
     !isMobile && renderPalette(),
     !isMobile && renderShortcuts(),
+    !isMobile && unlockOpen && /* @__PURE__ */ React.createElement(
+      UnlockDialog,
+      {
+        token: isFullBuild && tier !== "anon" && auth ? auth.token : null,
+        onClose: () => setUnlockOpen(false),
+        onSignin: () => {
+          setUnlockOpen(false);
+          setSigninMode("login");
+          setPage("signin");
+        },
+        onUnlocked: (v) => {
+          refreshClasses();
+          setNavSection("library");
+          if (v && v.slug) setOpenColl("class:" + v.slug);
+        }
+      }
+    ),
     netNotice && /* @__PURE__ */ React.createElement("div", { className: "net-notice" }, netNotice),
     isMobile && !phoneOk && window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment && /* @__PURE__ */ React.createElement(PhoneInterstitial, { onContinue: () => {
       setPhoneOk(true);

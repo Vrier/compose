@@ -356,7 +356,7 @@ function VersionShareModal({ v, onClose }) {
 }
 
 /* ---- My versions page (instructor tier; spec: max-width 940px rows) ------ */
-function VersionsPage({ token, onBack, onAuthGone }) {
+function VersionsPage({ token, onBack, onAssign, onAuthGone }) {
   const [versions, setVersions] = useState(null);
   const [err, setErr] = useState(null);
   const [openId, setOpenId] = useState(null);
@@ -518,6 +518,7 @@ function VersionsPage({ token, onBack, onAuthGone }) {
                   </div>
                   <div className="vd-row-actions" onClick={(e) => e.stopPropagation()}>
                     <a className="vd-btn" href={'/edit/' + v.id} title="Open this version's worksheets in the hosted editor">✎ Editor</a>
+                    {onAssign && <button type="button" className="vd-btn" title="Choose which worksheets this class sees (Assign & share)" onClick={() => onAssign(v.id)}>☑ Assign</button>}
                     <button type="button" className="vd-btn" title="Share: QR code, link, printable handout" onClick={() => setSharing(v)}>⇗ Share</button>
                     <button type="button" className="vd-btn vd-del" title="Delete this version" onClick={() => del(v)}>✕</button>
                   </div>
@@ -554,6 +555,319 @@ function VersionsPage({ token, onBack, onAuthGone }) {
         <input ref={bundleReplaceRef} type="file" accept=".json,application/json" style={{ display: 'none' }} onChange={replaceBundle} />
         {sharing && <VersionShareModal v={sharing} onClose={() => setSharing(null)} />}
         <div className="vd-foot">The standalone dashboard at <a href="/dash/">/dash</a> keeps working — notes editing lives there for now.</div>
+      </div>
+    </div>
+  );
+}
+
+/* ===========================================================================
+   N5 (S33) — the sharing pivot: unlock dialog (students enter a code),
+   "My classes" (enrolled versions fetched via /api/compose/my-classes) and
+   the instructor Assign & share page. Prototype metrics: 392px dialog,
+   assign columns 1 1 420px / 1 1 400px (right sunken).
+   =========================================================================== */
+function UnlockDialog({ token, onClose, onSignin, onUnlocked }) {
+  const [code, setCode] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [result, setResult] = useState(null); // { kind: 'ok' | 'err', msg }
+  const inputRef = useRef(null);
+  useEffect(() => { if (inputRef.current) inputRef.current.focus(); }, []);
+  async function submit(ev) {
+    ev.preventDefault();
+    if (!code.trim() || busy) return;
+    setBusy(true); setResult(null);
+    try {
+      const r = await fetch('/api/compose/redeem', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: token },
+        body: JSON.stringify({ code: code.trim() }),
+      });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.error || j.message || 'That code did not work — check it with your instructor.');
+      const title = (j.version && j.version.title) || 'the worksheet set';
+      setResult({ kind: 'ok', msg: (j.enrolled ? 'Unlocked — “' : 'Already unlocked — “') + title + '” is in My classes in the sidebar.' });
+      onUnlocked(j.version || null);
+    } catch (e) { setResult({ kind: 'err', msg: e.message || String(e) }); }
+    setBusy(false);
+  }
+  return (
+    <div className="pal-scrim ul-scrim" onClick={onClose}>
+      <div className="ul-dialog" role="dialog" aria-modal="true" aria-label="Unlock a worksheet" onClick={(e) => e.stopPropagation()}>
+        <div className="ul-head">
+          <div className="ul-title">Unlock a worksheet</div>
+          <button type="button" className="ul-x" aria-label="Close" onClick={onClose}>✕</button>
+        </div>
+        {!token ? (
+          <div>
+            <div className="ul-sub">Your instructor gives you a code word. Unlocks stick to your account, so sign in first — a practice account takes half a minute and needs only an email.</div>
+            <button type="button" className="btn btn-primary ul-submit" onClick={onSignin}>Sign in to unlock</button>
+            <div className="ul-foot"><span className="ul-foot-glyph" aria-hidden="true">⌗</span><span>Signed in, everything you unlock — and your progress in it — follows you to any device.</span></div>
+          </div>
+        ) : (
+          <form onSubmit={submit}>
+            <div className="ul-sub">Your instructor gives you a code word. Only what you unlock appears in your worksheet list.</div>
+            <input ref={inputRef} className="ul-input" value={code}
+              onChange={(e) => { setCode(e.target.value); if (result) setResult(null); }}
+              placeholder="e.g. Q7TPKX" aria-label="Unlock code" autoComplete="off" spellCheck="false" />
+            {result && <div className={'ul-msg ' + result.kind} role={result.kind === 'err' ? 'alert' : 'status'}>{result.msg}</div>}
+            {result && result.kind === 'ok'
+              ? <button type="button" className="btn btn-primary ul-submit" onClick={onClose}>Done</button>
+              : <button type="submit" className="btn btn-primary ul-submit" disabled={busy || !code.trim()}>{busy ? '…' : 'Unlock'}</button>}
+            <div className="ul-foot"><span className="ul-foot-glyph" aria-hidden="true">⌗</span><span>Unlocks are kept on your account and follow you to any device you sign in on.</span></div>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ---- Assign & share page (instructor tier) --------------------------------
+   Left column: checkboxes over every worksheet the instructor can reach
+   (the same catalogue the app itself shows — built-ins + user worksheets).
+   Right sunken column: the running selection, the unlock code (large,
+   copyable, regenerable) and the published toggle. Saving REPLACES the
+   version's worksheet list via the normal versions PATCH — the server
+   re-validates the bundle with the real engine. */
+function AssignPage({ token, initialVersionId, catalogue, onBack, onAuthGone }) {
+  const [versions, setVersions] = useState(null);
+  const [err, setErr] = useState(null);
+  const [vid, setVid] = useState(initialVersionId || null);
+  const [sel, setSel] = useState(null); // ordered [{ key, title, text, n, extra }]
+  const [filter, setFilter] = useState('');
+  const [saveState, setSaveState] = useState(null); // null | 'saving' | 'saved'
+  const [copied, setCopied] = useState(false);
+  const [busyCode, setBusyCode] = useState(false);
+
+  async function api(method, path, body) {
+    const headers = { Authorization: token };
+    if (body !== undefined) headers['Content-Type'] = 'application/json';
+    const r = await fetch(path, { method: method, headers: headers, body: body === undefined ? undefined : JSON.stringify(body) });
+    if (r.status === 401) { onAuthGone(); throw new Error('Signed out — please sign in again.'); }
+    const text = await r.text();
+    let j = null; try { j = JSON.parse(text); } catch (e) {}
+    if (!r.ok) throw new Error((j && (j.error || j.message)) || ('Request failed (' + r.status + ')'));
+    return j;
+  }
+  function derivCountOf(text) {
+    try {
+      const obj = JSON.parse(text);
+      return Array.isArray(obj.exercises) ? obj.exercises.reduce((a, g) => a + ((g.items || g.derivations || g.trees || []).length), 0) : 0;
+    } catch (e) { return 0; }
+  }
+  function selectionFrom(version) {
+    const list = (version.bundle && (version.bundle.worksheets || version.bundle.exercises)) || [];
+    return list.map((w) => {
+      if (!w || !w.key) return null;
+      const cat = catalogue.find((c) => c.key === w.key);
+      if (cat) return { key: cat.key, title: cat.title, text: cat.text, n: cat.n };
+      const text = typeof w.text === 'string' ? w.text : JSON.stringify(w.content);
+      return { key: w.key, title: w.title || w.key, text: text, n: derivCountOf(text), extra: true };
+    }).filter(Boolean);
+  }
+  function pick(version) { setVid(version.id); setSel(selectionFrom(version)); setSaveState(null); setErr(null); }
+  useEffect(() => {
+    api('GET', '/api/collections/versions/records?sort=-updated&perPage=200')
+      .then((j) => setVersions((j && j.items) || []))
+      .catch((e) => setErr('Could not load your versions: ' + e.message));
+  }, []);
+  useEffect(() => {
+    if (!versions) return;
+    if (!vid && versions.length === 1) { pick(versions[0]); return; }
+    if (vid && sel === null) { const vv = versions.find((x) => x.id === vid); if (vv) pick(vv); }
+  }, [versions]);
+  const v = (versions || []).find((x) => x.id === vid) || null;
+  const selKeys = new Set((sel || []).map((x) => x.key));
+  function toggle(item) {
+    setSaveState(null);
+    setSel((s) => selKeys.has(item.key) ? (s || []).filter((x) => x.key !== item.key) : [...(s || []), item]);
+  }
+  async function save() {
+    if (!v || !sel) return;
+    setSaveState('saving'); setErr(null);
+    try {
+      const bundle = {
+        compose_bundle: 1, title: v.title, chapters: [],
+        worksheets: sel.map((it) => ({ key: it.key, title: it.title, text: it.text })),
+        engineVersion: (window.LC && window.LC.VERSION) || undefined,
+      };
+      const j = await api('PATCH', '/api/collections/versions/records/' + v.id, { bundle: bundle });
+      setVersions((list) => (list || []).map((x) => x.id === v.id ? j : x));
+      setSaveState('saved');
+    } catch (e) { setSaveState(null); setErr('Save failed: ' + e.message); }
+  }
+  async function togglePublished() {
+    if (!v) return;
+    try {
+      const j = await api('PATCH', '/api/collections/versions/records/' + v.id, { published: !v.published });
+      setVersions((list) => (list || []).map((x) => x.id === v.id ? j : x));
+    } catch (e) { setErr('Update failed: ' + e.message); }
+  }
+  async function newCode() {
+    if (!v) return;
+    if (!window.confirm('Generate a new unlock code for "' + v.title + '"? The old code stops working immediately; students already enrolled keep their access.')) return;
+    setBusyCode(true);
+    try {
+      const j = await api('POST', '/api/compose/new-code', { version: v.id });
+      setVersions((list) => (list || []).map((x) => x.id === v.id ? Object.assign({}, x, { unlockCode: j.unlockCode }) : x));
+    } catch (e) { setErr('New code failed: ' + e.message); }
+    setBusyCode(false);
+  }
+
+  if (!v) {
+    return (
+      <div className="page-view as-wrap">
+        <div className="as-inner">
+          <div className="page-crumb-row">
+            <button type="button" className="page-back" onClick={onBack} title="Back to practice" aria-label="Back to practice">‹</button>
+            <span className="page-crumb">Assign &amp; share</span>
+          </div>
+          <h1 className="as-title">Choose what a class sees</h1>
+          <div className="as-sub">Pick one of your versions — each version is one class's worksheet list, student link and unlock code.</div>
+          {err && <div className="vd-err" onClick={() => setErr(null)} title="Click to dismiss">{err}</div>}
+          {versions === null ? <div className="vd-empty">Loading…</div>
+            : versions.length === 0 ? (
+              <div className="vd-none">
+                <div className="vd-none-glyph" aria-hidden="true">◈</div>
+                <div className="vd-none-title">No versions yet</div>
+                <div className="vd-none-sub">Create one on the My versions page first — then choose here what its students see.</div>
+              </div>
+            ) : versions.map((x) => (
+              <button type="button" className="as-pick-row" key={x.id} onClick={() => pick(x)}>
+                <span className="as-pick-title">{x.title}</span>
+                <span className="as-pick-meta">{(((x.bundle && (x.bundle.worksheets || x.bundle.exercises)) || []).length)} worksheets · code <span className="mono">{x.unlockCode || '—'}</span> · {x.published ? 'live' : 'hidden'}</span>
+                <span className="as-pick-go" aria-hidden="true">›</span>
+              </button>
+            ))}
+        </div>
+      </div>
+    );
+  }
+
+  const q = filter.trim().toLowerCase();
+  const groups = [];
+  catalogue.forEach((c) => {
+    if (q && !c.title.toLowerCase().includes(q)) return;
+    let g = groups.find((x) => x.label === c.coll);
+    if (!g) { g = { label: c.coll, items: [] }; groups.push(g); }
+    g.items.push(c);
+  });
+  const extras = (sel || []).filter((x) => x.extra && (!q || x.title.toLowerCase().includes(q)));
+  const total = catalogue.length + (sel || []).filter((x) => x.extra).length;
+  const derivTotal = (sel || []).reduce((a, x) => a + (x.n || 0), 0);
+  const savedKeys = ((v.bundle && (v.bundle.worksheets || v.bundle.exercises)) || []).map((w) => w && w.key).join('\n');
+  const dirty = sel !== null && sel.map((x) => x.key).join('\n') !== savedKeys;
+
+  return (
+    <div className="page-view as-wrap">
+      <div className="as-inner">
+        <div className="as-head">
+          <div className="as-head-main">
+            <div className="page-crumb-row">
+              <button type="button" className="page-back" onClick={onBack} title="Back to practice" aria-label="Back to practice">‹</button>
+              <span className="page-crumb">Assign &amp; share · {v.title}</span>
+            </div>
+            <h1 className="as-title">Choose what this class sees</h1>
+            <div className="as-sub">Pick from every worksheet you can reach. Students at the link see only your selection, in this order — never the full library.</div>
+          </div>
+          <div className="as-head-actions">
+            {versions && versions.length > 1 && (
+              <select className="as-switch" aria-label="Switch version" value={vid}
+                onChange={(e) => { const vv = versions.find((x) => x.id === e.target.value); if (vv) pick(vv); }}>
+                {versions.map((x) => <option key={x.id} value={x.id}>{x.title}</option>)}
+              </select>
+            )}
+            <span className="as-count">{(sel || []).length} of {total} selected</span>
+            <a className="btn-ghost as-open" href={'/v/' + v.slug} target="_blank" rel="noopener">Open as a student</a>
+            <button type="button" className="btn btn-primary as-save" disabled={!dirty || saveState === 'saving'} onClick={save}>
+              {saveState === 'saving' ? 'Saving…' : (saveState === 'saved' && !dirty) ? '✓ Saved' : 'Save changes'}</button>
+          </div>
+        </div>
+        {err && <div className="vd-err" onClick={() => setErr(null)} title="Click to dismiss">{err}</div>}
+        <div className="as-cols">
+          <div className="as-left">
+            <div className="as-col-head">
+              <span className="as-col-title">All worksheets you can reach</span>
+              <div className="as-filter">
+                <span aria-hidden="true">⌕</span>
+                <input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder="Filter…" aria-label="Filter worksheets" />
+              </div>
+            </div>
+            <div className="as-left-scroll">
+              {groups.map((g) => (
+                <div key={g.label}>
+                  <div className="as-group"><span className="as-group-label">{g.label}</span><span className="as-group-note">{g.items.length}</span></div>
+                  {g.items.map((c) => {
+                    const on = selKeys.has(c.key);
+                    return (
+                      <button type="button" key={c.key} className={'as-item' + (on ? ' on' : '')} role="checkbox" aria-checked={on} onClick={() => toggle(c)}>
+                        <span className={'as-box' + (on ? ' on' : '')} aria-hidden="true">{on ? '✓' : ''}</span>
+                        <span className="as-item-main">
+                          <span className="as-item-title">{c.title}</span>
+                          <span className="as-item-meta mono">{c.key}</span>
+                        </span>
+                        <span className="as-badge">{c.n} derivation{c.n === 1 ? '' : 's'}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+              {extras.length > 0 && (
+                <div>
+                  <div className="as-group"><span className="as-group-label">Already in this version</span><span className="as-group-note">saved on the server</span></div>
+                  {extras.map((x) => (
+                    <button type="button" key={x.key} className="as-item on" role="checkbox" aria-checked="true" onClick={() => toggle(x)}>
+                      <span className="as-box on" aria-hidden="true">✓</span>
+                      <span className="as-item-main"><span className="as-item-title">{x.title}</span><span className="as-item-meta mono">{x.key}</span></span>
+                      <span className="as-badge">{x.n} derivation{x.n === 1 ? '' : 's'}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+              {groups.length === 0 && extras.length === 0 && <div className="as-none">Nothing matches “{filter.trim()}”.</div>}
+            </div>
+          </div>
+          <div className="as-right">
+            <div className="as-col-head"><span className="as-col-title">What students get</span><span className="as-col-note">in this order</span></div>
+            <div className="as-right-scroll">
+              <div className="as-card">
+                <div className="as-card-head">Their sidebar will show</div>
+                {(sel || []).length > 0 ? (
+                  <div className="as-picked">
+                    {(sel || []).map((x) => (
+                      <div className="as-picked-row" key={x.key}>
+                        <span className="as-picked-ring" aria-hidden="true" />
+                        <span className="as-picked-main">
+                          <span className="as-picked-title">{x.title}</span>
+                          <span className="as-picked-key mono">{x.key}</span>
+                        </span>
+                        <span className="as-picked-n">{x.n} derivation{x.n === 1 ? '' : 's'}</span>
+                        <button type="button" className="as-picked-x" title="Remove from this class" aria-label={'Remove ' + x.title} onClick={() => toggle(x)}>✕</button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="as-none">Nothing selected — students would see an empty worksheet list.</div>
+                )}
+                <div className="as-card-foot">Nothing else in the library is visible to them. {derivTotal} derivation{derivTotal === 1 ? '' : 's'} in total.{dirty ? ' Unsaved changes — students still see the last saved list.' : ''}</div>
+              </div>
+              <div className="as-card as-code-card">
+                <div className="as-card-head">Unlock code</div>
+                <div className="as-code-row">
+                  <span className="as-code mono">{v.unlockCode || '—'}</span>
+                  <button type="button" className="vd-btn" title="Copy the unlock code"
+                    onClick={() => { navigator.clipboard.writeText(v.unlockCode || '').then(() => { setCopied(true); setTimeout(() => setCopied(false), 1500); }); }}>{copied ? '✓ copied' : '⧉ Copy'}</button>
+                  <button type="button" className="vd-btn" disabled={busyCode} title="Generate a new code — the old one stops working" onClick={newCode}>{busyCode ? '…' : '↻ New code'}</button>
+                </div>
+                <div className="as-code-note">Students sign in and enter this code — the class then appears in their “My classes”. The student link keeps working too:</div>
+                <div className="as-link-row">
+                  <a className="vd-slug mono" href={'/v/' + v.slug} target="_blank" rel="noopener">/v/{v.slug}</a>
+                  <button type="button" className={'vd-state' + (v.published ? '' : ' off')} onClick={togglePublished}
+                    title={v.published ? 'Published — students can open the link and redeem the code. Click to unpublish.' : 'Unpublished — the link 404s and the code is refused. Click to publish.'}>
+                    {v.published ? '● live' : '○ hidden'}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -749,6 +1063,27 @@ function App() {
     }, 2000);
     return () => clearTimeout(timer);
   }, [progress, canSync, authId, pullDone]);
+  // ---- N5 (S33): unlock dialog, My classes, assign & share ---------------
+  const [unlockOpen, setUnlockOpen] = useState(false);
+  const [classes, setClasses] = useState(null); // [{id,slug,title,notes,mode,enrollment,bundle}]
+  const [assignFor, setAssignFor] = useState(null); // version id the assign page opens on
+  const classesFor = useRef(null);
+  // slug → true (island write-back armed) | [keys] (import scheduled, not yet applied)
+  const classIslandsIn = useRef({});
+  const refreshClasses = useCallback(() => {
+    if (!canSync) return;
+    fetch('/api/compose/my-classes', { headers: { Authorization: auth.token } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => { if (j && Array.isArray(j.classes)) setClasses(j.classes); })
+      .catch(() => {}); // offline: keep whatever we have
+  }, [canSync, auth && auth.token]);
+  useEffect(() => {
+    if (!canSync || !authId) { setClasses(null); classesFor.current = null; classIslandsIn.current = {}; return; }
+    if (classesFor.current === authId) return;
+    classesFor.current = authId;
+    classIslandsIn.current = {};
+    refreshClasses();
+  }, [canSync, authId]);
   function openEditorSurface() {
     // Desktop: the editor is a page (N2). Mobile keeps the modal path.
     if (isMobile) { setModal('editor'); }
@@ -782,7 +1117,67 @@ function App() {
       catch (e) { return null; }
     }).filter(Boolean)
   ), [bundles]);
-  const LIB = React.useMemo(() => [...BUILTIN, ...userLib, ...bundleLib], [userLib, bundleLib]);
+  // N5: enrolled versions ("My classes") load their worksheets from the
+  // fetched bundle through the same loadText path user files use. Lib key
+  // AND set.key are 'class:<slug>:<wsKey>' — on /v/<slug> the same worksheet
+  // keys progress as '<wsKey>/…' under the slug island, so the bridge below
+  // can share one progress store with the /v/ page.
+  const classLib = React.useMemo(() => (classes || []).flatMap((c) => {
+    const list = (c.bundle && (c.bundle.worksheets || c.bundle.exercises)) || [];
+    return list.map((w) => {
+      if (!w || !w.key) return null;
+      const text = typeof w.text === 'string' ? w.text : JSON.stringify(w.content);
+      try {
+        const { set } = window.LCData.loadText(text, w.title || w.key);
+        set.key = 'class:' + c.slug + ':' + w.key;
+        return { key: set.key, title: w.title || set.title || w.key, set,
+                 classSlug: c.slug, classTitle: c.title, classNotes: c.notes, text };
+      } catch (e) { return null; }
+    }).filter(Boolean);
+  }), [classes]);
+  const LIB = React.useMemo(() => [...BUILTIN, ...userLib, ...bundleLib, ...classLib], [userLib, bundleLib, classLib]);
+
+  // N5: class progress lives in the version's OWN island — localStorage
+  // `<slug>:lc2-progress`, exactly where /v/<slug> keeps it — so solving in
+  // the app and at /v/ share one store. Import once per class on arrival
+  // (union into the app map under the class:<slug>: prefix); the write-back
+  // below only ARMS once the import is visibly applied, so it can never
+  // clobber an island with a pre-import snapshot.
+  useEffect(() => {
+    if (!classes || !classes.length) return;
+    const found = {};
+    classes.forEach((c) => {
+      if (classIslandsIn.current[c.slug]) return;
+      let ext = null;
+      try { ext = JSON.parse(localStorage.getItem(c.slug + ':lc2-progress') || 'null'); } catch (e) {}
+      const keys = (ext && typeof ext === 'object' && !Array.isArray(ext)) ? Object.keys(ext).filter((k) => ext[k]) : [];
+      if (keys.length) { found[c.slug] = keys; classIslandsIn.current[c.slug] = keys; }
+      else classIslandsIn.current[c.slug] = true; // nothing stored — safe at once
+    });
+    if (!Object.keys(found).length) return;
+    setProgress((pr) => {
+      const next = Object.assign({}, pr);
+      Object.keys(found).forEach((slug) => found[slug].forEach((k) => { next['class:' + slug + ':' + k] = true; }));
+      return next;
+    });
+  }, [classes]);
+  useEffect(() => {
+    (classes || []).forEach((c) => {
+      const st = classIslandsIn.current[c.slug];
+      if (!st) return;
+      const pre = 'class:' + c.slug + ':';
+      if (st !== true) {
+        if (!st.every((k) => progress[pre + k])) return; // import not applied yet
+        classIslandsIn.current[c.slug] = true;
+      }
+      const mine = {};
+      Object.keys(progress).forEach((k) => { if (progress[k] && k.indexOf(pre) === 0) mine[k.slice(pre.length)] = true; });
+      try {
+        const next = JSON.stringify(mine);
+        if (localStorage.getItem(c.slug + ':lc2-progress') !== next) localStorage.setItem(c.slug + ':lc2-progress', next);
+      } catch (e) {}
+    });
+  }, [progress, classes]);
 
   useEffect(() => {
     try { localStorage.setItem(LC_NS + 'lc2-userfiles', JSON.stringify(userFiles)); window.__lcUserFilesQuotaWarned = false; }
@@ -841,13 +1236,19 @@ function App() {
   // version notes through the same ReaderPanel via a synthetic set.
   const readingSet = React.useMemo(() => {
     if (set && set.reading && set.reading.markdown && set.reading.markdown.trim()) return set;
+    // N5: a class (enrolled version) can carry instructor notes — render them
+    // through the same synthetic-set path the /v/ page uses for its notes.
+    const cn = lib && lib.classNotes;
+    if (cn && String(cn).trim()) {
+      return { key: '__class-notes-' + lib.classSlug, title: lib.classTitle || 'Notes', reading: { format: 'latex', markdown: String(cn) } };
+    }
     const vn = typeof window !== 'undefined' && window.COMPOSE_NOTES;
     if (vn && String(vn).trim()) {
       const title = (window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment && window.COMPOSE_CONFIG.assignment.title) || 'Notes';
       return { key: '__version-notes', title, reading: { format: 'latex', markdown: String(vn) } };
     }
     return null;
-  }, [set]);
+  }, [set, lib]);
   const hasReading = !!readingSet;
 
   // First time a set is opened in student mode, surface its rules — ONCE.
@@ -1173,7 +1574,9 @@ function App() {
         return;
       }
       if (e.key === 'Escape' && !inPalette) {
+        // README order: palette → unlock modal → shortcuts.
         if (palette) { e.preventDefault(); closePalette(); return; }
+        if (unlockOpen) { e.preventDefault(); setUnlockOpen(false); return; }
         if (shortcutsOpen) { e.preventDefault(); setShortcutsOpen(false); return; }
       }
       if (typing) return;
@@ -1186,7 +1589,7 @@ function App() {
       if ((e.metaKey || e.ctrlKey) && (e.key === 'e' || e.key === 'E') && canAuthor) {
         e.preventDefault(); closePalette(); setShortcutsOpen(false); openEditorSurface(); return;
       }
-      if (e.metaKey || e.ctrlKey || e.altKey || modal || palette || shortcutsOpen || page !== 'practice') return;
+      if (e.metaKey || e.ctrlKey || e.altKey || modal || palette || shortcutsOpen || unlockOpen || page !== 'practice') return;
       if (e.key === 'j' || e.key === 'J') { e.preventDefault(); gotoFlat(-1); }
       else if (e.key === 'k' || e.key === 'K') { e.preventDefault(); gotoFlat(1); }
     }
@@ -1329,12 +1732,32 @@ function App() {
   }
   function collectionOf(l) {
     if (!l) return null;
+    if (l.classTitle) return l.classTitle;
     if (l.bundleTitle) return l.bundleTitle;
     if (l.user) return 'My worksheets';
     const CH = (window.LCData && window.LCData.CHAPTERS) || [];
     const ch = CH.find((c) => l.key === c.prefix || l.key.startsWith(c.prefix + '.') || l.key.startsWith(c.prefix + '-'));
     return ch ? ch.title : (BUILD.label || 'COMPOSE');
   }
+  async function leaveClass(c) {
+    if (!window.confirm('Leave “' + c.title + '”? Its worksheets disappear from your list; your progress stays saved, and the code unlocks it again any time.')) return;
+    try {
+      await fetch('/api/collections/enrollments/records/' + c.enrollment, { method: 'DELETE', headers: { Authorization: auth.token } });
+    } catch (e) {}
+    setClasses((cs) => (cs || []).filter((x) => x.id !== c.id));
+    if (lib && lib.classSlug === c.slug) { setFileKey(BUILTIN[0] ? BUILTIN[0].key : null); setSel({ gi: 0, pi: 0 }); }
+  }
+  // N5: the assign page's catalogue — every worksheet this instructor can
+  // reach here (built-ins + their own worksheets; enrolled classes are other
+  // people's versions and stay out). Raw text comes from the entry itself
+  // (user/bundle files) or the page's inline file map (built-ins).
+  const assignCatalogue = React.useMemo(() => LIB.map((l) => {
+    if (l.classSlug) return null;
+    const text = l.text || (window.LC_FILES && window.LC_FILES[l.key] && window.LC_FILES[l.key].text) || null;
+    if (!text) return null;
+    return { key: l.key, title: l.title, coll: collectionOf(l) || 'Worksheets',
+             n: l.set.groups.reduce((a, g) => a + g.problems.length, 0), text: text };
+  }).filter(Boolean), [LIB]);
   function openWorksheetKey(key) {
     setPage('practice');
     setCustom(null); setFileKey(key); setSel({ gi: 0, pi: 0 }); setExOpen(true); setNavQuery('');
@@ -1380,7 +1803,7 @@ function App() {
     const CH = (window.LCData && window.LCData.CHAPTERS) || [];
     const inCh = (l, ch) => l.key === ch.prefix || l.key.startsWith(ch.prefix + '.') || l.key.startsWith(ch.prefix + '-');
     const cols = [];
-    const loose = LIB.filter((l) => !l.user && !CH.some((ch) => inCh(l, ch)));
+    const loose = LIB.filter((l) => !l.user && !l.classSlug && !CH.some((ch) => inCh(l, ch)));
     if (loose.length) cols.push({ id: '__loose', label: (ASSIGNMENT && ASSIGNMENT.title) || 'Worksheets', items: loose });
     CH.forEach((ch) => {
       const items = LIB.filter((l) => !l.user && inCh(l, ch));
@@ -1452,6 +1875,33 @@ function App() {
                     <span className="sb-ico" aria-hidden="true">↑</span>
                     <span className="sb-row-label">Open a file…</span>
                   </button>
+                  {isFullBuild && tier !== 'anon' && classes && classes.length > 0 && (
+                    <div>
+                      <div className="sb-kicker">My classes</div>
+                      {classes.map((c) => {
+                        const items = classLib.filter((l) => l.classSlug === c.slug);
+                        const cid = 'class:' + c.slug;
+                        return (
+                          <div key={cid}>
+                            <button type="button" className="sb-coll-head" aria-expanded={openId === cid}
+                              onClick={() => setOpenColl(openId === cid ? '' : cid)}>
+                              <span className="sb-coll-caret" aria-hidden="true">{openId === cid ? '▾' : '▸'}</span>
+                              <span className="sb-coll-label">{c.title}</span>
+                              <span className="sb-coll-count">{items.length}</span>
+                            </button>
+                            {openId === cid && items.map((l) => renderWsRow(l))}
+                            {openId === cid && items.length === 0 && <div className="sb-empty-note">This class has no worksheets yet.</div>}
+                            {openId === cid && (
+                              <button type="button" className="sb-row sb-leave-row" title="Remove this class from your list" onClick={() => leaveClass(c)}>
+                                <span className="sb-ico" aria-hidden="true">✕</span>
+                                <span className="sb-row-label">Leave this class…</span>
+                              </button>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                   <button type="button" className={'sb-row' + (page === 'progress' ? ' on' : '')}
                     aria-current={page === 'progress' ? 'true' : undefined}
                     onClick={() => setPage('progress')}>
@@ -1459,6 +1909,11 @@ function App() {
                     <span className="sb-row-label">Your progress</span>
                     <span className="sb-row-note">{grandSolved} solved</span>
                   </button>
+                  {isFullBuild && (
+                    <div className="sb-unlock-wrap">
+                      <button type="button" className="sb-unlock-btn" onClick={() => setUnlockOpen(true)}>⊕ Unlock with a code</button>
+                    </div>
+                  )}
                   {isFullBuild && (
                     <div>
                       <div className="sb-kicker">Full library</div>
@@ -1499,6 +1954,14 @@ function App() {
                   <button type="button" className="sb-row" onClick={() => setModal('scratch')}><span className="sb-ico" aria-hidden="true">♪</span><span className="sb-row-label">Scratchpad</span><span className="sb-row-note">free</span></button>
                   <button type="button" className="sb-row" onClick={() => setModal('reading')}><span className="sb-ico" aria-hidden="true">📝</span><span className="sb-row-label">Notes</span></button>
                   <button type="button" className="sb-row" onClick={() => { setLoadErr(null); if (fileInput.current) fileInput.current.click(); }}><span className="sb-ico" aria-hidden="true">↑</span><span className="sb-row-label">Import worksheet…</span></button>
+                </div>
+              ))}
+              {isFullBuild && tier === 'instructor' && sbSection('assign', '☑', 'Assign & share', null, (
+                <div>
+                  <button type="button" className={'sb-row' + (page === 'assign' ? ' on' : '')}
+                    aria-current={page === 'assign' ? 'true' : undefined}
+                    onClick={() => setPage('assign')}><span className="sb-ico" aria-hidden="true">☑</span><span className="sb-row-label">Choose what a class sees</span><span className="sb-row-note">page</span></button>
+                  <button type="button" className={'sb-row' + (page === 'dash' ? ' on' : '')} onClick={() => setPage('dash')}><span className="sb-ico" aria-hidden="true">◈</span><span className="sb-row-label">My versions</span></button>
                 </div>
               ))}
               {sbSection('display', '◐', 'Display', null, (
@@ -1605,6 +2068,8 @@ function App() {
           onClick={() => setExOpen(true)}>☰</button>}
         {canAuthor && <button type="button" className="rail-btn" title="Author" aria-label="Author"
           onClick={() => drillOut('author')}>✎</button>}
+        {isFullBuild && tier === 'instructor' && <button type="button" className="rail-btn" title="Assign & share" aria-label="Assign & share"
+          onClick={() => drillOut('assign')}>☑</button>}
         <div className="rail-spacer" />
         {isFullBuild && <button type="button" className="rail-btn" title="Account" aria-label="Account"
           onClick={() => drillOut('account')}>◉</button>}
@@ -1775,6 +2240,7 @@ function App() {
       { glyph: '⌘', label: 'Keyboard shortcuts', kicker: 'action', hay: 'keyboard shortcuts keys', act: () => setShortcutsOpen(true) },
     ];
     if (isFullBuild) {
+      rows.push({ glyph: '⊕', label: 'Unlock a worksheet set', kicker: 'action', hay: 'unlock code class enrol redeem worksheet set', act: () => setUnlockOpen(true) });
       if (tier === 'anon') rows.push({ glyph: '◉', label: 'Sign in or create an account', kicker: 'action', hay: 'sign in account register', act: () => { setSigninMode('login'); setPage('signin'); } });
       else rows.push({ glyph: '→', label: 'Sign out', kicker: 'action', hay: 'sign out log out', act: () => { setAuth(null); setPage('practice'); } });
     }
@@ -1957,6 +2423,7 @@ function App() {
               <div className="pg-none">
                 <div className="pg-none-title">No worksheets unlocked yet</div>
                 <div className="pg-none-sub">Enter the code your instructor gave you and the worksheet — and your progress through it — appears here.</div>
+                {isFullBuild && <button type="button" className="btn-ghost pg-unlock" onClick={() => setUnlockOpen(true)}>⊕ Unlock with a code</button>}
               </div>
             )}
           </div>
@@ -1977,13 +2444,19 @@ function App() {
     );
   }
   function renderPageView() {
-    if (page === 'signin' || (page === 'dash' && tier !== 'instructor')) {
+    if (page === 'signin' || ((page === 'dash' || page === 'assign') && tier !== 'instructor')) {
       return <SigninPage key={signinMode} initialMode={signinMode}
         onBack={() => setPage('practice')}
         onAuthed={(a) => { setAuth(a); setPage('practice'); setNavSection('account'); }} />;
     }
     if (page === 'dash') {
       return <VersionsPage token={auth.token}
+        onBack={() => setPage('practice')}
+        onAssign={(id) => { setAssignFor(id); setPage('assign'); }}
+        onAuthGone={() => { setAuth(null); setSigninMode('login'); setPage('signin'); }} />;
+    }
+    if (page === 'assign') {
+      return <AssignPage token={auth.token} initialVersionId={assignFor} catalogue={assignCatalogue}
         onBack={() => setPage('practice')}
         onAuthGone={() => { setAuth(null); setSigninMode('login'); setPage('signin'); }} />;
     }
@@ -2175,7 +2648,7 @@ function App() {
                   {/* built-ins that belong to no chapter grouping (e.g. the
                       injected Getting Started demo on the bare root — S23:
                       previously invisible in its own picker) */}
-                  {LIB.filter(l => !l.user && !CHAPTERS.some(ch => l.key === ch.prefix || l.key.startsWith(ch.prefix + '.') || l.key.startsWith(ch.prefix + '-'))).map(l => {
+                  {LIB.filter(l => !l.user && !l.classSlug && !CHAPTERS.some(ch => l.key === ch.prefix || l.key.startsWith(ch.prefix + '.') || l.key.startsWith(ch.prefix + '-'))).map(l => {
                     const counts = l.set.groups.reduce((a, g) => a + g.problems.length, 0);
                     const active = !custom && l.key === fileKey;
                     return (
@@ -2287,6 +2760,12 @@ function App() {
 
       {!isMobile && renderPalette()}
       {!isMobile && renderShortcuts()}
+      {!isMobile && unlockOpen && (
+        <UnlockDialog token={isFullBuild && tier !== 'anon' && auth ? auth.token : null}
+          onClose={() => setUnlockOpen(false)}
+          onSignin={() => { setUnlockOpen(false); setSigninMode('login'); setPage('signin'); }}
+          onUnlocked={(v) => { refreshClasses(); setNavSection('library'); if (v && v.slug) setOpenColl('class:' + v.slug); }} />
+      )}
 
       {netNotice && <div className="net-notice">{netNotice}</div>}
 

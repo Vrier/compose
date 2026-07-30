@@ -12,11 +12,11 @@
    (template.html, vendor engine) are rebuilt automatically.
 
    Budget note: ONE server instance runs everything, and the S5 rate limiter
-   (5/min on register and on auth) is live — keep register/auth calls in the
-   budget. N0 uses the full auth budget (5 of 5: TA, B, superuser, student
-   login, student auth-refresh) — add NO further auth calls without raising
-   the limit in migration 1751700005.
-   ordinary journeys under 5 each; the rate-limit probe runs LAST.
+   is live — keep register/auth calls in the budget. The suite makes FIVE
+   auth calls (TA, B, superuser, student login, student auth-refresh);
+   migration 1751700006 (N5) raised *:auth to 8/min, so there are 3 spare —
+   the N5 my-classes/leave/redeem checks reuse existing tokens and cost no
+   auth calls. Register stays 5/min; the rate-limit probe runs LAST.
    =========================================================================== */
 import { spawn, execFileSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -270,6 +270,9 @@ async function main() {
   // N4 (S32) — command palette + progress page compiled into the site bundle
   contains('root ships the command palette (N4)', r.text, 'pal-list');
   contains('root ships the progress page (N4)', r.text, 'pg-inner');
+  // N5 (S33) — unlock dialog + assign & share page compiled into the site bundle
+  contains('root ships the unlock dialog (N5)', r.text, 'ul-dialog');
+  contains('root ships the assign & share page (N5)', r.text, 'as-inner');
   r = await req('GET', '/editor/', { raw: true });
   contains('/editor identifies as the sandbox', r.text, '"id":"hosted-sandbox"');
   contains('/editor is an instructor surface', r.text, '"role":"instructor"');
@@ -404,6 +407,23 @@ async function main() {
   r = await req('GET', '/api/collections/enrollments/records', { token: TA });
   expect('others see no foreign enrollments', r.json && r.json.totalItems === 0, r.text);
 
+  // N5 (S33) — my-classes: the enrollment-scoped bundle read behind "My classes"
+  r = await req('GET', '/api/compose/my-classes');
+  expect('my-classes requires auth', r.status === 401, r.status);
+  r = await req('GET', '/api/compose/my-classes', { token: TSTU });
+  expect('my-classes lists the enrolled version', r.status === 200 && r.json && Array.isArray(r.json.classes) && r.json.classes.length === 1, r.text.slice(0, 160));
+  const CLS = r.json && r.json.classes && r.json.classes[0];
+  expect('…with slug, title, mode and enrollment id', !!(CLS && CLS.slug === SLUG && CLS.title === 'Suite Version' && CLS.mode && CLS.enrollment), JSON.stringify(CLS || {}).slice(0, 160));
+  expect('…with the PARSED bundle (raw-bytes gotcha)', !!(CLS && CLS.bundle && CLS.bundle.compose_bundle === 1), JSON.stringify(CLS && CLS.bundle).slice(0, 120));
+  contains('…bundle carries the live worksheet content', JSON.stringify(CLS && CLS.bundle), 'Suite WS EDITED');
+  lacks('…and never leaks the unlock code', r.text, CODE0);
+  r = await req('DELETE', `/api/collections/enrollments/records/${CLS.enrollment}`, { token: TSTU });
+  expect('student leaves the class (deletes own enrollment)', r.status === 204, r.status);
+  r = await req('GET', '/api/compose/my-classes', { token: TSTU });
+  expect('my-classes empty after leaving', r.json && r.json.classes && r.json.classes.length === 0, r.text.slice(0, 120));
+  r = await req('POST', '/api/compose/redeem', { token: TSTU, body: { code: CODE0 } });
+  expect('re-redeeming after leaving re-enrolls', r.status === 200 && r.json && r.json.enrolled === true, r.text);
+
   r = await req('POST', '/api/collections/users/auth-refresh', { token: TSTU });
   const STUID = r.json && r.json.record && r.json.record.id;
   r = await req('POST', '/api/collections/progress/records', { token: TSTU, body: { user: 'SPOOFED', island: 'cc', data: { a: 1 } } });
@@ -428,6 +448,8 @@ async function main() {
   expect('unpublished version 404s', r.status === 404, r.status);
   r = await req('POST', '/api/compose/redeem', { token: TSTU, body: { code: CODE1 } });
   expect('redeem refuses unpublished versions', r.status === 404, r.status);
+  r = await req('GET', '/api/compose/my-classes', { token: TSTU });
+  expect('my-classes excludes unpublished versions (N5)', r.json && r.json.classes && r.json.classes.length === 0, r.text.slice(0, 120));
 
   // W6 — rate limiting LAST (burns the register budget on purpose)
   const codes = [];

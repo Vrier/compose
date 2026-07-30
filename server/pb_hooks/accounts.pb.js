@@ -16,6 +16,12 @@
    POST /api/compose/new-code           { version }       (auth required)
      Owner-only: regenerates a version's unlock code (invalidates the old
      one). Same ambiguity-free alphabet as slugs.
+
+   GET  /api/compose/my-classes                            (auth required)
+     The signed-in user's enrolled, PUBLISHED versions with their parsed
+     bundles — how the app populates "My classes" after a code redemption
+     (N5). versions stay owner-only at the collection level; this route is
+     the one enrollment-scoped read. Never includes the unlock code.
    =========================================================================== */
 
 routerAdd('POST', '/api/compose/register-student', (e) => {
@@ -92,4 +98,31 @@ routerAdd('POST', '/api/compose/new-code', (e) => {
   version.set('unlockCode', code);
   $app.save(version);
   return e.json(200, { ok: true, unlockCode: code });
+});
+
+routerAdd('GET', '/api/compose/my-classes', (e) => {
+  if (!e.auth) return e.json(401, { error: 'sign in first' });
+  // require() INSIDE the handler — PB hook handlers run in isolated VMs.
+  const lib = require(__hooks + '/compose_serve_lib.js');
+  let enrollments = [];
+  try { enrollments = $app.findRecordsByFilter('enrollments', 'user = {:u}', '-created', 200, 0, { u: e.auth.id }); }
+  catch (_) { enrollments = []; }
+  const classes = [];
+  for (const en of enrollments) {
+    let v;
+    try { v = $app.findRecordById('versions', en.getString('version')); }
+    catch (_) { continue; } // dangling enrollment (version deleted)
+    if (!v.getBool('published')) continue;
+    classes.push({
+      id: v.id,
+      slug: v.getString('slug'),
+      title: v.getString('title'),
+      notes: v.getString('notes'),
+      mode: v.getString('mode') || 'practice',
+      enrollment: en.id, // lets the client leave the class (delete own enrollment)
+      // json fields come back as raw bytes in goja — parse via the shared helper
+      bundle: lib.parseBundle(v),
+    });
+  }
+  return e.json(200, { classes: classes });
 });
