@@ -592,7 +592,23 @@ function App() {
   // instructor came for; the toggle preference still persists per build.
   const [teacherMode, setTeacherMode] = useState(() => isStudentBuild ? false : load('lc2-teacher', ['hosted-teacher', 'hosted-sandbox'].includes(String((window.COMPOSE_BUILD || {}).id || ''))));
   const [darkMode, setDarkMode] = useState(() => load('lc2-dark', false));
-  const [rightTab, setRightTab] = useState('lexicon'); // right sidebar: 'lexicon' | 'reading'
+  const [rightTab, setRightTab] = useState('lexicon'); // MOBILE reader overlay: 'lexicon' | 'reading' (desktop uses refTab below since N3)
+  // ---- N3 (S31): right reference panel (Lexicon / Rules / Notes) --------
+  // Open by default at viewports >=1180px, closed below; once the user
+  // opens or closes it the choice is remembered (island-namespaced
+  // localStorage, like every other pref) — the README's panel/panelTouched.
+  // refTab picks the visible tab and is remembered too.
+  const [panelTouched, setPanelTouched] = useState(() => !!load('lc2-panel-touched', false));
+  const [panelOpen, setPanelOpen] = useState(() => load('lc2-panel-touched', false)
+    ? !!load('lc2-panel', true)
+    : (typeof window !== 'undefined' && window.innerWidth >= 1180));
+  const [refTab, setRefTab] = useState(() => load('lc2-ref-tab', 'lexicon')); // 'lexicon' | 'rules' | 'notes'
+  useEffect(() => { if (panelTouched) { save('lc2-panel-touched', true); save('lc2-panel', panelOpen); } }, [panelOpen, panelTouched]);
+  useEffect(() => { save('lc2-ref-tab', refTab); }, [refTab]);
+  // touch=true records the user's choice; the first-visit auto-open passes
+  // touch=false so it never overrides the remembered/default state.
+  const openPanelTab = useCallback((tab, touch) => { setRefTab(tab); setPanelOpen(true); if (touch) setPanelTouched(true); }, []);
+  const touchPanel = useCallback((open) => { setPanelTouched(true); setPanelOpen(open); }, []);
   const isMobile = useIsMobile(760);
   const [sheet, setSheet] = useState(null); // mobile: 'exercises' | 'lexicon' | 'more' | null
   // Close any open mobile sheet when we grow back to desktop
@@ -762,7 +778,10 @@ function App() {
     if (teacherMode || custom || !set || !set.key) return;
     if (seenSets[set.key]) return;
     setSeenSets((s) => ({ ...s, [set.key]: true }));
-    setModal('rules');
+    // N3: on desktop the rules now surface in the right panel's Rules tab
+    // (same once-per-worksheet seenSets memory); mobile keeps the modal.
+    if (isMobile) setModal('rules');
+    else openPanelTab('rules', false);
   }, [set && set.key, teacherMode, custom]);
 
   // ---- load exercise files from disk ------------------------------------
@@ -1546,7 +1565,7 @@ function App() {
           ))}
           {!custom && (
             <div className="colx-foot">
-              <button type="button" className="sb-row" onClick={() => setModal('rules')} title="View rules for this exercise"><span className="sb-ico" aria-hidden="true">☰</span><span className="sb-row-label">Rules for this worksheet</span></button>
+              <button type="button" className="sb-row" onClick={() => openPanelTab('rules', true)} title="View rules for this exercise"><span className="sb-ico" aria-hidden="true">☰</span><span className="sb-row-label">Rules for this worksheet</span></button>
               <button type="button" className="sb-row" onClick={() => setModal('summary')}><span className="sb-ico" aria-hidden="true">✓</span><span className="sb-row-label">Progress summary</span><span className="sb-row-note">{doneCount}/{probCount}</span></button>
               <button type="button" className="sb-row" onClick={() => composeExportProgress()}><span className="sb-ico" aria-hidden="true">⤓</span><span className="sb-row-label">Save progress to a file</span></button>
               <button type="button" className="sb-row" onClick={resetAllProgress} title="Clear all progress for this worksheet"><span className="sb-ico" aria-hidden="true">↺</span><span className="sb-row-label">Reset all derivations</span></button>
@@ -1567,8 +1586,6 @@ function App() {
           <h1 className="ph-gloss lx">{gloss}</h1>
         </div>
         <div className="ph-controls">
-          <button type="button" className="ph-btn" onClick={() => setModal('rules')} title="View rules for this exercise">☰ Rules</button>
-          {hasReading && <button type="button" className={'ph-btn' + (rightTab === 'reading' ? ' on' : '')} onClick={() => setRightTab((v) => v === 'reading' ? 'lexicon' : 'reading')} title="Show the notes in the side panel">📝 Notes</button>}
           <div className="ph-step" role="group" aria-label="Exercise navigation">
             <button type="button" className="ph-arrow" disabled={flatIdx <= 0} onClick={() => gotoFlat(-1)} title="Previous exercise (J)" aria-label="Previous exercise (J)">‹</button>
             <button type="button" className="ph-arrow" disabled={flatIdx < 0 || flatIdx >= flatNav.length - 1} onClick={() => gotoFlat(1)} title="Next exercise (K)" aria-label="Next exercise (K)">›</button>
@@ -1655,21 +1672,42 @@ function App() {
             : renderPageView()}
         </main>
 
-        {!isMobile && page === 'practice' && (
-          <aside className="col col-right">
-            {hasReading ? (
-              <div className="panel-head rd-tabhead">
-                <button className={'rd-tab' + (rightTab !== 'reading' ? ' on' : '')} onClick={() => setRightTab('lexicon')}>Lexicon <span className="count">{filteredLex.length}</span></button>
-                <button className={'rd-tab' + (rightTab === 'reading' ? ' on' : '')} onClick={() => setRightTab('reading')}>Notes</button>
-              </div>
-            ) : (
-              <div className="panel-head">Lexicon <span className="count">{filteredLex.length}</span></div>
-            )}
-            {hasReading && rightTab === 'reading' && window.ReaderPanel
-              ? (() => { const RP = window.ReaderPanel; return <RP set={readingSet} section={problem && problem.section} embedded />; })()
-              : renderLexiconScroll()}
+        {!isMobile && page === 'practice' && (panelOpen ? (() => {
+          // Notes tab only exists when the worksheet carries a reading;
+          // fall back to Lexicon if the current worksheet has none.
+          const panelTab = (refTab === 'notes' && !hasReading) ? 'lexicon' : refTab;
+          return (
+          <aside className="col col-right rp-panel" aria-label="Reference panel">
+            <div className="rp-tabs" role="tablist" aria-label="Reference panel tabs">
+              <button type="button" role="tab" id="rp-tab-lexicon" aria-selected={panelTab === 'lexicon'} aria-controls="rp-tabpanel"
+                className={'rp-tab' + (panelTab === 'lexicon' ? ' on' : '')} onClick={() => openPanelTab('lexicon', true)}>
+                Lexicon <span className="rp-count">{filteredLex.length}</span></button>
+              <button type="button" role="tab" id="rp-tab-rules" aria-selected={panelTab === 'rules'} aria-controls="rp-tabpanel"
+                className={'rp-tab' + (panelTab === 'rules' ? ' on' : '')} onClick={() => openPanelTab('rules', true)}>Rules</button>
+              {hasReading && <button type="button" role="tab" id="rp-tab-notes" aria-selected={panelTab === 'notes'} aria-controls="rp-tabpanel"
+                className={'rp-tab' + (panelTab === 'notes' ? ' on' : '')} onClick={() => openPanelTab('notes', true)}>Notes</button>}
+              <button type="button" className="rp-close" title="Collapse panel" aria-label="Collapse the reference panel" onClick={() => touchPanel(false)}>›</button>
+            </div>
+            <div className="rp-body" role="tabpanel" id="rp-tabpanel" aria-labelledby={'rp-tab-' + panelTab}>
+              {panelTab === 'rules' ? (
+                <div className="rp-rules">
+                  <div className="rp-rules-intro">{teacherMode
+                    ? <React.Fragment>Choose which rules and type-shifts are active for <b>{custom ? 'this custom exercise' : (lib && lib.title)}</b>.</React.Fragment>
+                    : 'Rules available in this exercise. Instructors can switch these on or off in the editor.'}</div>
+                  <RulesContent allowed={allowed} setAllowed={setAllowed} toggleRule={toggleRule} toggleShift={toggleShift} readOnly={!teacherMode} />
+                  {teacherMode && <div className="rp-rules-foot"><button type="button" className="btn-ghost" onClick={() => setAllowedMap((m) => { const n = { ...m }; delete n[allowKey]; return n; })}>Reset to defaults</button></div>}
+                </div>
+              ) : panelTab === 'notes' && hasReading && window.ReaderPanel
+                ? (() => { const RP = window.ReaderPanel; return <RP set={readingSet} section={problem && problem.section} embedded />; })()
+                : renderLexiconScroll()}
+            </div>
           </aside>
-        )}
+          );
+        })() : (
+          <button type="button" className="rp-reopen" title="Open the reference panel"
+            aria-label="Open the reference panel (Lexicon, Rules, Notes)"
+            onClick={() => touchPanel(true)}>‹ Lexicon · Rules · Notes</button>
+        ))}
 
         {isMobile && rightTab === 'reading' && hasReading && window.ReaderPanel && (() => {
           const RP = window.ReaderPanel;

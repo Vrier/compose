@@ -262,6 +262,11 @@ async function main() {
   contains('root ships the sign-in surface (N2)', r.text, 'Create an account');
   contains('root ships the My-versions page (N2)', r.text, 'My versions');
   contains('root vendors QRCode for the in-app share modal (N2)', r.text, 'QRCode');
+  // N3 (S31) — right reference panel compiled into the site bundle
+  contains('root ships the right reference panel tabs (N3)', r.text, 'rp-tabs');
+  // NB esbuild ASCII-escapes the middots in the strip's label — assert the
+  // ASCII aria-label instead.
+  contains('root ships the panel reopen affordance (N3)', r.text, 'Open the reference panel (Lexicon, Rules, Notes)');
   r = await req('GET', '/editor/', { raw: true });
   contains('/editor identifies as the sandbox', r.text, '"id":"hosted-sandbox"');
   contains('/editor is an instructor surface', r.text, '"role":"instructor"');

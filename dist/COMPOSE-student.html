@@ -136,9 +136,8 @@ body {
   min-height: 0;
   position: relative;   /* <1040px floating drill-in column anchors here */
 }
-.app-main > .col-right { width: 300px; flex: none; }
+.app-main > .col-right { width: 316px; flex: none; }   /* N3: spec panel width */
 .app-main > .col-center { flex: 1; min-width: 0; }
-@media (max-width: 1180px) { .col-right { display: none !important; } }
 
 /* ---- top bar ----------------------------------------------------------- */
 .topbar {
@@ -1869,12 +1868,6 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .ph-crumb { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ph-gloss { font-size: 20px; font-weight: 600; margin: 3px 0 0; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ph-controls { display: flex; align-items: center; gap: 8px; flex: 0 1 auto; flex-wrap: wrap; justify-content: flex-end; }
-.ph-btn {
-  height: 30px; padding: 0 12px; border: 1px solid var(--line); border-radius: 999px;
-  background: var(--panel); font-family: inherit; font-size: 12.5px; color: var(--ink-soft); cursor: pointer; white-space: nowrap;
-}
-.ph-btn:hover { border-color: var(--accent); }
-.ph-btn.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
 .ph-step { display: flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--panel); }
 .ph-arrow { width: 30px; height: 28px; border: 0; background: transparent; color: var(--ink-soft); cursor: pointer; font-size: 14px; font-family: inherit; }
 .ph-arrow:hover:not(:disabled) { color: var(--accent-ink); background: var(--panel-2); }
@@ -1890,7 +1883,7 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .sb-row:focus-visible, .sb-sec-head:focus-visible, .sb-coll-head:focus-visible,
 .sb-collapse:focus-visible, .sb-kbd:focus-visible, .rail-btn:focus-visible,
 .colx-item:focus-visible, .colx-head:focus-visible,
-.ph-btn:focus-visible, .ph-arrow:focus-visible, .skip-link:focus-visible {
+.ph-arrow:focus-visible, .skip-link:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
@@ -2083,6 +2076,46 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .vd-link-btn:focus-visible, .vd-row-head:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+/* ---- N3 (S31): right reference panel — Lexicon / Rules / Notes --------- */
+/* 316px, practice only. Tab row per the prototype: 38px tabs, 1px bottom
+   border, active tab in accent (inset underline + ink text). Closable via
+   the › affordance; when closed, a 34px vertical reopen strip remains. */
+.rp-panel { display: flex; flex-direction: column; min-height: 0; }
+.rp-tabs { display: flex; align-items: stretch; flex: none; border-bottom: 1px solid var(--line); padding: 0 6px; }
+.rp-tab {
+  flex: 1; height: 38px; border: 0; background: transparent; cursor: pointer;
+  font-family: inherit; font-size: 12.5px; color: var(--muted); font-weight: 400;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  transition: color .12s;
+}
+.rp-tab:hover { color: var(--accent-ink); }
+.rp-tab.on { color: var(--ink); font-weight: 600; box-shadow: inset 0 -2px 0 var(--accent); }
+.rp-tab .rp-count { font-size: 10px; color: var(--faint); }
+.rp-close {
+  width: 26px; flex: none; border: 0; background: transparent; color: var(--faint);
+  cursor: pointer; font-size: 13px; font-family: inherit; transition: color .12s;
+}
+.rp-close:hover { color: var(--ink-soft); }
+.rp-body { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; }
+/* the shared rule inventory scrolls with the panel body, not inside it */
+.rp-body .rules-student-view, .rp-body .rules-body { overflow: visible; padding-left: 14px; padding-right: 14px; }
+.rp-rules { padding: 12px 0 18px; }
+.rp-rules-intro { font-size: 12px; color: var(--muted); line-height: 1.5; padding: 2px 16px 10px; }
+.rp-rules-foot { padding: 10px 16px 0; }
+.rp-reopen {
+  width: 34px; flex: none; border: 0; border-left: 1px solid var(--line);
+  background: var(--panel); color: var(--muted); cursor: pointer;
+  font-family: inherit; font-size: 13px; writing-mode: vertical-rl;
+  padding: 14px 0; white-space: nowrap; transition: color .12s, background .12s;
+}
+.rp-reopen:hover { color: var(--accent-ink); background: var(--panel-2); }
+.rp-tab:focus-visible, .rp-close:focus-visible, .rp-reopen:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 4px; }
+/* <1180px: closed by default (JS initial state); if opened it floats over
+   the content so the derivation stage never squashes (README breakpoint). */
+@media (max-width: 1180px) {
+  .app-main > .rp-panel { position: absolute; right: 0; top: 0; bottom: 0; z-index: 7; box-shadow: var(--shadow); }
 }
 
 
@@ -8706,7 +8739,7 @@ window.ReaderPanel = ReaderPanel;
 
 </script>
 <script>
-function RulesModal({ allowed, setAllowed, toggleRule, toggleShift, lib, custom, onClose, readOnly, onReset }) {
+function RulesContent({ allowed, setAllowed, toggleRule, toggleShift, readOnly }) {
   const shiftOnCount = window.LCData.SHIFTERS.filter((s) => allowed.shift && allowed.shift[s.key]).length;
   const groups = {};
   for (const s of window.LCData.SHIFTERS) {
@@ -8714,14 +8747,14 @@ function RulesModal({ allowed, setAllowed, toggleRule, toggleShift, lib, custom,
     groups[s.group].push(s);
   }
   const [openGrps, setOpenGrps] = React.useState(() => Object.fromEntries(Object.keys(groups).map((g) => [g, false])));
-  const label = custom ? "this custom exercise" : lib && lib.title;
-  return /* @__PURE__ */ React.createElement("div", { className: "modal-backdrop", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal rules-modal", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h3", null, "Rules available in this exercise"), !readOnly && /* @__PURE__ */ React.createElement("div", { className: "sub" }, "Choose which rules and type-shifts are active for ", /* @__PURE__ */ React.createElement("b", null, label), "."), readOnly ? /* @__PURE__ */ React.createElement("div", { className: "rules-student-view" }, [
+  if (readOnly) return /* @__PURE__ */ React.createElement("div", { className: "rules-student-view" }, [
     ["fa", "Function Application", "FA", "A function of type \u27E8A,B\u27E9 combines with its argument of type A, producing type B \u2014 the fundamental composition rule.", "Select a parent node once both children have meanings; FA triggers when types compose correctly."],
     ["pm", "Predicate Modification", "PM", "Two sisters of the same predicate type \u27E8A,t\u27E9 combine conjunctively: \u03BBx.[F(x) \u2227 G(x)].", "For intersective adjectives modifying nouns. Select the parent, choose PM, then enter the conjoined predicate."],
     ["nn", "Non-branching Node", "NN", "A single-child node automatically inherits its child\u2019s meaning.", "Articles, copulas, and bare labels resolve on their own \u2014 no input needed. Work upward from there."],
     ["pa", "Predicate Abstraction", "PA", "At a \u03BB-binder (LP) node, abstracts over trace variable x\u2080n to produce a predicate of type \u27E8e,t\u27E9.", "After Quantifier Raising: select the LP node, choose PA, then enter \u03BBx\u2080n.[inner meaning]."],
     ["ifa", "Intensional Function Application", "IFA", "One sister has type \u27E8\u27E8s,\u03C3\u27E9,\u03C4\u27E9 \u2014 it takes the intension of its sister, wrapping it as \u03BBw\u2080.\u03B2. Applies to attitude verbs (believes, seeks) and modal heads.", "Select the parent once both children have meanings. IFA fires when a head requires an intensional argument \u27E8s,\u03C3\u27E9."]
-  ].filter(([k]) => allowed[k]).map(([k, name, abbr, desc, when]) => /* @__PURE__ */ React.createElement("div", { key: k, className: "rsv-rule-card" }, /* @__PURE__ */ React.createElement("div", { className: "rsv-rule-hdr" }, /* @__PURE__ */ React.createElement("span", { className: "rsv-abbr" }, abbr), /* @__PURE__ */ React.createElement("span", { className: "rsv-name" }, name)), /* @__PURE__ */ React.createElement("div", { className: "rsv-rule-desc" }, desc), /* @__PURE__ */ React.createElement("div", { className: "rsv-rule-when" }, /* @__PURE__ */ React.createElement("span", { className: "rsv-when-label" }, "How to use:"), " ", when))), window.LCData.SHIFTERS.some((s) => allowed.shift && allowed.shift[s.key]) && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "rsv-section-head" }, "Type-shifting"), window.LCData.SHIFTERS.filter((s) => allowed.shift && allowed.shift[s.key]).map((s) => /* @__PURE__ */ React.createElement("div", { key: s.key, className: "rsv-shift-card" }, /* @__PURE__ */ React.createElement("div", { className: "rsv-rule-hdr" }, /* @__PURE__ */ React.createElement("span", { className: "rsv-abbr rsv-abbr-shift" }, s.abbr || s.key.toUpperCase()), /* @__PURE__ */ React.createElement("span", { className: "rsv-name" }, s.name)), /* @__PURE__ */ React.createElement("div", { className: "rsv-rule-desc" }, s.desc)))), allowed.qr && /* @__PURE__ */ React.createElement("div", { className: "rsv-rule-card" }, /* @__PURE__ */ React.createElement("div", { className: "rsv-rule-hdr" }, /* @__PURE__ */ React.createElement("span", { className: "rsv-abbr" }, "QR"), /* @__PURE__ */ React.createElement("span", { className: "rsv-name" }, "Quantifier Raising")), /* @__PURE__ */ React.createElement("div", { className: "rsv-rule-desc" }, "Moves a generalized-quantifier DP above an S node, leaving a coindexed trace and an LP binder for Predicate Abstraction."), /* @__PURE__ */ React.createElement("div", { className: "rsv-rule-when" }, /* @__PURE__ */ React.createElement("span", { className: "rsv-when-label" }, "How to use:"), " Once a DP has a generalized-quantifier meaning, a drag handle appears. Drag it to the \u21D1 QR site above S."))) : /* @__PURE__ */ React.createElement("div", { className: "rules-body" }, /* @__PURE__ */ React.createElement("div", { className: "rules-sec-label" }, "Composition rules"), [
+  ].filter(([k]) => allowed[k]).map(([k, name, abbr, desc, when]) => /* @__PURE__ */ React.createElement("div", { key: k, className: "rsv-rule-card" }, /* @__PURE__ */ React.createElement("div", { className: "rsv-rule-hdr" }, /* @__PURE__ */ React.createElement("span", { className: "rsv-abbr" }, abbr), /* @__PURE__ */ React.createElement("span", { className: "rsv-name" }, name)), /* @__PURE__ */ React.createElement("div", { className: "rsv-rule-desc" }, desc), /* @__PURE__ */ React.createElement("div", { className: "rsv-rule-when" }, /* @__PURE__ */ React.createElement("span", { className: "rsv-when-label" }, "How to use:"), " ", when))), window.LCData.SHIFTERS.some((s) => allowed.shift && allowed.shift[s.key]) && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "rsv-section-head" }, "Type-shifting"), window.LCData.SHIFTERS.filter((s) => allowed.shift && allowed.shift[s.key]).map((s) => /* @__PURE__ */ React.createElement("div", { key: s.key, className: "rsv-shift-card" }, /* @__PURE__ */ React.createElement("div", { className: "rsv-rule-hdr" }, /* @__PURE__ */ React.createElement("span", { className: "rsv-abbr rsv-abbr-shift" }, s.abbr || s.key.toUpperCase()), /* @__PURE__ */ React.createElement("span", { className: "rsv-name" }, s.name)), /* @__PURE__ */ React.createElement("div", { className: "rsv-rule-desc" }, s.desc)))), allowed.qr && /* @__PURE__ */ React.createElement("div", { className: "rsv-rule-card" }, /* @__PURE__ */ React.createElement("div", { className: "rsv-rule-hdr" }, /* @__PURE__ */ React.createElement("span", { className: "rsv-abbr" }, "QR"), /* @__PURE__ */ React.createElement("span", { className: "rsv-name" }, "Quantifier Raising")), /* @__PURE__ */ React.createElement("div", { className: "rsv-rule-desc" }, "Moves a generalized-quantifier DP above an S node, leaving a coindexed trace and an LP binder for Predicate Abstraction."), /* @__PURE__ */ React.createElement("div", { className: "rsv-rule-when" }, /* @__PURE__ */ React.createElement("span", { className: "rsv-when-label" }, "How to use:"), " Once a DP has a generalized-quantifier meaning, a drag handle appears. Drag it to the \u21D1 QR site above S.")));
+  return /* @__PURE__ */ React.createElement("div", { className: "rules-body" }, /* @__PURE__ */ React.createElement("div", { className: "rules-sec-label" }, "Composition rules"), [
     ["fa", "Function Application", "Apply a function \u27E8A,B\u27E9 to its argument A."],
     ["pm", "Predicate Modification", "Conjoin two \u27E8A,t\u27E9 predicates pointwise. Answer is always prompted."],
     ["nn", "Non-branching Node", "A one-child node inherits its child\u2019s meaning."],
@@ -8738,7 +8771,11 @@ function RulesModal({ allowed, setAllowed, toggleRule, toggleShift, lib, custom,
       });
       setAllowed({ ...allowed, shift: sh });
     } }, onCount === shifters.length ? "Deselect all" : "Select all"), /* @__PURE__ */ React.createElement("span", { className: "sg-arrow" }, openGrps[grp] ? "\u25BE" : "\u25B8")), openGrps[grp] && /* @__PURE__ */ React.createElement("div", { className: "shift-group-items" }, shifters.map((s) => /* @__PURE__ */ React.createElement("label", { key: s.key, className: "rule-opt compact" + (allowed.shift && allowed.shift[s.key] ? " on" : "") }, /* @__PURE__ */ React.createElement("input", { type: "checkbox", checked: !!(allowed.shift && allowed.shift[s.key]), onChange: () => toggleShift(s.key) }), /* @__PURE__ */ React.createElement("span", { className: "ro-box" }), /* @__PURE__ */ React.createElement("span", { className: "ro-text" }, /* @__PURE__ */ React.createElement("span", { className: "ro-name" }, s.name), /* @__PURE__ */ React.createElement("span", { className: "ro-desc" }, s.desc))))));
-  })), /* @__PURE__ */ React.createElement("div", { className: "editor-foot" }, !readOnly && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => onReset && onReset() }, "Reset to defaults"), /* @__PURE__ */ React.createElement("span", { style: { flex: 1 } }), /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", onClick: onClose }, "Done"))));
+  }));
+}
+function RulesModal({ allowed, setAllowed, toggleRule, toggleShift, lib, custom, onClose, readOnly, onReset }) {
+  const label = custom ? "this custom exercise" : lib && lib.title;
+  return /* @__PURE__ */ React.createElement("div", { className: "modal-backdrop", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal rules-modal", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h3", null, "Rules available in this exercise"), !readOnly && /* @__PURE__ */ React.createElement("div", { className: "sub" }, "Choose which rules and type-shifts are active for ", /* @__PURE__ */ React.createElement("b", null, label), "."), /* @__PURE__ */ React.createElement(RulesContent, { allowed, setAllowed, toggleRule, toggleShift, readOnly }), /* @__PURE__ */ React.createElement("div", { className: "editor-foot" }, !readOnly && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => onReset && onReset() }, "Reset to defaults"), /* @__PURE__ */ React.createElement("span", { style: { flex: 1 } }), /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", onClick: onClose }, "Done"))));
 }
 
 </script>
@@ -9969,6 +10006,27 @@ function App() {
   const [teacherMode, setTeacherMode] = useState(() => isStudentBuild ? false : load("lc2-teacher", ["hosted-teacher", "hosted-sandbox"].includes(String((window.COMPOSE_BUILD || {}).id || ""))));
   const [darkMode, setDarkMode] = useState(() => load("lc2-dark", false));
   const [rightTab, setRightTab] = useState("lexicon");
+  const [panelTouched, setPanelTouched] = useState(() => !!load("lc2-panel-touched", false));
+  const [panelOpen, setPanelOpen] = useState(() => load("lc2-panel-touched", false) ? !!load("lc2-panel", true) : typeof window !== "undefined" && window.innerWidth >= 1180);
+  const [refTab, setRefTab] = useState(() => load("lc2-ref-tab", "lexicon"));
+  useEffect(() => {
+    if (panelTouched) {
+      save("lc2-panel-touched", true);
+      save("lc2-panel", panelOpen);
+    }
+  }, [panelOpen, panelTouched]);
+  useEffect(() => {
+    save("lc2-ref-tab", refTab);
+  }, [refTab]);
+  const openPanelTab = useCallback((tab, touch) => {
+    setRefTab(tab);
+    setPanelOpen(true);
+    if (touch) setPanelTouched(true);
+  }, []);
+  const touchPanel = useCallback((open) => {
+    setPanelTouched(true);
+    setPanelOpen(open);
+  }, []);
   const isMobile = useIsMobile(760);
   const [sheet, setSheet] = useState(null);
   React.useEffect(() => {
@@ -10176,7 +10234,8 @@ function App() {
     if (teacherMode || custom || !set || !set.key) return;
     if (seenSets[set.key]) return;
     setSeenSets((s) => ({ ...s, [set.key]: true }));
-    setModal("rules");
+    if (isMobile) setModal("rules");
+    else openPanelTab("rules", false);
   }, [set && set.key, teacherMode, custom]);
   async function importBundle(file) {
     setLoadErr(null);
@@ -10908,13 +10967,13 @@ function App() {
         /* @__PURE__ */ React.createElement("span", { className: "colx-ring", "aria-hidden": "true" }, progress[k] ? "\u2713" : ""),
         /* @__PURE__ */ React.createElement("span", { className: "colx-gloss lx" }, navLabel(g, p))
       );
-    }))), !custom && /* @__PURE__ */ React.createElement("div", { className: "colx-foot" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("rules"), title: "View rules for this exercise" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2630"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Rules for this worksheet")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("summary") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, doneCount, "/", probCount)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => composeExportProgress() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Save progress to a file")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: resetAllProgress, title: "Clear all progress for this worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u21BA"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Reset all derivations")))));
+    }))), !custom && /* @__PURE__ */ React.createElement("div", { className: "colx-foot" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => openPanelTab("rules", true), title: "View rules for this exercise" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2630"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Rules for this worksheet")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("summary") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, doneCount, "/", probCount)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => composeExportProgress() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Save progress to a file")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: resetAllProgress, title: "Clear all progress for this worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u21BA"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Reset all derivations")))));
   }
   function renderPracticeHead() {
     if (!hasContent || !group || !problem) return null;
     const gloss = problem.gloss || treeSummary(problem.tree) || "Exercise";
     const crumb = custom ? "Custom exercise" : [collectionOf(lib), lib ? lib.title : null].filter(Boolean).join(" \xB7 ");
-    return /* @__PURE__ */ React.createElement("div", { className: "practice-head" }, /* @__PURE__ */ React.createElement("div", { className: "ph-main" }, /* @__PURE__ */ React.createElement("div", { className: "ph-crumb" }, crumb), /* @__PURE__ */ React.createElement("h1", { className: "ph-gloss lx" }, gloss)), /* @__PURE__ */ React.createElement("div", { className: "ph-controls" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "ph-btn", onClick: () => setModal("rules"), title: "View rules for this exercise" }, "\u2630 Rules"), hasReading && /* @__PURE__ */ React.createElement("button", { type: "button", className: "ph-btn" + (rightTab === "reading" ? " on" : ""), onClick: () => setRightTab((v) => v === "reading" ? "lexicon" : "reading"), title: "Show the notes in the side panel" }, "\u{1F4DD} Notes"), /* @__PURE__ */ React.createElement("div", { className: "ph-step", role: "group", "aria-label": "Exercise navigation" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "ph-arrow", disabled: flatIdx <= 0, onClick: () => gotoFlat(-1), title: "Previous exercise (J)", "aria-label": "Previous exercise (J)" }, "\u2039"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "ph-arrow", disabled: flatIdx < 0 || flatIdx >= flatNav.length - 1, onClick: () => gotoFlat(1), title: "Next exercise (K)", "aria-label": "Next exercise (K)" }, "\u203A")), /* @__PURE__ */ React.createElement("span", { className: "ph-score" }, doneCount, "/", probCount, " solved")));
+    return /* @__PURE__ */ React.createElement("div", { className: "practice-head" }, /* @__PURE__ */ React.createElement("div", { className: "ph-main" }, /* @__PURE__ */ React.createElement("div", { className: "ph-crumb" }, crumb), /* @__PURE__ */ React.createElement("h1", { className: "ph-gloss lx" }, gloss)), /* @__PURE__ */ React.createElement("div", { className: "ph-controls" }, /* @__PURE__ */ React.createElement("div", { className: "ph-step", role: "group", "aria-label": "Exercise navigation" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "ph-arrow", disabled: flatIdx <= 0, onClick: () => gotoFlat(-1), title: "Previous exercise (J)", "aria-label": "Previous exercise (J)" }, "\u2039"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "ph-arrow", disabled: flatIdx < 0 || flatIdx >= flatNav.length - 1, onClick: () => gotoFlat(1), title: "Next exercise (K)", "aria-label": "Next exercise (K)" }, "\u203A")), /* @__PURE__ */ React.createElement("span", { className: "ph-score" }, doneCount, "/", probCount, " solved")));
   }
   function renderEditorSurface(asPage) {
     return /* @__PURE__ */ React.createElement(
@@ -11031,10 +11090,64 @@ function App() {
     ),
     isMobile && /* @__PURE__ */ React.createElement("header", { className: "topbar topbar-mobile" }, /* @__PURE__ */ React.createElement("button", { className: "mtop-set", onClick: () => setModal("files"), title: "Choose a worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "mtop-glyph" }, "\u03BB"), /* @__PURE__ */ React.createElement("span", { className: "mtop-set-name" }, custom ? "Custom exercise" : lib ? lib.title : "No worksheet"), /* @__PURE__ */ React.createElement("span", { className: "mtop-caret" }, "\u25BE")), /* @__PURE__ */ React.createElement("div", { className: "spacer" }), hasContent && flatNav.length > 0 ? /* @__PURE__ */ React.createElement("div", { className: "mtop-nav" }, /* @__PURE__ */ React.createElement("button", { className: "mtop-arrow", disabled: flatIdx <= 0, onClick: () => gotoFlat(-1), "aria-label": "Previous exercise" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "mtop-score" }, doneCount, "/", probCount), /* @__PURE__ */ React.createElement("button", { className: "mtop-arrow", disabled: flatIdx < 0 || flatIdx >= flatNav.length - 1, onClick: () => gotoFlat(1), "aria-label": "Next exercise" }, "\u203A")) : /* @__PURE__ */ React.createElement("div", { className: "mtop-score solo" }, doneCount, "/", probCount)),
     !isMobile && /* @__PURE__ */ React.createElement("a", { className: "skip-link", href: "#main" }, "Skip to content"),
-    /* @__PURE__ */ React.createElement("div", { className: "app-main" + (isMobile ? " app-main-mobile" : "") }, !isMobile && renderSidebar(), !isMobile && page === "practice" && hasContent && exOpen && renderExColumn(), /* @__PURE__ */ React.createElement("main", { id: "main", className: "col-center" }, isMobile || page === "practice" ? /* @__PURE__ */ React.createElement(React.Fragment, null, !isMobile && renderPracticeHead(), renderCenter()) : renderPageView()), !isMobile && page === "practice" && /* @__PURE__ */ React.createElement("aside", { className: "col col-right" }, hasReading ? /* @__PURE__ */ React.createElement("div", { className: "panel-head rd-tabhead" }, /* @__PURE__ */ React.createElement("button", { className: "rd-tab" + (rightTab !== "reading" ? " on" : ""), onClick: () => setRightTab("lexicon") }, "Lexicon ", /* @__PURE__ */ React.createElement("span", { className: "count" }, filteredLex.length)), /* @__PURE__ */ React.createElement("button", { className: "rd-tab" + (rightTab === "reading" ? " on" : ""), onClick: () => setRightTab("reading") }, "Notes")) : /* @__PURE__ */ React.createElement("div", { className: "panel-head" }, "Lexicon ", /* @__PURE__ */ React.createElement("span", { className: "count" }, filteredLex.length)), hasReading && rightTab === "reading" && window.ReaderPanel ? (() => {
-      const RP = window.ReaderPanel;
-      return /* @__PURE__ */ React.createElement(RP, { set: readingSet, section: problem && problem.section, embedded: true });
-    })() : renderLexiconScroll()), isMobile && rightTab === "reading" && hasReading && window.ReaderPanel && (() => {
+    /* @__PURE__ */ React.createElement("div", { className: "app-main" + (isMobile ? " app-main-mobile" : "") }, !isMobile && renderSidebar(), !isMobile && page === "practice" && hasContent && exOpen && renderExColumn(), /* @__PURE__ */ React.createElement("main", { id: "main", className: "col-center" }, isMobile || page === "practice" ? /* @__PURE__ */ React.createElement(React.Fragment, null, !isMobile && renderPracticeHead(), renderCenter()) : renderPageView()), !isMobile && page === "practice" && (panelOpen ? (() => {
+      const panelTab = refTab === "notes" && !hasReading ? "lexicon" : refTab;
+      return /* @__PURE__ */ React.createElement("aside", { className: "col col-right rp-panel", "aria-label": "Reference panel" }, /* @__PURE__ */ React.createElement("div", { className: "rp-tabs", role: "tablist", "aria-label": "Reference panel tabs" }, /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          role: "tab",
+          id: "rp-tab-lexicon",
+          "aria-selected": panelTab === "lexicon",
+          "aria-controls": "rp-tabpanel",
+          className: "rp-tab" + (panelTab === "lexicon" ? " on" : ""),
+          onClick: () => openPanelTab("lexicon", true)
+        },
+        "Lexicon ",
+        /* @__PURE__ */ React.createElement("span", { className: "rp-count" }, filteredLex.length)
+      ), /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          role: "tab",
+          id: "rp-tab-rules",
+          "aria-selected": panelTab === "rules",
+          "aria-controls": "rp-tabpanel",
+          className: "rp-tab" + (panelTab === "rules" ? " on" : ""),
+          onClick: () => openPanelTab("rules", true)
+        },
+        "Rules"
+      ), hasReading && /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          role: "tab",
+          id: "rp-tab-notes",
+          "aria-selected": panelTab === "notes",
+          "aria-controls": "rp-tabpanel",
+          className: "rp-tab" + (panelTab === "notes" ? " on" : ""),
+          onClick: () => openPanelTab("notes", true)
+        },
+        "Notes"
+      ), /* @__PURE__ */ React.createElement("button", { type: "button", className: "rp-close", title: "Collapse panel", "aria-label": "Collapse the reference panel", onClick: () => touchPanel(false) }, "\u203A")), /* @__PURE__ */ React.createElement("div", { className: "rp-body", role: "tabpanel", id: "rp-tabpanel", "aria-labelledby": "rp-tab-" + panelTab }, panelTab === "rules" ? /* @__PURE__ */ React.createElement("div", { className: "rp-rules" }, /* @__PURE__ */ React.createElement("div", { className: "rp-rules-intro" }, teacherMode ? /* @__PURE__ */ React.createElement(React.Fragment, null, "Choose which rules and type-shifts are active for ", /* @__PURE__ */ React.createElement("b", null, custom ? "this custom exercise" : lib && lib.title), ".") : "Rules available in this exercise. Instructors can switch these on or off in the editor."), /* @__PURE__ */ React.createElement(RulesContent, { allowed, setAllowed, toggleRule, toggleShift, readOnly: !teacherMode }), teacherMode && /* @__PURE__ */ React.createElement("div", { className: "rp-rules-foot" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn-ghost", onClick: () => setAllowedMap((m) => {
+        const n = { ...m };
+        delete n[allowKey];
+        return n;
+      }) }, "Reset to defaults"))) : panelTab === "notes" && hasReading && window.ReaderPanel ? (() => {
+        const RP = window.ReaderPanel;
+        return /* @__PURE__ */ React.createElement(RP, { set: readingSet, section: problem && problem.section, embedded: true });
+      })() : renderLexiconScroll()));
+    })() : /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "rp-reopen",
+        title: "Open the reference panel",
+        "aria-label": "Open the reference panel (Lexicon, Rules, Notes)",
+        onClick: () => touchPanel(true)
+      },
+      "\u2039 Lexicon \xB7 Rules \xB7 Notes"
+    )), isMobile && rightTab === "reading" && hasReading && window.ReaderPanel && (() => {
       const RP = window.ReaderPanel;
       return /* @__PURE__ */ React.createElement(RP, { set: readingSet, section: problem && problem.section, onClose: () => setRightTab("lexicon") });
     })()),
