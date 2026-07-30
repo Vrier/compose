@@ -11,9 +11,13 @@
        -pix_fmt yuv420p -crf 27 server/guide-assets/wt-first.mp4
 
    Scenes (must match the /help/guides walkthrough text):
-     first — demo "Frodo runs": NN, NN, then FA typing run(f)
-     tv    — "Frodo greets Gandalf": FA at VP (object first), FA at S
-     pm    — /cc/ch7 "mischievous hobbit": FA refused with reason, then PM
+     first  — demo "Frodo runs": NN, NN, then FA typing run(f)
+     tv     — "Frodo greets Gandalf": FA at VP (object first), FA at S
+     pm     — /cc/ch7 "mischievous hobbit": FA refused with reason, then PM
+     editor — /editor: Tools → Exercise editor, title, lexicon rows, a tree
+              with live validation, ▶ Load into app  (for /guide)
+     host   — /dash on a THROWAWAY local PocketBase (capture-dash.mjs
+              pattern): login, version card, Share dialog with QR  (for /guide)
    (Run `npm run build:server` first so server/pb_public is current.)
    =========================================================================== */
 import puppeteer from 'puppeteer';
@@ -26,11 +30,44 @@ fs.rmSync(OUTDIR, { recursive: true, force: true });
 fs.mkdirSync(OUTDIR, { recursive: true });
 
 const PORT = 8113;
-const srv = spawn('python3', ['-m', 'http.server', String(PORT), '--bind', '127.0.0.1', '-d', 'server/pb_public']);
-process.on('exit', () => { try { srv.kill(); } catch (e) {} });
-for (let i = 0; i < 25; i++) {
+let srv, DATA = null;
+if (SCENE === 'host') {
+  const os = await import('node:os');
+  const path = await import('node:path');
+  DATA = fs.mkdtempSync(path.join(os.tmpdir(), 'compose-wt-pb-'));
+  srv = spawn('server/pocketbase', ['serve', '--http', `127.0.0.1:${PORT}`, '--dir', DATA,
+    '--hooksDir', 'server/pb_hooks', '--migrationsDir', 'server/pb_migrations', '--publicDir', 'server/pb_public']);
+} else {
+  srv = spawn('python3', ['-m', 'http.server', String(PORT), '--bind', '127.0.0.1', '-d', 'server/pb_public']);
+}
+process.on('exit', () => { try { srv.kill(); } catch (e) {} if (DATA) try { fs.rmSync(DATA, { recursive: true, force: true }); } catch (e) {} });
+for (let i = 0; i < 40; i++) {
   try { await fetch(`http://127.0.0.1:${PORT}/robots.txt`); break; }
   catch (e) { await new Promise((r) => setTimeout(r, 300)); }
+}
+
+/* host scene: seed an instructor + one hosted version over the API (same
+   flow as scripts/capture-dash.mjs) BEFORE recording starts */
+const EMAIL = 'a.instructor@university.edu', PW = 'correct-horse-battery';
+if (SCENE === 'host') {
+  let r = await fetch(`http://127.0.0.1:${PORT}/api/compose/register`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: EMAIL, password: PW, inviteCode: 'COMPOSE-INVITE-2026' }),
+  });
+  if (!r.ok) throw new Error('register failed: ' + await r.text());
+  r = await fetch(`http://127.0.0.1:${PORT}/api/collections/users/auth-with-password`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ identity: EMAIL, password: PW }),
+  });
+  const { token } = await r.json();
+  const ws = (key) => ({ key, title: JSON.parse(fs.readFileSync(`compose/exercises/${key}.compose.json`, 'utf8')).title,
+    content: JSON.parse(fs.readFileSync(`compose/exercises/${key}.compose.json`, 'utf8')) });
+  r = await fetch(`http://127.0.0.1:${PORT}/api/collections/versions/records`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: token },
+    body: JSON.stringify({ title: 'Semantics I — Weeks 1–3',
+      bundle: { compose_bundle: 1, title: 'Semantics I — Weeks 1–3', chapters: [], worksheets: [ws('ch6.1-fa'), ws('ch7.1-adj')] } }),
+  });
+  if (!r.ok) throw new Error('version create failed: ' + await r.text());
 }
 
 const browser = await puppeteer.launch({
@@ -78,7 +115,8 @@ const center = (sel, fnBody) => page.evaluate((fnBody) => {
   const find = new Function('return (' + fnBody + ')')();
   const el = find();
   if (!el) return null;
-  const r = el.getBoundingClientRect();
+  let r = el.getBoundingClientRect();
+  if (r.top < 0 || r.bottom > window.innerHeight) { el.scrollIntoView({ block: 'center' }); r = el.getBoundingClientRect(); }
   return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
 }, fnBody);
 
@@ -117,6 +155,15 @@ async function typeAnswer(text) {
     await shoot();
   }
   await rec(3);
+}
+
+async function typeInto(find, what, text) {
+  await act(find, what);
+  for (let i = 0; i < text.length; i += 4) {
+    await page.keyboard.type(text.slice(i, i + 4), { delay: 18 });
+    await shoot();
+  }
+  await rec(2);
 }
 
 async function pickNode(label) {
@@ -204,6 +251,51 @@ if (SCENE === 'first') {
   await typeAnswer('Lx.[mischievous(x) & hobbit(x)]');
   await submit();
   await rec(14);
+} else if (SCENE === 'editor') {
+  await page.goto(B + '/editor/', { waitUntil: 'networkidle2' });
+  await new Promise((r) => setTimeout(r, 1000));
+  await installCursor();
+  await rec(4);
+  // Tools → Exercise editor
+  await page.evaluate(() => { document.querySelector('.settings-details').open = true; });
+  await rec(3);
+  await act(() => center(null, `() => [...document.querySelectorAll('.tool-btn')].find(b => /Exercise editor/.test(b.textContent))`), 'editor tool');
+  await new Promise((r) => setTimeout(r, 700));
+  await rec(4);
+  // title
+  await typeInto(() => center(null, `() => document.querySelector('.fe-title-input')`), 'title', 'Week 1 — first derivations');
+  // lexicon rows: fill the first two empty word/den pairs
+  await typeInto(() => center(null, `() => [...document.querySelectorAll('.fe-lex-word')].find(i => !i.value)`), 'lex word 1', 'Frodo');
+  await typeInto(() => center(null, `() => [...document.querySelectorAll('.fe-lex-den')].find(i => !i.value)`), 'lex den 1', 'f');
+  await act(() => center(null, `() => [...document.querySelectorAll('button')].find(b => b.textContent.trim() === '+ Add entry')`), 'add entry');
+  await rec(2);
+  await typeInto(() => center(null, `() => [...document.querySelectorAll('.fe-lex-word')].find(i => !i.value)`), 'lex word 2', 'runs,run');
+  await typeInto(() => center(null, `() => [...document.querySelectorAll('.fe-lex-den')].find(i => !i.value)`), 'lex den 2', 'Lx.run(x)');
+  await rec(3);
+  // an exercise with one derivation tree — live validation appears
+  await act(() => center(null, `() => [...document.querySelectorAll('button')].find(b => b.textContent.trim() === '+ Add exercise')`), 'add exercise');
+  await rec(3);
+  await act(() => center(null, `() => [...document.querySelectorAll('button')].find(b => b.textContent.trim() === '+ Add derivation')`), 'add derivation');
+  await rec(3);
+  await typeInto(() => center(null, `() => [...document.querySelectorAll('.fe-tree-input')].find(t => !t.value)`), 'tree', '[.S [.DP Frodo ] [.VP runs ] ]');
+  await rec(10); // the ✓ auto-derives badge computes
+  // load into the app
+  await act(() => center(null, `() => document.querySelector('.fe-load-app-btn')`), 'load into app');
+  await new Promise((r) => setTimeout(r, 900));
+  await rec(14);
+} else if (SCENE === 'host') {
+  await page.goto(B + '/dash/', { waitUntil: 'networkidle2' });
+  await new Promise((r) => setTimeout(r, 800));
+  await installCursor();
+  await rec(4);
+  await typeInto(() => center(null, `() => document.querySelector('.dash-input[type="email"]')`), 'email', EMAIL);
+  await typeInto(() => center(null, `() => document.querySelector('.dash-input[type="password"]')`), 'password', PW);
+  await act(() => center(null, `() => document.querySelector('.dash-submit')`), 'log in');
+  await new Promise((r) => setTimeout(r, 1400));
+  await rec(8); // the versions list with its card
+  await act(() => center(null, `() => [...document.querySelectorAll('button')].find(b => /Share/.test(b.textContent))`), 'share');
+  await new Promise((r) => setTimeout(r, 1200)); // QR canvas draws async
+  await rec(16);
 } else {
   throw new Error('unknown scene: ' + SCENE);
 }

@@ -13,6 +13,9 @@
 
    Budget note: ONE server instance runs everything, and the S5 rate limiter
    (5/min on register and on auth) is live — keep register/auth calls in the
+   budget. N0 uses the full auth budget (5 of 5: TA, B, superuser, student
+   login, student auth-refresh) — add NO further auth calls without raising
+   the limit in migration 1751700005.
    ordinary journeys under 5 each; the rate-limit probe runs LAST.
    =========================================================================== */
 import { spawn, execFileSync } from 'node:child_process';
@@ -120,6 +123,8 @@ async function main() {
   const VID = r.json && r.json.id, SLUG = r.json && r.json.slug;
   expect('version created', !!VID, r.text);
   expect('slug server-generated (8 lowercase chars, spoof ignored)', /^[a-z0-9]{8}$/.test(SLUG || '') && SLUG !== 'hackhack', SLUG);
+  const CODE0 = r.json && r.json.unlockCode;
+  expect('unlock code server-generated (6 chars, N0)', /^[A-Z2-9]{6}$/.test(CODE0 || ''), CODE0);
   lacks('owner spoof ignored', r.text, 'SPOOFED');
   contains('mode defaults to practice', r.text, '"mode":"practice"');
   contains('published defaults to true', r.text, '"published":true');
@@ -360,10 +365,56 @@ async function main() {
   contains('about page serves', r.text, 'How to cite');
   contains('about page carries the canonical version', r.text, 'version 1.0.0');
 
+  // N0 (§11) — student accounts, unlock codes, enrollments, progress, drafts
+  r = await req('POST', '/api/compose/register-student', { body: { email: 'stu@suite.org', password: 'short' } });
+  expect('student register rejects short password', r.status === 400, r.status);
+  r = await req('POST', '/api/compose/register-student', { body: { email: 'stu@suite.org', password: 'studentpass12' } });
+  contains('student register succeeds without invite', r.text, '"ok":true');
+  r = await req('POST', '/api/compose/register-student', { body: { email: 'stu@suite.org', password: 'studentpass12' } });
+  expect('duplicate student email rejected', r.status === 400, r.status);
+  r = await req('POST', '/api/collections/users/auth-with-password', { body: { identity: 'stu@suite.org', password: 'studentpass12' } });
+  const TSTU = r.json && r.json.token;
+  expect('student logs in', !!TSTU, r.text);
+  expect('student role recorded', r.json && r.json.record && r.json.record.role === 'student', r.text);
+
+  r = await req('POST', '/api/compose/redeem', { body: { code: 'ABCDEF' } });
+  expect('redeem requires auth', r.status === 401, r.status);
+  r = await req('POST', '/api/compose/redeem', { token: TSTU, body: { code: 'ZZZZZZ' } });
+  expect('redeem with unknown code 404s', r.status === 404, r.status);
+  r = await req('POST', '/api/compose/redeem', { token: TSTU, body: { code: CODE0 } });
+  expect('redeem enrolls the student', r.status === 200 && r.json && r.json.enrolled === true, r.text);
+  contains('redeem returns the version title', r.text, 'Suite Version');
+  r = await req('POST', '/api/compose/redeem', { token: TSTU, body: { code: CODE0.toLowerCase() } });
+  expect('redeem is idempotent (case-insensitive)', r.status === 200 && r.json && r.json.enrolled === false, r.text);
+  r = await req('GET', '/api/collections/enrollments/records', { token: TSTU });
+  expect('student sees own enrollment', r.json && r.json.totalItems === 1, r.text);
+  r = await req('GET', '/api/collections/enrollments/records', { token: TA });
+  expect('others see no foreign enrollments', r.json && r.json.totalItems === 0, r.text);
+
+  r = await req('POST', '/api/collections/users/auth-refresh', { token: TSTU });
+  const STUID = r.json && r.json.record && r.json.record.id;
+  r = await req('POST', '/api/collections/progress/records', { token: TSTU, body: { user: 'SPOOFED', island: 'cc', data: { a: 1 } } });
+  expect('progress user spoof rejected', r.status >= 400, r.status);
+  r = await req('POST', '/api/collections/progress/records', { token: TSTU, body: { user: STUID, island: 'cc', data: { solved: 3 } } });
+  expect('student saves progress', r.status === 200, r.text);
+  r = await req('GET', '/api/collections/progress/records', { token: TA });
+  expect('progress is owner-only', r.json && r.json.totalItems === 0, r.text);
+
+  r = await req('POST', '/api/compose/new-code', { token: TSTU, body: { version: VID } });
+  expect('non-owner cannot regenerate a code', r.status === 403, r.status);
+  r = await req('POST', '/api/compose/new-code', { token: TA, body: { version: VID } });
+  const CODE1 = r.json && r.json.unlockCode;
+  expect('owner regenerates the unlock code', /^[A-Z2-9]{6}$/.test(CODE1 || '') && CODE1 !== CODE0, r.text);
+  await req('PATCH', `/api/collections/versions/records/${VID}`, { token: TA, body: { unlockCode: 'HACKED' } });
+  r = await req('GET', `/api/collections/versions/records/${VID}`, { token: TA });
+  expect('unlock code is server-managed on update', r.json && r.json.unlockCode === CODE1, r.text);
+
   // W3 — unpublish
   await req('PATCH', `/api/collections/versions/records/${VID}`, { token: TA, body: { published: false } });
   r = await req('GET', `/v/${SLUG}`, { raw: true });
   expect('unpublished version 404s', r.status === 404, r.status);
+  r = await req('POST', '/api/compose/redeem', { token: TSTU, body: { code: CODE1 } });
+  expect('redeem refuses unpublished versions', r.status === 404, r.status);
 
   // W6 — rate limiting LAST (burns the register budget on purpose)
   const codes = [];

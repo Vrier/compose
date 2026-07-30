@@ -22,6 +22,16 @@ onRecordCreateRequest((e) => {
   }
   e.record.set('slug', slug);
 
+  // unlock code (N0, §11): server-generated, 6 chars, uppercase for handouts;
+  // regenerable via /api/compose/new-code (accounts.pb.js)
+  let code = '';
+  for (let attempt = 0; attempt < 20; attempt++) {
+    code = $security.randomStringWithAlphabet(6, ALPHABET).toUpperCase();
+    try { $app.findFirstRecordByFilter('versions', 'unlockCode = {:c}', { c: code }); }
+    catch (_) { break; } // not found ⇒ free
+  }
+  e.record.set('unlockCode', code);
+
   if (!e.record.getString('mode')) e.record.set('mode', 'practice');
   e.record.set('opens', 0);
   // default published: true unless the request explicitly sent false
@@ -37,5 +47,6 @@ onRecordUpdateRequest((e) => {
   e.record.set('slug', orig.getString('slug'));
   e.record.set('opens', orig.getInt('opens'));
   e.record.set('owner', orig.getString('owner'));
+  e.record.set('unlockCode', orig.getString('unlockCode')); // via /api/compose/new-code only
   e.next();
 }, 'versions');
