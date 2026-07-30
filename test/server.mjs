@@ -115,6 +115,7 @@ async function main() {
   r = await req('POST', '/api/collections/users/auth-with-password', { body: { identity: 'a@suite.org', password: 'alicepass123' } });
   const TA = r.json && r.json.token;
   expect('instructor logs in', !!TA, r.text);
+  expect('invite-registered account carries the instructor role (N2)', r.json && r.json.record && r.json.record.role === 'instructor', r.json && r.json.record && JSON.stringify(r.json.record.role));
 
   // W2 — creation: server slug, forced owner, defaults
   r = await req('POST', '/api/collections/versions/records', { token: TA,
@@ -257,6 +258,10 @@ async function main() {
   contains('root links the favicon (S15)', r.text, 'rel="icon"');
   contains('derivation surface is SR-announcing (S13.5)', r.text, 'aria-live');
   contains('tree nodes carry focus anchors (S13.5)', r.text, 'data-nodeid');
+  // N2 (S30) — sign-in + in-app pages compiled into the site bundle
+  contains('root ships the sign-in surface (N2)', r.text, 'Create an account');
+  contains('root ships the My-versions page (N2)', r.text, 'My versions');
+  contains('root vendors QRCode for the in-app share modal (N2)', r.text, 'QRCode');
   r = await req('GET', '/editor/', { raw: true });
   contains('/editor identifies as the sandbox', r.text, '"id":"hosted-sandbox"');
   contains('/editor is an instructor surface', r.text, '"role":"instructor"');

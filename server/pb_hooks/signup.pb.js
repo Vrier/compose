@@ -33,6 +33,7 @@ routerAdd('POST', '/api/compose/register', (e) => {
     u.set('password', password);
     u.set('passwordConfirm', password);
     u.set('verified', true); // no SMTP in V1 — accounts are invite-vouched
+    u.set('role', 'instructor'); // N2 (S30): invite-vouched accounts are instructors (the N0 migration only converted pre-existing rows)
     $app.save(u);
   } catch (err) {
     return e.json(400, { error: 'Could not create the account: ' + (err.message || 'invalid email or password') });

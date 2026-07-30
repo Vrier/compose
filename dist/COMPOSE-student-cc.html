@@ -1897,6 +1897,196 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 
 
 /* ===========================================================================
+   N2 (S30) — PAGES: sign-in, worksheet editor as a page, My versions.
+   All colours via theme tokens (dark themes must stay legible); radii and
+   spacing follow the handoff README (page tops 30–34px, gutters 28px,
+   dialogs 12–13px, inputs 9px, rows 7px).
+   ========================================================================= */
+
+/* ---- shared page scaffold ---------------------------------------------- */
+.page-view { flex: 1; min-height: 0; overflow: auto; animation: pageFade .18s ease; }
+@keyframes pageFade { from { opacity: 0; } to { opacity: 1; } }
+.page-crumb-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.page-back {
+  flex: none; width: 26px; height: 26px; padding: 0;
+  border: 1px solid var(--line); border-radius: 7px; background: transparent;
+  color: var(--muted); cursor: pointer; font-size: 14px; font-family: inherit;
+  display: grid; place-items: center;
+}
+.page-back:hover { border-color: var(--accent); color: var(--accent-ink); }
+.page-crumb { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+
+/* ---- sidebar: account section (N2) --------------------------------------- */
+.sb-account-btns { padding: 2px 14px 6px; display: flex; flex-direction: column; gap: 6px; }
+.sb-signin-btn { width: 100%; justify-content: center; font-size: 12.5px !important; padding: 7px 10px !important; }
+.sb-id-card {
+  margin: 2px 12px 8px; padding: 9px 10px;
+  border: 1px solid var(--line); border-radius: 9px; background: var(--panel-2);
+}
+.sb-id-email { font-size: 12px; font-weight: 600; color: var(--ink-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-id-meta { display: flex; align-items: center; gap: 7px; margin-top: 3px; }
+.sb-tier-badge {
+  font-size: 10px; color: var(--accent-ink); background: var(--accent-soft);
+  border: 1px solid var(--accent); border-radius: 5px; padding: 1px 6px;
+}
+
+/* ---- sign-in page --------------------------------------------------------- */
+.si-wrap { display: grid; place-items: center; padding: 30px 28px; }
+.si-col { width: 100%; max-width: 392px; }
+.si-crumb { justify-content: flex-start; }
+.si-mark { text-align: center; margin-bottom: 18px; }
+.si-lambda { font-size: 34px; color: var(--accent); line-height: 1; }
+.si-wordmark { font-size: 15px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--ink); margin-top: 6px; }
+.si-card {
+  border: 1px solid var(--line); border-radius: 12px; background: var(--panel);
+  padding: 20px 20px 22px; box-shadow: var(--shadow);
+}
+.si-tabs { display: flex; gap: 4px; padding: 3px; background: var(--panel-2); border-radius: 9px; margin-bottom: 16px; }
+.si-tab {
+  flex: 1; padding: 6px 8px; border: 0; border-radius: 7px; background: transparent;
+  font-family: inherit; font-size: 12.5px; color: var(--ink-soft); cursor: pointer;
+}
+.si-tab.on { background: var(--panel); color: var(--ink); font-weight: 600; box-shadow: var(--shadow); }
+.si-label { display: block; font-size: 12px; color: var(--ink-soft); margin-bottom: 12px; }
+.si-hint-inline { color: var(--faint); font-weight: 400; }
+.si-input {
+  display: block; width: 100%; height: 34px; margin-top: 5px; padding: 0 10px;
+  box-sizing: border-box; border: 1px solid var(--line); border-radius: 9px;
+  background: var(--bg); color: var(--ink); outline: none; font: inherit; font-size: 13.5px;
+}
+.si-input:focus { border-color: var(--accent); }
+.si-input::placeholder { color: var(--faint); }
+.si-code-input { font-size: 13px; }
+.si-code-link {
+  display: block; width: 100%; min-height: 29px; margin: 0 0 12px; padding: 5px 10px;
+  border: 1px solid var(--accent); border-radius: 9px; background: var(--accent-soft);
+  color: var(--accent-ink); font-family: inherit; font-size: 12px; cursor: pointer; white-space: nowrap;
+}
+.si-code-link:hover { filter: brightness(1.02); }
+.si-hint { display: block; font-size: 11px; color: var(--faint); margin-top: 5px; line-height: 1.45; }
+.si-err { background: var(--bad-soft); color: var(--bad); border-radius: 9px; padding: 9px 12px; margin: 10px 0; font-size: 13px; line-height: 1.45; }
+.si-submit { width: 100%; min-height: 36px; margin-top: 4px; border-radius: 9px !important; font-size: 13.5px !important; }
+.si-note { margin-top: 12px; font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+.si-note a { color: var(--accent-ink); }
+.si-tiers { margin-top: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel-2); overflow: hidden; }
+.si-tiers-kicker { padding: 10px 14px 8px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+.si-tier { display: flex; gap: 11px; padding: 9px 14px; border-top: 1px solid var(--line-soft); }
+.si-tier-mark { flex: none; width: 15px; text-align: center; font-size: 11px; }
+.si-tier-mark.good { color: var(--good); }
+.si-tier-mark.accent { color: var(--accent-ink); }
+.si-tier-title { font-size: 12.5px; font-weight: 600; color: var(--ink-soft); }
+.si-tier-body { font-size: 11.5px; color: var(--muted); line-height: 1.45; margin-top: 2px; }
+
+/* ---- worksheet editor as a page ------------------------------------------- */
+.page-editor { display: flex; flex-direction: column; overflow: hidden; }
+.fe-page { flex: 1; display: flex; flex-direction: column; min-height: 0; background: var(--bg); }
+.fe-page .fe-header { background: var(--panel); border-bottom: 1px solid var(--line); padding: 13px 20px 12px; }
+.fe-page-back {
+  flex: none; width: 26px; height: 26px; padding: 0; align-self: center;
+  border: 1px solid var(--line); border-radius: 7px; background: transparent;
+  color: var(--muted); cursor: pointer; font-size: 14px; font-family: inherit;
+  display: grid; place-items: center;
+}
+.fe-page-back:hover { border-color: var(--accent); color: var(--accent-ink); }
+.fe-header-title { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.fe-page-kicker { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.fe-page-kicker-label {
+  flex: none; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint);
+  white-space: nowrap;
+}
+.fe-page-status { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.fe-status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--faint); flex: none; }
+.fe-page-status.ok { color: var(--good); }
+.fe-page-status.ok .fe-status-dot { background: var(--good); }
+.fe-page-status.err { color: var(--bad); }
+.fe-page-status.err .fe-status-dot { background: var(--bad); }
+
+/* ---- My versions page ------------------------------------------------------ */
+.vd-inner { max-width: 940px; margin: 0 auto; padding: 34px 28px 40px; }
+.vd-head { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.vd-head-main { flex: 1; min-width: 260px; }
+.vd-title { font-size: 30px; font-weight: 600; margin: 5px 0 0; color: var(--ink); }
+.vd-sub { font-size: 14px; color: var(--muted); margin-top: 6px; max-width: 64ch; line-height: 1.5; }
+.vd-head-actions { display: flex; align-items: center; gap: 8px; flex: none; flex-wrap: wrap; }
+.vd-err { background: var(--bad-soft); color: var(--bad); border-radius: 9px; padding: 9px 12px; margin-top: 14px; font-size: 13px; white-space: pre-line; cursor: pointer; }
+.vd-empty { color: var(--muted); padding: 40px 0; text-align: center; }
+.vd-none {
+  margin-top: 20px; border: 1px dashed var(--line); border-radius: 10px;
+  background: var(--panel); padding: 30px 26px; text-align: center;
+}
+.vd-none-glyph { font-size: 24px; color: var(--accent); line-height: 1; }
+.vd-none-title { font-size: 16px; font-weight: 600; margin-top: 9px; color: var(--ink); }
+.vd-none-sub { font-size: 13px; color: var(--muted); line-height: 1.55; margin: 6px auto 0; max-width: 46ch; }
+.vd-row { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); overflow: hidden; margin-top: 12px; }
+.vd-row:first-of-type { margin-top: 20px; }
+.vd-row-head { display: flex; align-items: center; gap: 14px; padding: 14px 16px; cursor: pointer; }
+.vd-row-head:hover { background: var(--panel-2); }
+.vd-caret { font-size: 10px; color: var(--faint); width: 10px; flex: none; }
+.vd-row-main { flex: 1; min-width: 0; }
+.vd-row-titleline { display: flex; align-items: baseline; gap: 9px; min-width: 0; }
+.vd-row-title { font-size: 16px; font-weight: 600; color: var(--ink); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vd-state {
+  flex: none; font-family: inherit; font-size: 11px; color: var(--good);
+  border: 1px solid var(--line); background: var(--good-soft);
+  border-radius: 999px; padding: 2px 9px; cursor: pointer; white-space: nowrap;
+}
+.vd-state.off { background: var(--panel-2); color: var(--muted); }
+.vd-row-meta { display: flex; align-items: center; gap: 7px; margin-top: 5px; font-size: 11.5px; color: var(--muted); flex-wrap: wrap; }
+.vd-slug {
+  font-size: 11.5px; color: var(--accent-ink); background: var(--panel-2);
+  border: 1px solid var(--line-soft); border-radius: 6px; padding: 1px 6px;
+  white-space: nowrap; text-decoration: none;
+}
+.vd-slug:hover { border-color: var(--accent); }
+.vd-link-btn { border: 0; background: transparent; padding: 0; font-family: inherit; font-size: 11px; color: var(--accent-ink); cursor: pointer; white-space: nowrap; }
+.vd-sep { color: var(--line); }
+.vd-row-actions { display: flex; align-items: center; gap: 6px; flex: none; flex-wrap: wrap; justify-content: flex-end; }
+.vd-btn {
+  flex: none; white-space: nowrap; height: 29px; padding: 0 12px; box-sizing: border-box;
+  display: inline-flex; align-items: center; gap: 5px;
+  border: 1px solid var(--line); border-radius: 7px; background: var(--panel-2);
+  font-family: inherit; font-size: 12px; color: var(--ink-soft); cursor: pointer; text-decoration: none;
+}
+.vd-btn:hover { border-color: var(--accent); color: var(--accent-ink); }
+.vd-btn:disabled { opacity: .5; cursor: default; }
+.vd-del:hover { border-color: var(--bad); color: var(--bad); }
+.vd-row-body { border-top: 1px solid var(--line-soft); background: var(--panel-2); }
+.vd-ws { display: flex; align-items: center; gap: 12px; padding: 9px 16px; border-top: 1px solid var(--line-soft); }
+.vd-ws:first-child { border-top: 0; }
+.vd-ws-main { flex: 1; min-width: 0; }
+.vd-ws-title { font-size: 13px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vd-ws-meta { display: flex; align-items: baseline; gap: 8px; margin-top: 2px; font-size: 11px; color: var(--faint); flex-wrap: wrap; }
+.vd-ws-meta .mono { font-size: 10.5px; }
+.vd-ws-none { padding: 12px 16px; font-size: 12.5px; color: var(--muted); }
+.vd-row-foot { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 11px 16px; border-top: 1px solid var(--line-soft); }
+.vd-code-box { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.vd-code-kicker { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
+.vd-code {
+  font-size: 13px; font-weight: 600; letter-spacing: .08em; color: var(--accent-ink);
+  background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px;
+}
+.vd-flex { flex: 1; }
+.vd-notes-state { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+.vd-foot { margin-top: 20px; font-size: 12px; color: var(--faint); text-align: center; }
+.vd-foot a { color: var(--accent-ink); }
+.vd-share { max-width: 420px; text-align: center; border-radius: 13px; }
+.vd-share-title { margin: 0 0 14px; font-size: 20px; }
+.vd-qr { border-radius: 8px; background: #fff; }
+.vd-share-url { font-size: 13px; margin: 12px 0; word-break: break-all; color: var(--muted); }
+.vd-share-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 10px; }
+.vd-share-note { margin-top: 8px; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+
+/* ---- focus parity (S13.5) ------------------------------------------------- */
+.page-back:focus-visible, .fe-page-back:focus-visible,
+.si-tab:focus-visible, .si-input:focus-visible, .si-code-link:focus-visible, .si-submit:focus-visible,
+.sb-signin-btn:focus-visible, .vd-btn:focus-visible, .vd-state:focus-visible,
+.vd-link-btn:focus-visible, .vd-row-head:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+
+/* ===========================================================================
    lingdown.css — typesetting for the lingdown engine. Themable via --ld-*
    custom properties; defaults tuned to the COMPOSE parchment palette.
    =========================================================================== */
@@ -6843,7 +7033,7 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
     ))));
   })), /* @__PURE__ */ React.createElement("button", { className: "fe-add-tree-btn", onClick: () => addTree(i) }, "+ Add derivation")))));
 }
-function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey }) {
+function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey, asPage }) {
   const [state, setState] = useState(() => {
     if (initialText != null) {
       const p = parseFromText(initialText);
@@ -6995,7 +7185,7 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
     const shift = Object.fromEntries(Sh.map((s) => [s.key, !!shifts[s.key]]));
     return { ...rules, shift, qr: behaviour.qr, autoNN: behaviour.autoNN, autoCompose: false, collapseResolved: false, showSpans: false };
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "modal-backdrop", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal fe-modal", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("div", { className: "fe-header" }, /* @__PURE__ */ React.createElement("div", { className: "fe-header-left" }, /* @__PURE__ */ React.createElement(
+  const body = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "fe-header" }, asPage && /* @__PURE__ */ React.createElement("button", { type: "button", className: "fe-page-back", onClick: onClose, title: "Back to practice", "aria-label": "Back to practice" }, "\u2039"), /* @__PURE__ */ React.createElement("div", { className: "fe-header-left" }, /* @__PURE__ */ React.createElement("div", { className: "fe-header-title" }, asPage && /* @__PURE__ */ React.createElement("div", { className: "fe-page-kicker" }, /* @__PURE__ */ React.createElement("span", { className: "fe-page-kicker-label" }, "Worksheet editor", window.COMPOSE_HOSTED ? " \xB7 " + window.COMPOSE_HOSTED.title : ""), /* @__PURE__ */ React.createElement("span", { className: "fe-page-status" + (srvMsg ? srvMsg.kind === "ok" ? " ok" : " err" : savedFlash ? " ok" : ""), role: "status", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("span", { className: "fe-status-dot", "aria-hidden": "true" }), srvMsg ? srvMsg.msg : savedFlash ? "Saved" : editKey ? "Editing a saved worksheet" : "Draft \u2014 kept in this browser")), /* @__PURE__ */ React.createElement(
     "input",
     {
       className: "fe-title-input",
@@ -7003,7 +7193,7 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
       placeholder: "Worksheet title\u2026",
       onChange: (e) => set({ title: e.target.value })
     }
-  )), /* @__PURE__ */ React.createElement("div", { className: "fe-header-right" }, /* @__PURE__ */ React.createElement(
+  ))), /* @__PURE__ */ React.createElement("div", { className: "fe-header-right" }, /* @__PURE__ */ React.createElement(
     "button",
     {
       className: "btn-ghost fe-save-lib-btn" + (savedFlash ? " saved" : ""),
@@ -7083,7 +7273,9 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
       onClose: () => setShowReading(false),
       onApplyAutogen: applyAutogen
     }
-  )));
+  ));
+  if (asPage) return /* @__PURE__ */ React.createElement("div", { className: "fe-page" }, body);
+  return /* @__PURE__ */ React.createElement("div", { className: "modal-backdrop", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal fe-modal", onClick: (e) => e.stopPropagation() }, body));
 }
 function UserExerciseManager({ items, fileKey, custom, instructor, onOpen, onRename, onSetGroup, onEdit, onDelete, onClearAll, onNew }) {
   const [renaming, setRenaming] = useState(null);
@@ -7157,7 +7349,7 @@ function UserExerciseManager({ items, fileKey, custom, instructor, onOpen, onRen
   }), ungrouped.map(renderItem));
 }
 window.UserExerciseManager = UserExerciseManager;
-function ExerciseEditor({ onClose, onLaunch, baseSet, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey }) {
+function ExerciseEditor({ onClose, onLaunch, baseSet, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey, asPage }) {
   return /* @__PURE__ */ React.createElement(
     FileEditor,
     {
@@ -7167,6 +7359,7 @@ function ExerciseEditor({ onClose, onLaunch, baseSet, onSaveToLibrary, onLoadInt
       onMinimize,
       initialText,
       initialKey,
+      asPage,
       onLaunch: (p) => {
         onLaunch(p);
       }
@@ -9425,6 +9618,329 @@ function PhoneInterstitial({ onContinue }) {
     });
   } }, copied ? "\u2713 Copied" : "\u29C9 Copy the link"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost phone-gate-continue", onClick: onContinue }, "Continue on this phone anyway \u2192")));
 }
+function composeReadAuth() {
+  try {
+    const a = JSON.parse(window.localStorage.getItem("lc2-auth") || "null");
+    return a && a.token && a.record ? a : null;
+  } catch (e) {
+    return null;
+  }
+}
+function composeWriteAuth(a) {
+  try {
+    if (a) window.localStorage.setItem("lc2-auth", JSON.stringify(a));
+    else window.localStorage.removeItem("lc2-auth");
+  } catch (e) {
+  }
+}
+function composeValidateBundleStruct(obj, byteSize) {
+  const errs = [];
+  if (byteSize > 2 * 1024 * 1024) errs.push("bundle is larger than the 2 MB limit");
+  if (!obj || typeof obj !== "object" || Array.isArray(obj)) return ["not a JSON object"];
+  if (obj.compose_bundle !== 1) errs.push('missing or unsupported "compose_bundle" version (expected 1)');
+  const list = obj.worksheets !== void 0 ? obj.worksheets : obj.exercises;
+  if (!Array.isArray(list)) {
+    errs.push('missing "worksheets" array');
+    return errs;
+  }
+  if (list.length > 40) errs.push("more than 40 worksheets");
+  list.forEach((w, i) => {
+    const pth = "worksheets[" + i + "]";
+    if (!w || typeof w !== "object") {
+      errs.push(pth + " is not an object");
+      return;
+    }
+    if (typeof w.key !== "string" || !w.key.trim()) errs.push(pth + ' is missing a "key"');
+    if (w.content === void 0 && w.text === void 0) errs.push(pth + ' needs "content" (object) or "text" (JSON string)');
+  });
+  return errs;
+}
+function SigninPage({ initialMode, onBack, onAuthed }) {
+  const [mode, setMode] = useState(initialMode === "register" ? "register" : "login");
+  const [email, setEmail] = useState("");
+  const [pw, setPw] = useState("");
+  const [code, setCode] = useState("");
+  const [showCode, setShowCode] = useState(false);
+  const [err, setErr] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const wantInvite = mode === "register" && showCode && !!code.trim();
+  async function submit(ev) {
+    ev.preventDefault();
+    setErr(null);
+    setBusy(true);
+    try {
+      if (mode === "register") {
+        if (pw.length < 10) throw new Error("Password must be at least 10 characters.");
+        const r = await fetch(wantInvite ? "/api/compose/register" : "/api/compose/register-student", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(wantInvite ? { email, password: pw, inviteCode: code.trim() } : { email, password: pw })
+        });
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(j.error || j.message || "Registration failed.");
+      }
+      const r2 = await fetch("/api/collections/users/auth-with-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ identity: email, password: pw })
+      });
+      const j2 = await r2.json().catch(() => ({}));
+      if (!r2.ok || !j2.token || !j2.record) throw new Error(j2 && j2.message || "Could not sign in \u2014 check the email and password.");
+      onAuthed({ token: j2.token, record: j2.record });
+    } catch (e) {
+      setErr(e.message || String(e));
+    }
+    setBusy(false);
+  }
+  const tierRows = [
+    {
+      mark: "\u2713",
+      cls: "good",
+      title: "No account \u2014 everything works",
+      body: "Derive, use the rules and notes, enter unlock codes, work through any worksheet. Nothing is saved server-side; progress and unlocks stay in this browser."
+    },
+    {
+      mark: "\uFF0B",
+      cls: "accent",
+      title: "Practice account",
+      body: "Unlocks and progress are kept and follow you to any device you sign in on."
+    },
+    {
+      mark: "\u2317",
+      cls: "accent",
+      title: "Instructor account \u2014 needs an invite code",
+      body: "Author worksheets, host versions, share links, QR codes and exports, and use the instructor tools (auto-resolve composition rules, reveal targets, rule overrides)."
+    }
+  ];
+  return /* @__PURE__ */ React.createElement("div", { className: "page-view si-wrap" }, /* @__PURE__ */ React.createElement("div", { className: "si-col" }, /* @__PURE__ */ React.createElement("div", { className: "page-crumb-row si-crumb" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "page-back", onClick: onBack, title: "Back to practice", "aria-label": "Back to practice" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "page-crumb" }, "Account \xB7 Sign in")), /* @__PURE__ */ React.createElement("div", { className: "si-mark" }, /* @__PURE__ */ React.createElement("div", { className: "si-lambda", "aria-hidden": "true" }, "\u03BB"), /* @__PURE__ */ React.createElement("div", { className: "si-wordmark" }, "Compose")), /* @__PURE__ */ React.createElement("div", { className: "si-card" }, /* @__PURE__ */ React.createElement("div", { className: "si-tabs", role: "tablist", "aria-label": "Sign-in mode" }, /* @__PURE__ */ React.createElement("button", { type: "button", role: "tab", "aria-selected": mode === "login", className: "si-tab" + (mode === "login" ? " on" : ""), onClick: () => {
+    setMode("login");
+    setErr(null);
+  } }, "Log in"), /* @__PURE__ */ React.createElement("button", { type: "button", role: "tab", "aria-selected": mode === "register", className: "si-tab" + (mode === "register" ? " on" : ""), onClick: () => {
+    setMode("register");
+    setErr(null);
+  } }, "Register")), /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, /* @__PURE__ */ React.createElement("label", { className: "si-label" }, "Email", /* @__PURE__ */ React.createElement("input", { className: "si-input", type: "email", value: email, onChange: (e) => setEmail(e.target.value), placeholder: "you@university.edu", required: true, autoFocus: true })), /* @__PURE__ */ React.createElement("label", { className: "si-label" }, "Password", mode === "register" ? /* @__PURE__ */ React.createElement("span", { className: "si-hint-inline" }, " \u2014 at least 10 characters") : null, /* @__PURE__ */ React.createElement("input", { className: "si-input", type: "password", value: pw, onChange: (e) => setPw(e.target.value), placeholder: "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022", required: true, minLength: mode === "register" ? 10 : void 0 })), mode === "register" && !showCode && /* @__PURE__ */ React.createElement("button", { type: "button", className: "si-code-link", onClick: () => setShowCode(true) }, "I have an invite code"), mode === "register" && showCode && /* @__PURE__ */ React.createElement("label", { className: "si-label" }, "Instructor invite code ", /* @__PURE__ */ React.createElement("span", { className: "si-hint-inline" }, "\u2014 optional"), /* @__PURE__ */ React.createElement("input", { className: "si-input si-code-input mono", value: code, onChange: (e) => setCode(e.target.value), placeholder: "leave blank for a practice account" }), /* @__PURE__ */ React.createElement("span", { className: "si-hint" }, "With a code you get authoring, hosting, sharing and the instructor tools. Without one you get an account that keeps your unlocks and progress.")), err && /* @__PURE__ */ React.createElement("div", { className: "si-err", role: "alert" }, err), /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary si-submit", disabled: busy }, busy ? "\u2026" : mode === "login" ? "Log in" : wantInvite ? "Create instructor account" : "Create practice account")), mode === "register" && /* @__PURE__ */ React.createElement("div", { className: "si-note" }, "The server sends no email at all \u2014 no verification, no reset \u2014 so remember your password; only the administrator can reset it. Invite codes come from ", /* @__PURE__ */ React.createElement("a", { href: "mailto:tmurrays@tcd.ie" }, "tmurrays@tcd.ie"), ".")), /* @__PURE__ */ React.createElement("div", { className: "si-tiers" }, /* @__PURE__ */ React.createElement("div", { className: "si-tiers-kicker" }, "What an account changes"), tierRows.map((t) => /* @__PURE__ */ React.createElement("div", { className: "si-tier", key: t.title }, /* @__PURE__ */ React.createElement("span", { className: "si-tier-mark " + t.cls, "aria-hidden": "true" }, t.mark), /* @__PURE__ */ React.createElement("div", { className: "si-tier-main" }, /* @__PURE__ */ React.createElement("div", { className: "si-tier-title" }, t.title), /* @__PURE__ */ React.createElement("div", { className: "si-tier-body" }, t.body)))))));
+}
+function VersionShareModal({ v, onClose }) {
+  const url = window.location.origin + "/v/" + v.slug;
+  const canvasRef = useRef(null);
+  const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    if (canvasRef.current && window.QRCode) {
+      window.QRCode.toCanvas(canvasRef.current, url, { width: 300, margin: 2 }, () => {
+      });
+    }
+  }, [url]);
+  function copy() {
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  }
+  function downloadPng() {
+    if (!canvasRef.current) return;
+    const a = document.createElement("a");
+    a.href = canvasRef.current.toDataURL("image/png");
+    a.download = "compose-" + v.slug + "-qr.png";
+    a.click();
+  }
+  function printHandout() {
+    if (!canvasRef.current) return;
+    const png = canvasRef.current.toDataURL("image/png");
+    const w = window.open("", "_blank");
+    if (!w) {
+      window.alert("Pop-up blocked \u2014 allow pop-ups to print the handout.");
+      return;
+    }
+    w.document.write('<!DOCTYPE html><html><head><title></title><style>@page { size: A4; margin: 25mm; }body { font-family: Georgia, serif; color: #222; text-align: center; margin: 0; }h1 { font-size: 28pt; margin: 22mm 0 4mm; font-weight: 600; }.url { font-family: monospace; font-size: 15pt; margin: 0 0 14mm; word-break: break-all; }img { width: 100mm; height: 100mm; }.foot { margin-top: 14mm; font-size: 11pt; color: #666; }<\/style></head><body><h1></h1><div class="url"></div><img src="' + png + '" alt="QR code" /><div class="foot">Scan the code or type the address. Your progress is saved in your own browser \u2014 use the same device and browser to continue.</div></body></html>');
+    const doc = w.document;
+    doc.title = "COMPOSE \u2014 " + v.title;
+    doc.querySelector("h1").textContent = v.title;
+    doc.querySelector(".url").textContent = url;
+    doc.close();
+    w.focus();
+    setTimeout(() => w.print(), 250);
+  }
+  return /* @__PURE__ */ React.createElement("div", { className: "modal-backdrop", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal vd-share", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h3", { className: "vd-share-title" }, v.title), window.QRCode ? /* @__PURE__ */ React.createElement("canvas", { ref: canvasRef, className: "vd-qr", width: 300, height: 300 }) : null, /* @__PURE__ */ React.createElement("div", { className: "vd-share-url mono" }, url), /* @__PURE__ */ React.createElement("div", { className: "vd-share-actions" }, /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", onClick: copy }, copied ? "\u2713 Copied" : "\u29C9 Copy link"), window.QRCode ? /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: downloadPng }, "\u2B07 QR as PNG") : null, window.QRCode ? /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: printHandout }, "\u{1F5A8} Print A4 handout") : null, /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: onClose }, "Close")), /* @__PURE__ */ React.createElement("div", { className: "vd-share-note" }, "Links are live: editing the version updates what students see at this same URL \u2014 printed QR codes stay valid.")));
+}
+function VersionsPage({ token, onBack, onAuthGone }) {
+  const [versions, setVersions] = useState(null);
+  const [err, setErr] = useState(null);
+  const [openId, setOpenId] = useState(null);
+  const [busyId, setBusyId] = useState(null);
+  const [sharing, setSharing] = useState(null);
+  const [copiedWhat, setCopiedWhat] = useState(null);
+  const bundleNewRef = useRef(null);
+  const bundleReplaceRef = useRef(null);
+  const importForRef = useRef(null);
+  async function api(method, path, body) {
+    const headers = { Authorization: token };
+    if (body !== void 0) headers["Content-Type"] = "application/json";
+    const r = await fetch(path, { method, headers, body: body === void 0 ? void 0 : JSON.stringify(body) });
+    if (r.status === 401) {
+      onAuthGone();
+      throw new Error("Signed out \u2014 please sign in again.");
+    }
+    const text = await r.text();
+    let j = null;
+    try {
+      j = JSON.parse(text);
+    } catch (e) {
+    }
+    if (!r.ok) throw new Error(j && (j.error || j.message) || "Request failed (" + r.status + ")");
+    return j;
+  }
+  async function refresh() {
+    try {
+      const j = await api("GET", "/api/collections/versions/records?sort=-updated&perPage=200");
+      setVersions(j && j.items || []);
+    } catch (e) {
+      setErr("Could not load your versions: " + e.message);
+    }
+  }
+  useEffect(() => {
+    refresh();
+  }, []);
+  function sheetsOf(v) {
+    const b = v.bundle || {};
+    const list = b.worksheets || b.exercises || [];
+    return list.map((w) => {
+      let obj = w.content;
+      if (!obj && typeof w.text === "string") {
+        try {
+          obj = JSON.parse(w.text);
+        } catch (e) {
+          obj = null;
+        }
+      }
+      const n = obj && Array.isArray(obj.exercises) ? obj.exercises.reduce((a, g) => a + (g.items || g.derivations || g.trees || []).length, 0) : 0;
+      return { key: w.key, title: obj && obj.title || w.title || w.key, n };
+    });
+  }
+  function copy(what, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedWhat(what);
+      setTimeout(() => setCopiedWhat(null), 1500);
+    });
+  }
+  async function patch(v, data) {
+    try {
+      await api("PATCH", "/api/collections/versions/records/" + v.id, data);
+      await refresh();
+    } catch (e) {
+      setErr("Update failed: " + e.message);
+    }
+  }
+  async function del(v) {
+    if (!window.confirm('Delete "' + v.title + '"? The student link /v/' + v.slug + " and its unlock code stop working. This cannot be undone.")) return;
+    try {
+      await api("DELETE", "/api/collections/versions/records/" + v.id);
+      await refresh();
+    } catch (e) {
+      setErr("Delete failed: " + e.message);
+    }
+  }
+  async function newCode(v) {
+    if (!window.confirm('Generate a new unlock code for "' + v.title + '"? The old code stops working immediately.')) return;
+    setBusyId(v.id);
+    try {
+      const j = await api("POST", "/api/compose/new-code", { version: v.id });
+      setVersions((list) => (list || []).map((x) => x.id === v.id ? Object.assign({}, x, { unlockCode: j.unlockCode }) : x));
+    } catch (e) {
+      setErr("New code failed: " + e.message);
+    }
+    setBusyId(null);
+  }
+  async function create() {
+    const title = window.prompt("Name for the new version (students will see this):", "My course");
+    if (!title || !title.trim()) return;
+    try {
+      const v = await api("POST", "/api/collections/versions/records", {
+        title: title.trim(),
+        bundle: { compose_bundle: 1, title: title.trim(), chapters: [], worksheets: [] },
+        mode: "practice"
+      });
+      setErr(null);
+      await refresh();
+      setOpenId(v.id);
+    } catch (e) {
+      setErr("Create failed: " + e.message);
+    }
+  }
+  function readBundleFile(f, cb) {
+    f.text().then((text) => {
+      let obj;
+      try {
+        obj = JSON.parse(text);
+      } catch (e) {
+        setErr("Import failed: not valid JSON \u2014 " + e.message);
+        return;
+      }
+      const errs = composeValidateBundleStruct(obj, text.length);
+      if (errs.length) {
+        setErr("Import rejected:\n\u2022 " + errs.slice(0, 8).join("\n\u2022 "));
+        return;
+      }
+      cb(obj);
+    });
+  }
+  function createFromBundle(ev) {
+    const f = ev.target.files && ev.target.files[0];
+    ev.target.value = "";
+    if (!f) return;
+    readBundleFile(f, async (obj) => {
+      try {
+        const v = await api("POST", "/api/collections/versions/records", {
+          title: obj.title || f.name.replace(/\.compose-bundle\.json$/i, ""),
+          bundle: obj,
+          mode: "practice"
+        });
+        setErr(null);
+        await refresh();
+        setOpenId(v.id);
+      } catch (e) {
+        setErr("Create from bundle failed: " + e.message);
+      }
+    });
+  }
+  function replaceBundle(ev) {
+    const f = ev.target.files && ev.target.files[0];
+    ev.target.value = "";
+    const v = importForRef.current;
+    importForRef.current = null;
+    if (!f || !v) return;
+    readBundleFile(f, (obj) => {
+      const n = (obj.worksheets || obj.exercises || []).length;
+      if (!window.confirm('Replace the worksheets of "' + v.title + '" with the imported bundle (' + n + " worksheets)?")) return;
+      patch(v, { bundle: obj });
+    });
+  }
+  return /* @__PURE__ */ React.createElement("div", { className: "page-view vd-wrap" }, /* @__PURE__ */ React.createElement("div", { className: "vd-inner" }, /* @__PURE__ */ React.createElement("div", { className: "page-crumb-row" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "page-back", onClick: onBack, title: "Back to practice", "aria-label": "Back to practice" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "page-crumb" }, "Account home")), /* @__PURE__ */ React.createElement("div", { className: "vd-head" }, /* @__PURE__ */ React.createElement("div", { className: "vd-head-main" }, /* @__PURE__ */ React.createElement("h1", { className: "vd-title" }, "My versions"), /* @__PURE__ */ React.createElement("div", { className: "vd-sub" }, "A version is a hosted collection of worksheets with its own student link and unlock code. Open one to see what's inside it \u2014 edits go live at the same address.")), /* @__PURE__ */ React.createElement("div", { className: "vd-head-actions" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary", onClick: create }, "+ New version"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn-ghost", title: "Start a version from a .compose-bundle.json file", onClick: () => {
+    if (bundleNewRef.current) bundleNewRef.current.click();
+  } }, "\u2B06 New from bundle\u2026"))), err && /* @__PURE__ */ React.createElement("div", { className: "vd-err", onClick: () => setErr(null), title: "Click to dismiss" }, err), versions === null ? /* @__PURE__ */ React.createElement("div", { className: "vd-empty" }, "Loading\u2026") : versions.length === 0 ? /* @__PURE__ */ React.createElement("div", { className: "vd-none" }, /* @__PURE__ */ React.createElement("div", { className: "vd-none-glyph", "aria-hidden": "true" }, "\u25C8"), /* @__PURE__ */ React.createElement("div", { className: "vd-none-title" }, "No versions yet"), /* @__PURE__ */ React.createElement("div", { className: "vd-none-sub" }, "A version bundles the worksheets one class sees and gives them a single link. Make one now, or start from a colleague's bundle.")) : versions.map((v) => {
+    const sheets = sheetsOf(v);
+    const derivN = sheets.reduce((a, w) => a + w.n, 0);
+    const isOpen = openId === v.id;
+    return /* @__PURE__ */ React.createElement("div", { className: "vd-row", key: v.id }, /* @__PURE__ */ React.createElement("div", { className: "vd-row-head", onClick: () => setOpenId(isOpen ? null : v.id) }, /* @__PURE__ */ React.createElement("span", { className: "vd-caret", "aria-hidden": "true" }, isOpen ? "\u25BE" : "\u25B8"), /* @__PURE__ */ React.createElement("div", { className: "vd-row-main" }, /* @__PURE__ */ React.createElement("div", { className: "vd-row-titleline" }, /* @__PURE__ */ React.createElement("span", { className: "vd-row-title" }, v.title), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "vd-state" + (v.published ? "" : " off"),
+        title: v.published ? "Published \u2014 students can open the link and redeem the code. Click to unpublish." : "Unpublished \u2014 the student link returns 404. Click to publish.",
+        onClick: (e) => {
+          e.stopPropagation();
+          patch(v, { published: !v.published });
+        }
+      },
+      v.published ? "\u25CF live" : "\u25CB hidden"
+    )), /* @__PURE__ */ React.createElement("div", { className: "vd-row-meta" }, /* @__PURE__ */ React.createElement("a", { className: "vd-slug mono", href: "/v/" + v.slug, target: "_blank", rel: "noopener", onClick: (e) => e.stopPropagation() }, "/v/", v.slug), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-link-btn", onClick: (e) => {
+      e.stopPropagation();
+      copy(v.id + ":url", window.location.origin + "/v/" + v.slug);
+    } }, copiedWhat === v.id + ":url" ? "\u2713 copied" : "\u29C9 copy link"), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", null, sheets.length, " worksheet", sheets.length === 1 ? "" : "s", ", ", derivN, " derivation", derivN === 1 ? "" : "s"), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", { title: "Times the student link has been opened" }, v.opens || 0, " opens"), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", null, "updated ", String(v.updated || "").slice(0, 10)))), /* @__PURE__ */ React.createElement("div", { className: "vd-row-actions", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("a", { className: "vd-btn", href: "/edit/" + v.id, title: "Open this version's worksheets in the hosted editor" }, "\u270E Editor"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Share: QR code, link, printable handout", onClick: () => setSharing(v) }, "\u21D7 Share"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn vd-del", title: "Delete this version", onClick: () => del(v) }, "\u2715"))), isOpen && /* @__PURE__ */ React.createElement("div", { className: "vd-row-body" }, sheets.map((w) => /* @__PURE__ */ React.createElement("div", { className: "vd-ws", key: w.key }, /* @__PURE__ */ React.createElement("div", { className: "vd-ws-main" }, /* @__PURE__ */ React.createElement("div", { className: "vd-ws-title" }, w.title), /* @__PURE__ */ React.createElement("div", { className: "vd-ws-meta" }, /* @__PURE__ */ React.createElement("span", { className: "mono" }, w.key), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", null, w.n, " derivation", w.n === 1 ? "" : "s"))))), sheets.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "vd-ws-none" }, "No worksheets yet \u2014 open the editor and \u201C\u2601 Save to server\u201D, or import a bundle below."), /* @__PURE__ */ React.createElement("div", { className: "vd-row-foot" }, /* @__PURE__ */ React.createElement("div", { className: "vd-code-box" }, /* @__PURE__ */ React.createElement("span", { className: "vd-code-kicker" }, "Unlock code"), /* @__PURE__ */ React.createElement("span", { className: "vd-code mono" }, v.unlockCode || "\u2014"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Copy the unlock code", onClick: () => copy(v.id + ":code", v.unlockCode || "") }, copiedWhat === v.id + ":code" ? "\u2713 copied" : "\u29C9 Copy"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", disabled: busyId === v.id, title: "Generate a new code \u2014 the old one stops working", onClick: () => newCode(v) }, busyId === v.id ? "\u2026" : "\u21BB New code")), /* @__PURE__ */ React.createElement("span", { className: "vd-flex" }), /* @__PURE__ */ React.createElement("span", { className: "vd-notes-state" }, (v.notes || "").trim() ? "Notes \u25CF" : "No notes"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Download the companion bundle as a file", onClick: () => window.composeDownload((v.slug || "version") + ".compose-bundle.json", JSON.stringify(v.bundle, null, 2), "application/json") }, "\u2B07 bundle.json"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Import a bundle file (replaces this version's worksheets)", onClick: () => {
+      importForRef.current = v;
+      if (bundleReplaceRef.current) bundleReplaceRef.current.click();
+    } }, "\u2B06 Replace bundle\u2026"))));
+  }), /* @__PURE__ */ React.createElement("input", { ref: bundleNewRef, type: "file", accept: ".json,application/json", style: { display: "none" }, onChange: createFromBundle }), /* @__PURE__ */ React.createElement("input", { ref: bundleReplaceRef, type: "file", accept: ".json,application/json", style: { display: "none" }, onChange: replaceBundle }), sharing && /* @__PURE__ */ React.createElement(VersionShareModal, { v: sharing, onClose: () => setSharing(null) }), /* @__PURE__ */ React.createElement("div", { className: "vd-foot" }, "The standalone dashboard at ", /* @__PURE__ */ React.createElement("a", { href: "/dash/" }, "/dash"), " keeps working \u2014 notes editing lives there for now.")));
+}
 function App() {
   const ROLE = window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.role || "instructor";
   const ASSIGNMENT = window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment || null;
@@ -9509,6 +10025,44 @@ function App() {
   useEffect(() => {
     save("lc2-recents", recents);
   }, [recents]);
+  const [page, setPage] = useState("practice");
+  const [signinMode, setSigninMode] = useState("login");
+  const [auth, setAuthState] = useState(() => composeReadAuth());
+  const setAuth = useCallback((a) => {
+    setAuthState(a);
+    composeWriteAuth(a);
+  }, []);
+  const tier = !isFullBuild || !auth ? "anon" : auth.record && auth.record.role === "instructor" ? "instructor" : "account";
+  const canAuthor = !isStudentBuild || tier === "instructor";
+  useEffect(() => {
+    if (!isFullBuild || !auth || !auth.token) return;
+    fetch("/api/collections/users/auth-refresh", { method: "POST", headers: { Authorization: auth.token } }).then(async (r) => {
+      if (r.status === 401 || r.status === 403 || r.status === 404) {
+        setAuth(null);
+        return;
+      }
+      if (r.ok) {
+        const j = await r.json().catch(() => null);
+        if (j && j.token && j.record) setAuth({ token: j.token, record: j.record });
+      }
+    }).catch(() => {
+    });
+  }, []);
+  useEffect(() => {
+    if (isMobile && page !== "practice") setPage("practice");
+  }, [isMobile]);
+  function openEditorSurface() {
+    if (isMobile) {
+      setModal("editor");
+    } else {
+      setModal(null);
+      setPage("editor");
+    }
+  }
+  function closeEditorSurface() {
+    setModal(null);
+    setPage((pg) => pg === "editor" ? "practice" : pg);
+  }
   useEffect(() => {
     function onOutside(e) {
       if (settingsRef.current && !settingsRef.current.contains(e.target)) {
@@ -9813,7 +10367,7 @@ function App() {
   }
   function newUserExercise() {
     setEditorInit({ text: null, key: null });
-    setModal("editor");
+    openEditorSurface();
   }
   async function hostedFork(key) {
     const H = window.COMPOSE_HOSTED;
@@ -9844,7 +10398,7 @@ function App() {
       await pb.collection("versions").update(H.versionId, { bundle });
       if (Array.isArray(H.keys)) H.keys.push(newKey);
       setEditorInit({ text: content ? JSON.stringify(content) : f.text, key: newKey });
-      setModal("editor");
+      openEditorSurface();
     } catch (err) {
       const detail = err && err.response && err.response.message || err && err.message || "unknown error";
       window.alert("Fork failed: " + detail);
@@ -9854,12 +10408,12 @@ function App() {
     const f = window.LC_FILES && window.LC_FILES[key];
     if (!f) return;
     setEditorInit({ text: f.text, key });
-    setModal("editor");
+    openEditorSurface();
   }
   function editUserExercise(key) {
     const f = userFiles.find((x) => x.key === key);
     setEditorInit({ text: f ? f.text : null, key });
-    setModal("editor");
+    openEditorSurface();
   }
   const groups = (custom ? [{ id: "custom", kind: "tree", title: "Custom", problems: [custom.problem] }] : set ? set.groups : []).filter((g) => g.kind === "tree");
   const applyHash = useCallback((hash) => {
@@ -9975,7 +10529,7 @@ function App() {
         } else setRailCollapsed(true);
         return;
       }
-      if (e.metaKey || e.ctrlKey || e.altKey || modal) return;
+      if (e.metaKey || e.ctrlKey || e.altKey || modal || page !== "practice") return;
       if (e.key === "j" || e.key === "J") {
         e.preventDefault();
         gotoFlat(-1);
@@ -10108,6 +10662,7 @@ function App() {
     return ch ? ch.title : BUILD.label || "COMPOSE";
   }
   function openWorksheetKey(key) {
+    setPage("practice");
     setCustom(null);
     setFileKey(key);
     setSel({ gi: 0, pi: 0 });
@@ -10124,6 +10679,7 @@ function App() {
     if (gi < 0) gi = 0;
     let pi = gs[gi] ? gs[gi].problems.findIndex((pb) => pb.id === pid) : 0;
     if (pi < 0) pi = 0;
+    setPage("practice");
     setCustom(null);
     setFileKey(r.ws);
     setSel({ gi, pi });
@@ -10232,12 +10788,21 @@ function App() {
       const g = gs.find((x) => x.id === gid);
       const p = g && g.problems.find((x) => x.id === pid);
       return /* @__PURE__ */ React.createElement("button", { type: "button", key: r.ws + "/" + r.ex, className: "sb-row", onClick: () => openRecent(r) }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25B8"), /* @__PURE__ */ React.createElement("span", { className: "sb-recent-main" }, /* @__PURE__ */ React.createElement("span", { className: "sb-recent-label lx" }, p ? navLabel(g, p) : l.title), /* @__PURE__ */ React.createElement("span", { className: "sb-recent-sub" }, l.title)), /* @__PURE__ */ React.createElement("span", { className: "sb-recent-at" }, relTime(r.at)));
-    }))), !isStudentBuild && sbSection("author", "\u270E", "Author", null, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("editor") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u270E"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Exercise editor")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("scratch") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u266A"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Scratchpad"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, "free")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("reading") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4DD}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Notes")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
+    }))), canAuthor && sbSection("author", "\u270E", "Author", null, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row" + (page === "editor" ? " on" : ""), onClick: () => openEditorSurface() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u270E"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Worksheet editor"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, "page")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("scratch") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u266A"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Scratchpad"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, "free")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("reading") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4DD}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Notes")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
       setLoadErr(null);
       if (fileInput.current) fileInput.current.click();
     } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2191"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Import worksheet\u2026")))), sbSection("display", "\u25D0", "Display", null, /* @__PURE__ */ React.createElement("div", { className: "sb-display" }, /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Dark mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (darkMode ? " on" : ""), role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode((d) => !d) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-resolve non-branching"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoNN ? " on" : ""), role: "switch", "aria-checked": autoNN, onClick: () => setAutoNN((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), !isStudentBuild && /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-apply composition rules"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoCompose ? " on" : ""), role: "switch", "aria-checked": autoCompose, onClick: () => setAutoCompose((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Collapse resolved subtrees"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (collapseResolved ? " on" : ""), role: "switch", "aria-checked": collapseResolved, onClick: () => setCollapseResolved((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("div", { className: "settings-row settings-layout-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Layout"), /* @__PURE__ */ React.createElement("div", { className: "seg-mini" }, /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() == null ? " on" : ""), onClick: () => setForceLayout(null) }, "Auto"), /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() === "mobile" ? " on" : ""), onClick: () => setForceLayout("mobile") }, "Mobile"))), /* @__PURE__ */ React.createElement("div", { className: "sb-kicker sb-actions-kicker" }, "Actions"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("summary") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, doneCount, "/", probCount)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => composeExportProgress() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Save progress to a file")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
       if (progressFileInput.current) progressFileInput.current.click();
-    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2912"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Restore progress from a file\u2026")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", disabled: exporting, onClick: exportDerivation }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u29C9"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, exporting ? "Rendering\u2026" : "Export derivation (PNG)")), !isStudentBuild && !(BID.indexOf("hosted") === 0 && BID !== "hosted-sandbox") && /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("export") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2193"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Export assignment")))), isFullBuild && sbSection("help", "\u24D8", "Guide & help", null, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/guide/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25C6"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Instructor guide")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/help/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "?"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Student help")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/help/guides/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25B7"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Worked walkthroughs")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/files/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Downloads & site map")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/about/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\xA7"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "About & how to cite")))), isFullBuild && sbSection("account", "\u25C9", "Account", null, /* @__PURE__ */ React.createElement("div", null, BID === "hosted-sandbox" && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Editor sandbox \u2014 no account needed here. Instructors manage hosted versions from /dash."), BID !== "hosted-sandbox" && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Everything works without an account \u2014 an account only keeps your unlocks and progress."), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", disabled: true }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25C9"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Sign in \u2014 coming with accounts")))))), /* @__PURE__ */ React.createElement("div", { className: "sb-foot" }, !isStudentBuild && /* @__PURE__ */ React.createElement(
+    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2912"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Restore progress from a file\u2026")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", disabled: exporting, onClick: exportDerivation }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u29C9"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, exporting ? "Rendering\u2026" : "Export derivation (PNG)")), !isStudentBuild && !(BID.indexOf("hosted") === 0 && BID !== "hosted-sandbox") && /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("export") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2193"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Export assignment")))), isFullBuild && sbSection("help", "\u24D8", "Guide & help", null, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/guide/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25C6"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Instructor guide")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/help/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "?"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Student help")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/help/guides/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25B7"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Worked walkthroughs")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/files/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Downloads & site map")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/about/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\xA7"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "About & how to cite")))), isFullBuild && sbSection("account", "\u25C9", tier === "anon" ? "Account" : "Account \xB7 " + (tier === "instructor" ? "instructor" : "student"), null, tier === "anon" ? /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Everything works without an account \u2014 an account only keeps your unlocks and progress. An invite code turns it into an instructor account."), /* @__PURE__ */ React.createElement("div", { className: "sb-account-btns" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary sb-signin-btn", onClick: () => {
+      setSigninMode("login");
+      setPage("signin");
+    } }, "Sign in"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn-ghost sb-signin-btn", onClick: () => {
+      setSigninMode("register");
+      setPage("signin");
+    } }, "Create an account"))) : /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-id-card" }, /* @__PURE__ */ React.createElement("div", { className: "sb-id-email" }, auth.record && auth.record.email || "Signed in"), /* @__PURE__ */ React.createElement("div", { className: "sb-id-meta" }, /* @__PURE__ */ React.createElement("span", { className: "sb-tier-badge" }, tier === "instructor" ? "instructor" : "student"))), tier === "instructor" && /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row" + (page === "dash" ? " on" : ""), onClick: () => setPage("dash") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25C8"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "My versions")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
+      setAuth(null);
+      setPage("practice");
+    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2192"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Sign out")))))), /* @__PURE__ */ React.createElement("div", { className: "sb-foot" }, !isStudentBuild && /* @__PURE__ */ React.createElement(
       "button",
       {
         className: "mode-toggle" + (teacherMode ? " teacher" : " student"),
@@ -10292,7 +10857,7 @@ function App() {
         onClick: () => setExOpen(true)
       },
       "\u2630"
-    ), !isStudentBuild && /* @__PURE__ */ React.createElement(
+    ), canAuthor && /* @__PURE__ */ React.createElement(
       "button",
       {
         type: "button",
@@ -10354,6 +10919,79 @@ function App() {
     const crumb = custom ? "Custom exercise" : [collectionOf(lib), lib ? lib.title : null].filter(Boolean).join(" \xB7 ");
     return /* @__PURE__ */ React.createElement("div", { className: "practice-head" }, /* @__PURE__ */ React.createElement("div", { className: "ph-main" }, /* @__PURE__ */ React.createElement("div", { className: "ph-crumb" }, crumb), /* @__PURE__ */ React.createElement("h1", { className: "ph-gloss lx" }, gloss)), /* @__PURE__ */ React.createElement("div", { className: "ph-controls" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "ph-btn", onClick: () => setModal("rules"), title: "View rules for this exercise" }, "\u2630 Rules"), hasReading && /* @__PURE__ */ React.createElement("button", { type: "button", className: "ph-btn" + (rightTab === "reading" ? " on" : ""), onClick: () => setRightTab((v) => v === "reading" ? "lexicon" : "reading"), title: "Show the notes in the side panel" }, "\u{1F4DD} Notes"), /* @__PURE__ */ React.createElement("div", { className: "ph-step", role: "group", "aria-label": "Exercise navigation" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "ph-arrow", disabled: flatIdx <= 0, onClick: () => gotoFlat(-1), title: "Previous exercise (J)", "aria-label": "Previous exercise (J)" }, "\u2039"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "ph-arrow", disabled: flatIdx < 0 || flatIdx >= flatNav.length - 1, onClick: () => gotoFlat(1), title: "Next exercise (K)", "aria-label": "Next exercise (K)" }, "\u203A")), /* @__PURE__ */ React.createElement("span", { className: "ph-score" }, doneCount, "/", probCount, " solved")));
   }
+  function renderEditorSurface(asPage) {
+    return /* @__PURE__ */ React.createElement(
+      ExerciseEditor,
+      {
+        asPage,
+        onClose: () => {
+          closeEditorSurface();
+          setEditorInit(null);
+          setEditorMin(null);
+        },
+        baseSet: set,
+        initialText: editorInit && editorInit.text,
+        initialKey: editorInit && editorInit.key,
+        onSaveToLibrary: ({ title, text, editKey }) => saveUserExercise({ title, text, editKey }),
+        onMinimize: ({ title, editKey }) => {
+          setEditorMin({ title: (title || "").trim() || "Untitled exercise", key: editKey || null });
+          setEditorInit({ text: null, key: editKey || null });
+          closeEditorSurface();
+        },
+        onLoadIntoApp: ({ title, text, editKey }) => {
+          const key = commitUserExercise({ title, text, editKey });
+          if (key) {
+            setCustom(null);
+            setFileKey(key);
+            setSel({ gi: 0, pi: 0 });
+            setEditorMin({ title: (title || "").trim() || "Untitled exercise", key });
+            setEditorInit({ text: null, key });
+            closeEditorSurface();
+          }
+          return key;
+        },
+        onLaunch: ({ set: cset, problem: cprob, allowed: callowed }) => {
+          setCustom({ set: cset, problem: cprob });
+          if (callowed) setAllowedMap((m) => ({ ...m, [cset.id || "editor"]: callowed }));
+          setSel({ gi: 0, pi: 0 });
+          closeEditorSurface();
+        }
+      }
+    );
+  }
+  function renderPageView() {
+    if (page === "signin" || page === "dash" && tier !== "instructor") {
+      return /* @__PURE__ */ React.createElement(
+        SigninPage,
+        {
+          key: signinMode,
+          initialMode: signinMode,
+          onBack: () => setPage("practice"),
+          onAuthed: (a) => {
+            setAuth(a);
+            setPage("practice");
+            setNavSection("account");
+          }
+        }
+      );
+    }
+    if (page === "dash") {
+      return /* @__PURE__ */ React.createElement(
+        VersionsPage,
+        {
+          token: auth.token,
+          onBack: () => setPage("practice"),
+          onAuthGone: () => {
+            setAuth(null);
+            setSigninMode("login");
+            setPage("signin");
+          }
+        }
+      );
+    }
+    if (page === "editor") return /* @__PURE__ */ React.createElement("div", { className: "page-view page-editor" }, renderEditorSurface(true));
+    return null;
+  }
   return /* @__PURE__ */ React.createElement(
     "div",
     {
@@ -10396,7 +11034,7 @@ function App() {
     ),
     isMobile && /* @__PURE__ */ React.createElement("header", { className: "topbar topbar-mobile" }, /* @__PURE__ */ React.createElement("button", { className: "mtop-set", onClick: () => setModal("files"), title: "Choose a worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "mtop-glyph" }, "\u03BB"), /* @__PURE__ */ React.createElement("span", { className: "mtop-set-name" }, custom ? "Custom exercise" : lib ? lib.title : "No worksheet"), /* @__PURE__ */ React.createElement("span", { className: "mtop-caret" }, "\u25BE")), /* @__PURE__ */ React.createElement("div", { className: "spacer" }), hasContent && flatNav.length > 0 ? /* @__PURE__ */ React.createElement("div", { className: "mtop-nav" }, /* @__PURE__ */ React.createElement("button", { className: "mtop-arrow", disabled: flatIdx <= 0, onClick: () => gotoFlat(-1), "aria-label": "Previous exercise" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "mtop-score" }, doneCount, "/", probCount), /* @__PURE__ */ React.createElement("button", { className: "mtop-arrow", disabled: flatIdx < 0 || flatIdx >= flatNav.length - 1, onClick: () => gotoFlat(1), "aria-label": "Next exercise" }, "\u203A")) : /* @__PURE__ */ React.createElement("div", { className: "mtop-score solo" }, doneCount, "/", probCount)),
     !isMobile && /* @__PURE__ */ React.createElement("a", { className: "skip-link", href: "#main" }, "Skip to content"),
-    /* @__PURE__ */ React.createElement("div", { className: "app-main" + (isMobile ? " app-main-mobile" : "") }, !isMobile && renderSidebar(), !isMobile && hasContent && exOpen && renderExColumn(), /* @__PURE__ */ React.createElement("main", { id: "main", className: "col-center" }, !isMobile && renderPracticeHead(), renderCenter()), !isMobile && /* @__PURE__ */ React.createElement("aside", { className: "col col-right" }, hasReading ? /* @__PURE__ */ React.createElement("div", { className: "panel-head rd-tabhead" }, /* @__PURE__ */ React.createElement("button", { className: "rd-tab" + (rightTab !== "reading" ? " on" : ""), onClick: () => setRightTab("lexicon") }, "Lexicon ", /* @__PURE__ */ React.createElement("span", { className: "count" }, filteredLex.length)), /* @__PURE__ */ React.createElement("button", { className: "rd-tab" + (rightTab === "reading" ? " on" : ""), onClick: () => setRightTab("reading") }, "Notes")) : /* @__PURE__ */ React.createElement("div", { className: "panel-head" }, "Lexicon ", /* @__PURE__ */ React.createElement("span", { className: "count" }, filteredLex.length)), hasReading && rightTab === "reading" && window.ReaderPanel ? (() => {
+    /* @__PURE__ */ React.createElement("div", { className: "app-main" + (isMobile ? " app-main-mobile" : "") }, !isMobile && renderSidebar(), !isMobile && page === "practice" && hasContent && exOpen && renderExColumn(), /* @__PURE__ */ React.createElement("main", { id: "main", className: "col-center" }, isMobile || page === "practice" ? /* @__PURE__ */ React.createElement(React.Fragment, null, !isMobile && renderPracticeHead(), renderCenter()) : renderPageView()), !isMobile && page === "practice" && /* @__PURE__ */ React.createElement("aside", { className: "col col-right" }, hasReading ? /* @__PURE__ */ React.createElement("div", { className: "panel-head rd-tabhead" }, /* @__PURE__ */ React.createElement("button", { className: "rd-tab" + (rightTab !== "reading" ? " on" : ""), onClick: () => setRightTab("lexicon") }, "Lexicon ", /* @__PURE__ */ React.createElement("span", { className: "count" }, filteredLex.length)), /* @__PURE__ */ React.createElement("button", { className: "rd-tab" + (rightTab === "reading" ? " on" : ""), onClick: () => setRightTab("reading") }, "Notes")) : /* @__PURE__ */ React.createElement("div", { className: "panel-head" }, "Lexicon ", /* @__PURE__ */ React.createElement("span", { className: "count" }, filteredLex.length)), hasReading && rightTab === "reading" && window.ReaderPanel ? (() => {
       const RP = window.ReaderPanel;
       return /* @__PURE__ */ React.createElement(RP, { set: readingSet, section: problem && problem.section, embedded: true });
     })() : renderLexiconScroll()), isMobile && rightTab === "reading" && hasReading && window.ReaderPanel && (() => {
@@ -10595,43 +11233,7 @@ function App() {
         if (fileInput.current) fileInput.current.click();
       } }, "choose a file\u2026")) : /* @__PURE__ */ React.createElement("span", null, "Drag a ", /* @__PURE__ */ React.createElement("code", { className: "mono" }, ".compose.json"), ", exported ", /* @__PURE__ */ React.createElement("code", { className: "mono" }, ".html"), ", or ", /* @__PURE__ */ React.createElement("code", { className: "mono" }, ".compose-bundle.json"), " onto this panel to load it \u2014 or use ", /* @__PURE__ */ React.createElement("b", null, "Tools \u2192 Import worksheet"), "."))
     )),
-    modal === "editor" && /* @__PURE__ */ React.createElement(
-      ExerciseEditor,
-      {
-        onClose: () => {
-          setModal(null);
-          setEditorInit(null);
-          setEditorMin(null);
-        },
-        baseSet: set,
-        initialText: editorInit && editorInit.text,
-        initialKey: editorInit && editorInit.key,
-        onSaveToLibrary: ({ title, text, editKey }) => saveUserExercise({ title, text, editKey }),
-        onMinimize: ({ title, editKey }) => {
-          setEditorMin({ title: (title || "").trim() || "Untitled exercise", key: editKey || null });
-          setEditorInit({ text: null, key: editKey || null });
-          setModal(null);
-        },
-        onLoadIntoApp: ({ title, text, editKey }) => {
-          const key = commitUserExercise({ title, text, editKey });
-          if (key) {
-            setCustom(null);
-            setFileKey(key);
-            setSel({ gi: 0, pi: 0 });
-            setEditorMin({ title: (title || "").trim() || "Untitled exercise", key });
-            setEditorInit({ text: null, key });
-            setModal(null);
-          }
-          return key;
-        },
-        onLaunch: ({ set: cset, problem: cprob, allowed: callowed }) => {
-          setCustom({ set: cset, problem: cprob });
-          if (callowed) setAllowedMap((m) => ({ ...m, [cset.id || "editor"]: callowed }));
-          setSel({ gi: 0, pi: 0 });
-          setModal(null);
-        }
-      }
-    ),
+    modal === "editor" && renderEditorSurface(false),
     modal === "scratch" && window.ScratchpadPanel && (() => {
       const SP = window.ScratchpadPanel;
       return /* @__PURE__ */ React.createElement(
@@ -10644,9 +11246,9 @@ function App() {
             setSel({ gi: 0, pi: 0 });
             setModal(null);
           },
-          onPromote: window.COMPOSE_HOSTED || !isStudentBuild ? (text) => {
+          onPromote: window.COMPOSE_HOSTED || canAuthor ? (text) => {
             setEditorInit({ text, key: null });
-            setModal("editor");
+            openEditorSurface();
           } : null
         }
       );
@@ -10665,12 +11267,12 @@ function App() {
           onClose: () => setModal(null),
           onCreateSet: (text) => {
             setEditorInit({ text, key: null });
-            setModal("editor");
+            openEditorSurface();
           }
         }
       );
     })(),
-    editorMin && !modal && !isStudentBuild && /* @__PURE__ */ React.createElement("button", { className: "editor-min-pill", title: "Reopen the exercise editor", onClick: () => setModal("editor") }, /* @__PURE__ */ React.createElement("span", { className: "emp-ico" }, "\u270E"), /* @__PURE__ */ React.createElement("span", { className: "emp-text" }, /* @__PURE__ */ React.createElement("span", { className: "emp-title" }, editorMin.title), /* @__PURE__ */ React.createElement("span", { className: "emp-sub" }, "Exercise editor \xB7 tap to open")), /* @__PURE__ */ React.createElement(
+    editorMin && !modal && page !== "editor" && canAuthor && /* @__PURE__ */ React.createElement("button", { className: "editor-min-pill", title: "Reopen the worksheet editor", onClick: () => openEditorSurface() }, /* @__PURE__ */ React.createElement("span", { className: "emp-ico" }, "\u270E"), /* @__PURE__ */ React.createElement("span", { className: "emp-text" }, /* @__PURE__ */ React.createElement("span", { className: "emp-title" }, editorMin.title), /* @__PURE__ */ React.createElement("span", { className: "emp-sub" }, "Exercise editor \xB7 tap to open")), /* @__PURE__ */ React.createElement(
       "span",
       {
         className: "emp-close",

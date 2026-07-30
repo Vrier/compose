@@ -149,6 +149,416 @@ function PhoneInterstitial({ onContinue }) {
   );
 }
 
+/* ===========================================================================
+   N2 (S30) — sign-in page, tier state UI, and the in-app "My versions" page.
+   Site builds only (hosted-root / hosted-sandbox / hosted-lib-*): the account
+   tier is derived from a persisted auth token (localStorage `lc2-auth`,
+   deliberately UN-namespaced so /, /cc, /hk and /papers share one session).
+   The API is plain JSON, so these talk to PocketBase with fetch() — the main
+   bundle does not carry the SDK (only /edit and /dash do).
+   =========================================================================== */
+function composeReadAuth() {
+  try {
+    const a = JSON.parse(window.localStorage.getItem('lc2-auth') || 'null');
+    return a && a.token && a.record ? a : null;
+  } catch (e) { return null; }
+}
+function composeWriteAuth(a) {
+  try {
+    if (a) window.localStorage.setItem('lc2-auth', JSON.stringify(a));
+    else window.localStorage.removeItem('lc2-auth');
+  } catch (e) {}
+}
+
+/* Structural bundle validation for create-from-bundle (mirrors dash.jsx /
+   schemas/; the server runs the full semantic pass on save anyway). */
+function composeValidateBundleStruct(obj, byteSize) {
+  const errs = [];
+  if (byteSize > 2 * 1024 * 1024) errs.push('bundle is larger than the 2 MB limit');
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return ['not a JSON object'];
+  if (obj.compose_bundle !== 1) errs.push('missing or unsupported "compose_bundle" version (expected 1)');
+  const list = obj.worksheets !== undefined ? obj.worksheets : obj.exercises;
+  if (!Array.isArray(list)) { errs.push('missing "worksheets" array'); return errs; }
+  if (list.length > 40) errs.push('more than 40 worksheets');
+  list.forEach((w, i) => {
+    const pth = 'worksheets[' + i + ']';
+    if (!w || typeof w !== 'object') { errs.push(pth + ' is not an object'); return; }
+    if (typeof w.key !== 'string' || !w.key.trim()) errs.push(pth + ' is missing a "key"');
+    if (w.content === undefined && w.text === undefined) errs.push(pth + ' needs "content" (object) or "text" (JSON string)');
+  });
+  return errs;
+}
+
+/* ---- Sign-in page (spec: centred 392px card, λ mark, two flows) ---------- */
+function SigninPage({ initialMode, onBack, onAuthed }) {
+  const [mode, setMode] = useState(initialMode === 'register' ? 'register' : 'login');
+  const [email, setEmail] = useState('');
+  const [pw, setPw] = useState('');
+  const [code, setCode] = useState('');
+  const [showCode, setShowCode] = useState(false);
+  const [err, setErr] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const wantInvite = mode === 'register' && showCode && !!code.trim();
+
+  async function submit(ev) {
+    ev.preventDefault();
+    setErr(null); setBusy(true);
+    try {
+      if (mode === 'register') {
+        if (pw.length < 10) throw new Error('Password must be at least 10 characters.');
+        const r = await fetch(wantInvite ? '/api/compose/register' : '/api/compose/register-student', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(wantInvite ? { email: email, password: pw, inviteCode: code.trim() } : { email: email, password: pw }),
+        });
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(j.error || j.message || 'Registration failed.');
+      }
+      const r2 = await fetch('/api/collections/users/auth-with-password', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identity: email, password: pw }),
+      });
+      const j2 = await r2.json().catch(() => ({}));
+      if (!r2.ok || !j2.token || !j2.record) throw new Error((j2 && j2.message) || 'Could not sign in — check the email and password.');
+      onAuthed({ token: j2.token, record: j2.record });
+    } catch (e) { setErr(e.message || String(e)); }
+    setBusy(false);
+  }
+
+  const tierRows = [
+    { mark: '✓', cls: 'good', title: 'No account — everything works',
+      body: 'Derive, use the rules and notes, enter unlock codes, work through any worksheet. Nothing is saved server-side; progress and unlocks stay in this browser.' },
+    { mark: '＋', cls: 'accent', title: 'Practice account',
+      body: 'Unlocks and progress are kept and follow you to any device you sign in on.' },
+    { mark: '⌗', cls: 'accent', title: 'Instructor account — needs an invite code',
+      body: 'Author worksheets, host versions, share links, QR codes and exports, and use the instructor tools (auto-resolve composition rules, reveal targets, rule overrides).' },
+  ];
+
+  return (
+    <div className="page-view si-wrap">
+      <div className="si-col">
+        <div className="page-crumb-row si-crumb">
+          <button type="button" className="page-back" onClick={onBack} title="Back to practice" aria-label="Back to practice">‹</button>
+          <span className="page-crumb">Account · Sign in</span>
+        </div>
+        <div className="si-mark">
+          <div className="si-lambda" aria-hidden="true">λ</div>
+          <div className="si-wordmark">Compose</div>
+        </div>
+        <div className="si-card">
+          <div className="si-tabs" role="tablist" aria-label="Sign-in mode">
+            <button type="button" role="tab" aria-selected={mode === 'login'} className={'si-tab' + (mode === 'login' ? ' on' : '')} onClick={() => { setMode('login'); setErr(null); }}>Log in</button>
+            <button type="button" role="tab" aria-selected={mode === 'register'} className={'si-tab' + (mode === 'register' ? ' on' : '')} onClick={() => { setMode('register'); setErr(null); }}>Register</button>
+          </div>
+          <form onSubmit={submit}>
+            <label className="si-label">Email
+              <input className="si-input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@university.edu" required autoFocus />
+            </label>
+            <label className="si-label">Password{mode === 'register' ? <span className="si-hint-inline"> — at least 10 characters</span> : null}
+              <input className="si-input" type="password" value={pw} onChange={(e) => setPw(e.target.value)} placeholder="••••••••••" required minLength={mode === 'register' ? 10 : undefined} />
+            </label>
+            {mode === 'register' && !showCode && (
+              <button type="button" className="si-code-link" onClick={() => setShowCode(true)}>I have an invite code</button>
+            )}
+            {mode === 'register' && showCode && (
+              <label className="si-label">Instructor invite code <span className="si-hint-inline">— optional</span>
+                <input className="si-input si-code-input mono" value={code} onChange={(e) => setCode(e.target.value)} placeholder="leave blank for a practice account" />
+                <span className="si-hint">With a code you get authoring, hosting, sharing and the instructor tools. Without one you get an account that keeps your unlocks and progress.</span>
+              </label>
+            )}
+            {err && <div className="si-err" role="alert">{err}</div>}
+            <button className="btn btn-primary si-submit" disabled={busy}>
+              {busy ? '…' : mode === 'login' ? 'Log in' : (wantInvite ? 'Create instructor account' : 'Create practice account')}
+            </button>
+          </form>
+          {mode === 'register' && (
+            <div className="si-note">The server sends no email at all — no verification, no reset — so remember your password; only the administrator can reset it. Invite codes come from <a href="mailto:tmurrays@tcd.ie">tmurrays@tcd.ie</a>.</div>
+          )}
+        </div>
+        <div className="si-tiers">
+          <div className="si-tiers-kicker">What an account changes</div>
+          {tierRows.map((t) => (
+            <div className="si-tier" key={t.title}>
+              <span className={'si-tier-mark ' + t.cls} aria-hidden="true">{t.mark}</span>
+              <div className="si-tier-main">
+                <div className="si-tier-title">{t.title}</div>
+                <div className="si-tier-body">{t.body}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---- Share modal (ported from dash.jsx; QR renders when the vendored
+   window.QRCode is present — build/server.mjs adds it to site pages) ------- */
+function VersionShareModal({ v, onClose }) {
+  const url = window.location.origin + '/v/' + v.slug;
+  const canvasRef = useRef(null);
+  const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    if (canvasRef.current && window.QRCode) {
+      window.QRCode.toCanvas(canvasRef.current, url, { width: 300, margin: 2 }, () => {});
+    }
+  }, [url]);
+  function copy() {
+    navigator.clipboard.writeText(url).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1500); });
+  }
+  function downloadPng() {
+    if (!canvasRef.current) return;
+    const a = document.createElement('a');
+    a.href = canvasRef.current.toDataURL('image/png');
+    a.download = 'compose-' + v.slug + '-qr.png';
+    a.click();
+  }
+  function printHandout() {
+    if (!canvasRef.current) return;
+    const png = canvasRef.current.toDataURL('image/png');
+    const w = window.open('', '_blank');
+    if (!w) { window.alert('Pop-up blocked — allow pop-ups to print the handout.'); return; }
+    w.document.write('<!DOCTYPE html><html><head><title></title><style>' +
+      '@page { size: A4; margin: 25mm; }' +
+      'body { font-family: Georgia, serif; color: #222; text-align: center; margin: 0; }' +
+      'h1 { font-size: 28pt; margin: 22mm 0 4mm; font-weight: 600; }' +
+      '.url { font-family: monospace; font-size: 15pt; margin: 0 0 14mm; word-break: break-all; }' +
+      'img { width: 100mm; height: 100mm; }' +
+      '.foot { margin-top: 14mm; font-size: 11pt; color: #666; }' +
+      '</style></head><body>' +
+      '<h1></h1><div class="url"></div>' +
+      '<img src="' + png + '" alt="QR code" />' +
+      '<div class="foot">Scan the code or type the address. Your progress is saved in your own browser — use the same device and browser to continue.</div>' +
+      '</body></html>');
+    const doc = w.document;
+    doc.title = 'COMPOSE — ' + v.title;
+    doc.querySelector('h1').textContent = v.title;
+    doc.querySelector('.url').textContent = url;
+    doc.close();
+    w.focus();
+    setTimeout(() => w.print(), 250);
+  }
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal vd-share" onClick={(e) => e.stopPropagation()}>
+        <h3 className="vd-share-title">{v.title}</h3>
+        {window.QRCode ? <canvas ref={canvasRef} className="vd-qr" width={300} height={300} /> : null}
+        <div className="vd-share-url mono">{url}</div>
+        <div className="vd-share-actions">
+          <button className="btn btn-primary" onClick={copy}>{copied ? '✓ Copied' : '⧉ Copy link'}</button>
+          {window.QRCode ? <button className="btn-ghost" onClick={downloadPng}>⬇ QR as PNG</button> : null}
+          {window.QRCode ? <button className="btn-ghost" onClick={printHandout}>🖨 Print A4 handout</button> : null}
+          <button className="btn-ghost" onClick={onClose}>Close</button>
+        </div>
+        <div className="vd-share-note">Links are live: editing the version updates what students see at this same URL — printed QR codes stay valid.</div>
+      </div>
+    </div>
+  );
+}
+
+/* ---- My versions page (instructor tier; spec: max-width 940px rows) ------ */
+function VersionsPage({ token, onBack, onAuthGone }) {
+  const [versions, setVersions] = useState(null);
+  const [err, setErr] = useState(null);
+  const [openId, setOpenId] = useState(null);
+  const [busyId, setBusyId] = useState(null);
+  const [sharing, setSharing] = useState(null);
+  const [copiedWhat, setCopiedWhat] = useState(null);
+  const bundleNewRef = useRef(null);
+  const bundleReplaceRef = useRef(null);
+  const importForRef = useRef(null);
+
+  async function api(method, path, body) {
+    const headers = { Authorization: token };
+    if (body !== undefined) headers['Content-Type'] = 'application/json';
+    const r = await fetch(path, { method: method, headers: headers, body: body === undefined ? undefined : JSON.stringify(body) });
+    if (r.status === 401) { onAuthGone(); throw new Error('Signed out — please sign in again.'); }
+    const text = await r.text();
+    let j = null; try { j = JSON.parse(text); } catch (e) {}
+    if (!r.ok) throw new Error((j && (j.error || j.message)) || ('Request failed (' + r.status + ')'));
+    return j;
+  }
+  async function refresh() {
+    try { const j = await api('GET', '/api/collections/versions/records?sort=-updated&perPage=200'); setVersions((j && j.items) || []); }
+    catch (e) { setErr('Could not load your versions: ' + e.message); }
+  }
+  useEffect(() => { refresh(); }, []);
+
+  function sheetsOf(v) {
+    const b = v.bundle || {};
+    const list = b.worksheets || b.exercises || [];
+    return list.map((w) => {
+      let obj = w.content;
+      if (!obj && typeof w.text === 'string') { try { obj = JSON.parse(w.text); } catch (e) { obj = null; } }
+      const n = obj && Array.isArray(obj.exercises)
+        ? obj.exercises.reduce((a, g) => a + ((g.items || g.derivations || g.trees || []).length), 0) : 0;
+      return { key: w.key, title: (obj && obj.title) || w.title || w.key, n: n };
+    });
+  }
+  function copy(what, text) {
+    navigator.clipboard.writeText(text).then(() => { setCopiedWhat(what); setTimeout(() => setCopiedWhat(null), 1500); });
+  }
+  async function patch(v, data) {
+    try { await api('PATCH', '/api/collections/versions/records/' + v.id, data); await refresh(); }
+    catch (e) { setErr('Update failed: ' + e.message); }
+  }
+  async function del(v) {
+    if (!window.confirm('Delete "' + v.title + '"? The student link /v/' + v.slug + ' and its unlock code stop working. This cannot be undone.')) return;
+    try { await api('DELETE', '/api/collections/versions/records/' + v.id); await refresh(); }
+    catch (e) { setErr('Delete failed: ' + e.message); }
+  }
+  async function newCode(v) {
+    if (!window.confirm('Generate a new unlock code for "' + v.title + '"? The old code stops working immediately.')) return;
+    setBusyId(v.id);
+    try {
+      const j = await api('POST', '/api/compose/new-code', { version: v.id });
+      setVersions((list) => (list || []).map((x) => x.id === v.id ? Object.assign({}, x, { unlockCode: j.unlockCode }) : x));
+    } catch (e) { setErr('New code failed: ' + e.message); }
+    setBusyId(null);
+  }
+  async function create() {
+    const title = window.prompt('Name for the new version (students will see this):', 'My course');
+    if (!title || !title.trim()) return;
+    try {
+      const v = await api('POST', '/api/collections/versions/records', {
+        title: title.trim(),
+        bundle: { compose_bundle: 1, title: title.trim(), chapters: [], worksheets: [] },
+        mode: 'practice',
+      });
+      setErr(null); await refresh(); setOpenId(v.id);
+    } catch (e) { setErr('Create failed: ' + e.message); }
+  }
+  function readBundleFile(f, cb) {
+    f.text().then((text) => {
+      let obj;
+      try { obj = JSON.parse(text); } catch (e) { setErr('Import failed: not valid JSON — ' + e.message); return; }
+      const errs = composeValidateBundleStruct(obj, text.length);
+      if (errs.length) { setErr('Import rejected:\n• ' + errs.slice(0, 8).join('\n• ')); return; }
+      cb(obj);
+    });
+  }
+  function createFromBundle(ev) {
+    const f = ev.target.files && ev.target.files[0];
+    ev.target.value = '';
+    if (!f) return;
+    readBundleFile(f, async (obj) => {
+      try {
+        const v = await api('POST', '/api/collections/versions/records', {
+          title: obj.title || f.name.replace(/\.compose-bundle\.json$/i, ''),
+          bundle: obj, mode: 'practice',
+        });
+        setErr(null); await refresh(); setOpenId(v.id);
+      } catch (e) { setErr('Create from bundle failed: ' + e.message); }
+    });
+  }
+  function replaceBundle(ev) {
+    const f = ev.target.files && ev.target.files[0];
+    ev.target.value = '';
+    const v = importForRef.current;
+    importForRef.current = null;
+    if (!f || !v) return;
+    readBundleFile(f, (obj) => {
+      const n = ((obj.worksheets || obj.exercises) || []).length;
+      if (!window.confirm('Replace the worksheets of "' + v.title + '" with the imported bundle (' + n + ' worksheets)?')) return;
+      patch(v, { bundle: obj });
+    });
+  }
+
+  return (
+    <div className="page-view vd-wrap">
+      <div className="vd-inner">
+        <div className="page-crumb-row">
+          <button type="button" className="page-back" onClick={onBack} title="Back to practice" aria-label="Back to practice">‹</button>
+          <span className="page-crumb">Account home</span>
+        </div>
+        <div className="vd-head">
+          <div className="vd-head-main">
+            <h1 className="vd-title">My versions</h1>
+            <div className="vd-sub">A version is a hosted collection of worksheets with its own student link and unlock code. Open one to see what's inside it — edits go live at the same address.</div>
+          </div>
+          <div className="vd-head-actions">
+            <button type="button" className="btn btn-primary" onClick={create}>+ New version</button>
+            <button type="button" className="btn-ghost" title="Start a version from a .compose-bundle.json file" onClick={() => { if (bundleNewRef.current) bundleNewRef.current.click(); }}>⬆ New from bundle…</button>
+          </div>
+        </div>
+        {err && <div className="vd-err" onClick={() => setErr(null)} title="Click to dismiss">{err}</div>}
+        {versions === null ? <div className="vd-empty">Loading…</div>
+          : versions.length === 0 ? (
+            <div className="vd-none">
+              <div className="vd-none-glyph" aria-hidden="true">◈</div>
+              <div className="vd-none-title">No versions yet</div>
+              <div className="vd-none-sub">A version bundles the worksheets one class sees and gives them a single link. Make one now, or start from a colleague's bundle.</div>
+            </div>
+          ) : versions.map((v) => {
+            const sheets = sheetsOf(v);
+            const derivN = sheets.reduce((a, w) => a + w.n, 0);
+            const isOpen = openId === v.id;
+            return (
+              <div className="vd-row" key={v.id}>
+                <div className="vd-row-head" onClick={() => setOpenId(isOpen ? null : v.id)}>
+                  <span className="vd-caret" aria-hidden="true">{isOpen ? '▾' : '▸'}</span>
+                  <div className="vd-row-main">
+                    <div className="vd-row-titleline">
+                      <span className="vd-row-title">{v.title}</span>
+                      <button type="button" className={'vd-state' + (v.published ? '' : ' off')}
+                        title={v.published ? 'Published — students can open the link and redeem the code. Click to unpublish.' : 'Unpublished — the student link returns 404. Click to publish.'}
+                        onClick={(e) => { e.stopPropagation(); patch(v, { published: !v.published }); }}>
+                        {v.published ? '● live' : '○ hidden'}
+                      </button>
+                    </div>
+                    <div className="vd-row-meta">
+                      <a className="vd-slug mono" href={'/v/' + v.slug} target="_blank" rel="noopener" onClick={(e) => e.stopPropagation()}>/v/{v.slug}</a>
+                      <button type="button" className="vd-link-btn" onClick={(e) => { e.stopPropagation(); copy(v.id + ':url', window.location.origin + '/v/' + v.slug); }}>{copiedWhat === v.id + ':url' ? '✓ copied' : '⧉ copy link'}</button>
+                      <span className="vd-sep" aria-hidden="true">·</span>
+                      <span>{sheets.length} worksheet{sheets.length === 1 ? '' : 's'}, {derivN} derivation{derivN === 1 ? '' : 's'}</span>
+                      <span className="vd-sep" aria-hidden="true">·</span>
+                      <span title="Times the student link has been opened">{v.opens || 0} opens</span>
+                      <span className="vd-sep" aria-hidden="true">·</span>
+                      <span>updated {String(v.updated || '').slice(0, 10)}</span>
+                    </div>
+                  </div>
+                  <div className="vd-row-actions" onClick={(e) => e.stopPropagation()}>
+                    <a className="vd-btn" href={'/edit/' + v.id} title="Open this version's worksheets in the hosted editor">✎ Editor</a>
+                    <button type="button" className="vd-btn" title="Share: QR code, link, printable handout" onClick={() => setSharing(v)}>⇗ Share</button>
+                    <button type="button" className="vd-btn vd-del" title="Delete this version" onClick={() => del(v)}>✕</button>
+                  </div>
+                </div>
+                {isOpen && (
+                  <div className="vd-row-body">
+                    {sheets.map((w) => (
+                      <div className="vd-ws" key={w.key}>
+                        <div className="vd-ws-main">
+                          <div className="vd-ws-title">{w.title}</div>
+                          <div className="vd-ws-meta"><span className="mono">{w.key}</span><span className="vd-sep" aria-hidden="true">·</span><span>{w.n} derivation{w.n === 1 ? '' : 's'}</span></div>
+                        </div>
+                      </div>
+                    ))}
+                    {sheets.length === 0 && <div className="vd-ws-none">No worksheets yet — open the editor and “☁ Save to server”, or import a bundle below.</div>}
+                    <div className="vd-row-foot">
+                      <div className="vd-code-box">
+                        <span className="vd-code-kicker">Unlock code</span>
+                        <span className="vd-code mono">{v.unlockCode || '—'}</span>
+                        <button type="button" className="vd-btn" title="Copy the unlock code" onClick={() => copy(v.id + ':code', v.unlockCode || '')}>{copiedWhat === v.id + ':code' ? '✓ copied' : '⧉ Copy'}</button>
+                        <button type="button" className="vd-btn" disabled={busyId === v.id} title="Generate a new code — the old one stops working" onClick={() => newCode(v)}>{busyId === v.id ? '…' : '↻ New code'}</button>
+                      </div>
+                      <span className="vd-flex" />
+                      <span className="vd-notes-state">{(v.notes || '').trim() ? 'Notes ●' : 'No notes'}</span>
+                      <button type="button" className="vd-btn" title="Download the companion bundle as a file" onClick={() => window.composeDownload((v.slug || 'version') + '.compose-bundle.json', JSON.stringify(v.bundle, null, 2), 'application/json')}>⬇ bundle.json</button>
+                      <button type="button" className="vd-btn" title="Import a bundle file (replaces this version's worksheets)" onClick={() => { importForRef.current = v; if (bundleReplaceRef.current) bundleReplaceRef.current.click(); }}>⬆ Replace bundle…</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        <input ref={bundleNewRef} type="file" accept=".json,application/json" style={{ display: 'none' }} onChange={createFromBundle} />
+        <input ref={bundleReplaceRef} type="file" accept=".json,application/json" style={{ display: 'none' }} onChange={replaceBundle} />
+        {sharing && <VersionShareModal v={sharing} onClose={() => setSharing(null)} />}
+        <div className="vd-foot">The standalone dashboard at <a href="/dash/">/dash</a> keeps working — notes editing lives there for now.</div>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const ROLE = (window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.role) || 'instructor';
   const ASSIGNMENT = (window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment) || null;
@@ -219,6 +629,39 @@ function App() {
   useEffect(() => { save('lc2-rail', railCollapsed); }, [railCollapsed]);
   useEffect(() => { save('lc2-nav-section', navSection); }, [navSection]);
   useEffect(() => { save('lc2-recents', recents); }, [recents]);
+  // ---- N2 (S30): auth tier + in-app pages ---------------------------------
+  // page: 'practice' | 'signin' | 'editor' | 'dash' (desktop only; mobile
+  // keeps its modal/sheet navigation untouched until N6).
+  const [page, setPage] = useState('practice');
+  const [signinMode, setSigninMode] = useState('login');
+  const [auth, setAuthState] = useState(() => composeReadAuth());
+  const setAuth = useCallback((a) => { setAuthState(a); composeWriteAuth(a); }, []);
+  // Tier only ever leaves 'anon' on site builds — /v/, /edit and exports
+  // never show sign-in and never read the token.
+  const tier = (!isFullBuild || !auth) ? 'anon'
+    : (auth.record && auth.record.role === 'instructor' ? 'instructor' : 'account');
+  const canAuthor = !isStudentBuild || tier === 'instructor';
+  useEffect(() => {
+    // Validate the persisted token ONCE on boot. auth-refresh counts toward
+    // the *:auth rate budget (5/min), so never call it anywhere else.
+    if (!isFullBuild || !auth || !auth.token) return;
+    fetch('/api/collections/users/auth-refresh', { method: 'POST', headers: { Authorization: auth.token } })
+      .then(async (r) => {
+        if (r.status === 401 || r.status === 403 || r.status === 404) { setAuth(null); return; }
+        if (r.ok) { const j = await r.json().catch(() => null); if (j && j.token && j.record) setAuth({ token: j.token, record: j.record }); }
+      })
+      .catch(() => {}); // offline: keep the stored identity; server calls will fail loudly
+  }, []);
+  useEffect(() => { if (isMobile && page !== 'practice') setPage('practice'); }, [isMobile]);
+  function openEditorSurface() {
+    // Desktop: the editor is a page (N2). Mobile keeps the modal path.
+    if (isMobile) { setModal('editor'); }
+    else { setModal(null); setPage('editor'); }
+  }
+  function closeEditorSurface() {
+    setModal(null);
+    setPage((pg) => pg === 'editor' ? 'practice' : pg);
+  }
   useEffect(() => {
     function onOutside(e) {
       if (settingsRef.current && !settingsRef.current.contains(e.target)) { settingsRef.current.open = false; setSettingsOpen(false); }
@@ -473,7 +916,7 @@ function App() {
     setUserFiles([]);
     if (keys.has(fileKey)) { setFileKey(BUILTIN[0] ? BUILTIN[0].key : null); setSel({ gi: 0, pi: 0 }); }
   }
-  function newUserExercise() { setEditorInit({ text: null, key: null }); setModal('editor'); }
+  function newUserExercise() { setEditorInit({ text: null, key: null }); openEditorSurface(); }
   // ---- hosted instructor actions (S4/W4) --------------------------------
   // ⑂ fork: copy a worksheet into the hosted version's bundle, open editor.
   // ✎ edit: open one of the version's own worksheets in the editor.
@@ -495,7 +938,7 @@ function App() {
       await pb.collection('versions').update(H.versionId, { bundle });
       if (Array.isArray(H.keys)) H.keys.push(newKey);
       setEditorInit({ text: content ? JSON.stringify(content) : f.text, key: newKey });
-      setModal('editor');
+      openEditorSurface();
     } catch (err) {
       const detail = (err && err.response && err.response.message) || (err && err.message) || 'unknown error';
       window.alert('Fork failed: ' + detail);
@@ -505,12 +948,12 @@ function App() {
     const f = window.LC_FILES && window.LC_FILES[key];
     if (!f) return;
     setEditorInit({ text: f.text, key });
-    setModal('editor');
+    openEditorSurface();
   }
   function editUserExercise(key) {
     const f = userFiles.find((x) => x.key === key);
     setEditorInit({ text: f ? f.text : null, key });
-    setModal('editor');
+    openEditorSurface();
   }
 
   const groups = (custom ? [{ id: 'custom', kind: 'tree', title: 'Custom', problems: [custom.problem] }] : (set ? set.groups : [])).filter(g => g.kind === 'tree');
@@ -623,7 +1066,7 @@ function App() {
         else setRailCollapsed(true);
         return;
       }
-      if (e.metaKey || e.ctrlKey || e.altKey || modal) return;
+      if (e.metaKey || e.ctrlKey || e.altKey || modal || page !== 'practice') return;
       if (e.key === 'j' || e.key === 'J') { e.preventDefault(); gotoFlat(-1); }
       else if (e.key === 'k' || e.key === 'K') { e.preventDefault(); gotoFlat(1); }
     }
@@ -773,6 +1216,7 @@ function App() {
     return ch ? ch.title : (BUILD.label || 'COMPOSE');
   }
   function openWorksheetKey(key) {
+    setPage('practice');
     setCustom(null); setFileKey(key); setSel({ gi: 0, pi: 0 }); setExOpen(true); setNavQuery('');
   }
   function openRecent(r) {
@@ -783,6 +1227,7 @@ function App() {
     const gid = dot > 0 ? r.ex.slice(0, dot) : '', pid = dot > 0 ? r.ex.slice(dot + 1) : '';
     let gi = gs.findIndex((g) => g.id === gid); if (gi < 0) gi = 0;
     let pi = gs[gi] ? gs[gi].problems.findIndex((pb) => pb.id === pid) : 0; if (pi < 0) pi = 0;
+    setPage('practice');
     setCustom(null); setFileKey(r.ws); setSel({ gi, pi }); setExOpen(true);
   }
   function resetAllProgress() {
@@ -921,9 +1366,9 @@ function App() {
                   })}
                 </div>
               ))}
-              {!isStudentBuild && sbSection('author', '✎', 'Author', null, (
+              {canAuthor && sbSection('author', '✎', 'Author', null, (
                 <div>
-                  <button type="button" className="sb-row" onClick={() => setModal('editor')}><span className="sb-ico" aria-hidden="true">✎</span><span className="sb-row-label">Exercise editor</span></button>
+                  <button type="button" className={'sb-row' + (page === 'editor' ? ' on' : '')} onClick={() => openEditorSurface()}><span className="sb-ico" aria-hidden="true">✎</span><span className="sb-row-label">Worksheet editor</span><span className="sb-row-note">page</span></button>
                   <button type="button" className="sb-row" onClick={() => setModal('scratch')}><span className="sb-ico" aria-hidden="true">♪</span><span className="sb-row-label">Scratchpad</span><span className="sb-row-note">free</span></button>
                   <button type="button" className="sb-row" onClick={() => setModal('reading')}><span className="sb-ico" aria-hidden="true">📝</span><span className="sb-row-label">Notes</span></button>
                   <button type="button" className="sb-row" onClick={() => { setLoadErr(null); if (fileInput.current) fileInput.current.click(); }}><span className="sb-ico" aria-hidden="true">↑</span><span className="sb-row-label">Import worksheet…</span></button>
@@ -973,12 +1418,29 @@ function App() {
                   <a className="sb-row" href="/about/"><span className="sb-ico" aria-hidden="true">§</span><span className="sb-row-label">About &amp; how to cite</span></a>
                 </div>
               ))}
-              {isFullBuild && sbSection('account', '◉', 'Account', null, (
-                <div>
-                  {BID === 'hosted-sandbox' && <div className="sb-empty-note">Editor sandbox — no account needed here. Instructors manage hosted versions from /dash.</div>}
-                  {BID !== 'hosted-sandbox' && <div className="sb-empty-note">Everything works without an account — an account only keeps your unlocks and progress.</div>}
-                  <button type="button" className="sb-row" disabled><span className="sb-ico" aria-hidden="true">◉</span><span className="sb-row-label">Sign in — coming with accounts</span></button>
-                </div>
+              {isFullBuild && sbSection('account', '◉', tier === 'anon' ? 'Account' : 'Account · ' + (tier === 'instructor' ? 'instructor' : 'student'), null, (
+                tier === 'anon' ? (
+                  <div>
+                    <div className="sb-empty-note">Everything works without an account — an account only keeps your unlocks and progress. An invite code turns it into an instructor account.</div>
+                    <div className="sb-account-btns">
+                      <button type="button" className="btn btn-primary sb-signin-btn" onClick={() => { setSigninMode('login'); setPage('signin'); }}>Sign in</button>
+                      <button type="button" className="btn-ghost sb-signin-btn" onClick={() => { setSigninMode('register'); setPage('signin'); }}>Create an account</button>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="sb-id-card">
+                      <div className="sb-id-email">{(auth.record && auth.record.email) || 'Signed in'}</div>
+                      <div className="sb-id-meta">
+                        <span className="sb-tier-badge">{tier === 'instructor' ? 'instructor' : 'student'}</span>
+                      </div>
+                    </div>
+                    {tier === 'instructor' && (
+                      <button type="button" className={'sb-row' + (page === 'dash' ? ' on' : '')} onClick={() => setPage('dash')}><span className="sb-ico" aria-hidden="true">◈</span><span className="sb-row-label">My versions</span></button>
+                    )}
+                    <button type="button" className="sb-row" onClick={() => { setAuth(null); setPage('practice'); }}><span className="sb-ico" aria-hidden="true">→</span><span className="sb-row-label">Sign out</span></button>
+                  </div>
+                )
               ))}
             </div>
           )}
@@ -1014,7 +1476,7 @@ function App() {
           onClick={() => drillOut('library')}>❏</button>
         {hasContent && <button type="button" className={'rail-btn' + (exOpen ? ' on' : '')} title="Exercises in this worksheet" aria-label="Exercises in this worksheet"
           onClick={() => setExOpen(true)}>☰</button>}
-        {!isStudentBuild && <button type="button" className="rail-btn" title="Author" aria-label="Author"
+        {canAuthor && <button type="button" className="rail-btn" title="Author" aria-label="Author"
           onClick={() => drillOut('author')}>✎</button>}
         <div className="rail-spacer" />
         {isFullBuild && <button type="button" className="rail-btn" title="Account" aria-label="Account"
@@ -1117,6 +1579,43 @@ function App() {
     );
   }
 
+  function renderEditorSurface(asPage) {
+    return (
+      <ExerciseEditor asPage={asPage} onClose={() => { closeEditorSurface(); setEditorInit(null); setEditorMin(null); }} baseSet={set}
+        initialText={editorInit && editorInit.text} initialKey={editorInit && editorInit.key}
+        onSaveToLibrary={({ title, text, editKey }) => saveUserExercise({ title, text, editKey })}
+        onMinimize={({ title, editKey }) => { setEditorMin({ title: (title || '').trim() || 'Untitled exercise', key: editKey || null }); setEditorInit({ text: null, key: editKey || null }); closeEditorSurface(); }}
+        onLoadIntoApp={({ title, text, editKey }) => {
+          const key = commitUserExercise({ title, text, editKey });
+          if (key) {
+            setCustom(null); setFileKey(key); setSel({ gi: 0, pi: 0 });
+            setEditorMin({ title: (title || '').trim() || 'Untitled exercise', key });
+            setEditorInit({ text: null, key }); closeEditorSurface();
+          }
+          return key;
+        }}
+        onLaunch={({ set: cset, problem: cprob, allowed: callowed }) => {
+          setCustom({ set: cset, problem: cprob });
+          if (callowed) setAllowedMap(m => ({ ...m, [cset.id || 'editor']: callowed }));
+          setSel({ gi: 0, pi: 0 }); closeEditorSurface();
+        }} />
+    );
+  }
+  function renderPageView() {
+    if (page === 'signin' || (page === 'dash' && tier !== 'instructor')) {
+      return <SigninPage key={signinMode} initialMode={signinMode}
+        onBack={() => setPage('practice')}
+        onAuthed={(a) => { setAuth(a); setPage('practice'); setNavSection('account'); }} />;
+    }
+    if (page === 'dash') {
+      return <VersionsPage token={auth.token}
+        onBack={() => setPage('practice')}
+        onAuthGone={() => { setAuth(null); setSigninMode('login'); setPage('signin'); }} />;
+    }
+    if (page === 'editor') return <div className="page-view page-editor">{renderEditorSurface(true)}</div>;
+    return null;
+  }
+
   return (
     <div className={'app' + (isMobile ? ' is-mobile' : '')}
       onDragOver={!hasContent ? (e) => { e.preventDefault(); } : undefined}
@@ -1148,11 +1647,15 @@ function App() {
 
       <div className={'app-main' + (isMobile ? ' app-main-mobile' : '')}>
         {!isMobile && renderSidebar()}
-        {!isMobile && hasContent && exOpen && renderExColumn()}
+        {!isMobile && page === 'practice' && hasContent && exOpen && renderExColumn()}
 
-        <main id="main" className="col-center">{!isMobile && renderPracticeHead()}{renderCenter()}</main>
+        <main id="main" className="col-center">
+          {(isMobile || page === 'practice')
+            ? <React.Fragment>{!isMobile && renderPracticeHead()}{renderCenter()}</React.Fragment>
+            : renderPageView()}
+        </main>
 
-        {!isMobile && (
+        {!isMobile && page === 'practice' && (
           <aside className="col col-right">
             {hasReading ? (
               <div className="panel-head rd-tabhead">
@@ -1370,26 +1873,7 @@ function App() {
         </div>
       )}
 
-      {modal === 'editor' && (
-        <ExerciseEditor onClose={() => { setModal(null); setEditorInit(null); setEditorMin(null); }} baseSet={set}
-          initialText={editorInit && editorInit.text} initialKey={editorInit && editorInit.key}
-          onSaveToLibrary={({ title, text, editKey }) => saveUserExercise({ title, text, editKey })}
-          onMinimize={({ title, editKey }) => { setEditorMin({ title: (title || '').trim() || 'Untitled exercise', key: editKey || null }); setEditorInit({ text: null, key: editKey || null }); setModal(null); }}
-          onLoadIntoApp={({ title, text, editKey }) => {
-            const key = commitUserExercise({ title, text, editKey });
-            if (key) {
-              setCustom(null); setFileKey(key); setSel({ gi: 0, pi: 0 });
-              setEditorMin({ title: (title || '').trim() || 'Untitled exercise', key });
-              setEditorInit({ text: null, key }); setModal(null);
-            }
-            return key;
-          }}
-          onLaunch={({ set: cset, problem: cprob, allowed: callowed }) => {
-            setCustom({ set: cset, problem: cprob });
-            if (callowed) setAllowedMap(m => ({ ...m, [cset.id || 'editor']: callowed }));
-            setSel({ gi: 0, pi: 0 }); setModal(null);
-          }} />
-      )}
+      {modal === 'editor' && renderEditorSurface(false)}
 
       {modal === 'scratch' && window.ScratchpadPanel && (() => {
         const SP = window.ScratchpadPanel;
@@ -1399,7 +1883,7 @@ function App() {
             if (callowed) setAllowedMap((m) => ({ ...m, [cset.id || 'scratchpad']: callowed }));
             setSel({ gi: 0, pi: 0 }); setModal(null);
           }}
-          onPromote={(window.COMPOSE_HOSTED || !isStudentBuild) ? ((text) => { setEditorInit({ text, key: null }); setModal('editor'); }) : null} />;
+          onPromote={(window.COMPOSE_HOSTED || canAuthor) ? ((text) => { setEditorInit({ text, key: null }); openEditorSurface(); }) : null} />;
       })()}
 
       {modal === 'summary' && <SummaryModal lib={LIB} progress={progress} onClose={() => setModal(null)} />}
@@ -1414,11 +1898,11 @@ function App() {
         const ReadingStandalone = window.ReadingEditorStandalone;
         return <ReadingStandalone
           onClose={() => setModal(null)}
-          onCreateSet={(text) => { setEditorInit({ text, key: null }); setModal('editor'); }} />;
+          onCreateSet={(text) => { setEditorInit({ text, key: null }); openEditorSurface(); }} />;
       })()}
 
-      {editorMin && !modal && !isStudentBuild && (
-        <button className="editor-min-pill" title="Reopen the exercise editor" onClick={() => setModal('editor')}>
+      {editorMin && !modal && page !== 'editor' && canAuthor && (
+        <button className="editor-min-pill" title="Reopen the worksheet editor" onClick={() => openEditorSurface()}>
           <span className="emp-ico">✎</span>
           <span className="emp-text">
             <span className="emp-title">{editorMin.title}</span>

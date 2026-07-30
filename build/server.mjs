@@ -86,10 +86,13 @@ const rootIdentityJS =
   }) + ';\n' +
   'window.COMPOSE_CONFIG = ' + JSON.stringify({ role: 'student', assignment: null }) + ';';
 
+// N2 (S30): site pages vendor the QR lib so the in-app "My versions" Share
+// modal can render codes (window.QRCode). Exports and /v/ pages don't get it.
 const rootPage = assemblePage(parts, {
   title: 'COMPOSE',
   identityJS: rootIdentityJS,
   libraryJS: '',
+  extraHeadJS: qrLib,
   headMeta: metaFor('COMPOSE — compositional semantics practice',
     'Practise compositional formal semantics in the browser: build derivations tree by tree with Function Application, Predicate Modification, type-shifting and more. Free, no login.', '/'),
 });
@@ -111,6 +114,7 @@ const sandboxPage = assemblePage(parts, {
   title: 'COMPOSE — Editor sandbox',
   identityJS: sandboxIdentityJS,
   libraryJS: '',
+  extraHeadJS: qrLib,
   headMeta: metaFor('COMPOSE — Editor sandbox',
     'Author formal-semantics problem sets in the browser — lexicon, trees, live validation — and export them as JSON. No account needed.', '/editor/'),
 });
@@ -168,6 +172,7 @@ function curatedPage(entry) {
     title: 'COMPOSE — ' + entry.title,
     identityJS: identity,
     libraryJS: 'window.LC_FILES_INLINE = ' + JSON.stringify(files) + ';',
+    extraHeadJS: qrLib,
     headMeta: metaFor('COMPOSE — ' + entry.title,
       'Interactive problem sets: ' + entry.title + '. Compose derivations step by step with automatic grading — free, in the browser, no login.', '/' + entry.path + '/'),
   });

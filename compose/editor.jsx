@@ -679,7 +679,7 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
 }
 
 /* ---- FileEditor (main) ---------------------------------------------------- */
-function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey }) {
+function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey, asPage }) {
   const [state, setState] = useState(() => {
     if (initialText != null) { const p = parseFromText(initialText); if (p) return p; }
     const saved = load('lc2-fe-state', null);
@@ -829,14 +829,30 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
     return { ...rules, shift, qr: behaviour.qr, autoNN: behaviour.autoNN, autoCompose: false, collapseResolved: false, showSpans: false };
   }
 
-  return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal fe-modal" onClick={e => e.stopPropagation()}>
+  /* N2 (S30): the editor renders either as the classic modal (mobile) or as a
+     full page in the content area (desktop, `asPage`) — same internals, the
+     page variant adds the spec's header strip (kicker · status · back). */
+  const body = (
+    <React.Fragment>
         {/* Header */}
         <div className="fe-header">
+          {asPage && (
+            <button type="button" className="fe-page-back" onClick={onClose} title="Back to practice" aria-label="Back to practice">‹</button>
+          )}
           <div className="fe-header-left">
-            <input className="fe-title-input" value={title} placeholder="Worksheet title…"
-              onChange={e => set({ title: e.target.value })} />
+            <div className="fe-header-title">
+              {asPage && (
+                <div className="fe-page-kicker">
+                  <span className="fe-page-kicker-label">Worksheet editor{window.COMPOSE_HOSTED ? ' · ' + window.COMPOSE_HOSTED.title : ''}</span>
+                  <span className={'fe-page-status' + (srvMsg ? (srvMsg.kind === 'ok' ? ' ok' : ' err') : (savedFlash ? ' ok' : ''))} role="status" aria-live="polite">
+                    <span className="fe-status-dot" aria-hidden="true" />
+                    {srvMsg ? srvMsg.msg : (savedFlash ? 'Saved' : (editKey ? 'Editing a saved worksheet' : 'Draft — kept in this browser'))}
+                  </span>
+                </div>
+              )}
+              <input className="fe-title-input" value={title} placeholder="Worksheet title…"
+                onChange={e => set({ title: e.target.value })} />
+            </div>
           </div>
           <div className="fe-header-right">
             <button className={'btn-ghost fe-save-lib-btn' + (savedFlash ? ' saved' : '')} onClick={saveToLibrary}
@@ -900,7 +916,12 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
             onChange={(mdv) => set({ reading: { ...reading, markdown: mdv } })}
             onClose={() => setShowReading(false)} onApplyAutogen={applyAutogen} />
         )}
-      </div>
+    </React.Fragment>
+  );
+  if (asPage) return <div className="fe-page">{body}</div>;
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal fe-modal" onClick={e => e.stopPropagation()}>{body}</div>
     </div>
   );
 }
@@ -1003,9 +1024,9 @@ function UserExerciseManager({ items, fileKey, custom, instructor, onOpen, onRen
 window.UserExerciseManager = UserExerciseManager;
 
 /* ---- Top-level ExerciseEditor --------------------------------------------- */
-function ExerciseEditor({ onClose, onLaunch, baseSet, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey }) {
+function ExerciseEditor({ onClose, onLaunch, baseSet, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey, asPage }) {
   return <FileEditor onClose={onClose} onSaveToLibrary={onSaveToLibrary} onLoadIntoApp={onLoadIntoApp} onMinimize={onMinimize}
-        initialText={initialText} initialKey={initialKey}
+        initialText={initialText} initialKey={initialKey} asPage={asPage}
         onLaunch={p => { onLaunch(p); }} />;
 }
 
