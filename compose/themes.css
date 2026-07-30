@@ -8,6 +8,7 @@
 
 /* ---- tokens ------------------------------------------------------------ */
 :root[data-theme="parchment"] {
+  --on-accent: oklch(0.99 0.01 80);
   --bg:        oklch(0.961 0.013 78);
   --bg-grain:  oklch(0.945 0.016 76);
   --panel:     oklch(0.985 0.008 82);
@@ -32,6 +33,7 @@
   --radius: 10px;
 }
 :root[data-theme="studio"] {
+  --on-accent: oklch(0.99 0.005 200);
   --bg:        oklch(0.975 0.006 130);
   --bg-grain:  oklch(0.968 0.007 130);
   --panel:     oklch(0.998 0.002 130);
@@ -56,6 +58,7 @@
   --radius: 14px;
 }
 :root[data-theme="twilight"] {
+  --on-accent: oklch(0.2 0.02 60);
   --bg:        oklch(0.225 0.016 58);
   --bg-grain:  oklch(0.245 0.018 58);
   --panel:     oklch(0.275 0.019 60);
@@ -107,16 +110,21 @@ body {
 /* ---- app shell --------------------------------------------------------- */
 #root { height: 100%; position: relative; z-index: 1; }
 .app {
-  display: grid;
-  grid-template-rows: auto 1fr;
+  display: flex;
+  flex-direction: column;
   height: 100%;
 }
+/* Desktop (N1): sidebar / drill-in / centre / right panel as flex columns.
+   Mobile keeps the original grid (restored under .is-mobile below). */
 .app-main {
-  display: grid;
-  grid-template-columns: 264px 1fr 300px;
+  display: flex;
+  flex: 1;
   min-height: 0;
+  position: relative;   /* <1040px floating drill-in column anchors here */
 }
-@media (max-width: 1180px) { .app-main { grid-template-columns: 232px 1fr 0; } .col-right { display: none !important; } }
+.app-main > .col-right { width: 300px; flex: none; }
+.app-main > .col-center { flex: 1; min-width: 0; }
+@media (max-width: 1180px) { .col-right { display: none !important; } }
 
 /* ---- top bar ----------------------------------------------------------- */
 .topbar {
@@ -1441,8 +1449,8 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
    ========================================================================= */
 
 /* three rows: slim topbar · stage · tab bar */
-.app.is-mobile { grid-template-rows: auto 1fr auto; }
-.app-main-mobile { grid-template-columns: 1fr; }
+.app.is-mobile { display: grid; grid-template-rows: auto 1fr auto; }
+.app-main-mobile { display: grid; grid-template-columns: 1fr; }
 
 /* ---- mobile mini-segment in desktop Settings (layout switch) ----------- */
 .settings-layout-row { cursor: default; }
@@ -1655,6 +1663,220 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .node-box:focus-visible, .rule-card:focus-visible, .shift-card:focus-visible,
 .btn:focus-visible, .btn-ghost:focus-visible, .zoom-btn:focus-visible,
 .sym-key:focus-visible, .entry input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+
+/* =========================================================================
+   N1 (S29) — LEFT SIDEBAR NAVIGATION
+   Sizes/spacing/copy follow the design handoff prototype (272px sidebar,
+   58px rail, 272px drill-in exercises column, practice header). All colours
+   via theme tokens; never hardcode oklch here (twilight must stay legible).
+   ========================================================================= */
+
+/* ---- skip link ---------------------------------------------------------- */
+.skip-link {
+  position: absolute; left: 10px; top: -44px; z-index: 60;
+  padding: 7px 13px; border-radius: 8px;
+  background: var(--accent); color: var(--on-accent);
+  font-size: 12.5px; text-decoration: none; transition: top .12s ease;
+}
+.skip-link:focus { top: 10px; }
+
+/* ---- sidebar shell ------------------------------------------------------ */
+.sidebar {
+  width: 272px; flex: none; display: flex; flex-direction: column;
+  background: var(--panel); border-right: 1px solid var(--line);
+  transition: width .18s ease; min-height: 0; overflow: hidden;
+}
+.sidebar.rail { width: 58px; }
+.sb-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 12px 12px 14px; border-bottom: 1px solid var(--line-soft);
+}
+.sidebar.rail .sb-head { flex-direction: column; gap: 8px; padding: 12px 0 10px; }
+.sb-glyph { font-size: 26px; line-height: 1; color: var(--accent); font-weight: 500; flex: none; }
+.sb-brand { flex: 1; min-width: 0; }
+.sb-wordmark { font-size: 14.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); white-space: nowrap; }
+.sb-domain { font-size: 11px; color: var(--faint); letter-spacing: .02em; white-space: nowrap; }
+.sb-collapse {
+  flex: none; width: 26px; height: 26px; padding: 0;
+  border: 1px solid var(--line); background: transparent; border-radius: 7px;
+  color: var(--muted); cursor: pointer; font-size: 12px; font-family: inherit;
+  display: grid; place-items: center;
+}
+.sb-collapse:hover { border-color: var(--accent); color: var(--accent-ink); }
+.sb-body { display: flex; flex-direction: column; min-height: 0; flex: 1; }
+.sb-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0; padding-bottom: 8px; }
+.sb-scroll::-webkit-scrollbar { width: 9px; }
+.sb-scroll::-webkit-scrollbar-thumb { background: var(--line); border-radius: 9px; border: 2px solid var(--panel); }
+.sb-foot { border-top: 1px solid var(--line-soft); padding: 9px 12px; display: flex; align-items: center; gap: 8px; }
+.sb-foot .mode-toggle { flex: 1; justify-content: center; }
+.sb-version { margin-left: auto; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; color: var(--faint); white-space: nowrap; }
+
+/* ---- search field -------------------------------------------------------- */
+.sb-search-wrap { padding: 12px 12px 10px; border-bottom: 1px solid var(--line-soft); }
+.sb-search {
+  display: flex; align-items: center; gap: 8px; padding: 0 10px; height: 34px;
+  border: 1px solid var(--line); border-radius: 9px; background: var(--panel-2);
+}
+.sb-search:focus-within { border-color: var(--accent); }
+.sb-search-glyph { color: var(--faint); font-size: 13px; flex: none; }
+.sb-search input { flex: 1; min-width: 0; border: 0; background: transparent; outline: none; font: inherit; font-size: 13.5px; color: var(--ink); }
+.sb-search input::placeholder { color: var(--faint); }
+.sb-kbd {
+  flex: none; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10px;
+  color: var(--faint); border: 1px solid var(--line); border-radius: 5px;
+  padding: 2px 5px; background: transparent; cursor: pointer;
+}
+.sb-kbd:hover { border-color: var(--accent); color: var(--accent-ink); }
+
+/* ---- accordion sections --------------------------------------------------- */
+.sb-sec-head {
+  display: flex; align-items: center; gap: 9px; width: 100%;
+  padding: 9px 14px; border: 0; background: transparent; cursor: pointer;
+  font-family: inherit; font-size: 13px; font-weight: 600; color: var(--ink-soft);
+  border-top: 1px solid var(--line-soft); text-align: left;
+}
+.sb-sec:first-child .sb-sec-head { border-top: 0; }
+.sb-sec-head:hover { color: var(--accent-ink); }
+.sb-sec-head.open { color: var(--ink); background: var(--panel-2); }
+.sb-sec-glyph { width: 18px; flex: none; text-align: center; font-size: 12px; opacity: .8; }
+.sb-sec-title { flex: 1; min-width: 0; }
+.sb-sec-extra { flex: none; white-space: nowrap; font-size: 10.5px; color: var(--faint); font-weight: 400; }
+.sb-sec-caret { font-size: 9px; color: var(--faint); width: 10px; text-align: center; flex: none; }
+.sb-sec-body { padding: 2px 0 10px; }
+
+.sb-kicker { padding: 8px 16px 4px; font-size: 10px; letter-spacing: .11em; text-transform: uppercase; color: var(--faint); }
+.sb-actions-kicker { padding-left: 2px; }
+.sb-empty-note { padding: 6px 16px 8px; font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+
+/* ---- rows ----------------------------------------------------------------- */
+.sb-row {
+  display: flex; align-items: center; gap: 9px;
+  width: calc(100% - 16px); margin: 0 8px; padding: 7px 8px;
+  border: 0; border-radius: 7px; background: transparent;
+  font-family: inherit; font-size: 12.5px; color: var(--ink-soft);
+  cursor: pointer; text-align: left; text-decoration: none; line-height: 1.4;
+}
+.sb-row:hover { background: var(--panel-2); color: var(--accent-ink); }
+.sb-row.on { background: var(--accent-soft); color: var(--accent); }
+.sb-row:disabled { color: var(--faint); cursor: default; }
+.sb-row:disabled:hover { background: transparent; color: var(--faint); }
+.sb-ico { width: 16px; flex: none; text-align: center; opacity: .8; font-size: 12px; }
+.sb-row-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-row-note { flex: none; font-size: 10px; color: var(--faint); white-space: nowrap; }
+.sb-row.on .sb-row-note { color: var(--accent-ink); }
+
+/* collections + worksheet rows */
+.sb-coll-head {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 6px 16px; border: 0; background: transparent; cursor: pointer;
+  font-family: inherit; font-size: 12.5px; font-weight: 500; color: var(--ink-soft); text-align: left;
+}
+.sb-coll-head:hover { background: var(--panel-2); }
+.sb-coll-caret { font-size: 9px; width: 10px; flex: none; color: var(--faint); }
+.sb-coll-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-coll-count { flex: none; white-space: nowrap; font-size: 10.5px; color: var(--faint); font-weight: 400; }
+.sb-ws-row { padding-left: 20px; }
+.sb-ws-dot { width: 6px; height: 6px; border-radius: 50%; flex: none; background: var(--line); }
+.sb-ws-row.on .sb-ws-dot { background: var(--accent); }
+.sb-ws-caret { font-size: 10px; color: var(--faint); flex: none; }
+
+/* recents (Continue) */
+.sb-recent-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.sb-recent-label { font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-recent-sub { font-size: 10.5px; color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 1px; }
+.sb-recent-at { flex: none; font-size: 10px; color: var(--faint); white-space: nowrap; }
+
+/* Display section keeps the old settings rows; give them breathing room */
+.sb-display { padding: 4px 14px 0; }
+.sb-display .settings-row { padding: 7px 0; }
+.sb-display .sb-row { width: 100%; margin: 0; }
+
+/* ---- collapsed rail -------------------------------------------------------- */
+.sb-rail { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 0; min-height: 0; }
+.rail-btn {
+  width: 34px; height: 34px; padding: 0; border-radius: 9px; cursor: pointer;
+  font-size: 14px; font-family: inherit; display: grid; place-items: center;
+  border: 1px solid transparent; background: transparent; color: var(--muted);
+}
+.rail-btn:hover { background: var(--panel-2); color: var(--accent-ink); }
+.rail-btn.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
+.rail-spacer { flex: 1; }
+
+/* ---- drill-in exercises column ---------------------------------------------- */
+.col-ex {
+  width: 272px; flex: none; display: flex; flex-direction: column;
+  background: var(--panel); border-right: 1px solid var(--line);
+  min-height: 0; animation: sbSlideIn .16s ease;
+}
+@keyframes sbSlideIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+@media (max-width: 1040px) {
+  .col-ex { position: absolute; left: 58px; top: 0; bottom: 0; z-index: 6; box-shadow: var(--shadow); }
+}
+.colx-head {
+  display: flex; align-items: center; gap: 9px; width: 100%;
+  padding: 11px 13px; border: 0; border-bottom: 1px solid var(--line-soft);
+  background: var(--panel-2); cursor: pointer; font-family: inherit; text-align: left; color: inherit;
+}
+.colx-head:hover .colx-title { color: var(--accent-ink); }
+.colx-back { flex: none; font-size: 14px; color: var(--accent-ink); }
+.colx-head-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.colx-kicker { font-size: 9.5px; letter-spacing: .11em; text-transform: uppercase; color: var(--faint); }
+.colx-title { font-size: 12.5px; font-weight: 600; margin-top: 2px; line-height: 1.3; color: var(--ink); }
+.colx-score { flex: none; font-size: 10.5px; color: var(--muted); white-space: nowrap; }
+.colx-scroll { padding: 6px 0 10px; }
+.colx-group { display: flex; align-items: center; gap: 8px; padding: 8px 14px 4px; }
+.colx-group-title { font-size: 11px; font-weight: 600; color: var(--ink-soft); flex: 1; min-width: 0; }
+.colx-group-count { flex: none; font-size: 10px; color: var(--faint); }
+.colx-item {
+  display: flex; align-items: center; gap: 9px;
+  width: calc(100% - 16px); margin: 0 8px; padding: 6px;
+  border: 0; border-radius: 7px; background: transparent;
+  font-family: inherit; font-size: 12.5px; color: var(--ink-soft);
+  cursor: pointer; text-align: left;
+}
+.colx-item:hover { background: var(--panel-2); color: var(--accent-ink); }
+.colx-item.on { background: var(--accent-soft); color: var(--accent); }
+.colx-ring {
+  width: 15px; height: 15px; flex: none; border-radius: 50%;
+  border: 1px solid var(--line); background: transparent;
+  color: var(--panel); font-size: 9px; display: grid; place-items: center;
+}
+.colx-item.done .colx-ring { border-color: var(--good); background: var(--good); }
+.colx-gloss { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.colx-foot { display: flex; flex-direction: column; gap: 2px; margin-top: 10px; padding: 10px 4px 0; border-top: 1px solid var(--line-soft); }
+
+/* ---- practice header --------------------------------------------------------- */
+.practice-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 16px 24px 12px; }
+.ph-main { min-width: 240px; flex: 1 1 260px; }
+.ph-crumb { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ph-gloss { font-size: 20px; font-weight: 600; margin: 3px 0 0; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ph-controls { display: flex; align-items: center; gap: 8px; flex: 0 1 auto; flex-wrap: wrap; justify-content: flex-end; }
+.ph-btn {
+  height: 30px; padding: 0 12px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--panel); font-family: inherit; font-size: 12.5px; color: var(--ink-soft); cursor: pointer; white-space: nowrap;
+}
+.ph-btn:hover { border-color: var(--accent); }
+.ph-btn.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
+.ph-step { display: flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--panel); }
+.ph-arrow { width: 30px; height: 28px; border: 0; background: transparent; color: var(--ink-soft); cursor: pointer; font-size: 14px; font-family: inherit; }
+.ph-arrow:hover:not(:disabled) { color: var(--accent-ink); background: var(--panel-2); }
+.ph-arrow:disabled { opacity: .35; cursor: default; }
+.ph-arrow + .ph-arrow { border-left: 1px solid var(--line); }
+.ph-score { font-size: 12px; color: var(--muted); padding-left: 4px; white-space: nowrap; }
+
+/* The practice header now carries the gloss; hide the stage's duplicate title
+   on desktop only (mobile keeps its own layout untouched in N1). */
+.app:not(.is-mobile) .col-center .prob-title { display: none; }
+
+/* ---- focus (S13.5 parity) ------------------------------------------------------ */
+.sb-row:focus-visible, .sb-sec-head:focus-visible, .sb-coll-head:focus-visible,
+.sb-collapse:focus-visible, .sb-kbd:focus-visible, .rail-btn:focus-visible,
+.colx-item:focus-visible, .colx-head:focus-visible,
+.ph-btn:focus-visible, .ph-arrow:focus-visible, .skip-link:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }

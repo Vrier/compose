@@ -22,6 +22,7 @@ window.COMPOSE_CONFIG = {"role":"student","assignment":null};
 
 /* ---- tokens ------------------------------------------------------------ */
 :root[data-theme="parchment"] {
+  --on-accent: oklch(0.99 0.01 80);
   --bg:        oklch(0.961 0.013 78);
   --bg-grain:  oklch(0.945 0.016 76);
   --panel:     oklch(0.985 0.008 82);
@@ -46,6 +47,7 @@ window.COMPOSE_CONFIG = {"role":"student","assignment":null};
   --radius: 10px;
 }
 :root[data-theme="studio"] {
+  --on-accent: oklch(0.99 0.005 200);
   --bg:        oklch(0.975 0.006 130);
   --bg-grain:  oklch(0.968 0.007 130);
   --panel:     oklch(0.998 0.002 130);
@@ -70,6 +72,7 @@ window.COMPOSE_CONFIG = {"role":"student","assignment":null};
   --radius: 14px;
 }
 :root[data-theme="twilight"] {
+  --on-accent: oklch(0.2 0.02 60);
   --bg:        oklch(0.225 0.016 58);
   --bg-grain:  oklch(0.245 0.018 58);
   --panel:     oklch(0.275 0.019 60);
@@ -121,16 +124,21 @@ body {
 /* ---- app shell --------------------------------------------------------- */
 #root { height: 100%; position: relative; z-index: 1; }
 .app {
-  display: grid;
-  grid-template-rows: auto 1fr;
+  display: flex;
+  flex-direction: column;
   height: 100%;
 }
+/* Desktop (N1): sidebar / drill-in / centre / right panel as flex columns.
+   Mobile keeps the original grid (restored under .is-mobile below). */
 .app-main {
-  display: grid;
-  grid-template-columns: 264px 1fr 300px;
+  display: flex;
+  flex: 1;
   min-height: 0;
+  position: relative;   /* <1040px floating drill-in column anchors here */
 }
-@media (max-width: 1180px) { .app-main { grid-template-columns: 232px 1fr 0; } .col-right { display: none !important; } }
+.app-main > .col-right { width: 300px; flex: none; }
+.app-main > .col-center { flex: 1; min-width: 0; }
+@media (max-width: 1180px) { .col-right { display: none !important; } }
 
 /* ---- top bar ----------------------------------------------------------- */
 .topbar {
@@ -1455,8 +1463,8 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
    ========================================================================= */
 
 /* three rows: slim topbar · stage · tab bar */
-.app.is-mobile { grid-template-rows: auto 1fr auto; }
-.app-main-mobile { grid-template-columns: 1fr; }
+.app.is-mobile { display: grid; grid-template-rows: auto 1fr auto; }
+.app-main-mobile { display: grid; grid-template-columns: 1fr; }
 
 /* ---- mobile mini-segment in desktop Settings (layout switch) ----------- */
 .settings-layout-row { cursor: default; }
@@ -1669,6 +1677,220 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .node-box:focus-visible, .rule-card:focus-visible, .shift-card:focus-visible,
 .btn:focus-visible, .btn-ghost:focus-visible, .zoom-btn:focus-visible,
 .sym-key:focus-visible, .entry input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+
+/* =========================================================================
+   N1 (S29) — LEFT SIDEBAR NAVIGATION
+   Sizes/spacing/copy follow the design handoff prototype (272px sidebar,
+   58px rail, 272px drill-in exercises column, practice header). All colours
+   via theme tokens; never hardcode oklch here (twilight must stay legible).
+   ========================================================================= */
+
+/* ---- skip link ---------------------------------------------------------- */
+.skip-link {
+  position: absolute; left: 10px; top: -44px; z-index: 60;
+  padding: 7px 13px; border-radius: 8px;
+  background: var(--accent); color: var(--on-accent);
+  font-size: 12.5px; text-decoration: none; transition: top .12s ease;
+}
+.skip-link:focus { top: 10px; }
+
+/* ---- sidebar shell ------------------------------------------------------ */
+.sidebar {
+  width: 272px; flex: none; display: flex; flex-direction: column;
+  background: var(--panel); border-right: 1px solid var(--line);
+  transition: width .18s ease; min-height: 0; overflow: hidden;
+}
+.sidebar.rail { width: 58px; }
+.sb-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 12px 12px 14px; border-bottom: 1px solid var(--line-soft);
+}
+.sidebar.rail .sb-head { flex-direction: column; gap: 8px; padding: 12px 0 10px; }
+.sb-glyph { font-size: 26px; line-height: 1; color: var(--accent); font-weight: 500; flex: none; }
+.sb-brand { flex: 1; min-width: 0; }
+.sb-wordmark { font-size: 14.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); white-space: nowrap; }
+.sb-domain { font-size: 11px; color: var(--faint); letter-spacing: .02em; white-space: nowrap; }
+.sb-collapse {
+  flex: none; width: 26px; height: 26px; padding: 0;
+  border: 1px solid var(--line); background: transparent; border-radius: 7px;
+  color: var(--muted); cursor: pointer; font-size: 12px; font-family: inherit;
+  display: grid; place-items: center;
+}
+.sb-collapse:hover { border-color: var(--accent); color: var(--accent-ink); }
+.sb-body { display: flex; flex-direction: column; min-height: 0; flex: 1; }
+.sb-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0; padding-bottom: 8px; }
+.sb-scroll::-webkit-scrollbar { width: 9px; }
+.sb-scroll::-webkit-scrollbar-thumb { background: var(--line); border-radius: 9px; border: 2px solid var(--panel); }
+.sb-foot { border-top: 1px solid var(--line-soft); padding: 9px 12px; display: flex; align-items: center; gap: 8px; }
+.sb-foot .mode-toggle { flex: 1; justify-content: center; }
+.sb-version { margin-left: auto; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 9.5px; color: var(--faint); white-space: nowrap; }
+
+/* ---- search field -------------------------------------------------------- */
+.sb-search-wrap { padding: 12px 12px 10px; border-bottom: 1px solid var(--line-soft); }
+.sb-search {
+  display: flex; align-items: center; gap: 8px; padding: 0 10px; height: 34px;
+  border: 1px solid var(--line); border-radius: 9px; background: var(--panel-2);
+}
+.sb-search:focus-within { border-color: var(--accent); }
+.sb-search-glyph { color: var(--faint); font-size: 13px; flex: none; }
+.sb-search input { flex: 1; min-width: 0; border: 0; background: transparent; outline: none; font: inherit; font-size: 13.5px; color: var(--ink); }
+.sb-search input::placeholder { color: var(--faint); }
+.sb-kbd {
+  flex: none; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 10px;
+  color: var(--faint); border: 1px solid var(--line); border-radius: 5px;
+  padding: 2px 5px; background: transparent; cursor: pointer;
+}
+.sb-kbd:hover { border-color: var(--accent); color: var(--accent-ink); }
+
+/* ---- accordion sections --------------------------------------------------- */
+.sb-sec-head {
+  display: flex; align-items: center; gap: 9px; width: 100%;
+  padding: 9px 14px; border: 0; background: transparent; cursor: pointer;
+  font-family: inherit; font-size: 13px; font-weight: 600; color: var(--ink-soft);
+  border-top: 1px solid var(--line-soft); text-align: left;
+}
+.sb-sec:first-child .sb-sec-head { border-top: 0; }
+.sb-sec-head:hover { color: var(--accent-ink); }
+.sb-sec-head.open { color: var(--ink); background: var(--panel-2); }
+.sb-sec-glyph { width: 18px; flex: none; text-align: center; font-size: 12px; opacity: .8; }
+.sb-sec-title { flex: 1; min-width: 0; }
+.sb-sec-extra { flex: none; white-space: nowrap; font-size: 10.5px; color: var(--faint); font-weight: 400; }
+.sb-sec-caret { font-size: 9px; color: var(--faint); width: 10px; text-align: center; flex: none; }
+.sb-sec-body { padding: 2px 0 10px; }
+
+.sb-kicker { padding: 8px 16px 4px; font-size: 10px; letter-spacing: .11em; text-transform: uppercase; color: var(--faint); }
+.sb-actions-kicker { padding-left: 2px; }
+.sb-empty-note { padding: 6px 16px 8px; font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+
+/* ---- rows ----------------------------------------------------------------- */
+.sb-row {
+  display: flex; align-items: center; gap: 9px;
+  width: calc(100% - 16px); margin: 0 8px; padding: 7px 8px;
+  border: 0; border-radius: 7px; background: transparent;
+  font-family: inherit; font-size: 12.5px; color: var(--ink-soft);
+  cursor: pointer; text-align: left; text-decoration: none; line-height: 1.4;
+}
+.sb-row:hover { background: var(--panel-2); color: var(--accent-ink); }
+.sb-row.on { background: var(--accent-soft); color: var(--accent); }
+.sb-row:disabled { color: var(--faint); cursor: default; }
+.sb-row:disabled:hover { background: transparent; color: var(--faint); }
+.sb-ico { width: 16px; flex: none; text-align: center; opacity: .8; font-size: 12px; }
+.sb-row-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-row-note { flex: none; font-size: 10px; color: var(--faint); white-space: nowrap; }
+.sb-row.on .sb-row-note { color: var(--accent-ink); }
+
+/* collections + worksheet rows */
+.sb-coll-head {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 6px 16px; border: 0; background: transparent; cursor: pointer;
+  font-family: inherit; font-size: 12.5px; font-weight: 500; color: var(--ink-soft); text-align: left;
+}
+.sb-coll-head:hover { background: var(--panel-2); }
+.sb-coll-caret { font-size: 9px; width: 10px; flex: none; color: var(--faint); }
+.sb-coll-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-coll-count { flex: none; white-space: nowrap; font-size: 10.5px; color: var(--faint); font-weight: 400; }
+.sb-ws-row { padding-left: 20px; }
+.sb-ws-dot { width: 6px; height: 6px; border-radius: 50%; flex: none; background: var(--line); }
+.sb-ws-row.on .sb-ws-dot { background: var(--accent); }
+.sb-ws-caret { font-size: 10px; color: var(--faint); flex: none; }
+
+/* recents (Continue) */
+.sb-recent-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.sb-recent-label { font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-recent-sub { font-size: 10.5px; color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 1px; }
+.sb-recent-at { flex: none; font-size: 10px; color: var(--faint); white-space: nowrap; }
+
+/* Display section keeps the old settings rows; give them breathing room */
+.sb-display { padding: 4px 14px 0; }
+.sb-display .settings-row { padding: 7px 0; }
+.sb-display .sb-row { width: 100%; margin: 0; }
+
+/* ---- collapsed rail -------------------------------------------------------- */
+.sb-rail { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 0; min-height: 0; }
+.rail-btn {
+  width: 34px; height: 34px; padding: 0; border-radius: 9px; cursor: pointer;
+  font-size: 14px; font-family: inherit; display: grid; place-items: center;
+  border: 1px solid transparent; background: transparent; color: var(--muted);
+}
+.rail-btn:hover { background: var(--panel-2); color: var(--accent-ink); }
+.rail-btn.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
+.rail-spacer { flex: 1; }
+
+/* ---- drill-in exercises column ---------------------------------------------- */
+.col-ex {
+  width: 272px; flex: none; display: flex; flex-direction: column;
+  background: var(--panel); border-right: 1px solid var(--line);
+  min-height: 0; animation: sbSlideIn .16s ease;
+}
+@keyframes sbSlideIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+@media (max-width: 1040px) {
+  .col-ex { position: absolute; left: 58px; top: 0; bottom: 0; z-index: 6; box-shadow: var(--shadow); }
+}
+.colx-head {
+  display: flex; align-items: center; gap: 9px; width: 100%;
+  padding: 11px 13px; border: 0; border-bottom: 1px solid var(--line-soft);
+  background: var(--panel-2); cursor: pointer; font-family: inherit; text-align: left; color: inherit;
+}
+.colx-head:hover .colx-title { color: var(--accent-ink); }
+.colx-back { flex: none; font-size: 14px; color: var(--accent-ink); }
+.colx-head-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.colx-kicker { font-size: 9.5px; letter-spacing: .11em; text-transform: uppercase; color: var(--faint); }
+.colx-title { font-size: 12.5px; font-weight: 600; margin-top: 2px; line-height: 1.3; color: var(--ink); }
+.colx-score { flex: none; font-size: 10.5px; color: var(--muted); white-space: nowrap; }
+.colx-scroll { padding: 6px 0 10px; }
+.colx-group { display: flex; align-items: center; gap: 8px; padding: 8px 14px 4px; }
+.colx-group-title { font-size: 11px; font-weight: 600; color: var(--ink-soft); flex: 1; min-width: 0; }
+.colx-group-count { flex: none; font-size: 10px; color: var(--faint); }
+.colx-item {
+  display: flex; align-items: center; gap: 9px;
+  width: calc(100% - 16px); margin: 0 8px; padding: 6px;
+  border: 0; border-radius: 7px; background: transparent;
+  font-family: inherit; font-size: 12.5px; color: var(--ink-soft);
+  cursor: pointer; text-align: left;
+}
+.colx-item:hover { background: var(--panel-2); color: var(--accent-ink); }
+.colx-item.on { background: var(--accent-soft); color: var(--accent); }
+.colx-ring {
+  width: 15px; height: 15px; flex: none; border-radius: 50%;
+  border: 1px solid var(--line); background: transparent;
+  color: var(--panel); font-size: 9px; display: grid; place-items: center;
+}
+.colx-item.done .colx-ring { border-color: var(--good); background: var(--good); }
+.colx-gloss { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.colx-foot { display: flex; flex-direction: column; gap: 2px; margin-top: 10px; padding: 10px 4px 0; border-top: 1px solid var(--line-soft); }
+
+/* ---- practice header --------------------------------------------------------- */
+.practice-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 16px 24px 12px; }
+.ph-main { min-width: 240px; flex: 1 1 260px; }
+.ph-crumb { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ph-gloss { font-size: 20px; font-weight: 600; margin: 3px 0 0; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ph-controls { display: flex; align-items: center; gap: 8px; flex: 0 1 auto; flex-wrap: wrap; justify-content: flex-end; }
+.ph-btn {
+  height: 30px; padding: 0 12px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--panel); font-family: inherit; font-size: 12.5px; color: var(--ink-soft); cursor: pointer; white-space: nowrap;
+}
+.ph-btn:hover { border-color: var(--accent); }
+.ph-btn.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
+.ph-step { display: flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--panel); }
+.ph-arrow { width: 30px; height: 28px; border: 0; background: transparent; color: var(--ink-soft); cursor: pointer; font-size: 14px; font-family: inherit; }
+.ph-arrow:hover:not(:disabled) { color: var(--accent-ink); background: var(--panel-2); }
+.ph-arrow:disabled { opacity: .35; cursor: default; }
+.ph-arrow + .ph-arrow { border-left: 1px solid var(--line); }
+.ph-score { font-size: 12px; color: var(--muted); padding-left: 4px; white-space: nowrap; }
+
+/* The practice header now carries the gloss; hide the stage's duplicate title
+   on desktop only (mobile keeps its own layout untouched in N1). */
+.app:not(.is-mobile) .col-center .prob-title { display: none; }
+
+/* ---- focus (S13.5 parity) ------------------------------------------------------ */
+.sb-row:focus-visible, .sb-sec-head:focus-visible, .sb-coll-head:focus-visible,
+.sb-collapse:focus-visible, .sb-kbd:focus-visible, .rail-btn:focus-visible,
+.colx-item:focus-visible, .colx-head:focus-visible,
+.ph-btn:focus-visible, .ph-arrow:focus-visible, .skip-link:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
@@ -9266,6 +9488,24 @@ function App() {
   const [phoneOk, setPhoneOk] = useState(() => load("lc2-phone-ok", false));
   const settingsRef = useRef(null);
   const toolsRef = useRef(null);
+  const BID = String(BUILD.id || "");
+  const isFullBuild = BID === "hosted-root" || BID === "hosted-sandbox" || BID.indexOf("hosted-lib") === 0;
+  const [railCollapsed, setRailCollapsed] = useState(() => load("lc2-rail", false));
+  const [navSection, setNavSection] = useState(() => load("lc2-nav-section", "library"));
+  const [exOpen, setExOpen] = useState(true);
+  const [recents, setRecents] = useState(() => load("lc2-recents", []));
+  const [navQuery, setNavQuery] = useState("");
+  const [openColl, setOpenColl] = useState(null);
+  const searchRef = useRef(null);
+  useEffect(() => {
+    save("lc2-rail", railCollapsed);
+  }, [railCollapsed]);
+  useEffect(() => {
+    save("lc2-nav-section", navSection);
+  }, [navSection]);
+  useEffect(() => {
+    save("lc2-recents", recents);
+  }, [recents]);
   useEffect(() => {
     function onOutside(e) {
       if (settingsRef.current && !settingsRef.current.contains(e.target)) {
@@ -9707,6 +9947,43 @@ function App() {
     const n = flatNav[flatIdx + delta];
     if (n) setSel({ gi: n.gi, pi: n.pi });
   };
+  useEffect(() => {
+    if (custom || !set || !group || !problem) return;
+    const wsKey = set.key, ex = group.id + "." + problem.id;
+    setRecents((prev) => [{ ws: wsKey, ex, at: Date.now() }].concat((Array.isArray(prev) ? prev : []).filter((r) => !(r.ws === wsKey && r.ex === ex))).slice(0, 8));
+  }, [curKey, custom]);
+  const railShown = !isMobile && (railCollapsed || exOpen && hasContent);
+  function toggleRail() {
+    if (railShown) {
+      setRailCollapsed(false);
+      setExOpen(false);
+    } else setRailCollapsed(true);
+  }
+  useEffect(() => {
+    if (isMobile) return;
+    function onNavKey(e) {
+      const tg = e.target;
+      if (tg && (tg.tagName === "INPUT" || tg.tagName === "TEXTAREA" || tg.tagName === "SELECT" || tg.isContentEditable)) return;
+      if ((e.metaKey || e.ctrlKey) && e.key === "\\") {
+        e.preventDefault();
+        if (railCollapsed || exOpen && hasContent) {
+          setRailCollapsed(false);
+          setExOpen(false);
+        } else setRailCollapsed(true);
+        return;
+      }
+      if (e.metaKey || e.ctrlKey || e.altKey || modal) return;
+      if (e.key === "j" || e.key === "J") {
+        e.preventDefault();
+        gotoFlat(-1);
+      } else if (e.key === "k" || e.key === "K") {
+        e.preventDefault();
+        gotoFlat(1);
+      }
+    }
+    window.addEventListener("keydown", onNavKey);
+    return () => window.removeEventListener("keydown", onNavKey);
+  });
   const allowKey = custom ? "custom" : set ? set.key : "none";
   const exerciseDefaults = set ? window.LCData.defaultAllowed(set) : {};
   const _baseAllowed = teacherMode ? allowedMap[allowKey] || exerciseDefaults : exerciseDefaults;
@@ -9803,6 +10080,277 @@ function App() {
   function renderLexiconScroll() {
     return /* @__PURE__ */ React.createElement("div", { className: "col-scroll" }, filteredLex.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-note" }, "No entries for the current tree."), filteredLex.map((e, i) => /* @__PURE__ */ React.createElement("div", { className: "lex-item", key: i }, /* @__PURE__ */ React.createElement("div", { className: "lex-word" }, e.words.join(", "), e.type && /* @__PURE__ */ React.createElement("span", { className: "lex-type" }, /* @__PURE__ */ React.createElement(TypeBadge, { type: e.type }))), e.term && /* @__PURE__ */ React.createElement("div", { className: "lex-den" }, /* @__PURE__ */ React.createElement(Notation, { ast: e.term })))), /* @__PURE__ */ React.createElement("div", { className: "lex-kbd-ref" }, /* @__PURE__ */ React.createElement("div", { className: "panel-head", style: { marginTop: 8 } }, "Entering symbols"), /* @__PURE__ */ React.createElement("div", { className: "ref-row" }, REF_KEYS.map((r) => /* @__PURE__ */ React.createElement("div", { className: "ref-key", key: r.g }, /* @__PURE__ */ React.createElement("span", { className: "g" }, r.g), r.n, /* @__PURE__ */ React.createElement("span", { className: "k" }, r.k)))), /* @__PURE__ */ React.createElement("div", { style: { padding: "0 18px 22px", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.5 } }, "Type binder letters before a variable (", /* @__PURE__ */ React.createElement("span", { className: "mono" }, "Lx"), " \u2192 \u03BBx). ", /* @__PURE__ */ React.createElement("span", { className: "mono" }, "&"), ", ", /* @__PURE__ */ React.createElement("span", { className: "mono" }, "~"), ", ", /* @__PURE__ */ React.createElement("span", { className: "mono" }, "->"), " convert as you type.")));
   }
+  function relTime(t0) {
+    const sec = (Date.now() - t0) / 1e3;
+    if (!(sec >= 0) || sec < 60) return "just now";
+    const m = sec / 60;
+    if (m < 60) return Math.round(m) + " min ago";
+    const h = m / 60;
+    if (h < 24) return Math.round(h) + " h ago";
+    const d = h / 24;
+    if (d < 2) return "yesterday";
+    if (d < 30) return Math.round(d) + " d ago";
+    try {
+      return new Date(t0).toLocaleDateString();
+    } catch (e) {
+      return "";
+    }
+  }
+  function collectionOf(l) {
+    if (!l) return null;
+    if (l.bundleTitle) return l.bundleTitle;
+    if (l.user) return "My worksheets";
+    const CH = window.LCData && window.LCData.CHAPTERS || [];
+    const ch = CH.find((c) => l.key === c.prefix || l.key.startsWith(c.prefix + ".") || l.key.startsWith(c.prefix + "-"));
+    return ch ? ch.title : BUILD.label || "COMPOSE";
+  }
+  function openWorksheetKey(key) {
+    setCustom(null);
+    setFileKey(key);
+    setSel({ gi: 0, pi: 0 });
+    setExOpen(true);
+    setNavQuery("");
+  }
+  function openRecent(r) {
+    const l = LIB.find((x) => x.key === r.ws);
+    if (!l) return;
+    const gs = l.set.groups.filter((g) => g.kind === "tree");
+    const dot = String(r.ex || "").indexOf(".");
+    const gid = dot > 0 ? r.ex.slice(0, dot) : "", pid = dot > 0 ? r.ex.slice(dot + 1) : "";
+    let gi = gs.findIndex((g) => g.id === gid);
+    if (gi < 0) gi = 0;
+    let pi = gs[gi] ? gs[gi].problems.findIndex((pb) => pb.id === pid) : 0;
+    if (pi < 0) pi = 0;
+    setCustom(null);
+    setFileKey(r.ws);
+    setSel({ gi, pi });
+    setExOpen(true);
+  }
+  function resetAllProgress() {
+    if (!window.confirm("Reset all derivation progress for this worksheet?")) return;
+    const keys = /* @__PURE__ */ new Set();
+    groups.forEach((g) => g.problems.forEach((p) => keys.add(keyOf(g, p))));
+    setWork((w) => Object.fromEntries(Object.entries(w).filter(([k]) => !keys.has(k))));
+    setProgress((pr) => Object.fromEntries(Object.entries(pr).filter(([k]) => !keys.has(k))));
+  }
+  const sidebarExpanded = !railShown;
+  function drillOut(section) {
+    setExOpen(false);
+    setRailCollapsed(false);
+    if (section) setNavSection(section);
+  }
+  function sbSection(id, glyph, title, extra, body) {
+    const open = navSection === id;
+    return /* @__PURE__ */ React.createElement("div", { className: "sb-sec", key: id }, /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "sb-sec-head" + (open ? " open" : ""),
+        "aria-expanded": open,
+        onClick: () => setNavSection(open ? "" : id)
+      },
+      /* @__PURE__ */ React.createElement("span", { className: "sb-sec-glyph", "aria-hidden": "true" }, glyph),
+      /* @__PURE__ */ React.createElement("span", { className: "sb-sec-title" }, title),
+      extra ? /* @__PURE__ */ React.createElement("span", { className: "sb-sec-extra" }, extra) : null,
+      /* @__PURE__ */ React.createElement("span", { className: "sb-sec-caret", "aria-hidden": "true" }, open ? "\u25BE" : "\u25B8")
+    ), open && /* @__PURE__ */ React.createElement("div", { className: "sb-sec-body" }, body));
+  }
+  function sidebarCollections() {
+    const CH = window.LCData && window.LCData.CHAPTERS || [];
+    const inCh = (l, ch) => l.key === ch.prefix || l.key.startsWith(ch.prefix + ".") || l.key.startsWith(ch.prefix + "-");
+    const cols = [];
+    const loose = LIB.filter((l) => !l.user && !CH.some((ch) => inCh(l, ch)));
+    if (loose.length) cols.push({ id: "__loose", label: ASSIGNMENT && ASSIGNMENT.title || "Worksheets", items: loose });
+    CH.forEach((ch) => {
+      const items = LIB.filter((l) => !l.user && inCh(l, ch));
+      if (items.length) cols.push({ id: ch.prefix, label: ch.title, items });
+    });
+    bundles.forEach((b) => {
+      const items = bundleLib.filter((l) => l.bundleId === b.id);
+      if (items.length) cols.push({ id: b.id, label: b.title, items });
+    });
+    if (userLib.length) cols.push({ id: "__mine", label: "My worksheets", items: userLib });
+    return cols;
+  }
+  function renderWsRow(l) {
+    const active = !custom && l.key === fileKey;
+    const n = l.set.groups.reduce((acc, g) => acc + g.problems.length, 0);
+    return /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        key: l.key,
+        className: "sb-row sb-ws-row" + (active ? " on" : ""),
+        "aria-current": active ? "true" : void 0,
+        onClick: () => openWorksheetKey(l.key)
+      },
+      /* @__PURE__ */ React.createElement("span", { className: "sb-ws-dot", "aria-hidden": "true" }),
+      /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, l.title),
+      /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, n),
+      /* @__PURE__ */ React.createElement("span", { className: "sb-ws-caret", "aria-hidden": "true" }, "\u203A")
+    );
+  }
+  function renderSidebarBody() {
+    const cols = sidebarCollections();
+    const activeCol = cols.find((c) => c.items.some((l) => !custom && l.key === fileKey));
+    const openId = openColl != null ? openColl : activeCol ? activeCol.id : cols[0] && cols[0].id;
+    const q = navQuery.trim().toLowerCase();
+    const results = q ? LIB.filter((l) => (l.title || "").toLowerCase().includes(q)).slice(0, 24) : null;
+    const wsTotal = LIB.length;
+    return /* @__PURE__ */ React.createElement("div", { className: "sb-body" }, isFullBuild && /* @__PURE__ */ React.createElement("div", { className: "sb-search-wrap" }, /* @__PURE__ */ React.createElement("div", { className: "sb-search" }, /* @__PURE__ */ React.createElement("span", { className: "sb-search-glyph", "aria-hidden": "true" }, "\u2315"), /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        ref: searchRef,
+        value: navQuery,
+        onChange: (e) => setNavQuery(e.target.value),
+        "aria-label": "Search worksheets",
+        placeholder: "Search worksheets\u2026"
+      }
+    ), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-kbd", title: "Command palette \u2014 coming soon (\u2318K)" }, "\u2318K"))), /* @__PURE__ */ React.createElement("div", { className: "sb-scroll" }, results ? /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, results.length, " ", results.length === 1 ? "result" : "results"), results.map((l) => renderWsRow(l)), results.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Nothing matches \u201C", navQuery.trim(), "\u201D. Try a chapter number, or a phrase from a worksheet title.")) : /* @__PURE__ */ React.createElement("div", null, sbSection("library", "\u274F", "Worksheets", wsTotal + (wsTotal === 1 ? " worksheet" : " worksheets"), /* @__PURE__ */ React.createElement("div", null, cols.map((c) => /* @__PURE__ */ React.createElement("div", { key: c.id }, /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "sb-coll-head",
+        "aria-expanded": openId === c.id,
+        onClick: () => setOpenColl(openId === c.id ? "" : c.id)
+      },
+      /* @__PURE__ */ React.createElement("span", { className: "sb-coll-caret", "aria-hidden": "true" }, openId === c.id ? "\u25BE" : "\u25B8"),
+      /* @__PURE__ */ React.createElement("span", { className: "sb-coll-label" }, c.label),
+      /* @__PURE__ */ React.createElement("span", { className: "sb-coll-count" }, c.items.length)
+    ), openId === c.id && c.items.map((l) => renderWsRow(l)))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
+      setLoadErr(null);
+      setModal("files");
+    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2191"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Open a file\u2026")), isFullBuild && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, "Full library"), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/cc/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Coppock & Champollion")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/hk/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Heim & Kratzer")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/papers/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Classic papers"))))), sbSection("continue", "\u21BB", "Continue", recents.length ? String(recents.length) : null, /* @__PURE__ */ React.createElement("div", null, recents.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Open an exercise and it appears here, most recent first."), recents.slice(0, 6).map((r) => {
+      const l = LIB.find((x) => x.key === r.ws);
+      if (!l) return null;
+      const gs = l.set.groups.filter((g2) => g2.kind === "tree");
+      const dot = String(r.ex || "").indexOf(".");
+      const gid = dot > 0 ? r.ex.slice(0, dot) : "", pid = dot > 0 ? r.ex.slice(dot + 1) : "";
+      const g = gs.find((x) => x.id === gid);
+      const p = g && g.problems.find((x) => x.id === pid);
+      return /* @__PURE__ */ React.createElement("button", { type: "button", key: r.ws + "/" + r.ex, className: "sb-row", onClick: () => openRecent(r) }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25B8"), /* @__PURE__ */ React.createElement("span", { className: "sb-recent-main" }, /* @__PURE__ */ React.createElement("span", { className: "sb-recent-label lx" }, p ? navLabel(g, p) : l.title), /* @__PURE__ */ React.createElement("span", { className: "sb-recent-sub" }, l.title)), /* @__PURE__ */ React.createElement("span", { className: "sb-recent-at" }, relTime(r.at)));
+    }))), !isStudentBuild && sbSection("author", "\u270E", "Author", null, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("editor") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u270E"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Exercise editor")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("scratch") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u266A"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Scratchpad"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, "free")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("reading") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4DD}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Notes")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
+      setLoadErr(null);
+      if (fileInput.current) fileInput.current.click();
+    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2191"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Import worksheet\u2026")))), sbSection("display", "\u25D0", "Display", null, /* @__PURE__ */ React.createElement("div", { className: "sb-display" }, /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Dark mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (darkMode ? " on" : ""), role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode((d) => !d) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-resolve non-branching"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoNN ? " on" : ""), role: "switch", "aria-checked": autoNN, onClick: () => setAutoNN((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), !isStudentBuild && /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-apply composition rules"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoCompose ? " on" : ""), role: "switch", "aria-checked": autoCompose, onClick: () => setAutoCompose((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Collapse resolved subtrees"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (collapseResolved ? " on" : ""), role: "switch", "aria-checked": collapseResolved, onClick: () => setCollapseResolved((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("div", { className: "settings-row settings-layout-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Layout"), /* @__PURE__ */ React.createElement("div", { className: "seg-mini" }, /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() == null ? " on" : ""), onClick: () => setForceLayout(null) }, "Auto"), /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() === "mobile" ? " on" : ""), onClick: () => setForceLayout("mobile") }, "Mobile"))), /* @__PURE__ */ React.createElement("div", { className: "sb-kicker sb-actions-kicker" }, "Actions"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("summary") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, doneCount, "/", probCount)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => composeExportProgress() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Save progress to a file")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
+      if (progressFileInput.current) progressFileInput.current.click();
+    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2912"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Restore progress from a file\u2026")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", disabled: exporting, onClick: exportDerivation }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u29C9"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, exporting ? "Rendering\u2026" : "Export derivation (PNG)")), !isStudentBuild && !(BID.indexOf("hosted") === 0 && BID !== "hosted-sandbox") && /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("export") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2193"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Export assignment")))), isFullBuild && sbSection("help", "\u24D8", "Guide & help", null, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/guide/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25C6"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Instructor guide")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/help/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "?"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Student help")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/help/guides/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25B7"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Worked walkthroughs")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/files/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Downloads & site map")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/about/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\xA7"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "About & how to cite")))), isFullBuild && sbSection("account", "\u25C9", "Account", null, /* @__PURE__ */ React.createElement("div", null, BID === "hosted-sandbox" && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Editor sandbox \u2014 no account needed here. Instructors manage hosted versions from /dash."), BID !== "hosted-sandbox" && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Everything works without an account \u2014 an account only keeps your unlocks and progress."), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", disabled: true }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25C9"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Sign in \u2014 coming with accounts")))))), /* @__PURE__ */ React.createElement("div", { className: "sb-foot" }, !isStudentBuild && /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        className: "mode-toggle" + (teacherMode ? " teacher" : " student"),
+        title: teacherMode ? "Teacher mode \u2014 click to switch to student view" : "Student mode \u2014 click to enable teacher mode",
+        onClick: () => setTeacherMode((m) => {
+          const next = !m;
+          if (next) {
+            const cur = allowedMap[allowKey] || exerciseDefaults;
+            setAllowedMap((am) => ({ ...am, [allowKey]: Object.assign({}, cur, {}) }));
+          }
+          return next;
+        })
+      },
+      /* @__PURE__ */ React.createElement("span", { className: "mode-label" }, "Student"),
+      /* @__PURE__ */ React.createElement("span", { className: "mode-knob" }),
+      /* @__PURE__ */ React.createElement("span", { className: "mode-label" }, "Teacher")
+    ), /* @__PURE__ */ React.createElement("span", { className: "sb-version", title: (BUILD.label || "COMPOSE") + (BUILD.date ? " \xB7 " + BUILD.date : "") }, BUILD.version ? "v" + BUILD.version : "")));
+  }
+  function renderRail() {
+    return /* @__PURE__ */ React.createElement("div", { className: "sb-rail" }, isFullBuild && /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "rail-btn",
+        title: "Search worksheets",
+        "aria-label": "Search worksheets",
+        onClick: () => {
+          drillOut("library");
+          setTimeout(() => {
+            if (searchRef.current) searchRef.current.focus();
+          }, 200);
+        }
+      },
+      "\u2315"
+    ), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "rail-btn" + (sidebarExpanded && navSection === "library" ? " on" : ""),
+        title: "All worksheets",
+        "aria-label": "All worksheets",
+        onClick: () => drillOut("library")
+      },
+      "\u274F"
+    ), hasContent && /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "rail-btn" + (exOpen ? " on" : ""),
+        title: "Exercises in this worksheet",
+        "aria-label": "Exercises in this worksheet",
+        onClick: () => setExOpen(true)
+      },
+      "\u2630"
+    ), !isStudentBuild && /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "rail-btn",
+        title: "Author",
+        "aria-label": "Author",
+        onClick: () => drillOut("author")
+      },
+      "\u270E"
+    ), /* @__PURE__ */ React.createElement("div", { className: "rail-spacer" }), isFullBuild && /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "rail-btn",
+        title: "Account",
+        "aria-label": "Account",
+        onClick: () => drillOut("account")
+      },
+      "\u25C9"
+    ));
+  }
+  function renderSidebar() {
+    return /* @__PURE__ */ React.createElement("aside", { className: "sidebar" + (sidebarExpanded ? "" : " rail"), role: "navigation", "aria-label": "Main" }, /* @__PURE__ */ React.createElement("div", { className: "sb-head" }, /* @__PURE__ */ React.createElement("span", { className: "sb-glyph", "aria-hidden": "true" }, "\u03BB"), sidebarExpanded && /* @__PURE__ */ React.createElement("div", { className: "sb-brand" }, /* @__PURE__ */ React.createElement("div", { className: "sb-wordmark" }, "Compose"), /* @__PURE__ */ React.createElement("div", { className: "sb-domain" }, "compose.tstephen.com")), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "sb-collapse",
+        onClick: toggleRail,
+        title: sidebarExpanded ? "Collapse the sidebar (Ctrl+\\)" : "Expand the sidebar (Ctrl+\\)",
+        "aria-label": sidebarExpanded ? "Collapse the sidebar" : "Expand the sidebar"
+      },
+      sidebarExpanded ? "\xAB" : "\xBB"
+    )), sidebarExpanded ? renderSidebarBody() : renderRail());
+  }
+  function renderExColumn() {
+    return /* @__PURE__ */ React.createElement("aside", { className: "col-ex", "aria-label": "Exercises in this worksheet" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "colx-head", onClick: () => drillOut("library") }, /* @__PURE__ */ React.createElement("span", { className: "colx-back", "aria-hidden": "true" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "colx-head-text" }, /* @__PURE__ */ React.createElement("span", { className: "colx-kicker" }, "All worksheets"), /* @__PURE__ */ React.createElement("span", { className: "colx-title" }, custom ? "Custom exercise" : lib ? lib.title : "No worksheet")), /* @__PURE__ */ React.createElement("span", { className: "colx-score" }, doneCount, "/", probCount)), /* @__PURE__ */ React.createElement("div", { className: "col-scroll colx-scroll" }, custom && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("button", { type: "button", className: "colx-item on", "aria-current": "true" }, /* @__PURE__ */ React.createElement("span", { className: "colx-ring", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "colx-gloss lx" }, treeSummary(custom.problem.tree) || "Custom tree")), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", style: { margin: "8px 12px", width: "calc(100% - 24px)" }, onClick: () => {
+      setCustom(null);
+      setSel({ gi: 0, pi: 0 });
+    } }, "\u2190 Back to library")), !custom && groups.map((g, gi) => /* @__PURE__ */ React.createElement("div", { key: g.id }, /* @__PURE__ */ React.createElement("div", { className: "colx-group" }, /* @__PURE__ */ React.createElement("span", { className: "colx-group-title" }, g.title || g.id), /* @__PURE__ */ React.createElement("span", { className: "colx-group-count" }, g.problems.filter((p) => progress[keyOf(g, p)]).length, "/", g.problems.length)), g.problems.map((p, pi) => {
+      const k = keyOf(g, p);
+      const active = gi === sel.gi && pi === sel.pi;
+      return /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          key: p.id,
+          className: "colx-item" + (active ? " on" : "") + (progress[k] ? " done" : ""),
+          "aria-current": active ? "true" : void 0,
+          onClick: () => setSel({ gi, pi })
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "colx-ring", "aria-hidden": "true" }, progress[k] ? "\u2713" : ""),
+        /* @__PURE__ */ React.createElement("span", { className: "colx-gloss lx" }, navLabel(g, p))
+      );
+    }))), !custom && /* @__PURE__ */ React.createElement("div", { className: "colx-foot" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("rules"), title: "View rules for this exercise" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2630"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Rules for this worksheet")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("summary") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, doneCount, "/", probCount)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => composeExportProgress() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Save progress to a file")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: resetAllProgress, title: "Clear all progress for this worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u21BA"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Reset all derivations")))));
+  }
+  function renderPracticeHead() {
+    if (!hasContent || !group || !problem) return null;
+    const gloss = problem.gloss || treeSummary(problem.tree) || "Exercise";
+    const crumb = custom ? "Custom exercise" : [collectionOf(lib), lib ? lib.title : null].filter(Boolean).join(" \xB7 ");
+    return /* @__PURE__ */ React.createElement("div", { className: "practice-head" }, /* @__PURE__ */ React.createElement("div", { className: "ph-main" }, /* @__PURE__ */ React.createElement("div", { className: "ph-crumb" }, crumb), /* @__PURE__ */ React.createElement("h1", { className: "ph-gloss lx" }, gloss)), /* @__PURE__ */ React.createElement("div", { className: "ph-controls" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "ph-btn", onClick: () => setModal("rules"), title: "View rules for this exercise" }, "\u2630 Rules"), hasReading && /* @__PURE__ */ React.createElement("button", { type: "button", className: "ph-btn" + (rightTab === "reading" ? " on" : ""), onClick: () => setRightTab((v) => v === "reading" ? "lexicon" : "reading"), title: "Show the notes in the side panel" }, "\u{1F4DD} Notes"), /* @__PURE__ */ React.createElement("div", { className: "ph-step", role: "group", "aria-label": "Exercise navigation" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "ph-arrow", disabled: flatIdx <= 0, onClick: () => gotoFlat(-1), title: "Previous exercise (J)", "aria-label": "Previous exercise (J)" }, "\u2039"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "ph-arrow", disabled: flatIdx < 0 || flatIdx >= flatNav.length - 1, onClick: () => gotoFlat(1), title: "Next exercise (K)", "aria-label": "Next exercise (K)" }, "\u203A")), /* @__PURE__ */ React.createElement("span", { className: "ph-score" }, doneCount, "/", probCount, " solved")));
+  }
   return /* @__PURE__ */ React.createElement(
     "div",
     {
@@ -9829,50 +10377,7 @@ function App() {
         }
       }
     ),
-    isMobile && /* @__PURE__ */ React.createElement("header", { className: "topbar topbar-mobile" }, /* @__PURE__ */ React.createElement("button", { className: "mtop-set", onClick: () => setModal("files"), title: "Choose a worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "mtop-glyph" }, "\u03BB"), /* @__PURE__ */ React.createElement("span", { className: "mtop-set-name" }, custom ? "Custom exercise" : lib ? lib.title : "No worksheet"), /* @__PURE__ */ React.createElement("span", { className: "mtop-caret" }, "\u25BE")), /* @__PURE__ */ React.createElement("div", { className: "spacer" }), hasContent && flatNav.length > 0 ? /* @__PURE__ */ React.createElement("div", { className: "mtop-nav" }, /* @__PURE__ */ React.createElement("button", { className: "mtop-arrow", disabled: flatIdx <= 0, onClick: () => gotoFlat(-1), "aria-label": "Previous exercise" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "mtop-score" }, doneCount, "/", probCount), /* @__PURE__ */ React.createElement("button", { className: "mtop-arrow", disabled: flatIdx < 0 || flatIdx >= flatNav.length - 1, onClick: () => gotoFlat(1), "aria-label": "Next exercise" }, "\u203A")) : /* @__PURE__ */ React.createElement("div", { className: "mtop-score solo" }, doneCount, "/", probCount)),
-    !isMobile && /* @__PURE__ */ React.createElement("header", { className: "topbar" }, /* @__PURE__ */ React.createElement("div", { className: "brand" }, /* @__PURE__ */ React.createElement("span", { className: "glyph" }, "\u03BB"), /* @__PURE__ */ React.createElement("span", { className: "brand-text" }, /* @__PURE__ */ React.createElement("span", { className: "name" }, "COMPOSE"), /* @__PURE__ */ React.createElement("span", { className: "sub", title: "COMPOSE: Compositional Meaning Practice and Online Semantics Engine" }, "Compositional Meaning Practice", /* @__PURE__ */ React.createElement("br", null), "and Online Semantics Engine"))), /* @__PURE__ */ React.createElement("button", { className: "file", onClick: () => setModal("files"), title: "Choose a worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "dot" }), " ", /* @__PURE__ */ React.createElement("span", { className: "file-btn-kicker" }, "Worksheet:"), " ", custom ? "Custom exercise" : lib ? lib.title : "No worksheet", " ", /* @__PURE__ */ React.createElement("span", { className: "file-btn-caret" }, "\u25BE")), hasContent && /* @__PURE__ */ React.createElement("button", { className: "file ghost", onClick: () => setModal("rules"), title: "View rules for this exercise" }, "\u2630 Rules"), hasContent && hasReading && !isMobile && /* @__PURE__ */ React.createElement("button", { className: "file ghost" + (rightTab === "reading" ? " on" : ""), onClick: () => setRightTab((t2) => t2 === "reading" ? "lexicon" : "reading"), title: "Show the notes in the side panel" }, "\u{1F4DD} Notes"), !isStudentBuild && /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        className: "mode-toggle" + (teacherMode ? " teacher" : " student"),
-        title: teacherMode ? "Teacher mode \u2014 click to switch to student view" : "Student mode \u2014 click to enable teacher mode",
-        onClick: () => setTeacherMode((m) => {
-          const next = !m;
-          if (next) {
-            const cur = allowedMap[allowKey] || exerciseDefaults;
-            setAllowedMap((am) => ({ ...am, [allowKey]: Object.assign({}, cur, {}) }));
-          }
-          return next;
-        })
-      },
-      /* @__PURE__ */ React.createElement("span", { className: "mode-label" }, "Student"),
-      /* @__PURE__ */ React.createElement("span", { className: "mode-knob" }),
-      /* @__PURE__ */ React.createElement("span", { className: "mode-label" }, "Teacher")
-    ), /* @__PURE__ */ React.createElement("div", { className: "spacer" }), /* @__PURE__ */ React.createElement("div", { className: "score-pill" }, doneCount, "/", probCount, " solved"), teacherMode && /* @__PURE__ */ React.createElement("div", { className: "settings-menu" }, /* @__PURE__ */ React.createElement("details", { className: "settings-details", ref: toolsRef }, /* @__PURE__ */ React.createElement("summary", { className: "file ghost settings-btn", title: "Authoring tools" }, "\u270E Tools"), /* @__PURE__ */ React.createElement("div", { className: "settings-dropdown tools-dropdown" }, /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
-      if (toolsRef.current) toolsRef.current.open = false;
-      setModal("editor");
-    } }, /* @__PURE__ */ React.createElement("span", null, "Exercise editor"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u270E")), /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
-      if (toolsRef.current) toolsRef.current.open = false;
-      setModal("reading");
-    } }, /* @__PURE__ */ React.createElement("span", null, "Notes"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u{1F4DD}")), /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
-      if (toolsRef.current) toolsRef.current.open = false;
-      setLoadErr(null);
-      if (fileInput.current) fileInput.current.click();
-    } }, /* @__PURE__ */ React.createElement("span", null, "Import worksheet\u2026"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u2191")), /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
-      if (toolsRef.current) toolsRef.current.open = false;
-      setModal("scratch");
-    } }, /* @__PURE__ */ React.createElement("span", null, "Scratchpad \u2014 free composition"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u266A")), String((window.COMPOSE_BUILD || {}).id || "").indexOf("hosted") === 0 && /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
-      if (toolsRef.current) toolsRef.current.open = false;
-      window.open("/about/", "_blank");
-    } }, /* @__PURE__ */ React.createElement("span", null, "About & how to cite"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u24D8")), /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
-      if (toolsRef.current) toolsRef.current.open = false;
-      setModal("summary");
-    } }, /* @__PURE__ */ React.createElement("span", null, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u2713")), /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
-      if (toolsRef.current) toolsRef.current.open = false;
-      composeExportProgress();
-    } }, /* @__PURE__ */ React.createElement("span", null, "Save progress to a file"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u2913")), /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
-      if (toolsRef.current) toolsRef.current.open = false;
-      if (progressFileInput.current) progressFileInput.current.click();
-    } }, /* @__PURE__ */ React.createElement("span", null, "Restore progress from a file\u2026"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u2912")), /* @__PURE__ */ React.createElement(
+    /* @__PURE__ */ React.createElement(
       "input",
       {
         ref: progressFileInput,
@@ -9885,11 +10390,10 @@ function App() {
           if (f) composeImportProgress(f);
         }
       }
-    ), /* @__PURE__ */ React.createElement("div", { className: "tools-sep" }), !(window.COMPOSE_BUILD && String(window.COMPOSE_BUILD.id || "").indexOf("hosted") === 0 && window.COMPOSE_BUILD.id !== "hosted-sandbox") && /* @__PURE__ */ React.createElement("button", { className: "tool-btn", onClick: () => {
-      if (toolsRef.current) toolsRef.current.open = false;
-      setModal("export");
-    } }, /* @__PURE__ */ React.createElement("span", null, "Export assignment"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u2193")), /* @__PURE__ */ React.createElement("button", { className: "tool-btn", disabled: exporting, onClick: exportDerivation }, /* @__PURE__ */ React.createElement("span", null, exporting ? "Rendering\u2026" : "Export derivation (PNG)"), /* @__PURE__ */ React.createElement("span", { className: "tool-ico" }, "\u29C9"))))), /* @__PURE__ */ React.createElement("div", { className: "settings-menu" }, /* @__PURE__ */ React.createElement("details", { className: "settings-details", ref: settingsRef }, /* @__PURE__ */ React.createElement("summary", { className: "file ghost settings-btn", title: "Settings" }, "\u2699 Settings"), /* @__PURE__ */ React.createElement("div", { className: "settings-dropdown" }, /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Dark mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (darkMode ? " on" : ""), role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode((d) => !d) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-resolve non-branching"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoNN ? " on" : ""), role: "switch", "aria-checked": autoNN, onClick: () => setAutoNN((s) => !s) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), !isStudentBuild && /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-apply composition rules"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoCompose ? " on" : ""), role: "switch", "aria-checked": autoCompose, onClick: () => setAutoCompose((s) => !s) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Collapse resolved subtrees"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (collapseResolved ? " on" : ""), role: "switch", "aria-checked": collapseResolved, onClick: () => setCollapseResolved((s) => !s) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("div", { className: "settings-row settings-layout-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Layout"), /* @__PURE__ */ React.createElement("div", { className: "seg-mini" }, /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() == null ? " on" : ""), onClick: () => setForceLayout(null) }, "Auto"), /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() === "mobile" ? " on" : ""), onClick: () => setForceLayout("mobile") }, "Mobile"))), /* @__PURE__ */ React.createElement("div", { className: "settings-stamp" }, BUILD.label || "COMPOSE", BUILD.version ? " \xB7 v" + BUILD.version : "", BUILD.date ? " \xB7 " + BUILD.date : ""))))),
-    /* @__PURE__ */ React.createElement("div", { className: "app-main" + (isMobile ? " app-main-mobile" : "") }, !isMobile && /* @__PURE__ */ React.createElement("aside", { className: "col col-left" }, /* @__PURE__ */ React.createElement("div", { className: "panel-head" }, custom ? "Custom exercise" : "Exercises", " ", /* @__PURE__ */ React.createElement("span", { className: "count" }, doneCount, "/", probCount)), renderExercisesScroll()), /* @__PURE__ */ React.createElement("main", { className: "col-center" }, renderCenter()), !isMobile && /* @__PURE__ */ React.createElement("aside", { className: "col col-right" }, hasReading ? /* @__PURE__ */ React.createElement("div", { className: "panel-head rd-tabhead" }, /* @__PURE__ */ React.createElement("button", { className: "rd-tab" + (rightTab !== "reading" ? " on" : ""), onClick: () => setRightTab("lexicon") }, "Lexicon ", /* @__PURE__ */ React.createElement("span", { className: "count" }, filteredLex.length)), /* @__PURE__ */ React.createElement("button", { className: "rd-tab" + (rightTab === "reading" ? " on" : ""), onClick: () => setRightTab("reading") }, "Notes")) : /* @__PURE__ */ React.createElement("div", { className: "panel-head" }, "Lexicon ", /* @__PURE__ */ React.createElement("span", { className: "count" }, filteredLex.length)), hasReading && rightTab === "reading" && window.ReaderPanel ? (() => {
+    ),
+    isMobile && /* @__PURE__ */ React.createElement("header", { className: "topbar topbar-mobile" }, /* @__PURE__ */ React.createElement("button", { className: "mtop-set", onClick: () => setModal("files"), title: "Choose a worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "mtop-glyph" }, "\u03BB"), /* @__PURE__ */ React.createElement("span", { className: "mtop-set-name" }, custom ? "Custom exercise" : lib ? lib.title : "No worksheet"), /* @__PURE__ */ React.createElement("span", { className: "mtop-caret" }, "\u25BE")), /* @__PURE__ */ React.createElement("div", { className: "spacer" }), hasContent && flatNav.length > 0 ? /* @__PURE__ */ React.createElement("div", { className: "mtop-nav" }, /* @__PURE__ */ React.createElement("button", { className: "mtop-arrow", disabled: flatIdx <= 0, onClick: () => gotoFlat(-1), "aria-label": "Previous exercise" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "mtop-score" }, doneCount, "/", probCount), /* @__PURE__ */ React.createElement("button", { className: "mtop-arrow", disabled: flatIdx < 0 || flatIdx >= flatNav.length - 1, onClick: () => gotoFlat(1), "aria-label": "Next exercise" }, "\u203A")) : /* @__PURE__ */ React.createElement("div", { className: "mtop-score solo" }, doneCount, "/", probCount)),
+    !isMobile && /* @__PURE__ */ React.createElement("a", { className: "skip-link", href: "#main" }, "Skip to content"),
+    /* @__PURE__ */ React.createElement("div", { className: "app-main" + (isMobile ? " app-main-mobile" : "") }, !isMobile && renderSidebar(), !isMobile && hasContent && exOpen && renderExColumn(), /* @__PURE__ */ React.createElement("main", { id: "main", className: "col-center" }, !isMobile && renderPracticeHead(), renderCenter()), !isMobile && /* @__PURE__ */ React.createElement("aside", { className: "col col-right" }, hasReading ? /* @__PURE__ */ React.createElement("div", { className: "panel-head rd-tabhead" }, /* @__PURE__ */ React.createElement("button", { className: "rd-tab" + (rightTab !== "reading" ? " on" : ""), onClick: () => setRightTab("lexicon") }, "Lexicon ", /* @__PURE__ */ React.createElement("span", { className: "count" }, filteredLex.length)), /* @__PURE__ */ React.createElement("button", { className: "rd-tab" + (rightTab === "reading" ? " on" : ""), onClick: () => setRightTab("reading") }, "Notes")) : /* @__PURE__ */ React.createElement("div", { className: "panel-head" }, "Lexicon ", /* @__PURE__ */ React.createElement("span", { className: "count" }, filteredLex.length)), hasReading && rightTab === "reading" && window.ReaderPanel ? (() => {
       const RP = window.ReaderPanel;
       return /* @__PURE__ */ React.createElement(RP, { set: readingSet, section: problem && problem.section, embedded: true });
     })() : renderLexiconScroll()), isMobile && rightTab === "reading" && hasReading && window.ReaderPanel && (() => {

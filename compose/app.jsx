@@ -206,6 +206,19 @@ function App() {
   const [phoneOk, setPhoneOk] = useState(() => load('lc2-phone-ok', false));  // W11 interstitial
   const settingsRef = useRef(null);
   const toolsRef = useRef(null);
+  // ---- N1 (S29): left-sidebar navigation state ---------------------------
+  const BID = String(BUILD.id || '');
+  const isFullBuild = BID === 'hosted-root' || BID === 'hosted-sandbox' || BID.indexOf('hosted-lib') === 0;
+  const [railCollapsed, setRailCollapsed] = useState(() => load('lc2-rail', false));
+  const [navSection, setNavSection] = useState(() => load('lc2-nav-section', 'library'));
+  const [exOpen, setExOpen] = useState(true); // drilled into the current worksheet's exercises
+  const [recents, setRecents] = useState(() => load('lc2-recents', []));
+  const [navQuery, setNavQuery] = useState('');
+  const [openColl, setOpenColl] = useState(null);
+  const searchRef = useRef(null);
+  useEffect(() => { save('lc2-rail', railCollapsed); }, [railCollapsed]);
+  useEffect(() => { save('lc2-nav-section', navSection); }, [navSection]);
+  useEffect(() => { save('lc2-recents', recents); }, [recents]);
   useEffect(() => {
     function onOutside(e) {
       if (settingsRef.current && !settingsRef.current.contains(e.target)) { settingsRef.current.open = false; setSettingsOpen(false); }
@@ -586,7 +599,37 @@ function App() {
     if (n) setSel({ gi: n.gi, pi: n.pi });
   };
 
-  // Exercise navigation via left panel only — keyboard shortcuts removed
+  // ---- N1: recents (Continue) + rail state + J/K + Ctrl+\ ----------------
+  useEffect(() => {
+    if (custom || !set || !group || !problem) return;
+    const wsKey = set.key, ex = group.id + '.' + problem.id;
+    setRecents((prev) => [{ ws: wsKey, ex, at: Date.now() }]
+      .concat((Array.isArray(prev) ? prev : []).filter((r) => !(r.ws === wsKey && r.ex === ex)))
+      .slice(0, 8));
+  }, [curKey, custom]);
+  const railShown = !isMobile && (railCollapsed || (exOpen && hasContent));
+  function toggleRail() {
+    if (railShown) { setRailCollapsed(false); setExOpen(false); }
+    else setRailCollapsed(true);
+  }
+  useEffect(() => {
+    if (isMobile) return;
+    function onNavKey(e) {
+      const tg = e.target;
+      if (tg && (tg.tagName === 'INPUT' || tg.tagName === 'TEXTAREA' || tg.tagName === 'SELECT' || tg.isContentEditable)) return;
+      if ((e.metaKey || e.ctrlKey) && e.key === '\\') {
+        e.preventDefault();
+        if (railCollapsed || (exOpen && hasContent)) { setRailCollapsed(false); setExOpen(false); }
+        else setRailCollapsed(true);
+        return;
+      }
+      if (e.metaKey || e.ctrlKey || e.altKey || modal) return;
+      if (e.key === 'j' || e.key === 'J') { e.preventDefault(); gotoFlat(-1); }
+      else if (e.key === 'k' || e.key === 'K') { e.preventDefault(); gotoFlat(1); }
+    }
+    window.addEventListener('keydown', onNavKey);
+    return () => window.removeEventListener('keydown', onNavKey);
+  });
 
   const allowKey = custom ? 'custom' : (set ? set.key : 'none');
   const exerciseDefaults = set ? window.LCData.defaultAllowed(set) : {};
@@ -706,12 +749,382 @@ function App() {
     );
   }
 
+  /* =========================================================================
+     N1 (S29) — left sidebar navigation: helpers + renderers (desktop only).
+     Values (sizes, copy) follow the design handoff prototype; gating mirrors
+     the S23 lib-links rule (full sidebar only on hosted-root / hosted-sandbox
+     / hosted-lib-*; /v/, /edit and exports get the reduced sidebar).
+     ========================================================================= */
+  function relTime(t0) {
+    const sec = (Date.now() - t0) / 1000;
+    if (!(sec >= 0) || sec < 60) return 'just now';
+    const m = sec / 60; if (m < 60) return Math.round(m) + ' min ago';
+    const h = m / 60; if (h < 24) return Math.round(h) + ' h ago';
+    const d = h / 24; if (d < 2) return 'yesterday';
+    if (d < 30) return Math.round(d) + ' d ago';
+    try { return new Date(t0).toLocaleDateString(); } catch (e) { return ''; }
+  }
+  function collectionOf(l) {
+    if (!l) return null;
+    if (l.bundleTitle) return l.bundleTitle;
+    if (l.user) return 'My worksheets';
+    const CH = (window.LCData && window.LCData.CHAPTERS) || [];
+    const ch = CH.find((c) => l.key === c.prefix || l.key.startsWith(c.prefix + '.') || l.key.startsWith(c.prefix + '-'));
+    return ch ? ch.title : (BUILD.label || 'COMPOSE');
+  }
+  function openWorksheetKey(key) {
+    setCustom(null); setFileKey(key); setSel({ gi: 0, pi: 0 }); setExOpen(true); setNavQuery('');
+  }
+  function openRecent(r) {
+    const l = LIB.find((x) => x.key === r.ws);
+    if (!l) return;
+    const gs = l.set.groups.filter((g) => g.kind === 'tree');
+    const dot = String(r.ex || '').indexOf('.');
+    const gid = dot > 0 ? r.ex.slice(0, dot) : '', pid = dot > 0 ? r.ex.slice(dot + 1) : '';
+    let gi = gs.findIndex((g) => g.id === gid); if (gi < 0) gi = 0;
+    let pi = gs[gi] ? gs[gi].problems.findIndex((pb) => pb.id === pid) : 0; if (pi < 0) pi = 0;
+    setCustom(null); setFileKey(r.ws); setSel({ gi, pi }); setExOpen(true);
+  }
+  function resetAllProgress() {
+    if (!window.confirm('Reset all derivation progress for this worksheet?')) return;
+    const keys = new Set(); groups.forEach((g) => g.problems.forEach((p) => keys.add(keyOf(g, p))));
+    setWork((w) => Object.fromEntries(Object.entries(w).filter(([k]) => !keys.has(k))));
+    setProgress((pr) => Object.fromEntries(Object.entries(pr).filter(([k]) => !keys.has(k))));
+  }
+  const sidebarExpanded = !railShown;
+  function drillOut(section) {
+    setExOpen(false); setRailCollapsed(false);
+    if (section) setNavSection(section);
+  }
+  function sbSection(id, glyph, title, extra, body) {
+    const open = navSection === id;
+    return (
+      <div className="sb-sec" key={id}>
+        <button type="button" className={'sb-sec-head' + (open ? ' open' : '')} aria-expanded={open}
+          onClick={() => setNavSection(open ? '' : id)}>
+          <span className="sb-sec-glyph" aria-hidden="true">{glyph}</span>
+          <span className="sb-sec-title">{title}</span>
+          {extra ? <span className="sb-sec-extra">{extra}</span> : null}
+          <span className="sb-sec-caret" aria-hidden="true">{open ? '▾' : '▸'}</span>
+        </button>
+        {open && <div className="sb-sec-body">{body}</div>}
+      </div>
+    );
+  }
+  function sidebarCollections() {
+    const CH = (window.LCData && window.LCData.CHAPTERS) || [];
+    const inCh = (l, ch) => l.key === ch.prefix || l.key.startsWith(ch.prefix + '.') || l.key.startsWith(ch.prefix + '-');
+    const cols = [];
+    const loose = LIB.filter((l) => !l.user && !CH.some((ch) => inCh(l, ch)));
+    if (loose.length) cols.push({ id: '__loose', label: (ASSIGNMENT && ASSIGNMENT.title) || 'Worksheets', items: loose });
+    CH.forEach((ch) => {
+      const items = LIB.filter((l) => !l.user && inCh(l, ch));
+      if (items.length) cols.push({ id: ch.prefix, label: ch.title, items });
+    });
+    bundles.forEach((b) => {
+      const items = bundleLib.filter((l) => l.bundleId === b.id);
+      if (items.length) cols.push({ id: b.id, label: b.title, items });
+    });
+    if (userLib.length) cols.push({ id: '__mine', label: 'My worksheets', items: userLib });
+    return cols;
+  }
+  function renderWsRow(l) {
+    const active = !custom && l.key === fileKey;
+    const n = l.set.groups.reduce((acc, g) => acc + g.problems.length, 0);
+    return (
+      <button type="button" key={l.key} className={'sb-row sb-ws-row' + (active ? ' on' : '')}
+        aria-current={active ? 'true' : undefined}
+        onClick={() => openWorksheetKey(l.key)}>
+        <span className="sb-ws-dot" aria-hidden="true" />
+        <span className="sb-row-label">{l.title}</span>
+        <span className="sb-row-note">{n}</span>
+        <span className="sb-ws-caret" aria-hidden="true">›</span>
+      </button>
+    );
+  }
+  function renderSidebarBody() {
+    const cols = sidebarCollections();
+    const activeCol = cols.find((c) => c.items.some((l) => !custom && l.key === fileKey));
+    const openId = openColl != null ? openColl : (activeCol ? activeCol.id : (cols[0] && cols[0].id));
+    const q = navQuery.trim().toLowerCase();
+    const results = q ? LIB.filter((l) => (l.title || '').toLowerCase().includes(q)).slice(0, 24) : null;
+    const wsTotal = LIB.length;
+    return (
+      <div className="sb-body">
+        {isFullBuild && (
+          <div className="sb-search-wrap">
+            <div className="sb-search">
+              <span className="sb-search-glyph" aria-hidden="true">⌕</span>
+              <input ref={searchRef} value={navQuery} onChange={(e) => setNavQuery(e.target.value)}
+                aria-label="Search worksheets" placeholder="Search worksheets…" />
+              <button type="button" className="sb-kbd" title="Command palette — coming soon (⌘K)">⌘K</button>
+            </div>
+          </div>
+        )}
+        <div className="sb-scroll">
+          {results ? (
+            <div>
+              <div className="sb-kicker">{results.length} {results.length === 1 ? 'result' : 'results'}</div>
+              {results.map((l) => renderWsRow(l))}
+              {results.length === 0 && <div className="sb-empty-note">Nothing matches “{navQuery.trim()}”. Try a chapter number, or a phrase from a worksheet title.</div>}
+            </div>
+          ) : (
+            <div>
+              {sbSection('library', '❏', 'Worksheets', wsTotal + (wsTotal === 1 ? ' worksheet' : ' worksheets'), (
+                <div>
+                  {cols.map((c) => (
+                    <div key={c.id}>
+                      <button type="button" className="sb-coll-head" aria-expanded={openId === c.id}
+                        onClick={() => setOpenColl(openId === c.id ? '' : c.id)}>
+                        <span className="sb-coll-caret" aria-hidden="true">{openId === c.id ? '▾' : '▸'}</span>
+                        <span className="sb-coll-label">{c.label}</span>
+                        <span className="sb-coll-count">{c.items.length}</span>
+                      </button>
+                      {openId === c.id && c.items.map((l) => renderWsRow(l))}
+                    </div>
+                  ))}
+                  <button type="button" className="sb-row" onClick={() => { setLoadErr(null); setModal('files'); }}>
+                    <span className="sb-ico" aria-hidden="true">↑</span>
+                    <span className="sb-row-label">Open a file…</span>
+                  </button>
+                  {isFullBuild && (
+                    <div>
+                      <div className="sb-kicker">Full library</div>
+                      <a className="sb-row" href="/cc/"><span className="sb-ico" aria-hidden="true">📖</span><span className="sb-row-label">Coppock &amp; Champollion</span></a>
+                      <a className="sb-row" href="/hk/"><span className="sb-ico" aria-hidden="true">📖</span><span className="sb-row-label">Heim &amp; Kratzer</span></a>
+                      <a className="sb-row" href="/papers/"><span className="sb-ico" aria-hidden="true">📖</span><span className="sb-row-label">Classic papers</span></a>
+                    </div>
+                  )}
+                </div>
+              ))}
+              {sbSection('continue', '↻', 'Continue', recents.length ? String(recents.length) : null, (
+                <div>
+                  {recents.length === 0 && <div className="sb-empty-note">Open an exercise and it appears here, most recent first.</div>}
+                  {recents.slice(0, 6).map((r) => {
+                    const l = LIB.find((x) => x.key === r.ws);
+                    if (!l) return null;
+                    const gs = l.set.groups.filter((g) => g.kind === 'tree');
+                    const dot = String(r.ex || '').indexOf('.');
+                    const gid = dot > 0 ? r.ex.slice(0, dot) : '', pid = dot > 0 ? r.ex.slice(dot + 1) : '';
+                    const g = gs.find((x) => x.id === gid);
+                    const p = g && g.problems.find((x) => x.id === pid);
+                    return (
+                      <button type="button" key={r.ws + '/' + r.ex} className="sb-row" onClick={() => openRecent(r)}>
+                        <span className="sb-ico" aria-hidden="true">▸</span>
+                        <span className="sb-recent-main">
+                          <span className="sb-recent-label lx">{p ? navLabel(g, p) : l.title}</span>
+                          <span className="sb-recent-sub">{l.title}</span>
+                        </span>
+                        <span className="sb-recent-at">{relTime(r.at)}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+              {!isStudentBuild && sbSection('author', '✎', 'Author', null, (
+                <div>
+                  <button type="button" className="sb-row" onClick={() => setModal('editor')}><span className="sb-ico" aria-hidden="true">✎</span><span className="sb-row-label">Exercise editor</span></button>
+                  <button type="button" className="sb-row" onClick={() => setModal('scratch')}><span className="sb-ico" aria-hidden="true">♪</span><span className="sb-row-label">Scratchpad</span><span className="sb-row-note">free</span></button>
+                  <button type="button" className="sb-row" onClick={() => setModal('reading')}><span className="sb-ico" aria-hidden="true">📝</span><span className="sb-row-label">Notes</span></button>
+                  <button type="button" className="sb-row" onClick={() => { setLoadErr(null); if (fileInput.current) fileInput.current.click(); }}><span className="sb-ico" aria-hidden="true">↑</span><span className="sb-row-label">Import worksheet…</span></button>
+                </div>
+              ))}
+              {sbSection('display', '◐', 'Display', null, (
+                <div className="sb-display">
+                  <label className="settings-row">
+                    <span className="settings-label">Dark mode</span>
+                    <button className={'beh-toggle' + (darkMode ? ' on' : '')} role="switch" aria-checked={darkMode} onClick={() => setDarkMode((d) => !d)}><span className="beh-knob" /></button>
+                  </label>
+                  <label className="settings-row">
+                    <span className="settings-label">Auto-resolve non-branching</span>
+                    <button className={'beh-toggle' + (autoNN ? ' on' : '')} role="switch" aria-checked={autoNN} onClick={() => setAutoNN((v) => !v)}><span className="beh-knob" /></button>
+                  </label>
+                  {!isStudentBuild && <label className="settings-row">
+                    <span className="settings-label">Auto-apply composition rules</span>
+                    <button className={'beh-toggle' + (autoCompose ? ' on' : '')} role="switch" aria-checked={autoCompose} onClick={() => setAutoCompose((v) => !v)}><span className="beh-knob" /></button>
+                  </label>}
+                  <label className="settings-row">
+                    <span className="settings-label">Collapse resolved subtrees</span>
+                    <button className={'beh-toggle' + (collapseResolved ? ' on' : '')} role="switch" aria-checked={collapseResolved} onClick={() => setCollapseResolved((v) => !v)}><span className="beh-knob" /></button>
+                  </label>
+                  <div className="settings-row settings-layout-row">
+                    <span className="settings-label">Layout</span>
+                    <div className="seg-mini">
+                      <button className={'seg-mini-btn' + (getForceLayout() == null ? ' on' : '')} onClick={() => setForceLayout(null)}>Auto</button>
+                      <button className={'seg-mini-btn' + (getForceLayout() === 'mobile' ? ' on' : '')} onClick={() => setForceLayout('mobile')}>Mobile</button>
+                    </div>
+                  </div>
+                  <div className="sb-kicker sb-actions-kicker">Actions</div>
+                  <button type="button" className="sb-row" onClick={() => setModal('summary')}><span className="sb-ico" aria-hidden="true">✓</span><span className="sb-row-label">Progress summary</span><span className="sb-row-note">{doneCount}/{probCount}</span></button>
+                  <button type="button" className="sb-row" onClick={() => composeExportProgress()}><span className="sb-ico" aria-hidden="true">⤓</span><span className="sb-row-label">Save progress to a file</span></button>
+                  <button type="button" className="sb-row" onClick={() => { if (progressFileInput.current) progressFileInput.current.click(); }}><span className="sb-ico" aria-hidden="true">⤒</span><span className="sb-row-label">Restore progress from a file…</span></button>
+                  <button type="button" className="sb-row" disabled={exporting} onClick={exportDerivation}><span className="sb-ico" aria-hidden="true">⧉</span><span className="sb-row-label">{exporting ? 'Rendering…' : 'Export derivation (PNG)'}</span></button>
+                  {!isStudentBuild && !(BID.indexOf('hosted') === 0 && BID !== 'hosted-sandbox') && (
+                    <button type="button" className="sb-row" onClick={() => setModal('export')}><span className="sb-ico" aria-hidden="true">↓</span><span className="sb-row-label">Export assignment</span></button>
+                  )}
+                </div>
+              ))}
+              {isFullBuild && sbSection('help', 'ⓘ', 'Guide & help', null, (
+                <div>
+                  <a className="sb-row" href="/guide/"><span className="sb-ico" aria-hidden="true">◆</span><span className="sb-row-label">Instructor guide</span></a>
+                  <a className="sb-row" href="/help/"><span className="sb-ico" aria-hidden="true">?</span><span className="sb-row-label">Student help</span></a>
+                  <a className="sb-row" href="/help/guides/"><span className="sb-ico" aria-hidden="true">▷</span><span className="sb-row-label">Worked walkthroughs</span></a>
+                  <a className="sb-row" href="/files/"><span className="sb-ico" aria-hidden="true">⤓</span><span className="sb-row-label">Downloads &amp; site map</span></a>
+                  <a className="sb-row" href="/about/"><span className="sb-ico" aria-hidden="true">§</span><span className="sb-row-label">About &amp; how to cite</span></a>
+                </div>
+              ))}
+              {isFullBuild && sbSection('account', '◉', 'Account', null, (
+                <div>
+                  {BID === 'hosted-sandbox' && <div className="sb-empty-note">Editor sandbox — no account needed here. Instructors manage hosted versions from /dash.</div>}
+                  {BID !== 'hosted-sandbox' && <div className="sb-empty-note">Everything works without an account — an account only keeps your unlocks and progress.</div>}
+                  <button type="button" className="sb-row" disabled><span className="sb-ico" aria-hidden="true">◉</span><span className="sb-row-label">Sign in — coming with accounts</span></button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="sb-foot">
+          {!isStudentBuild && (
+            <button className={'mode-toggle' + (teacherMode ? ' teacher' : ' student')}
+              title={teacherMode ? 'Teacher mode — click to switch to student view' : 'Student mode — click to enable teacher mode'}
+              onClick={() => setTeacherMode((m) => {
+                const next = !m;
+                if (next) {
+                  const cur = allowedMap[allowKey] || exerciseDefaults;
+                  setAllowedMap((am) => ({ ...am, [allowKey]: Object.assign({}, cur, {}) }));
+                }
+                return next;
+              })}>
+              <span className="mode-label">Student</span>
+              <span className="mode-knob" />
+              <span className="mode-label">Teacher</span>
+            </button>
+          )}
+          <span className="sb-version" title={(BUILD.label || 'COMPOSE') + (BUILD.date ? ' · ' + BUILD.date : '')}>{BUILD.version ? 'v' + BUILD.version : ''}</span>
+        </div>
+      </div>
+    );
+  }
+  function renderRail() {
+    return (
+      <div className="sb-rail">
+        {isFullBuild && <button type="button" className="rail-btn" title="Search worksheets" aria-label="Search worksheets"
+          onClick={() => { drillOut('library'); setTimeout(() => { if (searchRef.current) searchRef.current.focus(); }, 200); }}>⌕</button>}
+        <button type="button" className={'rail-btn' + (sidebarExpanded && navSection === 'library' ? ' on' : '')} title="All worksheets" aria-label="All worksheets"
+          onClick={() => drillOut('library')}>❏</button>
+        {hasContent && <button type="button" className={'rail-btn' + (exOpen ? ' on' : '')} title="Exercises in this worksheet" aria-label="Exercises in this worksheet"
+          onClick={() => setExOpen(true)}>☰</button>}
+        {!isStudentBuild && <button type="button" className="rail-btn" title="Author" aria-label="Author"
+          onClick={() => drillOut('author')}>✎</button>}
+        <div className="rail-spacer" />
+        {isFullBuild && <button type="button" className="rail-btn" title="Account" aria-label="Account"
+          onClick={() => drillOut('account')}>◉</button>}
+      </div>
+    );
+  }
+  function renderSidebar() {
+    return (
+      <aside className={'sidebar' + (sidebarExpanded ? '' : ' rail')} role="navigation" aria-label="Main">
+        <div className="sb-head">
+          <span className="sb-glyph" aria-hidden="true">λ</span>
+          {sidebarExpanded && (
+            <div className="sb-brand">
+              <div className="sb-wordmark">Compose</div>
+              <div className="sb-domain">compose.tstephen.com</div>
+            </div>
+          )}
+          <button type="button" className="sb-collapse" onClick={toggleRail}
+            title={sidebarExpanded ? 'Collapse the sidebar (Ctrl+\\)' : 'Expand the sidebar (Ctrl+\\)'}
+            aria-label={sidebarExpanded ? 'Collapse the sidebar' : 'Expand the sidebar'}>{sidebarExpanded ? '«' : '»'}</button>
+        </div>
+        {sidebarExpanded ? renderSidebarBody() : renderRail()}
+      </aside>
+    );
+  }
+  function renderExColumn() {
+    return (
+      <aside className="col-ex" aria-label="Exercises in this worksheet">
+        <button type="button" className="colx-head" onClick={() => drillOut('library')}>
+          <span className="colx-back" aria-hidden="true">‹</span>
+          <span className="colx-head-text">
+            <span className="colx-kicker">All worksheets</span>
+            <span className="colx-title">{custom ? 'Custom exercise' : (lib ? lib.title : 'No worksheet')}</span>
+          </span>
+          <span className="colx-score">{doneCount}/{probCount}</span>
+        </button>
+        <div className="col-scroll colx-scroll">
+          {custom && (
+            <div>
+              <button type="button" className="colx-item on" aria-current="true">
+                <span className="colx-ring" aria-hidden="true">✓</span>
+                <span className="colx-gloss lx">{treeSummary(custom.problem.tree) || 'Custom tree'}</span>
+              </button>
+              <button className="btn-ghost" style={{ margin: '8px 12px', width: 'calc(100% - 24px)' }} onClick={() => { setCustom(null); setSel({ gi: 0, pi: 0 }); }}>← Back to library</button>
+            </div>
+          )}
+          {!custom && groups.map((g, gi) => (
+            <div key={g.id}>
+              <div className="colx-group">
+                <span className="colx-group-title">{g.title || g.id}</span>
+                <span className="colx-group-count">{g.problems.filter((p) => progress[keyOf(g, p)]).length}/{g.problems.length}</span>
+              </div>
+              {g.problems.map((p, pi) => {
+                const k = keyOf(g, p);
+                const active = gi === sel.gi && pi === sel.pi;
+                return (
+                  <button type="button" key={p.id} className={'colx-item' + (active ? ' on' : '') + (progress[k] ? ' done' : '')}
+                    aria-current={active ? 'true' : undefined}
+                    onClick={() => setSel({ gi, pi })}>
+                    <span className="colx-ring" aria-hidden="true">{progress[k] ? '✓' : ''}</span>
+                    <span className="colx-gloss lx">{navLabel(g, p)}</span>
+                  </button>
+                );
+              })}
+            </div>
+          ))}
+          {!custom && (
+            <div className="colx-foot">
+              <button type="button" className="sb-row" onClick={() => setModal('rules')} title="View rules for this exercise"><span className="sb-ico" aria-hidden="true">☰</span><span className="sb-row-label">Rules for this worksheet</span></button>
+              <button type="button" className="sb-row" onClick={() => setModal('summary')}><span className="sb-ico" aria-hidden="true">✓</span><span className="sb-row-label">Progress summary</span><span className="sb-row-note">{doneCount}/{probCount}</span></button>
+              <button type="button" className="sb-row" onClick={() => composeExportProgress()}><span className="sb-ico" aria-hidden="true">⤓</span><span className="sb-row-label">Save progress to a file</span></button>
+              <button type="button" className="sb-row" onClick={resetAllProgress} title="Clear all progress for this worksheet"><span className="sb-ico" aria-hidden="true">↺</span><span className="sb-row-label">Reset all derivations</span></button>
+            </div>
+          )}
+        </div>
+      </aside>
+    );
+  }
+  function renderPracticeHead() {
+    if (!hasContent || !group || !problem) return null;
+    const gloss = problem.gloss || treeSummary(problem.tree) || 'Exercise';
+    const crumb = custom ? 'Custom exercise' : [collectionOf(lib), lib ? lib.title : null].filter(Boolean).join(' · ');
+    return (
+      <div className="practice-head">
+        <div className="ph-main">
+          <div className="ph-crumb">{crumb}</div>
+          <h1 className="ph-gloss lx">{gloss}</h1>
+        </div>
+        <div className="ph-controls">
+          <button type="button" className="ph-btn" onClick={() => setModal('rules')} title="View rules for this exercise">☰ Rules</button>
+          {hasReading && <button type="button" className={'ph-btn' + (rightTab === 'reading' ? ' on' : '')} onClick={() => setRightTab((v) => v === 'reading' ? 'lexicon' : 'reading')} title="Show the notes in the side panel">📝 Notes</button>}
+          <div className="ph-step" role="group" aria-label="Exercise navigation">
+            <button type="button" className="ph-arrow" disabled={flatIdx <= 0} onClick={() => gotoFlat(-1)} title="Previous exercise (J)" aria-label="Previous exercise (J)">‹</button>
+            <button type="button" className="ph-arrow" disabled={flatIdx < 0 || flatIdx >= flatNav.length - 1} onClick={() => gotoFlat(1)} title="Next exercise (K)" aria-label="Next exercise (K)">›</button>
+          </div>
+          <span className="ph-score">{doneCount}/{probCount} solved</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={'app' + (isMobile ? ' is-mobile' : '')}
       onDragOver={!hasContent ? (e) => { e.preventDefault(); } : undefined}
       onDrop={!hasContent ? (e) => { e.preventDefault(); importFiles(e.dataTransfer.files); } : undefined}>
       <input ref={fileInput} type="file" accept=".json,.compose.json,.compose-bundle.json,.txt,.lbd,.lc,.html,.htm,application/json,text/plain,text/html" multiple style={{ display: 'none' }}
         onChange={(e) => { importFiles(e.target.files); e.target.value = ''; }} />
+      <input ref={progressFileInput} type="file" accept=".json,application/json" style={{ display: 'none' }}
+        onChange={(e) => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) composeImportProgress(f); }} />
       {isMobile && (
         <header className="topbar topbar-mobile">
           <button className="mtop-set" onClick={() => setModal('files')} title="Choose a worksheet">
@@ -731,124 +1144,13 @@ function App() {
           )}
         </header>
       )}
-      {!isMobile && (
-      <header className="topbar">
-        <div className="brand">
-          <span className="glyph">λ</span>
-          <span className="brand-text">
-            <span className="name">COMPOSE</span>
-            <span className="sub" title="COMPOSE: Compositional Meaning Practice and Online Semantics Engine">Compositional Meaning Practice<br/>and Online Semantics Engine</span>
-          </span>
-        </div>
-        <button className="file" onClick={() => setModal('files')} title="Choose a worksheet">
-          <span className="dot" /> <span className="file-btn-kicker">Worksheet:</span> {custom ? 'Custom exercise' : (lib ? lib.title : 'No worksheet')} <span className="file-btn-caret">▾</span>
-        </button>
-        {hasContent && <button className="file ghost" onClick={() => setModal('rules')} title="View rules for this exercise">☰ Rules</button>}
-        {hasContent && hasReading && !isMobile && <button className={'file ghost' + (rightTab === 'reading' ? ' on' : '')} onClick={() => setRightTab(t => t === 'reading' ? 'lexicon' : 'reading')} title="Show the notes in the side panel">📝 Notes</button>}
-        {!isStudentBuild && <button className={'mode-toggle'+(teacherMode ? ' teacher' : ' student')} title={teacherMode ? 'Teacher mode — click to switch to student view' : 'Student mode — click to enable teacher mode'}
-          onClick={() => setTeacherMode(m => {
-          const next = !m;
-          if (next) {
-            const cur = allowedMap[allowKey] || exerciseDefaults;
-            setAllowedMap(am => ({ ...am, [allowKey]: Object.assign({}, cur, {}) }));
-          }
-          return next;
-        })} >
-          <span className="mode-label">Student</span>
-          <span className="mode-knob" />
-          <span className="mode-label">Teacher</span>
-        </button>}
-        <div className="spacer" />
-        <div className="score-pill">{doneCount}/{probCount} solved</div>
-        {teacherMode && (
-        <div className="settings-menu">
-          <details className="settings-details" ref={toolsRef}>
-            <summary className="file ghost settings-btn" title="Authoring tools">✎ Tools</summary>
-            <div className="settings-dropdown tools-dropdown">
-              <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; setModal('editor'); }}>
-                <span>Exercise editor</span><span className="tool-ico">✎</span>
-              </button>
-              <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; setModal('reading'); }}>
-                <span>Notes</span><span className="tool-ico">📝</span>
-              </button>
-              <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; setLoadErr(null); if (fileInput.current) fileInput.current.click(); }}>
-                <span>Import worksheet…</span><span className="tool-ico">↑</span>
-              </button>
-              <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; setModal('scratch'); }}>
-                <span>Scratchpad — free composition</span><span className="tool-ico">♪</span>
-              </button>
-              {String((window.COMPOSE_BUILD || {}).id || '').indexOf('hosted') === 0 && (
-                <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; window.open('/about/', '_blank'); }}>
-                  <span>About & how to cite</span><span className="tool-ico">ⓘ</span>
-                </button>
-              )}
-              <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; setModal('summary'); }}>
-                <span>Progress summary</span><span className="tool-ico">✓</span>
-              </button>
-              <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; composeExportProgress(); }}>
-                <span>Save progress to a file</span><span className="tool-ico">⤓</span>
-              </button>
-              <button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; if (progressFileInput.current) progressFileInput.current.click(); }}>
-                <span>Restore progress from a file…</span><span className="tool-ico">⤒</span>
-              </button>
-              <input ref={progressFileInput} type="file" accept=".json,application/json" style={{ display: 'none' }}
-                onChange={(e) => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) composeImportProgress(f); }} />
-              <div className="tools-sep" />
-              {!(window.COMPOSE_BUILD && String(window.COMPOSE_BUILD.id || '').indexOf('hosted') === 0 && window.COMPOSE_BUILD.id !== 'hosted-sandbox') && (
-<button className="tool-btn" onClick={() => { if (toolsRef.current) toolsRef.current.open = false; setModal('export'); }}>
-                <span>Export assignment</span><span className="tool-ico">↓</span>
-              </button>
-)}
-              <button className="tool-btn" disabled={exporting} onClick={exportDerivation}>
-                <span>{exporting ? 'Rendering…' : 'Export derivation (PNG)'}</span><span className="tool-ico">⧉</span>
-              </button>
-            </div>
-          </details>
-        </div>
-        )}
-        <div className="settings-menu">
-          <details className="settings-details" ref={settingsRef}>
-            <summary className="file ghost settings-btn" title="Settings">⚙ Settings</summary>
-            <div className="settings-dropdown">
-              <label className="settings-row">
-                <span className="settings-label">Dark mode</span>
-                <button className={'beh-toggle'+(darkMode?' on':'')} role="switch" aria-checked={darkMode} onClick={() => setDarkMode(d => !d)}><span className="beh-knob" /></button>
-              </label>
-              <label className="settings-row">
-                <span className="settings-label">Auto-resolve non-branching</span>
-                <button className={'beh-toggle'+(autoNN?' on':'')} role="switch" aria-checked={autoNN} onClick={() => setAutoNN(s => !s)}><span className="beh-knob" /></button>
-              </label>
-              {!isStudentBuild && <label className="settings-row">
-                <span className="settings-label">Auto-apply composition rules</span>
-                <button className={'beh-toggle'+(autoCompose?' on':'')} role="switch" aria-checked={autoCompose} onClick={() => setAutoCompose(s => !s)}><span className="beh-knob" /></button>
-              </label>}
-              <label className="settings-row">
-                <span className="settings-label">Collapse resolved subtrees</span>
-                <button className={'beh-toggle'+(collapseResolved?' on':'')} role="switch" aria-checked={collapseResolved} onClick={() => setCollapseResolved(s => !s)}><span className="beh-knob" /></button>
-              </label>
-              <div className="settings-row settings-layout-row">
-                <span className="settings-label">Layout</span>
-                <div className="seg-mini">
-                  <button className={'seg-mini-btn'+(getForceLayout()==null?' on':'')} onClick={() => setForceLayout(null)}>Auto</button>
-                  <button className={'seg-mini-btn'+(getForceLayout()==='mobile'?' on':'')} onClick={() => setForceLayout('mobile')}>Mobile</button>
-                </div>
-              </div>
-              <div className="settings-stamp">{BUILD.label || 'COMPOSE'}{BUILD.version ? ' · v' + BUILD.version : ''}{BUILD.date ? ' · ' + BUILD.date : ''}</div>
-            </div>
-          </details>
-        </div>
-      </header>
-      )}
+      {!isMobile && <a className="skip-link" href="#main">Skip to content</a>}
 
       <div className={'app-main' + (isMobile ? ' app-main-mobile' : '')}>
-        {!isMobile && (
-          <aside className="col col-left">
-            <div className="panel-head">{custom ? 'Custom exercise' : 'Exercises'} <span className="count">{doneCount}/{probCount}</span></div>
-            {renderExercisesScroll()}
-          </aside>
-        )}
+        {!isMobile && renderSidebar()}
+        {!isMobile && hasContent && exOpen && renderExColumn()}
 
-        <main className="col-center">{renderCenter()}</main>
+        <main id="main" className="col-center">{!isMobile && renderPracticeHead()}{renderCenter()}</main>
 
         {!isMobile && (
           <aside className="col col-right">
