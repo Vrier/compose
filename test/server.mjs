@@ -264,6 +264,10 @@ async function main() {
   contains('root ships the sign-in surface (N2)', r.text, 'Create an account');
   contains('root ships the My-versions page (N2)', r.text, 'My versions');
   contains('root vendors QRCode for the in-app share modal (N2)', r.text, 'QRCode');
+  // S41 — one-click unlock-code + QR share from an instructor's own worksheet
+  contains('root ships the Host-&-get-code affordance (S41)', r.text, 'Host & get code');
+  contains('root ships the big unlock-code share block (S41)', r.text, 'vd-share-code-big');
+  contains('root ships the practice/editor Share affordance (S41)', r.text, 'Share this worksheet');
   // N3 (S31) — right reference panel compiled into the site bundle
   contains('root ships the right reference panel tabs (N3)', r.text, 'rp-tabs');
   // NB esbuild ASCII-escapes the middots in the strip's label — assert the

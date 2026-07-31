@@ -258,10 +258,31 @@ function SigninPage({ initialMode, onBack, onAuthed }) {
 
 /* ---- Share modal (ported from dash.jsx; QR renders when the vendored
    window.QRCode is present — build/server.mjs adds it to site pages) ------- */
-function VersionShareModal({ v, onClose }) {
+function VersionShareModal({ v, onClose, token, onCode }) {
   const url = window.location.origin + '/v/' + v.slug;
   const canvasRef = useRef(null);
   const [copied, setCopied] = useState(false);
+  // S41: the share dialog is the one place instructors reach a version's
+  // unlock code + QR in one click from their own worksheet. Code is shown
+  // big and copyable; regenerate is available when a token is passed.
+  const [code, setCode] = useState(v.unlockCode || '');
+  const [copiedCode, setCopiedCode] = useState(false);
+  const [busyCode, setBusyCode] = useState(false);
+  async function newCode() {
+    if (!token) return;
+    if (!window.confirm('Generate a new unlock code for "' + v.title + '"? The old code stops working immediately; students already enrolled keep their access.')) return;
+    setBusyCode(true);
+    try {
+      const r = await fetch('/api/compose/new-code', { method: 'POST', headers: { Authorization: token, 'Content-Type': 'application/json' }, body: JSON.stringify({ version: v.id }) });
+      const j = await r.json().catch(() => null);
+      if (!r.ok || !j || !j.unlockCode) throw new Error((j && j.message) || 'request failed');
+      setCode(j.unlockCode); if (onCode) onCode(v.id, j.unlockCode);
+    } catch (e) { window.alert('New code failed: ' + (e.message || 'unknown error')); }
+    setBusyCode(false);
+  }
+  function copyCode() {
+    navigator.clipboard.writeText(code || '').then(() => { setCopiedCode(true); setTimeout(() => setCopiedCode(false), 1500); });
+  }
   useEffect(() => {
     if (canvasRef.current && window.QRCode) {
       window.QRCode.toCanvas(canvasRef.current, url, { width: 300, margin: 2 }, () => {});
@@ -306,6 +327,15 @@ function VersionShareModal({ v, onClose }) {
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal vd-share" onClick={(e) => e.stopPropagation()}>
         <h3 className="vd-share-title">{v.title}</h3>
+        <div className="vd-share-code">
+          <span className="vd-share-code-kicker">Unlock code — students sign in and enter this</span>
+          <div className="vd-share-code-row">
+            <span className="vd-share-code-big mono">{code || '—'}</span>
+            <button type="button" className="btn btn-primary" onClick={copyCode} disabled={!code}>{copiedCode ? '✓ Copied' : '⧉ Copy code'}</button>
+            {token ? <button type="button" className="btn-ghost" onClick={newCode} disabled={busyCode} title="Generate a new code — the old one stops working">{busyCode ? '…' : '↻ New code'}</button> : null}
+          </div>
+        </div>
+        <div className="vd-share-or">or share the no-account link</div>
         {window.QRCode ? <canvas ref={canvasRef} className="vd-qr" width={300} height={300} /> : null}
         <div className="vd-share-url mono">{url}</div>
         <div className="vd-share-actions">
@@ -519,7 +549,8 @@ function VersionsPage({ token, onBack, onAssign, onEdit, onAuthGone }) {
           })}
         <input ref={bundleNewRef} type="file" accept=".json,application/json" style={{ display: 'none' }} onChange={createFromBundle} />
         <input ref={bundleReplaceRef} type="file" accept=".json,application/json" style={{ display: 'none' }} onChange={replaceBundle} />
-        {sharing && <VersionShareModal v={sharing} onClose={() => setSharing(null)} />}
+        {sharing && <VersionShareModal v={sharing} token={token} onClose={() => setSharing(null)}
+          onCode={(id, uc) => { setVersions((list) => (list || []).map((x) => x.id === id ? Object.assign({}, x, { unlockCode: uc }) : x)); setSharing((sh) => sh && sh.id === id ? Object.assign({}, sh, { unlockCode: uc }) : sh); }} />}
         <div className="vd-foot">The standalone dashboard at <a href="/dash/">/dash</a> keeps working — notes editing lives there for now.</div>
       </div>
     </div>
@@ -914,6 +945,12 @@ function App() {
   // the editor is closed outright; survives minimise so ☁ Save keeps working.
   const [hosted, setHosted] = useState(null); // { versionId, slug, mode, title } | null
   const [editorMin, setEditorMin] = useState(null); // minimized editor: { title, key } | null
+  // S41: one-click Share (code + QR) from an instructor's own worksheet.
+  // shareVersion holds the version record whose code/QR the share dialog shows;
+  // shareBusy guards the Host-&-get-code create path. Both only ever set for
+  // an instructor tier — students/anon never reach these.
+  const [shareVersion, setShareVersion] = useState(null);
+  const [shareBusy, setShareBusy] = useState(false);
   useEffect(() => { save('lc2-collapse', collapseResolved); }, [collapseResolved]);
   useEffect(() => { save('lc2-auto-nn', autoNN); }, [autoNN]);
   useEffect(() => { save('lc2-auto-compose', autoCompose); }, [autoCompose]);
@@ -1428,6 +1465,46 @@ function App() {
     setHosted(null);
     setEditorInit({ text: f ? f.text : null, key });
     openEditorSurface();
+  }
+
+  // S41: open the Share dialog (code + QR) for a hosted version the instructor
+  // owns — fetch the fresh record so the unlock code is current.
+  async function shareVersionById(versionId) {
+    if (tier !== 'instructor' || !auth || !auth.token) return;
+    setShareBusy(true);
+    try {
+      const r = await fetch('/api/collections/versions/records/' + versionId, { headers: { Authorization: auth.token } });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const v = await r.json();
+      setShareVersion(v);
+    } catch (e) { window.alert('Could not load the version to share: ' + (e.message || 'unknown error')); }
+    setShareBusy(false);
+  }
+
+  // S41: one-click "Host & get code" from a worksheet the instructor authored
+  // but hasn't hosted yet. Creates a version from the current worksheet bundle
+  // (same versions-create path as My versions), sets the hosted context so a
+  // later ☁ Save keeps working, and opens the Share dialog straight on the
+  // new code + QR. `text` is the worksheet's generated .compose.json.
+  async function hostAndShare({ text, title }) {
+    if (tier !== 'instructor' || !auth || !auth.token) return;
+    let obj = null;
+    try { obj = JSON.parse(text); } catch (e) { window.alert('This worksheet is not ready to host yet — finish it and try again.'); return; }
+    const wsTitle = (obj && obj.title) || title || 'My worksheet';
+    const key = window.composeSlug(wsTitle) + '-' + Math.random().toString(36).slice(2, 6);
+    const bundle = { compose_bundle: 1, title: wsTitle, chapters: [], worksheets: [{ key, title: wsTitle, content: obj }] };
+    setShareBusy(true);
+    try {
+      const r = await fetch('/api/collections/versions/records', {
+        method: 'POST', headers: { Authorization: auth.token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: wsTitle, bundle, mode: 'practice' }),
+      });
+      const v = await r.json().catch(() => null);
+      if (!r.ok || !v || !v.id) throw new Error((v && (v.message || v.error)) || ('request failed (' + r.status + ')'));
+      setHosted({ versionId: v.id, slug: v.slug, mode: v.mode || 'practice', title: v.title });
+      setShareVersion(v);
+    } catch (e) { window.alert('Host & get code failed: ' + (e.message || 'unknown error')); }
+    setShareBusy(false);
   }
 
   // S40: /?edit=<versionId> — where retired /edit/:id bookmarks land. A
@@ -2169,6 +2246,11 @@ function App() {
             <button type="button" className="ph-arrow" disabled={flatIdx < 0 || flatIdx >= flatNav.length - 1} onClick={() => gotoFlat(1)} title="Next exercise (K)" aria-label="Next exercise (K)">›</button>
           </div>
           <span className="ph-score">{doneCount}/{probCount} solved</span>
+          {tier === 'instructor' && hosted && hosted.versionId && (
+            <button type="button" className="ph-share-btn" disabled={shareBusy}
+              title="Share this hosted worksheet — unlock code + QR" aria-label="Share · code + QR"
+              onClick={() => shareVersionById(hosted.versionId)}>{shareBusy ? '⟳ …' : '⇗ Share · code + QR'}</button>
+          )}
         </div>
       </div>
     );
@@ -2178,6 +2260,8 @@ function App() {
     return (
       <ExerciseEditor asPage={asPage} onClose={() => { closeEditorSurface(); setEditorInit(null); setEditorMin(null); setHosted(null); }} baseSet={set}
         hosted={hosted} hostedToken={auth && auth.token}
+        canShare={tier === 'instructor' && !!auth} shareBusy={shareBusy}
+        onShare={({ text, title }) => { if (hosted && hosted.versionId) shareVersionById(hosted.versionId); else hostAndShare({ text, title }); }}
         initialText={editorInit && editorInit.text} initialKey={editorInit && editorInit.key}
         onSaveToLibrary={({ title, text, editKey }) => saveUserExercise({ title, text, editKey })}
         onMinimize={({ title, editKey }) => { setEditorMin({ title: (title || '').trim() || 'Untitled exercise', key: editKey || null }); setEditorInit({ text: null, key: editKey || null }); closeEditorSurface(); }}
@@ -2243,6 +2327,9 @@ function App() {
     const rows = [
       { glyph: '⌘', label: 'Keyboard shortcuts', kicker: 'action', hay: 'keyboard shortcuts keys', act: () => setShortcutsOpen(true) },
     ];
+    if (tier === 'instructor' && hosted && hosted.versionId) {
+      rows.push({ glyph: '⇗', label: 'Share this worksheet · code + QR', kicker: 'action', hay: 'share unlock code qr version link students', act: () => shareVersionById(hosted.versionId) });
+    }
     if (isFullBuild) {
       rows.push({ glyph: '⊕', label: 'Unlock a worksheet set', kicker: 'action', hay: 'unlock code class enrol redeem worksheet set', act: () => setUnlockOpen(true) });
       if (tier === 'anon') rows.push({ glyph: '◉', label: 'Sign in or create an account', kicker: 'action', hay: 'sign in account register', act: () => { setSigninMode('login'); setPage('signin'); } });
@@ -3002,6 +3089,11 @@ function App() {
           onClose={() => setUnlockOpen(false)}
           onSignin={() => { setUnlockOpen(false); setSigninMode('login'); setPage('signin'); }}
           onUnlocked={(v) => { refreshClasses(); setNavSection('library'); if (v && v.slug) setOpenColl('class:' + v.slug); }} />
+      )}
+
+      {shareVersion && tier === 'instructor' && auth && (
+        <VersionShareModal v={shareVersion} token={auth.token} onClose={() => setShareVersion(null)}
+          onCode={(id, uc) => setShareVersion((sv) => sv && sv.id === id ? Object.assign({}, sv, { unlockCode: uc }) : sv)} />
       )}
 
       {netNotice && <div className="net-notice">{netNotice}</div>}

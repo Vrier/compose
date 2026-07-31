@@ -656,7 +656,7 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
                       <details className="fe-hints-det">
                         <summary className="fe-hints-sum">💡 Hints{Array.isArray(item.hints) && item.hints.filter(Boolean).length ? ' (' + item.hints.filter(Boolean).length + ')' : ''}</summary>
                         <textarea className="fe-hints-ta mono" rows={3} spellCheck={false}
-                          placeholder={'One hint per line, revealed in order.\nThe final stage always offers "Show answer" (practice mode).'}
+                          placeholder={'One hint per line, revealed in order.\nThe final stage offers "Show answer" (hidden when the version is an assessment).'}
                           value={(item.hints || []).join('\n')}
                           onChange={e => updTree(i, k, { hints: e.target.value.split('\n') })} />
                       </details>
@@ -689,7 +689,7 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
 }
 
 /* ---- FileEditor (main) ---------------------------------------------------- */
-function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey, asPage, hosted, hostedToken }) {
+function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey, asPage, hosted, hostedToken, canShare, shareBusy, onShare }) {
   const [state, setState] = useState(() => {
     if (initialText != null) { const p = parseFromText(initialText); if (p) return p; }
     const saved = load('lc2-fe-state', null);
@@ -880,6 +880,13 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
                 {srvBusy ? '⟳ Saving…' : '☁ Save to server'}
               </button>
             )}
+            {canShare && onShare && (
+              <button className="btn-primary fe-share-btn" disabled={shareBusy || (!hosted && groups.every(g => g.trees.every(t => !t.tree.trim())))}
+                onClick={() => onShare({ text: generateJSON(state), title })}
+                title={hosted ? 'Show this version\'s unlock code and QR to share with students' : 'Host this worksheet now and get its unlock code + QR — one click'}>
+                {shareBusy ? '⟳ …' : (hosted ? '⇗ Share · code + QR' : '⇗ Host & get code')}
+              </button>
+            )}
             {srvMsg && <span className={srvMsg.kind === 'ok' ? 'fe-srv-ok' : 'fe-srv-err'} onClick={() => setSrvMsg(null)}>{srvMsg.msg}</span>}
             <button className="btn-ghost" onClick={() => { setState(emptyState()); setEditKey(null); }}>✕ Clear</button>
             <button className="icon-btn" onClick={minimize} aria-label="Minimise editor" title="Minimise — keep editing later from the floating tab">–</button>
@@ -1014,9 +1021,10 @@ function UserExerciseManager({ items, fileKey, custom, instructor, onOpen, onRen
 window.UserExerciseManager = UserExerciseManager;
 
 /* ---- Top-level ExerciseEditor --------------------------------------------- */
-function ExerciseEditor({ onClose, onLaunch, baseSet, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey, asPage, hosted, hostedToken }) {
+function ExerciseEditor({ onClose, onLaunch, baseSet, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey, asPage, hosted, hostedToken, canShare, shareBusy, onShare }) {
   return <FileEditor onClose={onClose} onSaveToLibrary={onSaveToLibrary} onLoadIntoApp={onLoadIntoApp} onMinimize={onMinimize}
         initialText={initialText} initialKey={initialKey} asPage={asPage} hosted={hosted} hostedToken={hostedToken}
+        canShare={canShare} shareBusy={shareBusy} onShare={onShare}
         onLaunch={p => { onLaunch(p); }} />;
 }
 
