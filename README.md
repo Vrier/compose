@@ -60,8 +60,9 @@ with messages naming the exact location.
 
 Hosted pages are a PWA: a version you have visited keeps working without
 connectivity (conference wifi, trains), and live edits still propagate the
-next time you are online. There is also a **Scratchpad** (sidebar → Author) for free
-composition with an ad-hoc lexicon — no worksheet, no target.
+next time you are online. There is also a **Scratchpad**
+page (sidebar → Author) for free composition with an ad-hoc lexicon — no
+worksheet, no target.
 
 ## Offline / single-file builds
 

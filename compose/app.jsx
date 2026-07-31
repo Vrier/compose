@@ -904,7 +904,6 @@ function App() {
   const [autoNN, setAutoNN] = useState(() => load('lc2-auto-nn', false));
   const [autoCompose, setAutoCompose] = useState(() => load('lc2-auto-compose', false));
   const [seenSets, setSeenSets] = useState(() => load('lc2-seen-sets', {}));
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [editorInit, setEditorInit] = useState(null); // { text, key } | null
   const [editorMin, setEditorMin] = useState(null); // minimized editor: { title, key } | null
@@ -917,8 +916,6 @@ function App() {
   const fileInput = useRef(null);
   const progressFileInput = useRef(null);            // W11: restore-progress picker
   const [phoneOk, setPhoneOk] = useState(() => load('lc2-phone-ok', false));  // W11 interstitial
-  const settingsRef = useRef(null);
-  const toolsRef = useRef(null);
   // ---- N1 (S29): left-sidebar navigation state ---------------------------
   const BID = String(BUILD.id || '');
   const isFullBuild = BID === 'hosted-root' || BID === 'hosted-sandbox' || BID.indexOf('hosted-lib') === 0;
@@ -991,6 +988,9 @@ function App() {
   // internals cannot stack at 390px, so shrinking to mobile converts the
   // editor PAGE into the existing full-screen editor modal (N2 mobile path).
   useEffect(() => { if (isMobile && page === 'editor') { setPage('practice'); setModal('editor'); } }, [isMobile]);
+  // S37: and growing back to desktop converts the editor modal back into the
+  // page — desktop has no editor modal in the sidebar shell.
+  useEffect(() => { if (!isMobile && modal === 'editor') { setModal(null); setPage('editor'); } }, [isMobile]);
   // ---- N4 (S32): command palette + shortcuts dialog + server progress sync
   const [palette, setPalette] = useState(false);
   const [paletteQ, setPaletteQ] = useState('');
@@ -1101,15 +1101,13 @@ function App() {
     setModal(null);
     setPage((pg) => pg === 'editor' ? 'practice' : pg);
   }
-  useEffect(() => {
-    function onOutside(e) {
-      if (settingsRef.current && !settingsRef.current.contains(e.target)) { settingsRef.current.open = false; setSettingsOpen(false); }
-      if (toolsRef.current && !toolsRef.current.contains(e.target)) { toolsRef.current.open = false; }
-    }
-    document.addEventListener('mousedown', onOutside);
-    return () => document.removeEventListener('mousedown', onOutside);
-  }, []);
-
+  // S37: the scratchpad is a page in the shell on every layout — desktop
+  // renders it in the centre column, mobile as a pushed view. (It was a
+  // modal until S37; the wrapper had no CSS left, so it rendered as a bare
+  // in-flow card — the "odd popup".)
+  function openScratchpad() {
+    setModal(null); setSheet(null); setUnlockOpen(false); setPage('scratch');
+  }
   // user-loaded files compiled into library entries
   const userLib = React.useMemo(() => userFiles.map((f) => {
     try {
@@ -1470,7 +1468,7 @@ function App() {
 
   // ---- S10/W15: deep links — #gid.pid (optionally #setKey/gid.pid) --------
   const applyHash = useCallback((hash) => {
-    if (hash === '#scratchpad') { setModal('scratch'); return; }
+    if (hash === '#scratchpad') { openScratchpad(); return; }
     const m = /^#(?:([^\/]+)\/)?([^.\/]+)\.(.+)$/.exec(hash || '');
     if (!m) return;
     const [, hkey, gid, pid] = m;
@@ -1503,7 +1501,6 @@ function App() {
 
   // ---- export the current derivation tree as a PNG ----------------------
   async function exportDerivation() {
-    if (toolsRef.current) toolsRef.current.open = false;
     const el = document.querySelector('.tree-wrap');
     if (!el || !window.htmlToImage) { window.alert('Open an exercise tree first, then export.'); return; }
     setExporting(true);
@@ -1588,6 +1585,12 @@ function App() {
         if (palette) { e.preventDefault(); closePalette(); return; }
         if (unlockOpen) { e.preventDefault(); setUnlockOpen(false); return; }
         if (shortcutsOpen) { e.preventDefault(); setShortcutsOpen(false); return; }
+        // S37: the remaining desktop modals (worksheet-file picker, export
+        // assignment, notes editor) dismiss on Esc like the newer dialogs —
+        // but only when focus is outside a field, so a field-level Escape
+        // (e.g. cancelling a rename) keeps its own meaning. The notes
+        // editor autosaves to localStorage, so closing loses nothing.
+        if (!typing && (modal === 'files' || modal === 'export' || modal === 'reading')) { e.preventDefault(); setModal(null); return; }
       }
       if (typing) return;
       if ((e.metaKey || e.ctrlKey) && e.key === '\\') {
@@ -1961,7 +1964,9 @@ function App() {
               {canAuthor && sbSection('author', '✎', 'Author', null, (
                 <div>
                   <button type="button" className={'sb-row' + (page === 'editor' ? ' on' : '')} onClick={() => openEditorSurface()}><span className="sb-ico" aria-hidden="true">✎</span><span className="sb-row-label">Worksheet editor</span><span className="sb-row-note">page</span></button>
-                  <button type="button" className="sb-row" onClick={() => setModal('scratch')}><span className="sb-ico" aria-hidden="true">♪</span><span className="sb-row-label">Scratchpad</span><span className="sb-row-note">free</span></button>
+                  <button type="button" className={'sb-row' + (page === 'scratch' ? ' on' : '')}
+                    aria-current={page === 'scratch' ? 'true' : undefined}
+                    onClick={() => openScratchpad()}><span className="sb-ico" aria-hidden="true">♪</span><span className="sb-row-label">Scratchpad</span><span className="sb-row-note">free</span></button>
                   <button type="button" className="sb-row" onClick={() => setModal('reading')}><span className="sb-ico" aria-hidden="true">📝</span><span className="sb-row-label">Notes</span></button>
                   <button type="button" className="sb-row" onClick={() => { setLoadErr(null); if (fileInput.current) fileInput.current.click(); }}><span className="sb-ico" aria-hidden="true">↑</span><span className="sb-row-label">Import worksheet…</span></button>
                 </div>
@@ -2247,7 +2252,7 @@ function App() {
     ];
     if (canAuthor) {
       rows.push({ glyph: '✎', label: 'Worksheet editor', kicker: '⌘E', hay: 'editor new worksheet author', act: () => openEditorSurface() });
-      rows.push({ glyph: '♪', label: 'Scratchpad', kicker: 'page', hay: 'scratchpad free composition', act: () => setModal('scratch') });
+      rows.push({ glyph: '♪', label: 'Scratchpad', kicker: 'page', hay: 'scratchpad free composition', act: () => openScratchpad() });
     }
     if (tier === 'instructor') rows.push({ glyph: '◈', label: 'My versions', kicker: 'page', hay: 'dash versions hosting account', act: () => setPage('dash') });
     if (isFullBuild) {
@@ -2519,6 +2524,16 @@ function App() {
     if (page === 'progress') return renderProgressPage();
     if (page === 'doc') return renderDocPage();
     if (page === 'editor') return <div className="page-view page-editor">{renderEditorSurface(true)}</div>;
+    if (page === 'scratch' && window.ScratchpadPanel) {
+      const SP = window.ScratchpadPanel;
+      return <SP onClose={() => setPage('practice')}
+        onLaunch={({ set: cset, problem: cprob, allowed: callowed }) => {
+          setCustom({ set: cset, problem: cprob });
+          if (callowed) setAllowedMap((m) => ({ ...m, [cset.id || 'scratchpad']: callowed }));
+          setSel({ gi: 0, pi: 0 }); setPage('practice'); setMtab('derive');
+        }}
+        onPromote={(window.COMPOSE_HOSTED || canAuthor) ? ((text) => { setEditorInit({ text, key: null }); openEditorSurface(); }) : null} />;
+    }
     return null;
   }
 
@@ -2528,7 +2543,7 @@ function App() {
      pushed views with a title + back row. Copy and metrics follow the mobile
      prototype; the secondary pages reuse the N2/N4/N5 page components.
      ========================================================================= */
-  const MB_TITLES = { signin: 'Account', dash: 'My versions', assign: 'Assign & share', progress: 'Your progress', editor: 'Worksheet editor' };
+  const MB_TITLES = { signin: 'Account', dash: 'My versions', assign: 'Assign & share', progress: 'Your progress', editor: 'Worksheet editor', scratch: 'Scratchpad' };
   function mbGoTab(id) {
     setModal(null); setSheet(null); setUnlockOpen(false);
     setPage('practice'); setMtab(id);
@@ -2678,7 +2693,7 @@ function App() {
             <div>
               <div className="mb-kicker">Author</div>
               {mbRow('editor', '✎', 'Worksheet editor', null, () => openEditorSurface())}
-              {mbRow('scratch', '♪', 'Scratchpad', 'free', () => setModal('scratch'))}
+              {mbRow('scratch', '♪', 'Scratchpad', 'free', () => mbPush('scratch'))}
               {mbRow('import', '↑', 'Import worksheet…', null, () => { setLoadErr(null); if (fileInput.current) fileInput.current.click(); })}
             </div>
           )}
@@ -2720,11 +2735,9 @@ function App() {
           {isFullBuild && (
             <div>
               <div className="mb-kicker">Guide &amp; help</div>
-              {mbRow('guide', '◆', 'Instructor guide', 'Guide', null, { href: '/guide/' })}
-              {mbRow('help', '?', 'Student help — rules & grading', 'Help', null, { href: '/help/' })}
-              {mbRow('walk', '▷', 'Worked walkthroughs', 'Help', null, { href: '/help/guides/' })}
-              {mbRow('files', '⤓', 'Downloads & site map', 'Files', null, { href: '/files/' })}
-              {mbRow('about', '§', 'About & how to cite', 'About', null, { href: '/about/' })}
+              {/* S37: pushed in-app doc views (page:'doc'), same as the
+                  desktop sidebar — these rows used to leave the app */}
+              {DOC_PAGES.map((d) => mbRow('doc' + d.path, d.glyph, d.title, null, () => { setSheet(null); setUnlockOpen(false); openDoc(d.path); }))}
             </div>
           )}
           <div className="mb-stamp">{BUILD.label || 'COMPOSE'}{BUILD.version ? ' · v' + BUILD.version : ''}{BUILD.date ? ' · ' + BUILD.date : ''}</div>
@@ -2732,13 +2745,17 @@ function App() {
       </div>
     );
   }
+  function mbPageTitle() {
+    if (page === 'doc') return (DOC_PAGES.find((d) => d.path === docPath) || {}).title || 'Guide & help';
+    return MB_TITLES[page] || '';
+  }
   function renderMobileMain() {
     if (page !== 'practice') {
       return (
         <div className="mb-view mb-push">
           <div className="mb-push-head">
             <button type="button" className="mb-push-back" onClick={mbBack}>‹ Menu</button>
-            <span className="mb-push-title">{MB_TITLES[page] || ''}</span>
+            <span className="mb-push-title">{mbPageTitle()}</span>
             <span className="mb-push-pad" aria-hidden="true" />
           </div>
           <div className="mb-push-body">{renderPageView()}</div>
@@ -2752,7 +2769,7 @@ function App() {
   }
   function renderMobileFoot() {
     const pushed = page !== 'practice';
-    const ctx = pushed ? (MB_TITLES[page] || '') : ({ derive: 'Derive', exercises: 'Exercises', reference: 'Reference', menu: 'Menu' })[mtab];
+    const ctx = pushed ? mbPageTitle() : ({ derive: 'Derive', exercises: 'Exercises', reference: 'Reference', menu: 'Menu' })[mtab];
     const tabs = [
       { id: 'derive', glyph: '⋔', label: 'Derive' },
       { id: 'exercises', glyph: '☰', label: 'Exercises' },
@@ -2898,25 +2915,6 @@ function App() {
           onDrop={(e) => { e.preventDefault(); e.currentTarget.classList.remove('modal-drop-over'); importFiles(e.dataTransfer.files); }}>
             <h3>Worksheets</h3>
             <div className="sub">Choose a worksheet to open.</div>
-            {(() => {
-              /* Library entry points (S23): only on the public site's own pages
-                 (bare root, /editor sandbox, curated /cc /hk /papers) — never on
-                 hosted /v/ versions or /edit, and never in exported files. */
-              const bid = String((window.COMPOSE_BUILD || {}).id || '');
-              if (!(bid === 'hosted-root' || bid === 'hosted-sandbox' || bid.indexOf('hosted-lib') === 0)) return null;
-              return (
-                <div className="lib-links">
-                  <span className="lib-links-label">Full library:</span>
-                  <a href="/cc/">Coppock&nbsp;&amp;&nbsp;Champollion</a>
-                  <a href="/hk/">Heim&nbsp;&amp;&nbsp;Kratzer</a>
-                  <a href="/papers/">Classic papers</a>
-                  <a href="/files/">All downloads</a>
-                  <a href="/help/">Help</a>
-                  <a href="/guide/">Guide</a>
-                  <a href="/about/">About</a>
-                </div>
-              );
-            })()}
             <div className="list">
               {(() => {
                 const CHAPTERS = window.LCData.CHAPTERS || [];
@@ -3015,24 +3013,13 @@ function App() {
                 ? <span className="ffs-err">{loadErr}</span>
                 : isStudentBuild
                   ? <span>Drag a worksheet onto this panel, or <button className="ffs-load-btn" onClick={() => { setLoadErr(null); if (fileInput.current) fileInput.current.click(); }}>choose a file…</button></span>
-                  : <span>Drag a <code className="mono">.compose.json</code>, exported <code className="mono">.html</code>, or <code className="mono">.compose-bundle.json</code> onto this panel to load it — or use <b>Tools → Import worksheet</b>.</span>}
+                  : <span>Drag a <code className="mono">.compose.json</code>, exported <code className="mono">.html</code>, or <code className="mono">.compose-bundle.json</code> onto this panel to load it — or use <b>Author → Import worksheet…</b> in the sidebar.</span>}
             </div>
           </div>
         </div>
       )}
 
       {modal === 'editor' && renderEditorSurface(false)}
-
-      {modal === 'scratch' && window.ScratchpadPanel && (() => {
-        const SP = window.ScratchpadPanel;
-        return <SP onClose={() => setModal(null)}
-          onLaunch={({ set: cset, problem: cprob, allowed: callowed }) => {
-            setCustom({ set: cset, problem: cprob });
-            if (callowed) setAllowedMap((m) => ({ ...m, [cset.id || 'scratchpad']: callowed }));
-            setSel({ gi: 0, pi: 0 }); setModal(null);
-          }}
-          onPromote={(window.COMPOSE_HOSTED || canAuthor) ? ((text) => { setEditorInit({ text, key: null }); openEditorSurface(); }) : null} />;
-      })()}
 
 
       {!isMobile && renderPalette()}

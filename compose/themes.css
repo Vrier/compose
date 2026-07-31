@@ -199,13 +199,6 @@ body {
   font-size: 14px; transition: background .12s; position: relative;
 }
 .nav-item:hover { background: var(--panel-2); }
-/* library entry points inside the worksheet picker (S23) */
-.lib-links { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline;
-  margin: 8px 0 10px; padding: 8px 10px; border: 1px solid var(--line);
-  border-radius: 8px; background: var(--panel-2); font-size: 12.5px; }
-.lib-links-label { color: var(--ink-soft); font-weight: 600; }
-.lib-links a { color: var(--accent-ink); text-decoration: none; white-space: nowrap; }
-.lib-links a:hover { text-decoration: underline; }
 .file-btn-kicker { color: var(--ink-soft); font-weight: 400; }
 .file-btn-caret { opacity: .55; font-size: 10px; }
 .dash-back { margin-top: 14px; text-align: center; font-size: 13px; color: var(--ink-soft); }
@@ -1610,6 +1603,7 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .app.is-mobile .page-crumb-row { display: none; }
 .app.is-mobile .si-wrap { padding: 18px 14px 30px; }
 .app.is-mobile .vd-inner, .app.is-mobile .pg-inner, .app.is-mobile .as-inner { padding: 16px 12px 34px; }
+.app.is-mobile .doc-inner { padding: 8px 12px 34px; }
 .app.is-mobile .pg-head { flex-direction: column; align-items: stretch; gap: 12px; }
 .app.is-mobile .pg-head-main { flex: 0 0 auto; min-width: 0; }
 .app.is-mobile .mb-ws-sheet { height: auto; max-height: 78vh; }
@@ -1748,8 +1742,19 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .hint-list { margin: 8px 0 4px; display: flex; flex-direction: column; gap: 6px; }
 .hint-item { font-size: 13.5px; }
 
-/* S11 (W16): scratchpad */
-.scratch-modal { max-width: 640px; }
+/* S11 (W16): scratchpad — a page since S37 (prototype: dashed 10px-radius
+   area under a kicker + title head; crumb/back via the shared scaffold) */
+.scratch-inner { max-width: 880px; margin: 0 auto; padding: 30px 28px 44px; }
+.scratch-head { margin-bottom: 4px; }
+.scratch-title { font-size: 22px; font-weight: 600; margin: 5px 0 0; color: var(--ink); }
+.scratch-sub { font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.55; max-width: 560px; }
+.scratch-card {
+  margin-top: 16px; padding: 18px 20px 20px;
+  border: 1px dashed var(--line); border-radius: 10px; background: var(--panel);
+}
+.app.is-mobile .scratch-inner { padding: 16px 12px 34px; }
+.app.is-mobile .scratch-card { padding: 12px 12px 14px; }
+.app.is-mobile .scratch-lex-head, .app.is-mobile .scratch-row { grid-template-columns: 88px 1fr 56px 24px; }
 .scratch-lex-head { display: grid; grid-template-columns: 130px 1fr 90px 26px; gap: 8px; font-size: 11.5px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .06em; margin: 14px 0 4px; }
 .scratch-lex { display: flex; flex-direction: column; gap: 6px; }
 .scratch-row { display: grid; grid-template-columns: 130px 1fr 90px 26px; gap: 8px; align-items: center; }

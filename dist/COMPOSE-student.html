@@ -213,13 +213,6 @@ body {
   font-size: 14px; transition: background .12s; position: relative;
 }
 .nav-item:hover { background: var(--panel-2); }
-/* library entry points inside the worksheet picker (S23) */
-.lib-links { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline;
-  margin: 8px 0 10px; padding: 8px 10px; border: 1px solid var(--line);
-  border-radius: 8px; background: var(--panel-2); font-size: 12.5px; }
-.lib-links-label { color: var(--ink-soft); font-weight: 600; }
-.lib-links a { color: var(--accent-ink); text-decoration: none; white-space: nowrap; }
-.lib-links a:hover { text-decoration: underline; }
 .file-btn-kicker { color: var(--ink-soft); font-weight: 400; }
 .file-btn-caret { opacity: .55; font-size: 10px; }
 .dash-back { margin-top: 14px; text-align: center; font-size: 13px; color: var(--ink-soft); }
@@ -1624,6 +1617,7 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .app.is-mobile .page-crumb-row { display: none; }
 .app.is-mobile .si-wrap { padding: 18px 14px 30px; }
 .app.is-mobile .vd-inner, .app.is-mobile .pg-inner, .app.is-mobile .as-inner { padding: 16px 12px 34px; }
+.app.is-mobile .doc-inner { padding: 8px 12px 34px; }
 .app.is-mobile .pg-head { flex-direction: column; align-items: stretch; gap: 12px; }
 .app.is-mobile .pg-head-main { flex: 0 0 auto; min-width: 0; }
 .app.is-mobile .mb-ws-sheet { height: auto; max-height: 78vh; }
@@ -1762,8 +1756,19 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .hint-list { margin: 8px 0 4px; display: flex; flex-direction: column; gap: 6px; }
 .hint-item { font-size: 13.5px; }
 
-/* S11 (W16): scratchpad */
-.scratch-modal { max-width: 640px; }
+/* S11 (W16): scratchpad — a page since S37 (prototype: dashed 10px-radius
+   area under a kicker + title head; crumb/back via the shared scaffold) */
+.scratch-inner { max-width: 880px; margin: 0 auto; padding: 30px 28px 44px; }
+.scratch-head { margin-bottom: 4px; }
+.scratch-title { font-size: 22px; font-weight: 600; margin: 5px 0 0; color: var(--ink); }
+.scratch-sub { font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.55; max-width: 560px; }
+.scratch-card {
+  margin-top: 16px; padding: 18px 20px 20px;
+  border: 1px dashed var(--line); border-radius: 10px; background: var(--panel);
+}
+.app.is-mobile .scratch-inner { padding: 16px 12px 34px; }
+.app.is-mobile .scratch-card { padding: 12px 12px 14px; }
+.app.is-mobile .scratch-lex-head, .app.is-mobile .scratch-row { grid-template-columns: 88px 1fr 56px 24px; }
 .scratch-lex-head { display: grid; grid-template-columns: 130px 1fr 90px 26px; gap: 8px; font-size: 11.5px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .06em; margin: 14px 0 4px; }
 .scratch-lex { display: flex; flex-direction: column; gap: 6px; }
 .scratch-row { display: grid; grid-template-columns: 130px 1fr 90px 26px; gap: 8px; align-items: center; }
@@ -9206,8 +9211,8 @@ function RulesModal({ allowed, setAllowed, toggleRule, toggleShift, lib, custom,
 
 </script>
 <script>
-var EX_IDENTITY_TOKEN = "/*__COMPOSE_IDENTITY__*/";
-var EX_LIBRARY_TOKEN = "/*__COMPOSE_LIBRARY__*/";
+var EX_IDENTITY_TOKEN = ["/*__COMPOSE_", "IDENTITY__*/"].join("");
+var EX_LIBRARY_TOKEN = ["/*__COMPOSE_", "LIBRARY__*/"].join("");
 function exEsc(s) {
   return String(s).replace(/<\/(script|style)/gi, "<\\/$1");
 }
@@ -9944,7 +9949,7 @@ function ScratchpadPanel({ onClose, onLaunch, onPromote }) {
     trial.title = "Scratchpad";
     onLaunch({ set: trial, problem, allowed });
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "modal-back", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal scratch-modal", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h3", null, "\u266A Scratchpad"), /* @__PURE__ */ React.createElement("div", { className: "sub" }, "Free composition: type a quick lexicon, sketch a tree, compose. Nothing is saved."), /* @__PURE__ */ React.createElement("div", { className: "scratch-lex-head" }, /* @__PURE__ */ React.createElement("span", null, "Word(s)"), /* @__PURE__ */ React.createElement("span", null, "Denotation"), /* @__PURE__ */ React.createElement("span", { className: "scratch-type-col" }, "Type"), /* @__PURE__ */ React.createElement("span", null)), /* @__PURE__ */ React.createElement("div", { className: "scratch-lex" }, lex.map((r, i) => {
+  return /* @__PURE__ */ React.createElement("div", { className: "page-view scratch-page" }, /* @__PURE__ */ React.createElement("div", { className: "scratch-inner" }, /* @__PURE__ */ React.createElement("div", { className: "page-crumb-row" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "page-back", onClick: onClose, title: "Back to practice", "aria-label": "Back to practice" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "page-crumb" }, "Author \xB7 Scratchpad")), /* @__PURE__ */ React.createElement("div", { className: "scratch-head" }, /* @__PURE__ */ React.createElement("div", { className: "pg-kicker" }, "Scratchpad"), /* @__PURE__ */ React.createElement("h1", { className: "scratch-title" }, "Free composition \u2014 no worksheet, no target"), /* @__PURE__ */ React.createElement("div", { className: "scratch-sub" }, "Type a quick lexicon, sketch a bracketed tree, and compose upward. Nothing is graded here, and nothing is saved.")), /* @__PURE__ */ React.createElement("div", { className: "scratch-card" }, /* @__PURE__ */ React.createElement("div", { className: "scratch-lex-head" }, /* @__PURE__ */ React.createElement("span", null, "Word(s)"), /* @__PURE__ */ React.createElement("span", null, "Denotation"), /* @__PURE__ */ React.createElement("span", { className: "scratch-type-col" }, "Type"), /* @__PURE__ */ React.createElement("span", null)), /* @__PURE__ */ React.createElement("div", { className: "scratch-lex" }, lex.map((r, i) => {
     const st = rowStatus(r);
     return /* @__PURE__ */ React.createElement("div", { key: i, className: "scratch-row" }, /* @__PURE__ */ React.createElement(
       "input",
@@ -9965,7 +9970,7 @@ function ScratchpadPanel({ onClose, onLaunch, onPromote }) {
         spellCheck: false
       }
     ), /* @__PURE__ */ React.createElement("span", { className: "scratch-type-col" }, st && st.kind === "ok" && st.type != null && /* @__PURE__ */ React.createElement("span", { className: "scratch-type" }, E.typeToStr(st.type)), st && st.kind === "err" && /* @__PURE__ */ React.createElement("span", { className: "fe-type-err", title: st.msg }, "\u2715")), /* @__PURE__ */ React.createElement("button", { className: "fe-del-btn", title: "Remove row", onClick: () => setLex((L) => L.filter((_, j) => j !== i)) }, "\xD7"));
-  })), /* @__PURE__ */ React.createElement("button", { className: "fe-add-btn scratch-add", onClick: () => setLex((L) => [...L, { word: "", den: "" }]) }, "+ Add entry"), /* @__PURE__ */ React.createElement("div", { className: "scratch-tree-head" }, "Tree ", /* @__PURE__ */ React.createElement("span", { className: "scratch-hint" }, "bracket notation: [.S [.DP \u2026] [.VP \u2026]]")), /* @__PURE__ */ React.createElement("textarea", { className: "scratch-tree mono", rows: 2, value: treeSrc, onChange: (e) => setTreeSrc(e.target.value), spellCheck: false }), treeStatus && treeStatus.kind === "ok" && /* @__PURE__ */ React.createElement("div", { className: "scratch-status ok" }, "auto-derives: ", /* @__PURE__ */ React.createElement(Notation, { ast: treeStatus.term }), " : ", /* @__PURE__ */ React.createElement(TypeBadge, { type: treeStatus.type })), treeStatus && treeStatus.kind === "open" && /* @__PURE__ */ React.createElement("div", { className: "scratch-status open" }, treeStatus.msg), treeStatus && treeStatus.kind === "err" && /* @__PURE__ */ React.createElement("div", { className: "scratch-status err" }, "\u2298 ", treeStatus.msg), /* @__PURE__ */ React.createElement("div", { className: "scratch-actions" }, /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", disabled: !trial || !treeSrc.trim() || treeStatus && treeStatus.kind === "err", onClick: compose }, "Compose \u25B6"), /* @__PURE__ */ React.createElement("span", { style: { flex: 1 } }), onPromote && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", title: "Open this scratchpad as a worksheet in the editor", onClick: () => onPromote(scratchJSON()) }, "\u270E Promote to worksheet"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", title: "Download as a .compose.json worksheet", onClick: () => window.composeDownload("scratchpad.compose.json", scratchJSON(), "application/json") }, "\u2B07 .json"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: onClose }, "Close"))));
+  })), /* @__PURE__ */ React.createElement("button", { className: "fe-add-btn scratch-add", onClick: () => setLex((L) => [...L, { word: "", den: "" }]) }, "+ Add entry"), /* @__PURE__ */ React.createElement("div", { className: "scratch-tree-head" }, "Tree ", /* @__PURE__ */ React.createElement("span", { className: "scratch-hint" }, "bracket notation: [.S [.DP \u2026] [.VP \u2026]]")), /* @__PURE__ */ React.createElement("textarea", { className: "scratch-tree mono", rows: 2, value: treeSrc, onChange: (e) => setTreeSrc(e.target.value), spellCheck: false }), treeStatus && treeStatus.kind === "ok" && /* @__PURE__ */ React.createElement("div", { className: "scratch-status ok" }, "auto-derives: ", /* @__PURE__ */ React.createElement(Notation, { ast: treeStatus.term }), " : ", /* @__PURE__ */ React.createElement(TypeBadge, { type: treeStatus.type })), treeStatus && treeStatus.kind === "open" && /* @__PURE__ */ React.createElement("div", { className: "scratch-status open" }, treeStatus.msg), treeStatus && treeStatus.kind === "err" && /* @__PURE__ */ React.createElement("div", { className: "scratch-status err" }, "\u2298 ", treeStatus.msg), /* @__PURE__ */ React.createElement("div", { className: "scratch-actions" }, /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", disabled: !trial || !treeSrc.trim() || treeStatus && treeStatus.kind === "err", onClick: compose }, "Compose \u25B6"), /* @__PURE__ */ React.createElement("span", { style: { flex: 1 } }), onPromote && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", title: "Open this scratchpad as a worksheet in the editor", onClick: () => onPromote(scratchJSON()) }, "\u270E Promote to worksheet"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", title: "Download as a .compose.json worksheet", onClick: () => window.composeDownload("scratchpad.compose.json", scratchJSON(), "application/json") }, "\u2B07 .json")))));
 }
 window.ScratchpadPanel = ScratchpadPanel;
 
@@ -10669,7 +10674,6 @@ function App() {
   const [autoNN, setAutoNN] = useState(() => load("lc2-auto-nn", false));
   const [autoCompose, setAutoCompose] = useState(() => load("lc2-auto-compose", false));
   const [seenSets, setSeenSets] = useState(() => load("lc2-seen-sets", {}));
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [editorInit, setEditorInit] = useState(null);
   const [editorMin, setEditorMin] = useState(null);
@@ -10693,8 +10697,6 @@ function App() {
   const fileInput = useRef(null);
   const progressFileInput = useRef(null);
   const [phoneOk, setPhoneOk] = useState(() => load("lc2-phone-ok", false));
-  const settingsRef = useRef(null);
-  const toolsRef = useRef(null);
   const BID = String(BUILD.id || "");
   const isFullBuild = BID === "hosted-root" || BID === "hosted-sandbox" || BID.indexOf("hosted-lib") === 0;
   const [railCollapsed, setRailCollapsed] = useState(() => load("lc2-rail", false));
@@ -10769,6 +10771,12 @@ function App() {
     if (isMobile && page === "editor") {
       setPage("practice");
       setModal("editor");
+    }
+  }, [isMobile]);
+  useEffect(() => {
+    if (!isMobile && modal === "editor") {
+      setModal(null);
+      setPage("editor");
     }
   }, [isMobile]);
   const [palette, setPalette] = useState(false);
@@ -10893,19 +10901,12 @@ function App() {
     setModal(null);
     setPage((pg) => pg === "editor" ? "practice" : pg);
   }
-  useEffect(() => {
-    function onOutside(e) {
-      if (settingsRef.current && !settingsRef.current.contains(e.target)) {
-        settingsRef.current.open = false;
-        setSettingsOpen(false);
-      }
-      if (toolsRef.current && !toolsRef.current.contains(e.target)) {
-        toolsRef.current.open = false;
-      }
-    }
-    document.addEventListener("mousedown", onOutside);
-    return () => document.removeEventListener("mousedown", onOutside);
-  }, []);
+  function openScratchpad() {
+    setModal(null);
+    setSheet(null);
+    setUnlockOpen(false);
+    setPage("scratch");
+  }
   const userLib = React.useMemo(() => userFiles.map((f) => {
     try {
       const { set: set2 } = window.LCData.loadText(f.text, f.title);
@@ -11322,7 +11323,7 @@ function App() {
   const groups = (custom ? [{ id: "custom", kind: "tree", title: "Custom", problems: [custom.problem] }] : set ? set.groups : []).filter((g) => g.kind === "tree");
   const applyHash = useCallback((hash) => {
     if (hash === "#scratchpad") {
-      setModal("scratch");
+      openScratchpad();
       return;
     }
     const m = /^#(?:([^\/]+)\/)?([^.\/]+)\.(.+)$/.exec(hash || "");
@@ -11358,7 +11359,6 @@ function App() {
   const group = groups[sel.gi] || groups[0] || null;
   const problem = group ? group.problems[sel.pi] || group.problems[0] : null;
   async function exportDerivation() {
-    if (toolsRef.current) toolsRef.current.open = false;
     const el = document.querySelector(".tree-wrap");
     if (!el || !window.htmlToImage) {
       window.alert("Open an exercise tree first, then export.");
@@ -11447,6 +11447,11 @@ function App() {
         if (shortcutsOpen) {
           e.preventDefault();
           setShortcutsOpen(false);
+          return;
+        }
+        if (!typing && (modal === "files" || modal === "export" || modal === "reading")) {
+          e.preventDefault();
+          setModal(null);
           return;
         }
       }
@@ -11776,7 +11781,18 @@ function App() {
       const g = gs.find((x) => x.id === gid);
       const p = g && g.problems.find((x) => x.id === pid);
       return /* @__PURE__ */ React.createElement("button", { type: "button", key: r.ws + "/" + r.ex, className: "sb-row", onClick: () => openRecent(r) }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25B8"), /* @__PURE__ */ React.createElement("span", { className: "sb-recent-main" }, /* @__PURE__ */ React.createElement("span", { className: "sb-recent-label lx" }, p ? navLabel(g, p) : l.title), /* @__PURE__ */ React.createElement("span", { className: "sb-recent-sub" }, l.title)), /* @__PURE__ */ React.createElement("span", { className: "sb-recent-at" }, relTime(r.at)));
-    }))), canAuthor && sbSection("author", "\u270E", "Author", null, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row" + (page === "editor" ? " on" : ""), onClick: () => openEditorSurface() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u270E"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Worksheet editor"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, "page")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("scratch") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u266A"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Scratchpad"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, "free")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("reading") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4DD}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Notes")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
+    }))), canAuthor && sbSection("author", "\u270E", "Author", null, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row" + (page === "editor" ? " on" : ""), onClick: () => openEditorSurface() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u270E"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Worksheet editor"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, "page")), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "sb-row" + (page === "scratch" ? " on" : ""),
+        "aria-current": page === "scratch" ? "true" : void 0,
+        onClick: () => openScratchpad()
+      },
+      /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u266A"),
+      /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Scratchpad"),
+      /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, "free")
+    ), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("reading") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4DD}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Notes")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
       setLoadErr(null);
       if (fileInput.current) fileInput.current.click();
     } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2191"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Import worksheet\u2026")))), isFullBuild && tier === "instructor" && sbSection("assign", "\u2611", "Assign & share", null, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
@@ -12039,7 +12055,7 @@ function App() {
     ];
     if (canAuthor) {
       rows.push({ glyph: "\u270E", label: "Worksheet editor", kicker: "\u2318E", hay: "editor new worksheet author", act: () => openEditorSurface() });
-      rows.push({ glyph: "\u266A", label: "Scratchpad", kicker: "page", hay: "scratchpad free composition", act: () => setModal("scratch") });
+      rows.push({ glyph: "\u266A", label: "Scratchpad", kicker: "page", hay: "scratchpad free composition", act: () => openScratchpad() });
     }
     if (tier === "instructor") rows.push({ glyph: "\u25C8", label: "My versions", kicker: "page", hay: "dash versions hosting account", act: () => setPage("dash") });
     if (isFullBuild) {
@@ -12274,9 +12290,29 @@ function App() {
     if (page === "progress") return renderProgressPage();
     if (page === "doc") return renderDocPage();
     if (page === "editor") return /* @__PURE__ */ React.createElement("div", { className: "page-view page-editor" }, renderEditorSurface(true));
+    if (page === "scratch" && window.ScratchpadPanel) {
+      const SP = window.ScratchpadPanel;
+      return /* @__PURE__ */ React.createElement(
+        SP,
+        {
+          onClose: () => setPage("practice"),
+          onLaunch: ({ set: cset, problem: cprob, allowed: callowed }) => {
+            setCustom({ set: cset, problem: cprob });
+            if (callowed) setAllowedMap((m) => ({ ...m, [cset.id || "scratchpad"]: callowed }));
+            setSel({ gi: 0, pi: 0 });
+            setPage("practice");
+            setMtab("derive");
+          },
+          onPromote: window.COMPOSE_HOSTED || canAuthor ? (text) => {
+            setEditorInit({ text, key: null });
+            openEditorSurface();
+          } : null
+        }
+      );
+    }
     return null;
   }
-  const MB_TITLES = { signin: "Account", dash: "My versions", assign: "Assign & share", progress: "Your progress", editor: "Worksheet editor" };
+  const MB_TITLES = { signin: "Account", dash: "My versions", assign: "Assign & share", progress: "Your progress", editor: "Worksheet editor", scratch: "Scratchpad" };
   function mbGoTab(id) {
     setModal(null);
     setSheet(null);
@@ -12390,7 +12426,7 @@ function App() {
           else setSheet("ws");
         }
       );
-    })), canAuthor && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Author"), mbRow("editor", "\u270E", "Worksheet editor", null, () => openEditorSurface()), mbRow("scratch", "\u266A", "Scratchpad", "free", () => setModal("scratch")), mbRow("import", "\u2191", "Import worksheet\u2026", null, () => {
+    })), canAuthor && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Author"), mbRow("editor", "\u270E", "Worksheet editor", null, () => openEditorSurface()), mbRow("scratch", "\u266A", "Scratchpad", "free", () => mbPush("scratch")), mbRow("import", "\u2191", "Import worksheet\u2026", null, () => {
       setLoadErr(null);
       if (fileInput.current) fileInput.current.click();
     })), isFullBuild && tier === "instructor" && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Hosting & sharing"), mbRow("dash", "\u25C8", "My versions", null, () => mbPush("dash")), mbRow("assign", "\u2611", "Assign & share", null, () => mbPush("assign"))), /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Display"), /* @__PURE__ */ React.createElement("div", { className: "mb-settings" }, !isStudentBuild && /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Teacher mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (teacherMode ? " on" : ""), role: "switch", "aria-checked": teacherMode, onClick: () => setTeacherMode((m) => {
@@ -12400,11 +12436,19 @@ function App() {
         setAllowedMap((am) => ({ ...am, [allowKey]: Object.assign({}, cur, {}) }));
       }
       return next;
-    }) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Dark mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (darkMode ? " on" : ""), role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode((d) => !d) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-resolve non-branching"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoNN ? " on" : ""), role: "switch", "aria-checked": autoNN, onClick: () => setAutoNN((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Collapse resolved subtrees"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (collapseResolved ? " on" : ""), role: "switch", "aria-checked": collapseResolved, onClick: () => setCollapseResolved((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("div", { className: "settings-row settings-layout-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Layout"), /* @__PURE__ */ React.createElement("div", { className: "seg-mini" }, /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() == null ? " on" : ""), onClick: () => setForceLayout(null) }, "Auto"), /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() === "desktop" ? " on" : ""), onClick: () => setForceLayout("desktop") }, "Desktop")))), isFullBuild && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Guide & help"), mbRow("guide", "\u25C6", "Instructor guide", "Guide", null, { href: "/guide/" }), mbRow("help", "?", "Student help \u2014 rules & grading", "Help", null, { href: "/help/" }), mbRow("walk", "\u25B7", "Worked walkthroughs", "Help", null, { href: "/help/guides/" }), mbRow("files", "\u2913", "Downloads & site map", "Files", null, { href: "/files/" }), mbRow("about", "\xA7", "About & how to cite", "About", null, { href: "/about/" })), /* @__PURE__ */ React.createElement("div", { className: "mb-stamp" }, BUILD.label || "COMPOSE", BUILD.version ? " \xB7 v" + BUILD.version : "", BUILD.date ? " \xB7 " + BUILD.date : "")));
+    }) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Dark mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (darkMode ? " on" : ""), role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode((d) => !d) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-resolve non-branching"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoNN ? " on" : ""), role: "switch", "aria-checked": autoNN, onClick: () => setAutoNN((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Collapse resolved subtrees"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (collapseResolved ? " on" : ""), role: "switch", "aria-checked": collapseResolved, onClick: () => setCollapseResolved((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("div", { className: "settings-row settings-layout-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Layout"), /* @__PURE__ */ React.createElement("div", { className: "seg-mini" }, /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() == null ? " on" : ""), onClick: () => setForceLayout(null) }, "Auto"), /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() === "desktop" ? " on" : ""), onClick: () => setForceLayout("desktop") }, "Desktop")))), isFullBuild && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Guide & help"), DOC_PAGES.map((d) => mbRow("doc" + d.path, d.glyph, d.title, null, () => {
+      setSheet(null);
+      setUnlockOpen(false);
+      openDoc(d.path);
+    }))), /* @__PURE__ */ React.createElement("div", { className: "mb-stamp" }, BUILD.label || "COMPOSE", BUILD.version ? " \xB7 v" + BUILD.version : "", BUILD.date ? " \xB7 " + BUILD.date : "")));
+  }
+  function mbPageTitle() {
+    if (page === "doc") return (DOC_PAGES.find((d) => d.path === docPath) || {}).title || "Guide & help";
+    return MB_TITLES[page] || "";
   }
   function renderMobileMain() {
     if (page !== "practice") {
-      return /* @__PURE__ */ React.createElement("div", { className: "mb-view mb-push" }, /* @__PURE__ */ React.createElement("div", { className: "mb-push-head" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-push-back", onClick: mbBack }, "\u2039 Menu"), /* @__PURE__ */ React.createElement("span", { className: "mb-push-title" }, MB_TITLES[page] || ""), /* @__PURE__ */ React.createElement("span", { className: "mb-push-pad", "aria-hidden": "true" })), /* @__PURE__ */ React.createElement("div", { className: "mb-push-body" }, renderPageView()));
+      return /* @__PURE__ */ React.createElement("div", { className: "mb-view mb-push" }, /* @__PURE__ */ React.createElement("div", { className: "mb-push-head" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-push-back", onClick: mbBack }, "\u2039 Menu"), /* @__PURE__ */ React.createElement("span", { className: "mb-push-title" }, mbPageTitle()), /* @__PURE__ */ React.createElement("span", { className: "mb-push-pad", "aria-hidden": "true" })), /* @__PURE__ */ React.createElement("div", { className: "mb-push-body" }, renderPageView()));
     }
     if (mtab === "derive") return /* @__PURE__ */ React.createElement(React.Fragment, null, renderMobileDeriveHead(), renderCenter());
     if (mtab === "exercises") return renderMobileExercises();
@@ -12413,7 +12457,7 @@ function App() {
   }
   function renderMobileFoot() {
     const pushed = page !== "practice";
-    const ctx = pushed ? MB_TITLES[page] || "" : { derive: "Derive", exercises: "Exercises", reference: "Reference", menu: "Menu" }[mtab];
+    const ctx = pushed ? mbPageTitle() : { derive: "Derive", exercises: "Exercises", reference: "Reference", menu: "Menu" }[mtab];
     const tabs = [
       { id: "derive", glyph: "\u22D4", label: "Derive" },
       { id: "exercises", glyph: "\u2630", label: "Exercises" },
@@ -12595,11 +12639,6 @@ function App() {
       },
       /* @__PURE__ */ React.createElement("h3", null, "Worksheets"),
       /* @__PURE__ */ React.createElement("div", { className: "sub" }, "Choose a worksheet to open."),
-      (() => {
-        const bid = String((window.COMPOSE_BUILD || {}).id || "");
-        if (!(bid === "hosted-root" || bid === "hosted-sandbox" || bid.indexOf("hosted-lib") === 0)) return null;
-        return /* @__PURE__ */ React.createElement("div", { className: "lib-links" }, /* @__PURE__ */ React.createElement("span", { className: "lib-links-label" }, "Full library:"), /* @__PURE__ */ React.createElement("a", { href: "/cc/" }, "Coppock\xA0&\xA0Champollion"), /* @__PURE__ */ React.createElement("a", { href: "/hk/" }, "Heim\xA0&\xA0Kratzer"), /* @__PURE__ */ React.createElement("a", { href: "/papers/" }, "Classic papers"), /* @__PURE__ */ React.createElement("a", { href: "/files/" }, "All downloads"), /* @__PURE__ */ React.createElement("a", { href: "/help/" }, "Help"), /* @__PURE__ */ React.createElement("a", { href: "/guide/" }, "Guide"), /* @__PURE__ */ React.createElement("a", { href: "/about/" }, "About"));
-      })(),
       /* @__PURE__ */ React.createElement("div", { className: "list" }, (() => {
         const CHAPTERS = window.LCData.CHAPTERS || [];
         const builtinKeys = new Set(BUILTIN.map((l) => l.key));
@@ -12699,28 +12738,9 @@ function App() {
       /* @__PURE__ */ React.createElement("div", { className: "files-foot-slim" + (loadErr ? " err" : "") }, /* @__PURE__ */ React.createElement("span", { className: "ffs-icon" }, "\u2913"), loadErr ? /* @__PURE__ */ React.createElement("span", { className: "ffs-err" }, loadErr) : isStudentBuild ? /* @__PURE__ */ React.createElement("span", null, "Drag a worksheet onto this panel, or ", /* @__PURE__ */ React.createElement("button", { className: "ffs-load-btn", onClick: () => {
         setLoadErr(null);
         if (fileInput.current) fileInput.current.click();
-      } }, "choose a file\u2026")) : /* @__PURE__ */ React.createElement("span", null, "Drag a ", /* @__PURE__ */ React.createElement("code", { className: "mono" }, ".compose.json"), ", exported ", /* @__PURE__ */ React.createElement("code", { className: "mono" }, ".html"), ", or ", /* @__PURE__ */ React.createElement("code", { className: "mono" }, ".compose-bundle.json"), " onto this panel to load it \u2014 or use ", /* @__PURE__ */ React.createElement("b", null, "Tools \u2192 Import worksheet"), "."))
+      } }, "choose a file\u2026")) : /* @__PURE__ */ React.createElement("span", null, "Drag a ", /* @__PURE__ */ React.createElement("code", { className: "mono" }, ".compose.json"), ", exported ", /* @__PURE__ */ React.createElement("code", { className: "mono" }, ".html"), ", or ", /* @__PURE__ */ React.createElement("code", { className: "mono" }, ".compose-bundle.json"), " onto this panel to load it \u2014 or use ", /* @__PURE__ */ React.createElement("b", null, "Author \u2192 Import worksheet\u2026"), " in the sidebar."))
     )),
     modal === "editor" && renderEditorSurface(false),
-    modal === "scratch" && window.ScratchpadPanel && (() => {
-      const SP = window.ScratchpadPanel;
-      return /* @__PURE__ */ React.createElement(
-        SP,
-        {
-          onClose: () => setModal(null),
-          onLaunch: ({ set: cset, problem: cprob, allowed: callowed }) => {
-            setCustom({ set: cset, problem: cprob });
-            if (callowed) setAllowedMap((m) => ({ ...m, [cset.id || "scratchpad"]: callowed }));
-            setSel({ gi: 0, pi: 0 });
-            setModal(null);
-          },
-          onPromote: window.COMPOSE_HOSTED || canAuthor ? (text) => {
-            setEditorInit({ text, key: null });
-            openEditorSurface();
-          } : null
-        }
-      );
-    })(),
     !isMobile && renderPalette(),
     !isMobile && renderShortcuts(),
     unlockOpen && /* @__PURE__ */ React.createElement(

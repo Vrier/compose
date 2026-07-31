@@ -1,10 +1,15 @@
 /* ===========================================================================
-   COMPOSE — Scratchpad (S11/W16)
+   COMPOSE — Scratchpad (S11/W16; a page since S37)
    Free composition with an ad-hoc lexicon and tree: no worksheet, no target.
    For lectures ("what if we type *every* this way?") and quick research
    checks. Builds an in-memory trial set via the editor's buildSet mechanism
    (window.__composeBuildSet) and launches the ordinary derivation UI through
    the same `custom`-set path the editor uses.
+
+   S37: rendered as a proper page in the app shell (page:'scratch') — crumb
+   kicker + back affordance like every other non-practice page; the old
+   modal chrome (an unstyled .modal-back wrapper) is gone. On phones the
+   shell shows this same view pushed, with its own back row.
 
    Globals reused (shared babel scope): React hooks, E (engine), F (LCFormat),
    window.__composeBuildSet / __composeDefaultVars (editor.jsx),
@@ -79,46 +84,53 @@ function ScratchpadPanel({ onClose, onLaunch, onPromote }) {
   }
 
   return (
-    <div className="modal-back" onClick={onClose}>
-      <div className="modal scratch-modal" onClick={(e) => e.stopPropagation()}>
-        <h3>♪ Scratchpad</h3>
-        <div className="sub">Free composition: type a quick lexicon, sketch a tree, compose. Nothing is saved.</div>
-
-        <div className="scratch-lex-head"><span>Word(s)</span><span>Denotation</span><span className="scratch-type-col">Type</span><span /></div>
-        <div className="scratch-lex">
-          {lex.map((r, i) => {
-            const st = rowStatus(r);
-            return (
-              <div key={i} className="scratch-row">
-                <input className="scratch-word" value={r.word} placeholder="word"
-                  onChange={(e) => setLex((L) => L.map((x, j) => j === i ? { ...x, word: e.target.value } : x))} spellCheck={false} />
-                <input className="scratch-den mono" value={r.den} placeholder="Lx.…  (L→λ, A→∀, E→∃)"
-                  onChange={(e) => setLex((L) => L.map((x, j) => j === i ? { ...x, den: e.target.value } : x))} spellCheck={false} />
-                <span className="scratch-type-col">
-                  {st && st.kind === 'ok' && st.type != null && <span className="scratch-type">{E.typeToStr(st.type)}</span>}
-                  {st && st.kind === 'err' && <span className="fe-type-err" title={st.msg}>✕</span>}
-                </span>
-                <button className="fe-del-btn" title="Remove row" onClick={() => setLex((L) => L.filter((_, j) => j !== i))}>×</button>
-              </div>
-            );
-          })}
+    <div className="page-view scratch-page">
+      <div className="scratch-inner">
+        <div className="page-crumb-row">
+          <button type="button" className="page-back" onClick={onClose} title="Back to practice" aria-label="Back to practice">‹</button>
+          <span className="page-crumb">Author · Scratchpad</span>
         </div>
-        <button className="fe-add-btn scratch-add" onClick={() => setLex((L) => [...L, { word: '', den: '' }])}>+ Add entry</button>
+        <div className="scratch-head">
+          <div className="pg-kicker">Scratchpad</div>
+          <h1 className="scratch-title">Free composition — no worksheet, no target</h1>
+          <div className="scratch-sub">Type a quick lexicon, sketch a bracketed tree, and compose upward. Nothing is graded here, and nothing is saved.</div>
+        </div>
+        <div className="scratch-card">
+          <div className="scratch-lex-head"><span>Word(s)</span><span>Denotation</span><span className="scratch-type-col">Type</span><span /></div>
+          <div className="scratch-lex">
+            {lex.map((r, i) => {
+              const st = rowStatus(r);
+              return (
+                <div key={i} className="scratch-row">
+                  <input className="scratch-word" value={r.word} placeholder="word"
+                    onChange={(e) => setLex((L) => L.map((x, j) => j === i ? { ...x, word: e.target.value } : x))} spellCheck={false} />
+                  <input className="scratch-den mono" value={r.den} placeholder="Lx.…  (L→λ, A→∀, E→∃)"
+                    onChange={(e) => setLex((L) => L.map((x, j) => j === i ? { ...x, den: e.target.value } : x))} spellCheck={false} />
+                  <span className="scratch-type-col">
+                    {st && st.kind === 'ok' && st.type != null && <span className="scratch-type">{E.typeToStr(st.type)}</span>}
+                    {st && st.kind === 'err' && <span className="fe-type-err" title={st.msg}>✕</span>}
+                  </span>
+                  <button className="fe-del-btn" title="Remove row" onClick={() => setLex((L) => L.filter((_, j) => j !== i))}>×</button>
+                </div>
+              );
+            })}
+          </div>
+          <button className="fe-add-btn scratch-add" onClick={() => setLex((L) => [...L, { word: '', den: '' }])}>+ Add entry</button>
 
-        <div className="scratch-tree-head">Tree <span className="scratch-hint">bracket notation: [.S [.DP …] [.VP …]]</span></div>
-        <textarea className="scratch-tree mono" rows={2} value={treeSrc} onChange={(e) => setTreeSrc(e.target.value)} spellCheck={false} />
-        {treeStatus && treeStatus.kind === 'ok' && (
-          <div className="scratch-status ok">auto-derives: <Notation ast={treeStatus.term} /> : <TypeBadge type={treeStatus.type} /></div>
-        )}
-        {treeStatus && treeStatus.kind === 'open' && <div className="scratch-status open">{treeStatus.msg}</div>}
-        {treeStatus && treeStatus.kind === 'err' && <div className="scratch-status err">⊘ {treeStatus.msg}</div>}
+          <div className="scratch-tree-head">Tree <span className="scratch-hint">bracket notation: [.S [.DP …] [.VP …]]</span></div>
+          <textarea className="scratch-tree mono" rows={2} value={treeSrc} onChange={(e) => setTreeSrc(e.target.value)} spellCheck={false} />
+          {treeStatus && treeStatus.kind === 'ok' && (
+            <div className="scratch-status ok">auto-derives: <Notation ast={treeStatus.term} /> : <TypeBadge type={treeStatus.type} /></div>
+          )}
+          {treeStatus && treeStatus.kind === 'open' && <div className="scratch-status open">{treeStatus.msg}</div>}
+          {treeStatus && treeStatus.kind === 'err' && <div className="scratch-status err">⊘ {treeStatus.msg}</div>}
 
-        <div className="scratch-actions">
-          <button className="btn btn-primary" disabled={!trial || !treeSrc.trim() || (treeStatus && treeStatus.kind === 'err')} onClick={compose}>Compose ▶</button>
-          <span style={{ flex: 1 }} />
-          {onPromote && <button className="btn-ghost" title="Open this scratchpad as a worksheet in the editor" onClick={() => onPromote(scratchJSON())}>✎ Promote to worksheet</button>}
-          <button className="btn-ghost" title="Download as a .compose.json worksheet" onClick={() => window.composeDownload('scratchpad.compose.json', scratchJSON(), 'application/json')}>⬇ .json</button>
-          <button className="btn-ghost" onClick={onClose}>Close</button>
+          <div className="scratch-actions">
+            <button className="btn btn-primary" disabled={!trial || !treeSrc.trim() || (treeStatus && treeStatus.kind === 'err')} onClick={compose}>Compose ▶</button>
+            <span style={{ flex: 1 }} />
+            {onPromote && <button className="btn-ghost" title="Open this scratchpad as a worksheet in the editor" onClick={() => onPromote(scratchJSON())}>✎ Promote to worksheet</button>}
+            <button className="btn-ghost" title="Download as a .compose.json worksheet" onClick={() => window.composeDownload('scratchpad.compose.json', scratchJSON(), 'application/json')}>⬇ .json</button>
+          </div>
         </div>
       </div>
     </div>

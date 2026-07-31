@@ -233,6 +233,12 @@ async function main() {
   // W16 — scratchpad + PWA (S11)
   page = (await req('GET', `/v/${SLUG}`, { raw: true })).text;
   contains('scratchpad shipped to students', page, 'Scratchpad');
+  // S37 — the serve-time token substitution must NOT hit export.jsx's own
+  // token string (it used to, breaking the whole export.jsx script block on
+  // every /v page: composeDownload & co. vanished). The tokens are now
+  // assembled with a fold-proof array join.
+  lacks('served /v page does not corrupt export.jsx (S37)', page, 'EX_IDENTITY_TOKEN = "window.');
+  contains('export.jsx token stays split in served pages (S37)', page, '"/*__COMPOSE_", "IDENTITY__*/"');
   contains('service-worker registration shipped', page, 'serviceWorker.register');
   r = await req('GET', '/sw.js', { raw: true });
   expect('sw.js served', r.status === 200, r.status);
@@ -277,6 +283,9 @@ async function main() {
   contains('root ships the assign & share page (N5)', r.text, 'as-inner');
   contains('root ships the mobile tab bar (N6)', r.text, 'mb-tabbar');
   contains('root ships the mobile chip row (N6)', r.text, 'mb-chips');
+  // S37 — the scratchpad is a page in the shell (the modal chrome is gone)
+  contains('root ships the scratchpad page (S37)', r.text, 'scratch-page');
+  lacks('the scratchpad modal chrome is gone (S37)', r.text, 'scratch-modal');
   r = await req('GET', '/editor/', { raw: true });
   contains('/editor identifies as the sandbox', r.text, '"id":"hosted-sandbox"');
   contains('/editor is an instructor surface', r.text, '"role":"instructor"');

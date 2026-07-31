@@ -14,8 +14,14 @@
    String.replace (S1: `$`-sequences in worksheet JSON mangle).
    =========================================================================== */
 
-var EX_IDENTITY_TOKEN = '/*__COMPOSE_IDENTITY__*/';
-var EX_LIBRARY_TOKEN = '/*__COMPOSE_LIBRARY__*/';
+/* S37: build each token by concatenation so the LITERAL never appears in
+   this file's compiled output. Both the server (/v/:slug, compose_serve_lib)
+   and buildStudentHtml below substitute tokens across the WHOLE page with
+   split/join — a contiguous literal here got substituted too, injecting the
+   identity JS inside this string and breaking the entire script block on
+   every served /v page (composeDownload & co. vanished). */
+var EX_IDENTITY_TOKEN = ['/*__COMPOSE_', 'IDENTITY__*/'].join('');
+var EX_LIBRARY_TOKEN = ['/*__COMPOSE_', 'LIBRARY__*/'].join('');
 
 /* Keep inline payloads from closing their host <script>/<style>. */
 function exEsc(s) { return String(s).replace(/<\/(script|style)/gi, '<\\/$1'); }
