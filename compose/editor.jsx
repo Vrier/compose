@@ -575,6 +575,15 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
   function dupGroup(i) { setGroups(g => { const n = g.slice(); const copy = JSON.parse(JSON.stringify(g[i])); copy.title = (g[i].title || 'Group') + ' (copy)'; copy.id = genId(); copy.trees = (copy.trees || []).map(t => ({ ...t, id: genId() })); n.splice(i + 1, 0, copy); return n; }); }
   function addTree(i)  { setGroups(g => g.map((x, j) => j === i ? { ...x, trees: [...x.trees, { id: genId(), instructions: '', tree: '', expected: '', note: '' }] } : x)); }
   function delTree(i, k) { setGroups(g => g.map((x, j) => j === i ? { ...x, trees: x.trees.filter((_, m) => m !== k) } : x)); }
+  // duplicate a single derivation (the exercise a student solves): insert a
+  // fresh-id copy right after the original so it appears in the list, editable.
+  function dupTree(i, k) { setGroups(g => g.map((x, j) => {
+    if (j !== i) return x;
+    const src = x.trees[k];
+    const copy = { ...JSON.parse(JSON.stringify(src)), id: genId() };
+    const trees = x.trees.slice(); trees.splice(k + 1, 0, copy);
+    return { ...x, trees };
+  })); }
   function updTree(i, k, patch) { setGroups(g => g.map((x, j) => j === i ? { ...x, trees: x.trees.map((t, m) => m === k ? { ...t, ...patch } : t) } : x)); }
 
   return (
@@ -626,6 +635,7 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
                         {preview && !preview.ok && !preview.err && <span className="fe-tree-note" title="Won't auto-derive — student will reach the mismatch">⚠ mismatch</span>}
                         {preview && preview.err && <span className="fe-type-err" title="Tree parse error">⊘ parse error</span>}
                         <button className="fe-test-btn" disabled={!item.tree.trim() || !trialSet} onClick={() => onTest(item.tree, trialSet)} title="Test in workspace">▶ Test</button>
+                        <button className="fe-gt-btn" onClick={() => dupTree(i, k)} title="Duplicate this derivation">⧉</button>
                         <button className="fe-del-btn" onClick={() => delTree(i, k)} title="Remove derivation">×</button>
                       </div>
                     </div>

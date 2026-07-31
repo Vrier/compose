@@ -7396,6 +7396,16 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
   function delTree(i, k) {
     setGroups((g) => g.map((x, j) => j === i ? { ...x, trees: x.trees.filter((_, m) => m !== k) } : x));
   }
+  function dupTree(i, k) {
+    setGroups((g) => g.map((x, j) => {
+      if (j !== i) return x;
+      const src = x.trees[k];
+      const copy = { ...JSON.parse(JSON.stringify(src)), id: genId() };
+      const trees = x.trees.slice();
+      trees.splice(k + 1, 0, copy);
+      return { ...x, trees };
+    }));
+  }
   function updTree(i, k, patch) {
     setGroups((g) => g.map((x, j) => j === i ? { ...x, trees: x.trees.map((t, m) => m === k ? { ...t, ...patch } : t) } : x));
   }
@@ -7438,7 +7448,7 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
         onChange: (e) => updTree(i, k, { instructions: e.target.value }),
         spellCheck: false
       }
-    ), /* @__PURE__ */ React.createElement("div", { className: "fe-tree-actions" }, preview && preview.ok && /* @__PURE__ */ React.createElement("span", { className: "fe-tree-ok", title: "Auto-derives" }, /* @__PURE__ */ React.createElement(Notation, { ast: preview.term }), " : ", /* @__PURE__ */ React.createElement(TypeBadge, { type: preview.type })), preview && !preview.ok && !preview.err && /* @__PURE__ */ React.createElement("span", { className: "fe-tree-note", title: "Won't auto-derive \u2014 student will reach the mismatch" }, "\u26A0 mismatch"), preview && preview.err && /* @__PURE__ */ React.createElement("span", { className: "fe-type-err", title: "Tree parse error" }, "\u2298 parse error"), /* @__PURE__ */ React.createElement("button", { className: "fe-test-btn", disabled: !item.tree.trim() || !trialSet, onClick: () => onTest(item.tree, trialSet), title: "Test in workspace" }, "\u25B6 Test"), /* @__PURE__ */ React.createElement("button", { className: "fe-del-btn", onClick: () => delTree(i, k), title: "Remove derivation" }, "\xD7"))), /* @__PURE__ */ React.createElement(
+    ), /* @__PURE__ */ React.createElement("div", { className: "fe-tree-actions" }, preview && preview.ok && /* @__PURE__ */ React.createElement("span", { className: "fe-tree-ok", title: "Auto-derives" }, /* @__PURE__ */ React.createElement(Notation, { ast: preview.term }), " : ", /* @__PURE__ */ React.createElement(TypeBadge, { type: preview.type })), preview && !preview.ok && !preview.err && /* @__PURE__ */ React.createElement("span", { className: "fe-tree-note", title: "Won't auto-derive \u2014 student will reach the mismatch" }, "\u26A0 mismatch"), preview && preview.err && /* @__PURE__ */ React.createElement("span", { className: "fe-type-err", title: "Tree parse error" }, "\u2298 parse error"), /* @__PURE__ */ React.createElement("button", { className: "fe-test-btn", disabled: !item.tree.trim() || !trialSet, onClick: () => onTest(item.tree, trialSet), title: "Test in workspace" }, "\u25B6 Test"), /* @__PURE__ */ React.createElement("button", { className: "fe-gt-btn", onClick: () => dupTree(i, k), title: "Duplicate this derivation" }, "\u29C9"), /* @__PURE__ */ React.createElement("button", { className: "fe-del-btn", onClick: () => delTree(i, k), title: "Remove derivation" }, "\xD7"))), /* @__PURE__ */ React.createElement(
       "textarea",
       {
         className: "fe-tree-input mono",
