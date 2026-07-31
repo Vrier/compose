@@ -2076,18 +2076,26 @@ function App() {
   function renderRail() {
     return (
       <div className="sb-rail">
+        {/* one icon per sidebar section, same gating as the expanded sidebar
+            (S36 owner request): every destination reachable from the rail */}
         <button type="button" className="rail-btn" title="Search everything (⌘K)" aria-label="Search everything (⌘K)"
           onClick={() => openPalette()}>⌕</button>
         <button type="button" className={'rail-btn' + (sidebarExpanded && navSection === 'library' ? ' on' : '')} title="All worksheets" aria-label="All worksheets"
           onClick={() => drillOut('library')}>❏</button>
         {hasContent && <button type="button" className={'rail-btn' + (exOpen && page === 'practice' ? ' on' : '')} title="Exercises in this worksheet" aria-label="Exercises in this worksheet"
           onClick={() => { setPage('practice'); setExOpen(true); }}>☰</button>}
-        {canAuthor && <button type="button" className="rail-btn" title="Author" aria-label="Author"
+        <button type="button" className={'rail-btn' + (sidebarExpanded && navSection === 'continue' ? ' on' : '')} title="Continue" aria-label="Continue — recent exercises"
+          onClick={() => drillOut('continue')}>↻</button>
+        {canAuthor && <button type="button" className={'rail-btn' + (sidebarExpanded && navSection === 'author' ? ' on' : '')} title="Author" aria-label="Author"
           onClick={() => drillOut('author')}>✎</button>}
-        {isFullBuild && tier === 'instructor' && <button type="button" className="rail-btn" title="Assign & share" aria-label="Assign & share"
+        {isFullBuild && tier === 'instructor' && <button type="button" className={'rail-btn' + (sidebarExpanded && navSection === 'assign' ? ' on' : '')} title="Assign & share" aria-label="Assign & share"
           onClick={() => drillOut('assign')}>☑</button>}
+        <button type="button" className={'rail-btn' + (sidebarExpanded && navSection === 'display' ? ' on' : '')} title="Display" aria-label="Display options"
+          onClick={() => drillOut('display')}>◐</button>
+        {isFullBuild && <button type="button" className={'rail-btn' + (sidebarExpanded && navSection === 'help' ? ' on' : '')} title="Guide & help" aria-label="Guide & help"
+          onClick={() => drillOut('help')}>ⓘ</button>}
         <div className="rail-spacer" />
-        {isFullBuild && <button type="button" className="rail-btn" title="Account" aria-label="Account"
+        {isFullBuild && <button type="button" className={'rail-btn' + (sidebarExpanded && navSection === 'account' ? ' on' : '')} title="Account" aria-label="Account"
           onClick={() => drillOut('account')}>◉</button>}
       </div>
     );

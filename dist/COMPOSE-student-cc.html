@@ -11871,11 +11871,21 @@ function App() {
         }
       },
       "\u2630"
+    ), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "rail-btn" + (sidebarExpanded && navSection === "continue" ? " on" : ""),
+        title: "Continue",
+        "aria-label": "Continue \u2014 recent exercises",
+        onClick: () => drillOut("continue")
+      },
+      "\u21BB"
     ), canAuthor && /* @__PURE__ */ React.createElement(
       "button",
       {
         type: "button",
-        className: "rail-btn",
+        className: "rail-btn" + (sidebarExpanded && navSection === "author" ? " on" : ""),
         title: "Author",
         "aria-label": "Author",
         onClick: () => drillOut("author")
@@ -11885,17 +11895,37 @@ function App() {
       "button",
       {
         type: "button",
-        className: "rail-btn",
+        className: "rail-btn" + (sidebarExpanded && navSection === "assign" ? " on" : ""),
         title: "Assign & share",
         "aria-label": "Assign & share",
         onClick: () => drillOut("assign")
       },
       "\u2611"
+    ), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "rail-btn" + (sidebarExpanded && navSection === "display" ? " on" : ""),
+        title: "Display",
+        "aria-label": "Display options",
+        onClick: () => drillOut("display")
+      },
+      "\u25D0"
+    ), isFullBuild && /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "rail-btn" + (sidebarExpanded && navSection === "help" ? " on" : ""),
+        title: "Guide & help",
+        "aria-label": "Guide & help",
+        onClick: () => drillOut("help")
+      },
+      "\u24D8"
     ), /* @__PURE__ */ React.createElement("div", { className: "rail-spacer" }), isFullBuild && /* @__PURE__ */ React.createElement(
       "button",
       {
         type: "button",
-        className: "rail-btn",
+        className: "rail-btn" + (sidebarExpanded && navSection === "account" ? " on" : ""),
         title: "Account",
         "aria-label": "Account",
         onClick: () => drillOut("account")
