@@ -383,6 +383,7 @@ async function main() {
   contains('/guide embeds the My-versions capture (N7)', r.text, '/guide/my-versions.jpg');
   contains('/guide embeds the assign-page capture (N7)', r.text, '/guide/assign-page.jpg');
   contains('/guide embeds the instructor walkthrough videos (N7)', r.text, '/guide/wt-host.mp4');
+  contains('/guide documents the one-click code+QR share (S42)', r.text, 'Host &amp; get code');
   r = await req('GET', '/guide/my-versions.jpg', { raw: true });
   expect('My-versions screenshot serves (N7)', r.status === 200, r.status);
   r = await req('GET', '/guide/student-view.jpg', { raw: true });

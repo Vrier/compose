@@ -21,8 +21,9 @@
      editor — sidebar Author → the editor PAGE: title, two lexicon rows, a
               tree with the live ✓ badge, ▶ Load into app  (for /guide)
      host   — THROWAWAY local PocketBase: in-app sign-in → My versions →
-              expand the row → copy the unlock code → the Assign & share
-              page → ends on the code  (for /guide)
+              expand the row → copy the unlock code → the ⇗ Share dialog
+              (leads with the code, S41) → the Assign & share page → ends
+              on the code  (for /guide)
    (Run `npm run build:server` first so server/pb_public is current.)
    =========================================================================== */
 import puppeteer from 'puppeteer';
@@ -86,9 +87,12 @@ await page.evaluateOnNewDocument(() => { try { localStorage.setItem('lc2-force-l
 
 let n = 0;
 async function shoot() {
-  await page.screenshot({ path: `${OUTDIR}/${String(n++).padStart(5, '0')}.jpg`, type: 'jpeg', quality: 72 });
+  await page.screenshot({ path: `${OUTDIR}/${String(n++).padStart(5, '0')}.jpg`, type: 'jpeg', quality: 72, optimizeForSpeed: true });
 }
-async function rec(frames, gap = 45) {
+/* gap 45→34ms (S42): the cursor transition below is scaled by the same
+   ratio, so cursor motion occupies the same FRAMES as before — wall-clock
+   capture just runs faster to fit the sandbox's 45s call budget. */
+async function rec(frames, gap = 34) {
   for (let i = 0; i < frames; i++) { await new Promise((r) => setTimeout(r, gap)); await shoot(); }
 }
 
@@ -99,7 +103,7 @@ async function installCursor() {
     c.id = 'wt-cursor';
     c.style.cssText = 'position:fixed;z-index:99999;width:22px;height:22px;border-radius:50%;'
       + 'background:rgba(196,90,40,.35);border:2.5px solid rgba(160,60,20,.95);pointer-events:none;'
-      + 'left:600px;top:600px;transform:translate(-50%,-50%);transition:left .28s ease,top .28s ease,box-shadow .18s ease;';
+      + 'left:600px;top:600px;transform:translate(-50%,-50%);transition:left .21s ease,top .21s ease,box-shadow .14s ease;';
     document.body.appendChild(c);
   });
 }
@@ -318,6 +322,12 @@ if (SCENE === 'first') {
   await rec(6); // expanded: worksheets + the unlock code box
   await act(() => center(null, `() => [...document.querySelectorAll('.vd-code-box .vd-btn')].find(b => /Copy/.test(b.textContent))`), 'copy code');
   await rec(8); // "✓ copied"
+  // S41: the ⇗ Share dialog — leads with the unlock code, QR + /v link below
+  await act(() => center(null, `() => [...document.querySelectorAll('.vd-btn')].find(b => /Share/.test(b.textContent))`), 'share');
+  await new Promise((r) => setTimeout(r, 900));
+  await rec(12); // big code + ⧉ Copy code + ↻ New code, QR, link, handout
+  await act(() => center(null, `() => [...document.querySelectorAll('.vd-share .btn-ghost')].find(b => b.textContent.trim() === 'Close')`), 'close share');
+  await rec(3);
   await act(() => center(null, `() => [...document.querySelectorAll('.vd-btn')].find(b => /Assign/.test(b.textContent))`), 'assign');
   await new Promise((r) => setTimeout(r, 1000));
   await rec(8); // the Assign & share page: picker left, student-visible set right

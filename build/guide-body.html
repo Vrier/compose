@@ -26,7 +26,7 @@
 <tr><td><a href="/papers/">/papers</a></td><td>Classic papers: Partee 1986 (<a href="/papers/partee/">/papers/partee</a>), Partee &amp; Rooth 1983 (<a href="/papers/partee-rooth/">/papers/partee-rooth</a>), Montague’s PTQ in two parts (<a href="/papers/ptq/">/papers/ptq</a>), Davidson 1967 (<a href="/papers/davidson/">/papers/davidson</a>), Krifka 1998 (<a href="/papers/krifka/">/papers/krifka</a>), Barwise &amp; Cooper 1981 (<a href="/papers/barwise-cooper/">/papers/barwise-cooper</a>), Link 1983 (<a href="/papers/link/">/papers/link</a>).</td></tr>
 <tr><td>Sign-in page</td><td>Not a separate URL: the sidebar’s <b>Account</b> section on any of the pages above opens it. Students register free practice accounts (email + password, at least 10 characters); an instructor invite code entered on the same form creates an instructor account. No verification email is sent — the server sends no email at all.</td></tr>
 <tr><td><a href="/editor/">/editor</a></td><td>The worksheet editor, usable without an account. Exports <code>.compose.json</code>. Cannot publish to the server.</td></tr>
-<tr><td><a href="/dash/">/dash</a></td><td>The original instructor dashboard, same accounts and versions as the in-app pages. Version management now lives in the app itself (sidebar → Account → <b>My versions</b>); /dash remains for editing version notes and as a fallback.</td></tr>
+<tr><td><a href="/dash/">/dash</a></td><td>The original instructor dashboard, same accounts and versions as the in-app pages. Version management now lives in the app itself (sidebar → Assign &amp; share → <b>My versions</b>); /dash remains for editing version notes and as a fallback.</td></tr>
 <tr><td><a href="/files/">/files</a></td><td>All 46 built-in worksheets and both textbook bundles as downloadable <code>.compose.json</code>, with a site map.</td></tr>
 <tr><td><a href="/help/">/help</a></td><td>Student reference (rules, symbols, grading) and <a href="/help/guides/">worked derivation guides</a>.</td></tr>
 <tr><td><a href="/about/">/about</a></td><td>Project description, credits, citation formats, what accounts store.</td></tr>
@@ -194,7 +194,10 @@ and the student Notes tab scrolls there when the derivation is opened.</p>
 
 <h3>Saving and exporting</h3>
 <p>Header buttons: <b>Save to library</b> (stores in this browser),
-<b>▶ Load into app</b>, and <b>.json</b> (downloads the worksheet source).
+<b>▶ Load into app</b>, and <b>.json</b> (downloads the worksheet source);
+signed-in instructors also get <b>⇗ Share · code + QR</b> / <b>⇗ Host &amp;
+get code</b> here — hosting the current worksheet and opening the share
+dialog in one step (<a href="#hosting">below</a>).
 The <code>.compose.json</code> file is the worksheet: it is what you
 re-import, hand to students directly, or upload to a hosted version. To
 distribute worksheets to a class, host them in a version and share the
@@ -310,8 +313,16 @@ your students → each student signs in and enters the code once. The class
 then appears in their sidebar on every COMPOSE page, and their progress is
 kept on their account.</p>
 
+<p>Signed in as an instructor, sharing is also <em>one click from the
+worksheet itself</em>: the editor header shows <b>⇗ Share · code + QR</b>
+for a hosted worksheet — or <b>⇗ Host &amp; get code</b> for one not hosted
+yet, which creates the version for you — and the same ⇗ Share button sits
+above a hosted worksheet’s derivation. Every entry point opens the share
+dialog, which leads with the unlock code (⧉ Copy, ↻ New code) and carries
+the QR code, the <code>/v/</code> link and a printable handout below.</p>
+
 <figure class="guide-fig"><video controls muted playsinline loop preload="metadata" src="/guide/wt-host.mp4"></video>
-<figcaption>The instructor side, recorded end to end: signing in, the My versions page, copying the unlock code, and choosing the class content on the Assign &amp; share page.</figcaption></figure>
+<figcaption>The instructor side, recorded end to end: signing in, the My versions page, copying the unlock code, the ⇗ Share dialog that leads with the code, and choosing the class content on the Assign &amp; share page.</figcaption></figure>
 
 <h3>Accounts</h3>
 <p>Instructor registration needs an email address, a password of at least
@@ -328,22 +339,23 @@ administrator. What an account stores is listed on
 
 <h3>Versions</h3>
 <p>A <em>version</em> is a hosted worksheet collection with its own unlock
-code and student URL. On the <b>My versions</b> page (sidebar → Account):
+code and student URL. On the <b>My versions</b> page (sidebar → Assign &amp; share):
 <b>+ New version</b> creates one from a title; <b>⬆ New from bundle</b>
 creates one from a <code>.compose-bundle.json</code> file. Each version row
 shows the published state (● live / ○ hidden — unpublished versions can’t
 be redeemed and their student link returns 404), the <code>/v/…</code> slug,
 worksheet and derivation counts, an opens counter, and, expanded: the
-worksheet list, the <b>unlock code</b> with ⧉ Copy and ↻ New code
+worksheet list (one ✎ Edit per worksheet), the <b>unlock code</b> with ⧉ Copy and ↻ New code
 (regenerating invalidates the old code; existing enrolments keep working),
 bundle download/replace, and delete.</p>
 
 <figure class="guide-fig"><img src="/guide/my-versions.jpg" alt="The My versions page with a version row expanded, showing the unlock code" loading="lazy" />
-<figcaption>The My versions page with one version expanded: worksheet list, unlock code with Copy and New code, bundle download/replace. (Screenshot from a local test instance of the same build.)</figcaption></figure>
+<figcaption>The My versions page with one version expanded: worksheet list with per-worksheet ✎ Edit, unlock code with Copy and New code, bundle download/replace. (Screenshot from a local test instance of the same build.)</figcaption></figure>
 
 <p>Content gets into a version three ways: pick worksheets on the
 <a href="#assign">Assign &amp; share page</a> (below), author in the editor
-and save to the version (✎ Editor on the version row), or import a bundle
+and save to the version (✎ Edit on the version row or on any single
+worksheet inside it — both open the in-app editor), or import a bundle
 file. Every save is validated server-side: the same engine parses every
 worksheet and rejects the save with exact error paths (for example
 <code>worksheets[0].content.lexicon[2].denotation</code>) if anything fails;
@@ -368,12 +380,13 @@ it in the LMS). They sign in — creating the free account if needed — and
 enter it in the sidebar’s “⊕ Unlock with a code” row (on the phone, the
 ⊕ Unlock chip). Codes are case-insensitive; entering one twice is harmless.</p>
 
-<p><em>Legacy link/QR sharing.</em> The version’s direct
-<code>/v/&lt;slug&gt;</code> link still works without any account, and the
-⇗ Share dialog on the My versions row still offers the link as text, a QR
-code, a PNG download and a printable A4 handout. Use it where accounts are
-not wanted; progress then stays in each student’s browser instead of on an
-account, and enrolment counts are not tracked.</p>
+<p><em>The ⇗ Share dialog</em> (on the My versions row, in the editor
+header, or above a hosted worksheet’s derivation) is the one complete
+share surface: the unlock code first, then the direct
+<code>/v/&lt;slug&gt;</code> link as text, a QR code, a PNG download and a
+printable A4 handout. The link and QR work without any account — use them
+where accounts are not wanted; progress then stays in each student’s
+browser instead of on an account, and enrolment counts are not tracked.</p>
 
 <h3>What the student link opens</h3>
 <p><code>/v/&lt;slug&gt;</code> serves the same app, loaded with the
@@ -389,7 +402,7 @@ as on library pages.</p>
 <figure class="guide-fig"><img src="/guide/files-page.jpg" alt="The files page listing downloadable worksheets" loading="lazy" />
 <figcaption><a href="/files/">/files</a>: every worksheet and bundle as <code>.compose.json</code>, with titles and derivation counts.</figcaption></figure>
 <p>Offline behaviour: the curated pages and the root work offline after a
-first visit (service worker; /dash and /edit are never cached). Worksheets
+first visit (service worker; /dash is never cached). Worksheets
 themselves travel as <code>.compose.json</code> files, which load on any
 COMPOSE page straight from disk.</p>
 
