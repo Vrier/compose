@@ -25,7 +25,7 @@
 <tr><td><a href="/hk/">/hk</a></td><td>Eight worksheets tracking Heim &amp; Kratzer, <em>Semantics in Generative Grammar</em> (chapters 1, 2, 4, 5, 6, 7, 9, 12), at /hk/ch1 … /hk/ch12.</td></tr>
 <tr><td><a href="/papers/">/papers</a></td><td>Classic papers: Partee 1986 (<a href="/papers/partee/">/papers/partee</a>), Partee &amp; Rooth 1983 (<a href="/papers/partee-rooth/">/papers/partee-rooth</a>), Montague’s PTQ in two parts (<a href="/papers/ptq/">/papers/ptq</a>), Davidson 1967 (<a href="/papers/davidson/">/papers/davidson</a>), Krifka 1998 (<a href="/papers/krifka/">/papers/krifka</a>), Barwise &amp; Cooper 1981 (<a href="/papers/barwise-cooper/">/papers/barwise-cooper</a>), Link 1983 (<a href="/papers/link/">/papers/link</a>).</td></tr>
 <tr><td>Sign-in page</td><td>Not a separate URL: the sidebar’s <b>Account</b> section on any of the pages above opens it. Students register free practice accounts (email + password, at least 10 characters); an instructor invite code entered on the same form creates an instructor account. No verification email is sent — the server sends no email at all.</td></tr>
-<tr><td><a href="/editor/">/editor</a></td><td>The worksheet editor, usable without an account. Exports <code>.compose.json</code> and self-contained student HTML files. Cannot publish to the server.</td></tr>
+<tr><td><a href="/editor/">/editor</a></td><td>The worksheet editor, usable without an account. Exports <code>.compose.json</code>. Cannot publish to the server.</td></tr>
 <tr><td><a href="/dash/">/dash</a></td><td>The original instructor dashboard, same accounts and versions as the in-app pages. Version management now lives in the app itself (sidebar → Account → <b>My versions</b>); /dash remains for editing version notes and as a fallback.</td></tr>
 <tr><td><a href="/files/">/files</a></td><td>All 46 built-in worksheets and both textbook bundles as downloadable <code>.compose.json</code>, with a site map.</td></tr>
 <tr><td><a href="/help/">/help</a></td><td>Student reference (rules, symbols, grading) and <a href="/help/guides/">worked derivation guides</a>.</td></tr>
@@ -194,16 +194,12 @@ and the student Notes tab scrolls there when the derivation is opened.</p>
 
 <h3>Saving and exporting</h3>
 <p>Header buttons: <b>Save to library</b> (stores in this browser),
-<b>▶ Load into app</b>, <b>.json</b> (downloads the worksheet source),
-<b>.html</b> (downloads a self-contained student page). The HTML export —
-also available for multi-worksheet selections via the sidebar’s Display
-section → Export assignment — is a single file with the app and the chosen
-worksheets embedded; it opens from disk without a network connection and is
-fixed in student mode. The JSON export is the re-importable source, and is
-also what you upload to a hosted version later.</p>
-
-<figure class="guide-fig"><img src="/guide/export-modal.jpg" alt="The export modal with HTML and JSON options" loading="lazy" />
-<figcaption>Display → Export assignment: worksheet selection, HTML or JSON output.</figcaption></figure>
+<b>▶ Load into app</b>, and <b>.json</b> (downloads the worksheet source).
+The <code>.compose.json</code> file is the worksheet: it is what you
+re-import, hand to students directly, or upload to a hosted version. To
+distribute worksheets to a class, host them in a version and share the
+unlock code or the <code>/v/</code> link (below), or share the
+<code>.compose.json</code> file itself.</p>
 
 <h2 id="notes-ref">Notes input reference</h2>
 <p>Notes (worksheet reading companions and version notes) are written in
@@ -393,9 +389,9 @@ as on library pages.</p>
 <figure class="guide-fig"><img src="/guide/files-page.jpg" alt="The files page listing downloadable worksheets" loading="lazy" />
 <figcaption><a href="/files/">/files</a>: every worksheet and bundle as <code>.compose.json</code>, with titles and derivation counts.</figcaption></figure>
 <p>Offline behaviour: the curated pages and the root work offline after a
-first visit (service worker; /dash and /edit are never cached). For fully
-offline distribution, the editor's HTML export produces single files that
-run from local disk with no server involved.</p>
+first visit (service worker; /dash and /edit are never cached). Worksheets
+themselves travel as <code>.compose.json</code> files, which load on any
+COMPOSE page straight from disk.</p>
 
 <p class="about-foot">Invite codes and questions: <a href="/about/">/about</a> ·
 <a href="https://github.com/Vrier/compose">source repository</a></p>

@@ -800,16 +800,6 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
     a.download = (title || 'exercise').toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.compose.json';
     a.click();
   }
-  async function doExportHtml() {
-    const text = generateJSON(state);
-    const t = (title || '').trim() || 'exercise';
-    const key = 'user-ex-' + Date.now().toString(36);
-    try {
-      const html = await window.buildStudentHtml({ title: t, sets: [key], extraFiles: { [key]: { title: t, text } } });
-      window.composeDownload(window.composeSlug(t) + '.html', html, 'text/html');
-    } catch (e) { window.alert('Could not build HTML: ' + (e.message || e)); }
-  }
-
   // Import
   function doImport() {
     const inp = document.createElement('input');
@@ -876,7 +866,6 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
             <button className="btn-ghost" onClick={() => setShowReading(true)} title="Attach or edit notes (Markdown) and link sections to exercises">📝 Notes{reading.markdown && reading.markdown.trim() ? <span className="fe-reading-dot" /> : null}</button>
             <button className="btn-ghost fe-import-btn" onClick={doImport}>⬆ Import</button>
             <button className="btn-ghost fe-export-btn" onClick={doExport}>⬇ .json</button>
-            <button className="btn-ghost fe-export-btn" onClick={doExportHtml}>⬇ .html</button>
             {window.COMPOSE_HOSTED && (
               <button className="btn-primary fe-export-btn" onClick={saveToServer} disabled={srvBusy}
                 title={'Save this worksheet into the hosted version "' + window.COMPOSE_HOSTED.title + '" — students see the change immediately'}>
@@ -940,8 +929,6 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
 function UserExerciseManager({ items, fileKey, custom, instructor, onOpen, onRename, onSetGroup, onEdit, onDelete, onClearAll, onNew }) {
   const [renaming, setRenaming] = useState(null);
   const [draft, setDraft] = useState('');
-  const [expFor, setExpFor] = useState(null);
-  const [busy, setBusy] = useState(null);
   if (!instructor && (!items || items.length === 0)) return null;
 
   const groupNames = [];
@@ -954,15 +941,7 @@ function UserExerciseManager({ items, fileKey, custom, instructor, onOpen, onRen
     if (val === '__new__') { const name = (window.prompt('Name a group for this exercise:') || '').trim(); if (name) onSetGroup(key, name); }
     else onSetGroup(key, val);
   }
-  function exportJson(it) { setExpFor(null); window.composeDownload(window.composeSlug(it.title) + '.compose.json', it.text, 'application/json'); }
-  async function exportHtml(it) {
-    setExpFor(null); setBusy(it.key);
-    try {
-      const html = await window.buildStudentHtml({ title: it.title, sets: [it.key], extraFiles: { [it.key]: { title: it.title, text: it.text } } });
-      window.composeDownload(window.composeSlug(it.title) + '.html', html, 'text/html');
-    } catch (e) { window.alert('Could not build HTML: ' + (e.message || e)); }
-    finally { setBusy(null); }
-  }
+  function exportJson(it) { window.composeDownload(window.composeSlug(it.title) + '.compose.json', it.text, 'application/json'); }
 
   function renderItem(it) {
     const counts = it.set.groups.reduce((a, g) => a + g.problems.length, 0);
@@ -987,19 +966,12 @@ function UserExerciseManager({ items, fileKey, custom, instructor, onOpen, onRen
             {groupNames.map(g => <option key={g} value={g}>{g}</option>)}
             <option value="__new__">＋ New group…</option>
           </select>
-          <button className="ue-btn" title="Export…" disabled={busy === it.key} onClick={() => setExpFor(expFor === it.key ? null : it.key)}>{busy === it.key ? '⟳' : '⬇'}</button>
+          <button className="ue-btn" title="Download .compose.json" onClick={() => exportJson(it)}>⬇</button>
           <button className="ue-btn" title="Rename" onClick={() => { setRenaming(it.key); setDraft(it.title); }}>✎</button>
           <button className="ue-btn" title="Edit in exercise editor" onClick={() => onEdit(it.key)}>✐</button>
           <button className="fc-remove" title="Delete" onClick={() => onDelete(it.key)}>✕</button>
         </div>}
         </div>
-        {expFor === it.key && instructor && (
-          <div className="ue-exp-menu">
-            <span className="ue-exp-label">Export as</span>
-            <button className="ue-exp-opt" onClick={() => exportJson(it)}>JSON <span className="ue-exp-ext">.compose.json</span></button>
-            <button className="ue-exp-opt" onClick={() => exportHtml(it)}>HTML <span className="ue-exp-ext">standalone, playable</span></button>
-          </div>
-        )}
       </div>
     );
   }

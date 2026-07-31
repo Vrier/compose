@@ -11,7 +11,7 @@
        pages     root-starter, files-page, signin
        mobile    mobile-view (390×760, forced mobile layout)
        editor    editor-page, editor-lexicon, editor-derivation,
-                 editor-notes, export-modal                        (/editor)
+                 editor-notes                                      (/editor)
    =========================================================================== */
 import puppeteer from 'puppeteer';
 import { spawn } from 'node:child_process';
@@ -157,19 +157,6 @@ if (SCENE === 'student') {
     '# Week 3 notes\n\n## 1 Transitives\n\nRecall \\llbracket runs \\rrbracket = $\\lambda x.run(x)$ : $<e,t>$.\n\n\\ex Frodo runs.\n\\xe\n\n\\begin{derivation}\n[[runs]] = Lx.run(x) : <e,t>\n[[Frodo runs]] = run(f) : t\n\\end{derivation}');
   await sleep(900);
   await shot('editor-notes');
-  await page.keyboard.press('Escape');
-  await sleep(400);
-  // Export assignment lives in the sidebar's Display section now
-  await page.evaluate(() => { const b = [...document.querySelectorAll('.fe-page-back')]; if (b[0]) b[0].click(); });
-  await sleep(500);
-  // the sidebar may be in its rail state (drilled) — expand it first
-  await page.evaluate(() => { if (document.querySelector('.sb-rail')) document.querySelector('.rail-btn[title="All worksheets"]').click(); });
-  await sleep(400);
-  await clickText('.sb-sec-head', 'Display');
-  await sleep(300);
-  await clickText('.sb-row', 'Export assignment');
-  await sleep(700);
-  await shot('export-modal');
 } else {
   throw new Error('unknown scene: ' + SCENE);
 }

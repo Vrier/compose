@@ -28,7 +28,7 @@ account:
 | /hk/ch1, ch2, ch4, ch5, ch6, ch7, ch9, ch12 | single H&K chapters |
 | [/papers](https://compose.tstephen.com/papers/) | classic papers — Partee 1986, Partee & Rooth 1983, Montague's PTQ (two parts), Davidson 1967, Krifka 1998, Barwise & Cooper 1981, Link 1983 |
 | /papers/partee, /papers/partee-rooth, /papers/ptq, /papers/davidson, /papers/krifka, /papers/barwise-cooper, /papers/link | one paper each |
-| [/editor](https://compose.tstephen.com/editor/) | author worksheets without an account; export JSON or self-contained HTML |
+| [/editor](https://compose.tstephen.com/editor/) | author worksheets without an account; export .compose.json |
 | [/files](https://compose.tstephen.com/files/) | every worksheet + bundle as downloadable .compose.json, plus the site map |
 | [/guide](https://compose.tstephen.com/guide/) | the instructor guide, with screenshots and the notes input reference |
 | [/help](https://compose.tstephen.com/help/) | student help: rules, symbols, grading — plus [/help/guides](https://compose.tstephen.com/help/guides/), worked walkthroughs with videos |

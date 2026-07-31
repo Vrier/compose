@@ -1308,37 +1308,13 @@ function App() {
       setFileKey(BUILTIN[0] ? BUILTIN[0].key : null);
   }
 
-  // Pull authored exercises back out of an exported COMPOSE .html file
-  function importHtmlFile(file) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const html = String(reader.result || '');
-      const m = html.match(/window\.LC_FILES_INLINE\s*=\s*(\{[\s\S]*?\})\s*;<\/script>/);
-      if (!m) { setLoadErr('No COMPOSE exercises found inside “' + file.name + '”.'); return; }
-      let obj; try { obj = JSON.parse(m[1]); } catch (e) { setLoadErr('Could not read exercises from “' + file.name + '”.'); return; }
-      const entries = Object.entries(obj).filter(([, v]) => v && v.text);
-      if (!entries.length) { setLoadErr('That HTML has no embedded exercises.'); return; }
-      let added = null;
-      const next = entries.map(([k, v]) => {
-        const key = 'user-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6) + '-' + k.slice(-4);
-        added = key;
-        return { key, title: v.title || k, text: v.text, group: '', created: Date.now() };
-      });
-      setUserFiles((prev) => [...prev, ...next]);
-      if (added) { setCustom(null); setFileKey(added); setSel({ gi: 0, pi: 0 }); setModal(null); }
-    };
-    reader.readAsText(file);
-  }
-
   function importFiles(fileList) {
     setLoadErr(null);
     const all = [...fileList];
-    // Detect bundles + exported HTML first
+    // Detect bundles first
     const bundleFiles = all.filter(f => f.name.endsWith('.compose-bundle.json'));
-    const htmlFiles = all.filter(f => /\.html?$/i.test(f.name) || f.type === 'text/html');
-    const exerciseFiles = all.filter(f => !bundleFiles.includes(f) && !htmlFiles.includes(f));
+    const exerciseFiles = all.filter(f => !bundleFiles.includes(f));
     bundleFiles.forEach(f => importBundle(f));
-    htmlFiles.forEach(f => importHtmlFile(f));
     if (!exerciseFiles.length) return;
     const files = exerciseFiles.filter((f) => /\.(json|txt|lbd|lc)$/i.test(f.name) || f.type.startsWith('text') || f.type === 'application/json');
     if (files.length === 0) { setLoadErr('Please choose .compose.json, .txt or .lbd files.'); return; }
@@ -1590,7 +1566,7 @@ function App() {
         // but only when focus is outside a field, so a field-level Escape
         // (e.g. cancelling a rename) keeps its own meaning. The notes
         // editor autosaves to localStorage, so closing loses nothing.
-        if (!typing && (modal === 'files' || modal === 'export' || modal === 'reading')) { e.preventDefault(); setModal(null); return; }
+        if (!typing && (modal === 'files' || modal === 'reading')) { e.preventDefault(); setModal(null); return; }
       }
       if (typing) return;
       if ((e.metaKey || e.ctrlKey) && e.key === '\\') {
@@ -1633,7 +1609,7 @@ function App() {
             <div className="empty-stage-glyph">λ</div>
             <h2>{isStudentBuild ? 'No worksheet loaded yet' : 'No worksheet open'}</h2>
             <p>{isStudentBuild
-              ? 'Load the worksheet your instructor shared with you — a .compose.json, an exported .html, or a bundle — to begin.'
+              ? 'Load the worksheet your instructor shared with you — a .compose.json worksheet or a .compose-bundle.json bundle — to begin.'
               : 'Author a worksheet in the exercise editor, or import one to begin.'}</p>
             <div className="empty-stage-actions">
               <button className="btn btn-primary" onClick={() => { setLoadErr(null); if (fileInput.current) fileInput.current.click(); }}>⤓ Load a worksheet</button>
@@ -2009,9 +1985,6 @@ function App() {
                   <button type="button" className="sb-row" onClick={() => composeExportProgress()}><span className="sb-ico" aria-hidden="true">⤓</span><span className="sb-row-label">Save progress to a file</span></button>
                   <button type="button" className="sb-row" onClick={() => { if (progressFileInput.current) progressFileInput.current.click(); }}><span className="sb-ico" aria-hidden="true">⤒</span><span className="sb-row-label">Restore progress from a file…</span></button>
                   <button type="button" className="sb-row" disabled={exporting} onClick={exportDerivation}><span className="sb-ico" aria-hidden="true">⧉</span><span className="sb-row-label">{exporting ? 'Rendering…' : 'Export derivation (PNG)'}</span></button>
-                  {!isStudentBuild && !(BID.indexOf('hosted') === 0 && BID !== 'hosted-sandbox') && (
-                    <button type="button" className="sb-row" onClick={() => setModal('export')}><span className="sb-ico" aria-hidden="true">↓</span><span className="sb-row-label">Export assignment</span></button>
-                  )}
                 </div>
               ))}
               {isFullBuild && sbSection('help', 'ⓘ', 'Guide & help', null, (
@@ -2846,7 +2819,7 @@ function App() {
     <div className={'app' + (isMobile ? ' is-mobile' : '')}
       onDragOver={!hasContent ? (e) => { e.preventDefault(); } : undefined}
       onDrop={!hasContent ? (e) => { e.preventDefault(); importFiles(e.dataTransfer.files); } : undefined}>
-      <input ref={fileInput} type="file" accept=".json,.compose.json,.compose-bundle.json,.txt,.lbd,.lc,.html,.htm,application/json,text/plain,text/html" multiple style={{ display: 'none' }}
+      <input ref={fileInput} type="file" accept=".json,.compose.json,.compose-bundle.json,.txt,.lbd,.lc,application/json,text/plain" multiple style={{ display: 'none' }}
         onChange={(e) => { importFiles(e.target.files); e.target.value = ''; }} />
       <input ref={progressFileInput} type="file" accept=".json,application/json" style={{ display: 'none' }}
         onChange={(e) => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) composeImportProgress(f); }} />
@@ -3013,7 +2986,7 @@ function App() {
                 ? <span className="ffs-err">{loadErr}</span>
                 : isStudentBuild
                   ? <span>Drag a worksheet onto this panel, or <button className="ffs-load-btn" onClick={() => { setLoadErr(null); if (fileInput.current) fileInput.current.click(); }}>choose a file…</button></span>
-                  : <span>Drag a <code className="mono">.compose.json</code>, exported <code className="mono">.html</code>, or <code className="mono">.compose-bundle.json</code> onto this panel to load it — or use <b>Author → Import worksheet…</b> in the sidebar.</span>}
+                  : <span>Drag a <code className="mono">.compose.json</code> or <code className="mono">.compose-bundle.json</code> onto this panel to load it — or use <b>Author → Import worksheet…</b> in the sidebar.</span>}
             </div>
           </div>
         </div>
@@ -3056,10 +3029,6 @@ function App() {
         </button>
       )}
 
-
-      {modal === 'export' && (
-        <ExportModal library={window.LCData.LIBRARY} userSets={userLib} onClose={() => setModal(null)} />
-      )}
 
       <TweaksPanel title="Tweaks">
         <TweakSection label="Notation" />

@@ -233,12 +233,10 @@ async function main() {
   // W16 — scratchpad + PWA (S11)
   page = (await req('GET', `/v/${SLUG}`, { raw: true })).text;
   contains('scratchpad shipped to students', page, 'Scratchpad');
-  // S37 — the serve-time token substitution must NOT hit export.jsx's own
-  // token string (it used to, breaking the whole export.jsx script block on
-  // every /v page: composeDownload & co. vanished). The tokens are now
-  // assembled with a fold-proof array join.
-  lacks('served /v page does not corrupt export.jsx (S37)', page, 'EX_IDENTITY_TOKEN = "window.');
-  contains('export.jsx token stays split in served pages (S37)', page, '"/*__COMPOSE_", "IDENTITY__*/"');
+  // S39 — export.jsx is now just the download helpers; the served page must
+  // still ship a live composeDownload (worksheet/progress .json downloads).
+  contains('served /v page ships composeDownload (S39)', page, 'window.composeDownload = composeDownload');
+  lacks('served /v page has no export modal (S39)', page, 'ExportModal');
   contains('service-worker registration shipped', page, 'serviceWorker.register');
   r = await req('GET', '/sw.js', { raw: true });
   expect('sw.js served', r.status === 200, r.status);
@@ -291,17 +289,19 @@ async function main() {
   contains('/editor is an instructor surface', r.text, '"role":"instructor"');
   lacks('/editor has no hosted-version context', r.text, 'window.COMPOSE_HOSTED = ');
   lacks('/editor does not ship the PocketBase SDK', r.text, 'class ClientResponseError');
-  // S13.3 — self-contained exports: published template + embedded dist copy
+  // S39 — exercise-HTML export removed: the tokenized template is no longer
+  // published at /template.html (the SPA fallback may answer 200 with the
+  // root page, so assert on content, not status), and no build embeds an
+  // export template or the HTML importer.
   r = await req('GET', '/template.html', { raw: true });
-  contains('template published for hosted export', r.text, '/*__COMPOSE_IDENTITY__*/');
-  contains('template carries the library token', r.text, '/*__COMPOSE_LIBRARY__*/');
-  lacks('template pulls nothing from unpkg', r.text, 'unpkg.com');
+  lacks('template no longer published (S39)', r.text, '/*__COMPOSE_IDENTITY__*/');
   {
     const distDir = path.join(HERE, '..', 'dist');
     const t = fs.readFileSync(path.join(distDir, 'COMPOSE-teacher.html'), 'utf8');
     const st = fs.readFileSync(path.join(distDir, 'COMPOSE-student.html'), 'utf8');
-    ok('teacher dist embeds the export template', t.includes('window.COMPOSE_TEMPLATE = '), 'missing COMPOSE_TEMPLATE embed');
-    ok('student dist stays lean (no export template)', !st.includes('window.COMPOSE_TEMPLATE = '), 'unexpected COMPOSE_TEMPLATE embed');
+    ok('teacher dist carries no export template (S39)', !t.includes('window.COMPOSE_TEMPLATE = '), 'unexpected COMPOSE_TEMPLATE embed');
+    ok('student dist carries no export template (S39)', !st.includes('window.COMPOSE_TEMPLATE = '), 'unexpected COMPOSE_TEMPLATE embed');
+    ok('teacher dist has no HTML importer (S39)', !t.includes('importHtmlFile'), 'unexpected importHtmlFile');
   }
 
   r = await req('GET', '/cc/', { raw: true });

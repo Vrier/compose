@@ -11,7 +11,7 @@ const E = window.LC;
 const LC_NS = (function () {
   try {
     const a = window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment;
-    if (a && a.island) return a.island + ':';            // exported assignment → its own island
+    if (a && a.island) return a.island + ':';            // assignment (hosted /v page, curated library) → its own island
     const b = window.COMPOSE_BUILD && window.COMPOSE_BUILD.id;
     return b ? ('build-' + b + ':') : '';                 // each prebuilt build keeps its own store
   } catch (e) { return ''; }

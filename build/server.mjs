@@ -66,8 +66,8 @@ const templateEdit = assemblePage(parts, {
 // nothing preloaded, normal file loading. The full libraries live at the
 // curated /cc, /hk and /papers entry points below.
 /* S15: shared head metadata for hosted pages — description, canonical,
-   OpenGraph, favicon. The TEMPLATE deliberately gets none of this (exports
-   and /v/:slug pages must not carry a wrong canonical). */
+   OpenGraph, favicon. The TEMPLATE deliberately gets none of this
+   (/v/:slug pages must not carry a wrong canonical). */
 const metaFor = (title, desc, urlPath) => [
   '<meta name="description" content="' + desc + '" />',
   '<link rel="canonical" href="https://compose.tstephen.com' + urlPath + '" />',
@@ -87,7 +87,7 @@ const rootIdentityJS =
   'window.COMPOSE_CONFIG = ' + JSON.stringify({ role: 'student', assignment: null }) + ';';
 
 // N2 (S30): site pages vendor the QR lib so the in-app "My versions" Share
-// modal can render codes (window.QRCode). Exports and /v/ pages don't get it.
+// modal can render codes (window.QRCode). /v/ pages don't get it.
 const rootPage = assemblePage(parts, {
   title: 'COMPOSE',
   identityJS: rootIdentityJS,
@@ -100,7 +100,7 @@ const rootPage = assemblePage(parts, {
 /* ---- 3a · Public editor sandbox (S13.2) ---------------------------------
    /editor — the full authoring surface with NO account and NO server side:
    no SDK, no __COMPOSE_HOSTED__ context, so Save-to-server / fork / edit
-   never render; "Export assignment" (JSON download) is the only way out.
+   never render; worksheets leave as .compose.json downloads.
    Opens in teacher mode with the Getting Started sample (id gates in
    app.jsx key off 'hosted-sandbox'). */
 const sandboxIdentityJS =
@@ -536,7 +536,6 @@ const sitemapXml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http:
 const robotsTxt = 'User-agent: *\nAllow: /\nDisallow: /dash/\nDisallow: /edit/\nDisallow: /_/\nSitemap: ' + SITE + '/sitemap.xml\n';
 
 write('template.html', template);
-write(path.join('pb_public', 'template.html'), template); // hosted export (S13.3): /editor fetches + substitutes it client-side
 write('template-edit.html', templateEdit);
 write('library.json', JSON.stringify(libraryMap(SRC)));
 write(path.join('pb_public', 'index.html'), rootPage);

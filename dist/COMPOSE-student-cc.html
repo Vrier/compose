@@ -952,103 +952,6 @@ kbd { font-family: var(--mono); font-size: 0.88em; background: var(--panel-2); b
   color: var(--ink-soft); transition: border-color .15s, color .15s;
 }
 .bundle-load-hint { font-size: 11.5px; color: var(--muted); padding: 8px 14px; text-align: center; }
-.export-lock-note {
-  display: flex; align-items: flex-start; gap: 7px;
-  font-size: 12px; line-height: 1.45; color: var(--accent-ink);
-  background: var(--accent-soft); border: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
-  border-radius: 9px; padding: 9px 12px; margin-top: 10px;
-}
-
-/* ---- Export modal (matches editor shell style) -------------------------- */
-.export-shell {
-  width: min(900px, 96vw); height: min(680px, 90vh);
-  display: flex; flex-direction: column;
-  background: var(--panel); border-radius: 14px;
-  box-shadow: 0 24px 64px rgba(0,0,0,.22); overflow: hidden;
-}
-.export-columns {
-  display: flex; flex: 1; min-height: 0;
-}
-.export-picker {
-  width: 55%; border-right: 1px solid var(--line);
-  display: flex; flex-direction: column; overflow: hidden;
-}
-.export-picker-head {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 18px 10px; border-bottom: 1px solid var(--line);
-  flex-shrink: 0;
-}
-.export-count-badge {
-  font-size: 12px; color: var(--accent); font-weight: 600;
-  background: var(--accent-soft); padding: 2px 10px; border-radius: 20px;
-}
-.export-picker-scroll {
-  flex: 1; overflow-y: auto; padding: 8px 0;
-}
-.export-ch-group { border-bottom: 1px solid var(--line); }
-.export-ch-head {
-  display: flex; align-items: center; gap: 6px;
-  padding: 7px 18px; cursor: pointer; user-select: none;
-  font-size: 12.5px; font-weight: 600; color: var(--ink);
-}
-.export-ch-head:hover { background: var(--hover); }
-.export-ch-arrow { font-size: 10px; color: var(--muted); width: 12px; flex-shrink: 0; }
-.export-ch-label { flex: 1; }
-.export-ch-all {
-  font-size: 13px; width: 22px; height: 22px; border-radius: 50%;
-  border: 1px solid var(--line); background: var(--panel-2);
-  color: var(--accent); cursor: pointer; display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; padding: 0;
-}
-.export-ch-count { font-size: 11px; color: var(--muted); min-width: 28px; text-align: right; }
-.export-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 5px 18px 5px 32px; cursor: pointer;
-  font-size: 13px; color: var(--ink);
-}
-.export-item:hover { background: var(--hover); }
-.export-item.on { color: var(--accent); }
-.export-item-check {
-  width: 16px; height: 16px; border: 1.5px solid var(--line); border-radius: 4px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px; flex-shrink: 0; color: var(--ink); background: var(--panel-2);
-}
-.export-item.on .export-item-check {
-  background: var(--accent); border-color: var(--accent); color: #fff;
-}
-.export-item-title { flex: 1; }
-.export-item-count { font-size: 11px; color: var(--muted); }
-.export-summary {
-  flex: 1; display: flex; flex-direction: column; padding: 18px;
-  overflow-y: auto; background: var(--panel-2);
-}
-.export-summary-title {
-  font-size: 18px; font-weight: 600; color: var(--ink); margin: 8px 0 14px;
-  font-family: var(--serif); line-height: 1.3;
-}
-.export-empty-hint {
-  font-size: 13px; color: var(--muted); line-height: 1.6;
-  margin-top: 16px;
-}
-.export-summary-list { flex: 1; overflow-y: auto; }
-.export-summary-row {
-  display: flex; align-items: baseline; gap: 6px;
-  padding: 4px 0; font-size: 13px; color: var(--ink);
-  border-bottom: 1px solid var(--line-soft);
-}
-.export-summary-dot { color: var(--accent); flex-shrink: 0; }
-.export-summary-name { flex: 1; }
-.export-summary-n { font-size: 11px; color: var(--muted); }
-.export-summary-footer {
-  margin-top: auto; padding-top: 14px; display: flex; flex-direction: column; gap: 8px;
-}
-.export-summary-meta { font-size: 12px; color: var(--muted); }
-.export-err { font-size: 12.5px; color: var(--bad); background: var(--bad-soft); padding: 8px 12px; border-radius: 6px; }
-.export-status-msg { font-size: 12.5px; color: var(--accent); }
-.export-btn { width: 100%; padding: 11px; font-size: 14px; justify-content: center; border-radius: 8px; }
-.export-spinner { display: inline-block; animation: spin 1s linear infinite; margin-right: 6px; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.fe-placeholder { color: var(--muted); font-style: italic; font-weight: 400; font-size: 14px; }
 
 /* ---- Dark mode overlay ------------------------------------------------- */
 /* Parchment dark: warm slate */
@@ -1406,46 +1309,12 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
   background: var(--panel); color: var(--ink);
 }
 .ue-row { display: flex; flex-direction: column; }
-.ue-exp-menu {
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-  margin: 0 12px 6px 24px; padding: 8px 10px;
-  background: var(--accent-soft); border: 1px solid color-mix(in oklab, var(--accent) 30%, transparent);
-  border-radius: 9px;
-}
-.ue-exp-label { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent-ink); }
-.ue-exp-opt {
-  font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer;
-  display: flex; align-items: baseline; gap: 6px;
-  border: 1px solid var(--line); background: var(--panel); color: var(--ink);
-  border-radius: 7px; padding: 5px 11px; transition: all .14s;
-}
-.ue-exp-opt:hover { border-color: var(--accent); color: var(--accent-ink); }
-.ue-exp-ext { font-size: 10.5px; font-weight: 400; color: var(--muted); }
 
 /* save-to-library button in editor header */
 .fe-save-lib-btn { font-size: 13px !important; border-color: var(--accent) !important; color: var(--accent-ink) !important; }
 .fe-save-lib-btn:hover:not(:disabled) { background: var(--accent-soft) !important; }
 .fe-save-lib-btn.saved { color: var(--good) !important; border-color: var(--good) !important; background: var(--good-soft) !important; }
 
-/* My-exercises group in the export picker */
-.export-user-group { border-top: 1px solid var(--line); }
-.export-user-head { padding: 8px 18px 4px; }
-.export-user-head .export-ch-label { font-size: 12.5px; font-weight: 700; color: var(--accent-ink); }
-.export-ugroup-head {
-  display: flex; align-items: center; gap: 6px; padding: 5px 18px 5px 24px;
-  font-size: 12px; font-weight: 600; color: var(--ink-soft);
-}
-.export-ugroup-name { flex: 1; }
-/* export format segmented control */
-.export-format { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.export-format-label { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
-.export-seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--panel-2); }
-.export-seg-btn {
-  font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer;
-  border: 0; background: transparent; color: var(--ink-soft); padding: 6px 16px; transition: all .14s;
-}
-.export-seg-btn + .export-seg-btn { border-left: 1px solid var(--line); }
-.export-seg-btn.on { background: var(--accent); color: #fff; }
 
 /* =========================================================================
    MOBILE / RESPONSIVE  (shared by all four builds)
@@ -7623,17 +7492,6 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
     a.download = (title || "exercise").toLowerCase().replace(/[^a-z0-9]+/g, "-") + ".compose.json";
     a.click();
   }
-  async function doExportHtml() {
-    const text = generateJSON(state);
-    const t = (title || "").trim() || "exercise";
-    const key = "user-ex-" + Date.now().toString(36);
-    try {
-      const html = await window.buildStudentHtml({ title: t, sets: [key], extraFiles: { [key]: { title: t, text } } });
-      window.composeDownload(window.composeSlug(t) + ".html", html, "text/html");
-    } catch (e) {
-      window.alert("Could not build HTML: " + (e.message || e));
-    }
-  }
   function doImport() {
     const inp = document.createElement("input");
     inp.type = "file";
@@ -7685,7 +7543,7 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
       title: "Load this worksheet into the app as a selectable exercise and open it for testing"
     },
     "\u25B6 Load into app"
-  ), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => setShowReading(true), title: "Attach or edit notes (Markdown) and link sections to exercises" }, "\u{1F4DD} Notes", reading.markdown && reading.markdown.trim() ? /* @__PURE__ */ React.createElement("span", { className: "fe-reading-dot" }) : null), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost fe-import-btn", onClick: doImport }, "\u2B06 Import"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost fe-export-btn", onClick: doExport }, "\u2B07 .json"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost fe-export-btn", onClick: doExportHtml }, "\u2B07 .html"), window.COMPOSE_HOSTED && /* @__PURE__ */ React.createElement(
+  ), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => setShowReading(true), title: "Attach or edit notes (Markdown) and link sections to exercises" }, "\u{1F4DD} Notes", reading.markdown && reading.markdown.trim() ? /* @__PURE__ */ React.createElement("span", { className: "fe-reading-dot" }) : null), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost fe-import-btn", onClick: doImport }, "\u2B06 Import"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost fe-export-btn", onClick: doExport }, "\u2B07 .json"), window.COMPOSE_HOSTED && /* @__PURE__ */ React.createElement(
     "button",
     {
       className: "btn-primary fe-export-btn",
@@ -7754,8 +7612,6 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
 function UserExerciseManager({ items, fileKey, custom, instructor, onOpen, onRename, onSetGroup, onEdit, onDelete, onClearAll, onNew }) {
   const [renaming, setRenaming] = useState(null);
   const [draft, setDraft] = useState("");
-  const [expFor, setExpFor] = useState(null);
-  const [busy, setBusy] = useState(null);
   if (!instructor && (!items || items.length === 0)) return null;
   const groupNames = [];
   items.forEach((it) => {
@@ -7776,20 +7632,7 @@ function UserExerciseManager({ items, fileKey, custom, instructor, onOpen, onRen
     } else onSetGroup(key, val);
   }
   function exportJson(it) {
-    setExpFor(null);
     window.composeDownload(window.composeSlug(it.title) + ".compose.json", it.text, "application/json");
-  }
-  async function exportHtml(it) {
-    setExpFor(null);
-    setBusy(it.key);
-    try {
-      const html = await window.buildStudentHtml({ title: it.title, sets: [it.key], extraFiles: { [it.key]: { title: it.title, text: it.text } } });
-      window.composeDownload(window.composeSlug(it.title) + ".html", html, "text/html");
-    } catch (e) {
-      window.alert("Could not build HTML: " + (e.message || e));
-    } finally {
-      setBusy(null);
-    }
   }
   function renderItem(it) {
     const counts = it.set.groups.reduce((a, g) => a + g.problems.length, 0);
@@ -7811,10 +7654,10 @@ function UserExerciseManager({ items, fileKey, custom, instructor, onOpen, onRen
         },
         onBlur: () => commitRename(it.key)
       }
-    ) : /* @__PURE__ */ React.createElement("div", { className: "fc-title", style: { cursor: "pointer" } }, it.title, /* @__PURE__ */ React.createElement("span", { className: "fc-tag" }, "created")), /* @__PURE__ */ React.createElement("div", { className: "fc-meta" }, counts, " exercise", counts !== 1 ? "s" : "", " \xB7 ", it.set.lexList.length, " entries")), instructor && /* @__PURE__ */ React.createElement("div", { className: "ue-actions", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("select", { className: "ue-group-sel", value: it.group || "", onChange: (e) => pickGroup(it.key, e.target.value), title: "Assign to a group" }, /* @__PURE__ */ React.createElement("option", { value: "" }, "Ungrouped"), groupNames.map((g) => /* @__PURE__ */ React.createElement("option", { key: g, value: g }, g)), /* @__PURE__ */ React.createElement("option", { value: "__new__" }, "\uFF0B New group\u2026")), /* @__PURE__ */ React.createElement("button", { className: "ue-btn", title: "Export\u2026", disabled: busy === it.key, onClick: () => setExpFor(expFor === it.key ? null : it.key) }, busy === it.key ? "\u27F3" : "\u2B07"), /* @__PURE__ */ React.createElement("button", { className: "ue-btn", title: "Rename", onClick: () => {
+    ) : /* @__PURE__ */ React.createElement("div", { className: "fc-title", style: { cursor: "pointer" } }, it.title, /* @__PURE__ */ React.createElement("span", { className: "fc-tag" }, "created")), /* @__PURE__ */ React.createElement("div", { className: "fc-meta" }, counts, " exercise", counts !== 1 ? "s" : "", " \xB7 ", it.set.lexList.length, " entries")), instructor && /* @__PURE__ */ React.createElement("div", { className: "ue-actions", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("select", { className: "ue-group-sel", value: it.group || "", onChange: (e) => pickGroup(it.key, e.target.value), title: "Assign to a group" }, /* @__PURE__ */ React.createElement("option", { value: "" }, "Ungrouped"), groupNames.map((g) => /* @__PURE__ */ React.createElement("option", { key: g, value: g }, g)), /* @__PURE__ */ React.createElement("option", { value: "__new__" }, "\uFF0B New group\u2026")), /* @__PURE__ */ React.createElement("button", { className: "ue-btn", title: "Download .compose.json", onClick: () => exportJson(it) }, "\u2B07"), /* @__PURE__ */ React.createElement("button", { className: "ue-btn", title: "Rename", onClick: () => {
       setRenaming(it.key);
       setDraft(it.title);
-    } }, "\u270E"), /* @__PURE__ */ React.createElement("button", { className: "ue-btn", title: "Edit in exercise editor", onClick: () => onEdit(it.key) }, "\u2710"), /* @__PURE__ */ React.createElement("button", { className: "fc-remove", title: "Delete", onClick: () => onDelete(it.key) }, "\u2715"))), expFor === it.key && instructor && /* @__PURE__ */ React.createElement("div", { className: "ue-exp-menu" }, /* @__PURE__ */ React.createElement("span", { className: "ue-exp-label" }, "Export as"), /* @__PURE__ */ React.createElement("button", { className: "ue-exp-opt", onClick: () => exportJson(it) }, "JSON ", /* @__PURE__ */ React.createElement("span", { className: "ue-exp-ext" }, ".compose.json")), /* @__PURE__ */ React.createElement("button", { className: "ue-exp-opt", onClick: () => exportHtml(it) }, "HTML ", /* @__PURE__ */ React.createElement("span", { className: "ue-exp-ext" }, "standalone, playable"))));
+    } }, "\u270E"), /* @__PURE__ */ React.createElement("button", { className: "ue-btn", title: "Edit in exercise editor", onClick: () => onEdit(it.key) }, "\u2710"), /* @__PURE__ */ React.createElement("button", { className: "fc-remove", title: "Delete", onClick: () => onDelete(it.key) }, "\u2715"))));
   }
   return /* @__PURE__ */ React.createElement("div", { className: "fc-chapter ue-chapter" }, /* @__PURE__ */ React.createElement("div", { className: "ue-head" }, /* @__PURE__ */ React.createElement("span", { className: "fc-ch-label" }, "\u270E"), "My worksheets", /* @__PURE__ */ React.createElement("span", { className: "fc-ch-count" }, items.length), instructor && /* @__PURE__ */ React.createElement("span", { className: "ue-head-actions" }, /* @__PURE__ */ React.createElement("button", { className: "ue-new-btn", title: "Author a new worksheet", onClick: onNew }, "+ New"), items.length > 0 && /* @__PURE__ */ React.createElement("button", { className: "ue-clear-btn", title: "Remove all created/loaded worksheets", onClick: onClearAll }, "Clear all"))), items.length === 0 && instructor && /* @__PURE__ */ React.createElement("div", { className: "ue-empty" }, "Nothing here yet. Click ", /* @__PURE__ */ React.createElement("b", null, "+ New"), " to author an exercise in the editor, or drop a ", /* @__PURE__ */ React.createElement("code", { className: "mono" }, ".compose.json"), " / ", /* @__PURE__ */ React.createElement("code", { className: "mono" }, ".txt"), " file onto this panel."), groupNames.map((g) => {
     const list = items.filter((it) => (it.group || "").trim() === g);
@@ -9224,193 +9067,6 @@ function RulesModal({ allowed, setAllowed, toggleRule, toggleShift, lib, custom,
 
 </script>
 <script>
-var EX_IDENTITY_TOKEN = ["/*__COMPOSE_", "IDENTITY__*/"].join("");
-var EX_LIBRARY_TOKEN = ["/*__COMPOSE_", "LIBRARY__*/"].join("");
-function exEsc(s) {
-  return String(s).replace(/<\/(script|style)/gi, "<\\/$1");
-}
-async function exGetTemplate() {
-  if (window.COMPOSE_TEMPLATE) return window.COMPOSE_TEMPLATE;
-  let res = null;
-  try {
-    res = await fetch("/template.html", { cache: "no-store" });
-  } catch (e) {
-  }
-  if (!res || !res.ok) throw new Error("This build cannot export assignments (no page template available).");
-  const t = await res.text();
-  if (t.indexOf(EX_IDENTITY_TOKEN) < 0 || t.indexOf(EX_LIBRARY_TOKEN) < 0) {
-    throw new Error("This build cannot export assignments (page template not published).");
-  }
-  return t;
-}
-async function buildStudentHtml({ title, sets, island, extraFiles, onProgress }) {
-  const prog = onProgress || (() => {
-  });
-  prog("Loading page template\u2026");
-  const template = await exGetTemplate();
-  prog("Bundling exercises\u2026");
-  const FILES = window.LC_FILES || {};
-  const extra = extraFiles || {};
-  const inlineFiles = {};
-  for (const key of sets) {
-    if (FILES[key]) inlineFiles[key] = { title: FILES[key].title, text: FILES[key].text };
-    else if (extra[key]) inlineFiles[key] = { title: extra[key].title, text: extra[key].text };
-  }
-  const builtinChapters = window.LCData && window.LCData.CHAPTERS || [];
-  const covered = (key) => builtinChapters.some((c) => c && c.prefix && (key === c.prefix || key.indexOf(c.prefix + ".") === 0 || key.indexOf(c.prefix + "-") === 0));
-  const chaptersExtra = [];
-  for (const key of sets) {
-    if (inlineFiles[key] && !covered(key)) chaptersExtra.push({ prefix: key, label: "\u2605", title: inlineFiles[key].title || key });
-  }
-  prog("Assembling file\u2026");
-  const identity = "window.COMPOSE_BUILD = " + JSON.stringify({
-    id: "export",
-    role: "student",
-    preload: "inline",
-    label: title || "COMPOSE",
-    version: window.COMPOSE_VERSION || "",
-    date: window.COMPOSE_DATE || ""
-  }) + ";\nwindow.COMPOSE_CONFIG = " + JSON.stringify({
-    role: "student",
-    assignment: { title: title || "Assignment", sets, island, mode: "practice" }
-  }) + ";\nwindow.COMPOSE_CHAPTERS_EXTRA = " + JSON.stringify(chaptersExtra) + ";";
-  const library = "window.LC_FILES_INLINE = " + JSON.stringify(inlineFiles) + ";";
-  let html = template.split(EX_IDENTITY_TOKEN).join(exEsc(identity));
-  html = html.split(EX_LIBRARY_TOKEN).join(exEsc(library));
-  const esc = (x) => String(x).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  if (html.indexOf("<title>COMPOSE</title>") >= 0 && title) {
-    html = html.split("<title>COMPOSE</title>").join("<title>" + esc(title) + " \u2014 COMPOSE</title>");
-  }
-  return html;
-}
-function ExportModal({ library, userSets, onClose }) {
-  const [title, setTitle] = React.useState("Problem Set 1");
-  const [chosen, setChosen] = React.useState(() => ({}));
-  const [building, setBuilding] = React.useState(false);
-  const [status, setStatus] = React.useState("");
-  const [err, setErr] = React.useState(null);
-  const [openCh, setOpenCh] = React.useState(() => ({}));
-  const [format, setFormat] = React.useState("html");
-  const builtin = library.filter((l) => !l.user);
-  const userList = userSets || [];
-  const byKey = React.useMemo(() => {
-    const m = {};
-    builtin.forEach((l) => m[l.key] = l);
-    userList.forEach((l) => m[l.key] = l);
-    return m;
-  }, [library, userSets]);
-  const selectedKeys = Object.keys(chosen).filter((k) => chosen[k] && byKey[k]);
-  const selectedSets = selectedKeys.map((k) => byKey[k]);
-  function toggle(key) {
-    setChosen((c) => ({ ...c, [key]: !c[key] }));
-  }
-  function chooseChapter(prefix, on) {
-    setChosen((c) => {
-      const n = { ...c };
-      builtin.forEach((l) => {
-        if (l.key.startsWith(prefix + ".") || l.key.startsWith(prefix + "-")) n[l.key] = on;
-      });
-      return n;
-    });
-  }
-  function chooseKeys(keys, on) {
-    setChosen((c) => {
-      const n = { ...c };
-      keys.forEach((k) => n[k] = on);
-      return n;
-    });
-  }
-  const userGroups = React.useMemo(() => {
-    const map = {};
-    userList.forEach((l) => {
-      const g = (l.group || "").trim() || "Ungrouped";
-      (map[g] = map[g] || []).push(l);
-    });
-    return Object.entries(map).sort((a, b) => a[0] === "Ungrouped" ? 1 : b[0] === "Ungrouped" ? -1 : a[0].localeCompare(b[0]));
-  }, [userSets]);
-  const chapters = window.LCData.CHAPTERS || [];
-  const grouped = chapters.map((ch) => ({
-    ch,
-    items: builtin.filter((l) => l.key.startsWith(ch.prefix + ".") || l.key.startsWith(ch.prefix + "-"))
-  })).filter((g) => g.items.length);
-  function countEx(l) {
-    try {
-      return l.set.groups.reduce((a, g) => a + (g.problems || []).length, 0);
-    } catch {
-      return "?";
-    }
-  }
-  function setText(l) {
-    return l.user && l.text ? l.text : window.LC_FILES && window.LC_FILES[l.key] && window.LC_FILES[l.key].text || null;
-  }
-  async function build() {
-    if (!selectedKeys.length) {
-      setErr("Choose at least one worksheet.");
-      return;
-    }
-    setErr(null);
-    setBuilding(true);
-    try {
-      const safe = (title.trim() || "compose-set").replace(/[^a-z0-9]+/gi, "-").toLowerCase();
-      if (format === "json") {
-        if (selectedSets.length === 1) {
-          const t = setText(selectedSets[0]);
-          if (!t) throw new Error("Could not read that worksheet.");
-          window.composeDownload(safe + ".compose.json", t, "application/json");
-          setStatus("Done \u2014 " + safe + ".compose.json saved.");
-        } else {
-          const exercises = selectedSets.map((l) => ({ key: l.key, title: l.title, text: setText(l) })).filter((e) => e.text);
-          const bundle = JSON.stringify({ compose_bundle: 1, title: title.trim() || "COMPOSE set", exercises }, null, 2);
-          window.composeDownload(safe + ".compose-bundle.json", bundle, "application/json");
-          setStatus("Done \u2014 " + safe + ".compose-bundle.json saved.");
-        }
-        setBuilding(false);
-        return;
-      }
-      const island = "asg-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7);
-      const extraFiles = {};
-      selectedSets.forEach((l) => {
-        if (l.user && l.text) extraFiles[l.key] = { title: l.title, text: l.text };
-      });
-      const html = await buildStudentHtml({
-        title: title.trim() || "Assignment",
-        sets: selectedKeys,
-        island,
-        extraFiles,
-        onProgress: setStatus
-      });
-      setStatus("Downloading\u2026");
-      window.composeDownload("compose-" + safe + ".html", html, "text/html");
-      setStatus("Done \u2014 compose-" + safe + ".html saved.");
-    } catch (e) {
-      setErr(e.message || String(e));
-    } finally {
-      setBuilding(false);
-    }
-  }
-  return /* @__PURE__ */ React.createElement("div", { className: "modal-backdrop", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "fe-shell export-shell", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("div", { className: "fe-header" }, /* @__PURE__ */ React.createElement("div", { className: "fe-header-left" }, /* @__PURE__ */ React.createElement("div", { className: "fe-title-row" }, /* @__PURE__ */ React.createElement("span", { className: "fe-eyebrow" }, "Export"), /* @__PURE__ */ React.createElement(
-    "input",
-    {
-      className: "fe-title-input",
-      value: title,
-      onChange: (e) => setTitle(e.target.value),
-      placeholder: "Assignment name\u2026"
-    }
-  )), /* @__PURE__ */ React.createElement("div", { className: "fe-sub" }, format === "html" ? "Generates a locked student HTML with only the chosen exercises and their readings." : "Generates a re-importable .compose.json (one set) or .compose-bundle.json (several) \u2014 drag it back in to load.")), /* @__PURE__ */ React.createElement("button", { className: "fe-close", onClick: onClose }, "\u2715")), /* @__PURE__ */ React.createElement("div", { className: "export-columns" }, /* @__PURE__ */ React.createElement("div", { className: "export-picker fe-panel" }, /* @__PURE__ */ React.createElement("div", { className: "export-picker-head" }, /* @__PURE__ */ React.createElement("span", { className: "fe-section-head", style: { margin: 0 } }, "Exercises"), /* @__PURE__ */ React.createElement("span", { className: "export-count-badge" }, selectedKeys.length, " selected")), /* @__PURE__ */ React.createElement("div", { className: "export-picker-scroll" }, grouped.map(({ ch, items }) => {
-    const onN = items.filter((l) => chosen[l.key]).length;
-    const allOn = onN === items.length;
-    const isOpen = openCh[ch.prefix] !== false;
-    return /* @__PURE__ */ React.createElement("div", { className: "export-ch-group", key: ch.prefix }, /* @__PURE__ */ React.createElement("div", { className: "export-ch-head", onClick: () => setOpenCh((o) => ({ ...o, [ch.prefix]: !isOpen })) }, /* @__PURE__ */ React.createElement("span", { className: "export-ch-arrow" }, isOpen ? "\u25BE" : "\u25B8"), /* @__PURE__ */ React.createElement("span", { className: "export-ch-label" }, ch.label, " \xB7 ", ch.title), /* @__PURE__ */ React.createElement("button", { className: "fe-sg-all export-ch-all", onClick: (ev) => {
-      ev.stopPropagation();
-      chooseChapter(ch.prefix, !allOn);
-    } }, allOn ? "\u2212" : onN > 0 ? "\u25D0" : "+"), /* @__PURE__ */ React.createElement("span", { className: "export-ch-count" }, onN, "/", items.length)), isOpen && items.map((l) => /* @__PURE__ */ React.createElement("label", { className: "export-item" + (chosen[l.key] ? " on" : ""), key: l.key, onClick: () => toggle(l.key) }, /* @__PURE__ */ React.createElement("span", { className: "export-item-check" + (chosen[l.key] ? " checked" : "") }, chosen[l.key] ? "\u2713" : ""), /* @__PURE__ */ React.createElement("span", { className: "export-item-title" }, l.title), /* @__PURE__ */ React.createElement("span", { className: "export-item-count" }, countEx(l)))));
-  }), userList.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "export-ch-group export-user-group" }, /* @__PURE__ */ React.createElement("div", { className: "export-user-head" }, /* @__PURE__ */ React.createElement("span", { className: "export-ch-label" }, "\u270E My worksheets")), userGroups.map(([gname, list]) => {
-    const keys = list.map((l) => l.key);
-    const onN = keys.filter((k) => chosen[k]).length;
-    const allOn = onN === keys.length;
-    return /* @__PURE__ */ React.createElement("div", { className: "export-ugroup", key: gname }, /* @__PURE__ */ React.createElement("div", { className: "export-ugroup-head" }, /* @__PURE__ */ React.createElement("span", { className: "export-ugroup-name" }, gname === "Ungrouped" ? "\u2022 Ungrouped" : "\u{1F4C1} " + gname), /* @__PURE__ */ React.createElement("button", { className: "fe-sg-all export-ch-all", onClick: () => chooseKeys(keys, !allOn) }, allOn ? "\u2212" : onN > 0 ? "\u25D0" : "+"), /* @__PURE__ */ React.createElement("span", { className: "export-ch-count" }, onN, "/", keys.length)), list.map((l) => /* @__PURE__ */ React.createElement("label", { className: "export-item" + (chosen[l.key] ? " on" : ""), key: l.key, onClick: () => toggle(l.key) }, /* @__PURE__ */ React.createElement("span", { className: "export-item-check" + (chosen[l.key] ? " checked" : "") }, chosen[l.key] ? "\u2713" : ""), /* @__PURE__ */ React.createElement("span", { className: "export-item-title" }, l.title), /* @__PURE__ */ React.createElement("span", { className: "export-item-count" }, countEx(l)))));
-  })))), /* @__PURE__ */ React.createElement("div", { className: "export-summary fe-panel" }, /* @__PURE__ */ React.createElement("div", { className: "fe-section-head" }, "Assignment preview"), /* @__PURE__ */ React.createElement("div", { className: "export-summary-title" }, title || /* @__PURE__ */ React.createElement("span", { className: "fe-placeholder" }, "Unnamed assignment")), selectedSets.length === 0 ? /* @__PURE__ */ React.createElement("div", { className: "export-empty-hint" }, "No exercises selected yet.", /* @__PURE__ */ React.createElement("br", null), "Tick worksheets on the left to add them.") : /* @__PURE__ */ React.createElement("div", { className: "export-summary-list" }, selectedSets.map((l) => /* @__PURE__ */ React.createElement("div", { className: "export-summary-row", key: l.key }, /* @__PURE__ */ React.createElement("span", { className: "export-summary-dot" }, "\u2022"), /* @__PURE__ */ React.createElement("span", { className: "export-summary-name" }, l.title), /* @__PURE__ */ React.createElement("span", { className: "export-summary-n" }, countEx(l), " ex")))), /* @__PURE__ */ React.createElement("div", { className: "export-summary-footer" }, /* @__PURE__ */ React.createElement("div", { className: "export-format" }, /* @__PURE__ */ React.createElement("span", { className: "export-format-label" }, "Export as"), /* @__PURE__ */ React.createElement("div", { className: "export-seg" }, /* @__PURE__ */ React.createElement("button", { className: "export-seg-btn" + (format === "html" ? " on" : ""), onClick: () => setFormat("html") }, "HTML"), /* @__PURE__ */ React.createElement("button", { className: "export-seg-btn" + (format === "json" ? " on" : ""), onClick: () => setFormat("json") }, "JSON"))), /* @__PURE__ */ React.createElement("div", { className: "export-summary-meta" }, selectedKeys.length, " worksheet", selectedKeys.length !== 1 ? "s" : "", " \xB7 ", selectedSets.reduce((s, l) => s + countEx(l), 0), " exercises", format === "html" ? " \xB7 self-contained" : selectedSets.length > 1 ? " \xB7 .compose-bundle.json" : " \xB7 .compose.json"), format === "html" && /* @__PURE__ */ React.createElement("div", { className: "export-lock-note" }, "\u{1F512} Locked to student mode \u2014 the exported file opens in student view with no way to switch to teacher mode or authoring tools."), err && /* @__PURE__ */ React.createElement("div", { className: "export-err" }, err), !err && status && /* @__PURE__ */ React.createElement("div", { className: "export-status-msg" }, status), /* @__PURE__ */ React.createElement("button", { className: "btn-primary export-btn", onClick: build, disabled: building || !selectedKeys.length }, building ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", { className: "export-spinner" }, "\u27F3"), " ", status || "Building\u2026") : format === "html" ? "\u2B07 Generate HTML" : "\u2B07 Download JSON"))))));
-}
 function composeDownload(filename, data, mime) {
   const blob = new Blob([data], { type: mime || "application/octet-stream" });
   const url = URL.createObjectURL(blob);
@@ -9425,10 +9081,8 @@ function composeDownload(filename, data, mime) {
 function composeSlug(s) {
   return (String(s || "").trim() || "exercise").replace(/[^a-z0-9]+/gi, "-").toLowerCase().replace(/^-+|-+$/g, "") || "exercise";
 }
-window.buildStudentHtml = buildStudentHtml;
 window.composeDownload = composeDownload;
 window.composeSlug = composeSlug;
-window.ExportModal = ExportModal;
 
 </script>
 <script>
@@ -11148,51 +10802,12 @@ function App() {
     if (bundles.find((b) => b.id === bundleId)?.sets.some((s) => s.key === fileKey))
       setFileKey(BUILTIN[0] ? BUILTIN[0].key : null);
   }
-  function importHtmlFile(file) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const html = String(reader.result || "");
-      const m = html.match(/window\.LC_FILES_INLINE\s*=\s*(\{[\s\S]*?\})\s*;<\/script>/);
-      if (!m) {
-        setLoadErr("No COMPOSE exercises found inside \u201C" + file.name + "\u201D.");
-        return;
-      }
-      let obj;
-      try {
-        obj = JSON.parse(m[1]);
-      } catch (e) {
-        setLoadErr("Could not read exercises from \u201C" + file.name + "\u201D.");
-        return;
-      }
-      const entries = Object.entries(obj).filter(([, v]) => v && v.text);
-      if (!entries.length) {
-        setLoadErr("That HTML has no embedded exercises.");
-        return;
-      }
-      let added = null;
-      const next = entries.map(([k, v]) => {
-        const key = "user-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6) + "-" + k.slice(-4);
-        added = key;
-        return { key, title: v.title || k, text: v.text, group: "", created: Date.now() };
-      });
-      setUserFiles((prev) => [...prev, ...next]);
-      if (added) {
-        setCustom(null);
-        setFileKey(added);
-        setSel({ gi: 0, pi: 0 });
-        setModal(null);
-      }
-    };
-    reader.readAsText(file);
-  }
   function importFiles(fileList) {
     setLoadErr(null);
     const all = [...fileList];
     const bundleFiles = all.filter((f) => f.name.endsWith(".compose-bundle.json"));
-    const htmlFiles = all.filter((f) => /\.html?$/i.test(f.name) || f.type === "text/html");
-    const exerciseFiles = all.filter((f) => !bundleFiles.includes(f) && !htmlFiles.includes(f));
+    const exerciseFiles = all.filter((f) => !bundleFiles.includes(f));
     bundleFiles.forEach((f) => importBundle(f));
-    htmlFiles.forEach((f) => importHtmlFile(f));
     if (!exerciseFiles.length) return;
     const files = exerciseFiles.filter((f) => /\.(json|txt|lbd|lc)$/i.test(f.name) || f.type.startsWith("text") || f.type === "application/json");
     if (files.length === 0) {
@@ -11462,7 +11077,7 @@ function App() {
           setShortcutsOpen(false);
           return;
         }
-        if (!typing && (modal === "files" || modal === "export" || modal === "reading")) {
+        if (!typing && (modal === "files" || modal === "reading")) {
           e.preventDefault();
           setModal(null);
           return;
@@ -11516,7 +11131,7 @@ function App() {
   const shiftOnCount = window.LCData.SHIFTERS.filter((s) => allowed.shift && allowed.shift[s.key]).length;
   function renderCenter() {
     if (!group || !problem) {
-      return /* @__PURE__ */ React.createElement("div", { className: "empty-stage" }, /* @__PURE__ */ React.createElement("div", { className: "empty-stage-card" }, /* @__PURE__ */ React.createElement("div", { className: "empty-stage-glyph" }, "\u03BB"), /* @__PURE__ */ React.createElement("h2", null, isStudentBuild ? "No worksheet loaded yet" : "No worksheet open"), /* @__PURE__ */ React.createElement("p", null, isStudentBuild ? "Load the worksheet your instructor shared with you \u2014 a .compose.json, an exported .html, or a bundle \u2014 to begin." : "Author a worksheet in the exercise editor, or import one to begin."), /* @__PURE__ */ React.createElement("div", { className: "empty-stage-actions" }, /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", onClick: () => {
+      return /* @__PURE__ */ React.createElement("div", { className: "empty-stage" }, /* @__PURE__ */ React.createElement("div", { className: "empty-stage-card" }, /* @__PURE__ */ React.createElement("div", { className: "empty-stage-glyph" }, "\u03BB"), /* @__PURE__ */ React.createElement("h2", null, isStudentBuild ? "No worksheet loaded yet" : "No worksheet open"), /* @__PURE__ */ React.createElement("p", null, isStudentBuild ? "Load the worksheet your instructor shared with you \u2014 a .compose.json worksheet or a .compose-bundle.json bundle \u2014 to begin." : "Author a worksheet in the exercise editor, or import one to begin."), /* @__PURE__ */ React.createElement("div", { className: "empty-stage-actions" }, /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", onClick: () => {
         setLoadErr(null);
         if (fileInput.current) fileInput.current.click();
       } }, "\u2913 Load a worksheet"), !isStudentBuild && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: newUserExercise }, "\u270E New worksheet")), /* @__PURE__ */ React.createElement("div", { className: "empty-stage-hint" }, "You can also drag a file anywhere onto this window.")));
@@ -11821,7 +11436,7 @@ function App() {
       /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, "page")
     ), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row" + (page === "dash" ? " on" : ""), onClick: () => setPage("dash") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25C8"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "My versions")))), sbSection("display", "\u25D0", "Display", null, /* @__PURE__ */ React.createElement("div", { className: "sb-display" }, /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Dark mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (darkMode ? " on" : ""), role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode((d) => !d) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-resolve non-branching"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoNN ? " on" : ""), role: "switch", "aria-checked": autoNN, onClick: () => setAutoNN((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), !isStudentBuild && /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-apply composition rules"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoCompose ? " on" : ""), role: "switch", "aria-checked": autoCompose, onClick: () => setAutoCompose((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Collapse resolved subtrees"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (collapseResolved ? " on" : ""), role: "switch", "aria-checked": collapseResolved, onClick: () => setCollapseResolved((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("div", { className: "settings-row settings-layout-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Layout"), /* @__PURE__ */ React.createElement("div", { className: "seg-mini" }, /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() == null ? " on" : ""), onClick: () => setForceLayout(null) }, "Auto"), /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() === "mobile" ? " on" : ""), onClick: () => setForceLayout("mobile") }, "Mobile"))), /* @__PURE__ */ React.createElement("div", { className: "sb-kicker sb-actions-kicker" }, "Actions"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setPage("progress") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, doneCount, "/", probCount)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => composeExportProgress() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Save progress to a file")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
       if (progressFileInput.current) progressFileInput.current.click();
-    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2912"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Restore progress from a file\u2026")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", disabled: exporting, onClick: exportDerivation }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u29C9"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, exporting ? "Rendering\u2026" : "Export derivation (PNG)")), !isStudentBuild && !(BID.indexOf("hosted") === 0 && BID !== "hosted-sandbox") && /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setModal("export") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2193"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Export assignment")))), isFullBuild && sbSection("help", "\u24D8", "Guide & help", null, /* @__PURE__ */ React.createElement("div", null, DOC_PAGES.map((d) => {
+    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2912"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Restore progress from a file\u2026")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", disabled: exporting, onClick: exportDerivation }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u29C9"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, exporting ? "Rendering\u2026" : "Export derivation (PNG)")))), isFullBuild && sbSection("help", "\u24D8", "Guide & help", null, /* @__PURE__ */ React.createElement("div", null, DOC_PAGES.map((d) => {
       const on = page === "doc" && docPath === d.path;
       return /* @__PURE__ */ React.createElement(
         "button",
@@ -12548,7 +12163,7 @@ function App() {
       {
         ref: fileInput,
         type: "file",
-        accept: ".json,.compose.json,.compose-bundle.json,.txt,.lbd,.lc,.html,.htm,application/json,text/plain,text/html",
+        accept: ".json,.compose.json,.compose-bundle.json,.txt,.lbd,.lc,application/json,text/plain",
         multiple: true,
         style: { display: "none" },
         onChange: (e) => {
@@ -12751,7 +12366,7 @@ function App() {
       /* @__PURE__ */ React.createElement("div", { className: "files-foot-slim" + (loadErr ? " err" : "") }, /* @__PURE__ */ React.createElement("span", { className: "ffs-icon" }, "\u2913"), loadErr ? /* @__PURE__ */ React.createElement("span", { className: "ffs-err" }, loadErr) : isStudentBuild ? /* @__PURE__ */ React.createElement("span", null, "Drag a worksheet onto this panel, or ", /* @__PURE__ */ React.createElement("button", { className: "ffs-load-btn", onClick: () => {
         setLoadErr(null);
         if (fileInput.current) fileInput.current.click();
-      } }, "choose a file\u2026")) : /* @__PURE__ */ React.createElement("span", null, "Drag a ", /* @__PURE__ */ React.createElement("code", { className: "mono" }, ".compose.json"), ", exported ", /* @__PURE__ */ React.createElement("code", { className: "mono" }, ".html"), ", or ", /* @__PURE__ */ React.createElement("code", { className: "mono" }, ".compose-bundle.json"), " onto this panel to load it \u2014 or use ", /* @__PURE__ */ React.createElement("b", null, "Author \u2192 Import worksheet\u2026"), " in the sidebar."))
+      } }, "choose a file\u2026")) : /* @__PURE__ */ React.createElement("span", null, "Drag a ", /* @__PURE__ */ React.createElement("code", { className: "mono" }, ".compose.json"), " or ", /* @__PURE__ */ React.createElement("code", { className: "mono" }, ".compose-bundle.json"), " onto this panel to load it \u2014 or use ", /* @__PURE__ */ React.createElement("b", null, "Author \u2192 Import worksheet\u2026"), " in the sidebar."))
     )),
     modal === "editor" && renderEditorSurface(false),
     !isMobile && renderPalette(),
@@ -12805,7 +12420,6 @@ function App() {
       },
       "\u2715"
     )),
-    modal === "export" && /* @__PURE__ */ React.createElement(ExportModal, { library: window.LCData.LIBRARY, userSets: userLib, onClose: () => setModal(null) }),
     /* @__PURE__ */ React.createElement(TweaksPanel, { title: "Tweaks" }, /* @__PURE__ */ React.createElement(TweakSection, { label: "Notation" }), /* @__PURE__ */ React.createElement(TweakSlider, { label: "Expression size", value: t.notation, min: 0.85, max: 1.4, step: 0.05, onChange: (v) => setTweak("notation", v) }), /* @__PURE__ */ React.createElement(TweakSection, { label: "Tree" }), /* @__PURE__ */ React.createElement(TweakRadio, { label: "Spacing", value: t.spacing, options: ["compact", "regular", "roomy"], onChange: (v) => setTweak("spacing", v) }), /* @__PURE__ */ React.createElement(TweakToggle, { label: "Show leaf denotations", value: t.leaves, onChange: (v) => setTweak("leaves", v) }), /* @__PURE__ */ React.createElement(TweakSection, { label: "Practice" }))
   );
 }

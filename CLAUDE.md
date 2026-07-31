@@ -53,8 +53,9 @@ downloads + site map; `/help/` (+`/help/guides/`, with video walkthroughs)
 = student help (S23/S24); `/guide/` = instructor guide (screenshots
 regenerate via scripts/capture-guide.mjs + capture-dash.mjs; videos via
 scripts/capture-walkthroughs.mjs); `/about/` = citation page + what
-accounts store; `/_/` = PB admin; `/template.html` = public tokenized
-template (client-side export substitution, S13.3).
+accounts store; `/_/` = PB admin. Worksheets are shared through unlock
+codes or `.compose.json` files only — the exercise-HTML export/import
+pipeline (S13.3 `/template.html`, Export assignment) was removed in S39.
 Instructor content lives in the `versions` collection (bundle JSON), validated
 on save by the real engine running inside PB's goja VM. Deploys: push to
 `main` → GitHub Actions runs all five test suites → SSH → `deploy/deploy.sh`

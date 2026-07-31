@@ -10,7 +10,7 @@
                                              lands in the editor page; Esc order
      node scripts/capture-s37.mjs pages      progress/doc/signin backs + sidebar
                                              highlights; files-modal Esc; /cc/ch7
-     node scripts/capture-s37.mjs sandbox    /editor sandbox: export modal Esc,
+     node scripts/capture-s37.mjs sandbox    /editor sandbox: files modal Esc,
                                              scratch page there
      node scripts/capture-s37.mjs mobile     390px: pushed scratch + pushed doc
                                              views from the Menu, back to Menu
@@ -194,14 +194,14 @@ if (SCENE === 'sandbox') {
   await page.goto(B + '/editor/', { waitUntil: 'networkidle2' });
   await sleep(700);
   await drillOut();
-  // export modal Esc (sandbox keeps Export assignment)
-  await openSection('Display');
-  await clickRow('Export assignment', '.sb-row');
-  check('export modal opens', await has('.modal-backdrop'));
-  await shot('s37-export-modal.png');
+  // files modal Esc (S39: the export-assignment modal is gone)
+  await openSection('Worksheets');
+  await clickRow('Open a file…', '.sb-row');
+  check('files modal opens', await has('.modal-backdrop'));
+  await shot('s37-files-modal.png');
   await page.keyboard.press('Escape');
   await sleep(300);
-  check('Esc closes the export modal (S37)', !(await has('.modal-backdrop')));
+  check('Esc closes the files modal (S37)', !(await has('.modal-backdrop')));
   // scratch page works on the sandbox too
   await openSection('Author');
   await clickRow('Scratchpad', '.sb-row');

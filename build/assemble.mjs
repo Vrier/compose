@@ -34,10 +34,10 @@ import path from 'node:path';
 
 const NM = 'node_modules';
 
-/* Substitution tokens shared by the server template (build/server.mjs), the
-   offline instructor builds (build.mjs embeds the tokenized template so
-   "Export assignment" works offline), and export.jsx at runtime. Substitute
-   with split/join, never String.replace (S1: `$`-sequences mangle). */
+/* Substitution tokens in the server templates (build/server.mjs); the PB
+   hooks (serve.pb.js → /v/:slug, edit.pb.js → /edit/:id) substitute them at
+   request time. Substitute with split/join, never String.replace (S1:
+   `$`-sequences mangle). */
 export const IDENTITY_TOKEN = '/*__COMPOSE_IDENTITY__*/';
 export const LIBRARY_TOKEN  = '/*__COMPOSE_LIBRARY__*/';
 export const HOSTED_TOKEN   = '/*__COMPOSE_HOSTED__*/';
