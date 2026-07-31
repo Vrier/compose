@@ -7373,7 +7373,7 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
     ))));
   })), /* @__PURE__ */ React.createElement("button", { className: "fe-add-tree-btn", onClick: () => addTree(i) }, "+ Add derivation")))));
 }
-function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey, asPage }) {
+function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey, asPage, hosted, hostedToken }) {
   const [state, setState] = useState(() => {
     if (initialText != null) {
       const p = parseFromText(initialText);
@@ -7445,11 +7445,10 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
   const [srvMsg, setSrvMsg] = useState(null);
   const [srvBusy, setSrvBusy] = useState(false);
   async function saveToServer() {
-    const H = window.COMPOSE_HOSTED;
-    if (!H || !window.PocketBase) return;
-    const pb = new window.PocketBase(window.location.origin);
-    if (!pb.authStore.isValid) {
-      setSrvMsg({ kind: "err", msg: "Not logged in \u2014 open /dash, log in, then come back and save again." });
+    const H = hosted;
+    if (!H) return;
+    if (!hostedToken) {
+      setSrvMsg({ kind: "err", msg: "Not signed in \u2014 sign in and try again." });
       return;
     }
     setSrvBusy(true);
@@ -7457,7 +7456,9 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
     try {
       const text = generateJSON(state);
       const obj = JSON.parse(text);
-      const v = await pb.collection("versions").getOne(H.versionId);
+      const vr = await fetch("/api/collections/versions/records/" + H.versionId, { headers: { Authorization: hostedToken } });
+      if (!vr.ok) throw new Error("could not load the version (" + vr.status + ")");
+      const v = await vr.json();
       const bundle = v.bundle && v.bundle.compose_bundle ? v.bundle : { compose_bundle: 1, title: v.title, chapters: [], worksheets: [] };
       let list = bundle.worksheets || bundle.exercises;
       if (!list) {
@@ -7471,13 +7472,23 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
       if (idx >= 0) list[idx] = entry;
       else list.push(entry);
       bundle.engineVersion = window.LC && window.LC.VERSION || void 0;
-      await pb.collection("versions").update(H.versionId, { bundle });
+      const pr = await fetch("/api/collections/versions/records/" + H.versionId, {
+        method: "PATCH",
+        headers: { Authorization: hostedToken, "Content-Type": "application/json" },
+        body: JSON.stringify({ bundle })
+      });
+      if (!pr.ok) {
+        let j = null;
+        try {
+          j = await pr.json();
+        } catch (e2) {
+        }
+        throw new Error(j && (j.error || j.message) || "request failed (" + pr.status + ")");
+      }
       setEditKey(key);
-      if (Array.isArray(H.keys) && H.keys.indexOf(key) < 0) H.keys.push(key);
       setSrvMsg({ kind: "ok", msg: "Saved \u2014 live for students at /v/" + H.slug });
     } catch (err) {
-      const detail = err && err.response && err.response.message || err && err.message || "unknown error";
-      setSrvMsg({ kind: "err", msg: "Save to server failed: " + detail });
+      setSrvMsg({ kind: "err", msg: "Save to server failed: " + (err.message || "unknown error") });
     }
     setSrvBusy(false);
   }
@@ -7514,7 +7525,7 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
     const shift = Object.fromEntries(Sh.map((s) => [s.key, !!shifts[s.key]]));
     return { ...rules, shift, qr: behaviour.qr, autoNN: behaviour.autoNN, autoCompose: false, collapseResolved: false, showSpans: false };
   }
-  const body = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "fe-header" }, asPage && /* @__PURE__ */ React.createElement("button", { type: "button", className: "fe-page-back", onClick: onClose, title: "Back to practice", "aria-label": "Back to practice" }, "\u2039"), /* @__PURE__ */ React.createElement("div", { className: "fe-header-left" }, /* @__PURE__ */ React.createElement("div", { className: "fe-header-title" }, asPage && /* @__PURE__ */ React.createElement("div", { className: "fe-page-kicker" }, /* @__PURE__ */ React.createElement("span", { className: "fe-page-kicker-label" }, "Worksheet editor", window.COMPOSE_HOSTED ? " \xB7 " + window.COMPOSE_HOSTED.title : ""), /* @__PURE__ */ React.createElement("span", { className: "fe-page-status" + (srvMsg ? srvMsg.kind === "ok" ? " ok" : " err" : savedFlash ? " ok" : ""), role: "status", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("span", { className: "fe-status-dot", "aria-hidden": "true" }), srvMsg ? srvMsg.msg : savedFlash ? "Saved" : editKey ? "Editing a saved worksheet" : "Draft \u2014 kept in this browser")), /* @__PURE__ */ React.createElement(
+  const body = /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "fe-header" }, asPage && /* @__PURE__ */ React.createElement("button", { type: "button", className: "fe-page-back", onClick: onClose, title: "Back to practice", "aria-label": "Back to practice" }, "\u2039"), /* @__PURE__ */ React.createElement("div", { className: "fe-header-left" }, /* @__PURE__ */ React.createElement("div", { className: "fe-header-title" }, asPage && /* @__PURE__ */ React.createElement("div", { className: "fe-page-kicker" }, /* @__PURE__ */ React.createElement("span", { className: "fe-page-kicker-label" }, "Worksheet editor", hosted ? " \xB7 " + hosted.title : ""), /* @__PURE__ */ React.createElement("span", { className: "fe-page-status" + (srvMsg ? srvMsg.kind === "ok" ? " ok" : " err" : savedFlash ? " ok" : ""), role: "status", "aria-live": "polite" }, /* @__PURE__ */ React.createElement("span", { className: "fe-status-dot", "aria-hidden": "true" }), srvMsg ? srvMsg.msg : savedFlash ? "Saved" : editKey ? "Editing a saved worksheet" : "Draft \u2014 kept in this browser")), /* @__PURE__ */ React.createElement(
     "input",
     {
       className: "fe-title-input",
@@ -7540,13 +7551,13 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
       title: "Load this worksheet into the app as a selectable exercise and open it for testing"
     },
     "\u25B6 Load into app"
-  ), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => setShowReading(true), title: "Attach or edit notes (Markdown) and link sections to exercises" }, "\u{1F4DD} Notes", reading.markdown && reading.markdown.trim() ? /* @__PURE__ */ React.createElement("span", { className: "fe-reading-dot" }) : null), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost fe-import-btn", onClick: doImport }, "\u2B06 Import"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost fe-export-btn", onClick: doExport }, "\u2B07 .json"), window.COMPOSE_HOSTED && /* @__PURE__ */ React.createElement(
+  ), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => setShowReading(true), title: "Attach or edit notes (Markdown) and link sections to exercises" }, "\u{1F4DD} Notes", reading.markdown && reading.markdown.trim() ? /* @__PURE__ */ React.createElement("span", { className: "fe-reading-dot" }) : null), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost fe-import-btn", onClick: doImport }, "\u2B06 Import"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost fe-export-btn", onClick: doExport }, "\u2B07 .json"), hosted && /* @__PURE__ */ React.createElement(
     "button",
     {
       className: "btn-primary fe-export-btn",
       onClick: saveToServer,
       disabled: srvBusy,
-      title: 'Save this worksheet into the hosted version "' + window.COMPOSE_HOSTED.title + '" \u2014 students see the change immediately'
+      title: 'Save this worksheet into the hosted version "' + hosted.title + '" \u2014 students see the change immediately'
     },
     srvBusy ? "\u27F3 Saving\u2026" : "\u2601 Save to server"
   ), srvMsg && /* @__PURE__ */ React.createElement("span", { className: srvMsg.kind === "ok" ? "fe-srv-ok" : "fe-srv-err", onClick: () => setSrvMsg(null) }, srvMsg.msg), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: () => {
@@ -7663,7 +7674,7 @@ function UserExerciseManager({ items, fileKey, custom, instructor, onOpen, onRen
   }), ungrouped.map(renderItem));
 }
 window.UserExerciseManager = UserExerciseManager;
-function ExerciseEditor({ onClose, onLaunch, baseSet, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey, asPage }) {
+function ExerciseEditor({ onClose, onLaunch, baseSet, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey, asPage, hosted, hostedToken }) {
   return /* @__PURE__ */ React.createElement(
     FileEditor,
     {
@@ -7674,6 +7685,8 @@ function ExerciseEditor({ onClose, onLaunch, baseSet, onSaveToLibrary, onLoadInt
       initialText,
       initialKey,
       asPage,
+      hosted,
+      hostedToken,
       onLaunch: (p) => {
         onLaunch(p);
       }
@@ -8462,6 +8475,7 @@ function convTree(src) {
     ws();
     let label = "";
     while (i < n && !/[\s\[\]{]/.test(src[i])) label += src[i++];
+    if (label.charAt(0) === ".") label = label.slice(1);
     let den = null;
     if (src[i] === "{") {
       i++;
@@ -8542,7 +8556,41 @@ const NODE_PHRASES = /* @__PURE__ */ new Set([
   "EventP"
 ]);
 const SILENT_HEADS = /* @__PURE__ */ new Set(["Agent", "Theme", "Event"]);
+function latexBlocksToFences(md) {
+  let s2 = String(md || "");
+  s2 = s2.replace(/\\begin\{forest\}([\s\S]*?)\\end\{forest\}/g, (m, b) => {
+    const at = b.indexOf("[");
+    return "\n```tree\n" + (at > 0 ? b.slice(at) : b) + "\n```\n";
+  });
+  s2 = s2.replace(
+    /\\begin\{(?:derivation|deriv)\}([\s\S]*?)\\end\{(?:derivation|deriv)\}/g,
+    (m, b) => "\n```deriv\n" + b + "\n```\n"
+  );
+  const lines = s2.split("\n");
+  const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    const t = lines[i].trim();
+    if (/^\\Tree\b/.test(t)) {
+      let buf = lines[i].replace(/^\s*\\Tree\s*/, "");
+      const depth = (str) => {
+        let d = 0;
+        for (const ch of str) {
+          if (ch === "[") d++;
+          else if (ch === "]") d--;
+        }
+        return d;
+      };
+      while (i + 1 < lines.length && (depth(buf) > 0 || !buf.trim())) {
+        i++;
+        buf += "\n" + lines[i];
+      }
+      out.push("```tree", buf, "```");
+    } else out.push(lines[i]);
+  }
+  return out.join("\n");
+}
 function composeAutogen(md) {
+  md = latexBlocksToFences(md);
   const lexMap = /* @__PURE__ */ new Map();
   const allLeaves = /* @__PURE__ */ new Set();
   const groups = [];
@@ -8564,8 +8612,9 @@ function composeAutogen(md) {
       const body = nl < 0 ? "" : part.slice(nl + 1);
       if (lang === "deriv" || lang === "den" || lang === "denotation" || lang === "lexicon") {
         body.split("\n").forEach((line) => {
-          const L = line.trim();
+          let L = line.trim();
           if (!L) return;
+          L = L.replace(/⟦\s*/g, "[[").replace(/\s*⟧/g, "]]").replace(/\\den\{([^{}]*)\}/g, "[[$1]]");
           let m = L.match(/^\[\[\s*([^\]]+?)\s*\]\]\s*=\s*(.+?)\s*(?::\s*([^:]+))?$/) || L.match(/^([^=:][^=:]*?)\s*=\s*(.+?)\s*(?::\s*([^:]+))?$/);
           let word, den, type = "";
           if (m) {
@@ -8745,23 +8794,12 @@ function ReadingEditor({ markdown, onChange, onClose, onApplyAutogen, title, sta
   }
   const SNIPPETS = {
     section: "\n## 11.6 New section\n\n",
-    tree: "\n```tree\n[S{~exists e[sing(e) /\\ Ag(e)=g]}\n  [DP Gandalf]\n  [NegP [Neg didn\u2019t] [VP{lambda e.sing(e)} [V sing]]]]\n```\n",
-    deriv: "\n```deriv\n[[sing]]   = lambda e.sing(e)   : <v,t>\n[[Gandalf]] = g               : e\n```\n",
-    lexicon: "\n```lexicon\nsing = lambda e.sing(e)\nGandalf = g\n```\n",
-    gloss: '\n```gloss\nNe    parle    pas\nNEG   speak    NEG\n"doesn\u2019t speak"\n```\n',
-    ex: "\n```ex\nGandalf didn\u2019t sing.\n* Gandalf not sang.\n```\n"
+    tree: "\n\\begin{forest}\n[S{~exists e[sing(e) /\\ Ag(e)=g]}\n  [DP Gandalf]\n  [NegP [Neg didn\u2019t] [VP{lambda e.sing(e)} [V sing]]]]\n\\end{forest}\n",
+    deriv: "\n\\begin{derivation}\n[[sing]]   = lambda e.sing(e)   : <v,t>\n[[Gandalf]] = g               : e\n\\end{derivation}\n",
+    lexicon: "\n\\begin{derivation}\nsing = lambda e.sing(e) : <v,t>\nGandalf = g : e\n\\end{derivation}\n",
+    gloss: "\n\\begingl\n\\gla Ne parle pas//\n\\glb NEG speak NEG//\n\\glft \u2018doesn\u2019t speak\u2019//\n\\endgl\n",
+    ex: "\n\\pex\n\\a Gandalf didn\u2019t sing.\n\\a *Gandalf not sang.\n\\xe\n"
   };
-  function loadMd() {
-    const inp = document.createElement("input");
-    inp.type = "file";
-    inp.accept = ".md,.markdown,.txt";
-    inp.onchange = async () => {
-      const f = inp.files[0];
-      if (!f) return;
-      onChange(await f.text());
-    };
-    inp.click();
-  }
   function exportMd() {
     const name = (window.composeSlug ? window.composeSlug(title || "reading") : "reading") + ".md";
     if (window.composeDownload) window.composeDownload(name, md, "text/markdown");
@@ -8774,17 +8812,17 @@ function ReadingEditor({ markdown, onChange, onClose, onApplyAutogen, title, sta
   function runAutogen() {
     setAutogen(composeAutogen(md));
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "modal-backdrop re-backdrop", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal re-modal", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("div", { className: "re-head" }, /* @__PURE__ */ React.createElement("span", { className: "re-ttl" }, /* @__PURE__ */ React.createElement("span", { className: "ico" }, "\u{1F4DD}"), "Notes"), /* @__PURE__ */ React.createElement("span", { className: "re-sub" }, standalone ? "standalone draft \u2014 send to the exercise editor when ready" : title ? "\u201C" + title + "\u201D" : "notes attached to this set"), /* @__PURE__ */ React.createElement("span", { className: "sp" }), /* @__PURE__ */ React.createElement("div", { className: "re-actions" }, /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: loadMd }, "\u2B06 Load .md"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: exportMd }, "\u2B07 .md"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: exportHtml }, "\u2B07 .html"), /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", onClick: runAutogen, title: "Generate exercises from the tree + deriv/lexicon blocks in these notes" }, "\u2699 Auto-generate exercises"), /* @__PURE__ */ React.createElement("button", { className: "icon-btn", onClick: onClose, "aria-label": "Close" }, "\u2715"))), /* @__PURE__ */ React.createElement("div", { className: "re-body" }, /* @__PURE__ */ React.createElement("div", { className: "re-pane left" }, /* @__PURE__ */ React.createElement("div", { className: "re-pane-head" }, "Markdown", /* @__PURE__ */ React.createElement("span", { className: "sp" }), /* @__PURE__ */ React.createElement("span", { style: { textTransform: "none", letterSpacing: 0, fontWeight: 400 } }, md.length, " chars")), /* @__PURE__ */ React.createElement("div", { className: "re-tools" }, /* @__PURE__ */ React.createElement("button", { className: "re-tool", onClick: () => insertAtCaret(SNIPPETS.section) }, "\uFF0B ## section"), /* @__PURE__ */ React.createElement("button", { className: "re-tool", onClick: () => insertAtCaret(SNIPPETS.tree) }, "\uFF0B tree"), /* @__PURE__ */ React.createElement("button", { className: "re-tool", onClick: () => insertAtCaret(SNIPPETS.deriv) }, "\uFF0B deriv"), /* @__PURE__ */ React.createElement("button", { className: "re-tool", onClick: () => insertAtCaret(SNIPPETS.lexicon) }, "\uFF0B lexicon"), /* @__PURE__ */ React.createElement("button", { className: "re-tool", onClick: () => insertAtCaret(SNIPPETS.gloss) }, "\uFF0B gloss"), /* @__PURE__ */ React.createElement("button", { className: "re-tool", onClick: () => insertAtCaret(SNIPPETS.ex) }, "\uFF0B examples")), /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "modal-backdrop re-backdrop", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal re-modal", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("div", { className: "re-head" }, /* @__PURE__ */ React.createElement("span", { className: "re-ttl" }, /* @__PURE__ */ React.createElement("span", { className: "ico" }, "\u{1F4DD}"), "Notes"), /* @__PURE__ */ React.createElement("span", { className: "re-sub" }, standalone ? "standalone draft \u2014 send to the exercise editor when ready" : title ? "\u201C" + title + "\u201D" : "notes attached to this set"), /* @__PURE__ */ React.createElement("span", { className: "sp" }), /* @__PURE__ */ React.createElement("div", { className: "re-actions" }, /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: exportMd }, "\u2B07 .md"), /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: exportHtml }, "\u2B07 .html"), /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", onClick: runAutogen, title: "Generate exercises from the tree + deriv/lexicon blocks in these notes" }, "\u2699 Auto-generate exercises"), /* @__PURE__ */ React.createElement("button", { className: "icon-btn", onClick: onClose, "aria-label": "Close" }, "\u2715"))), /* @__PURE__ */ React.createElement("div", { className: "re-body" }, /* @__PURE__ */ React.createElement("div", { className: "re-pane left" }, /* @__PURE__ */ React.createElement("div", { className: "re-pane-head" }, "Markdown", /* @__PURE__ */ React.createElement("span", { className: "sp" }), /* @__PURE__ */ React.createElement("span", { style: { textTransform: "none", letterSpacing: 0, fontWeight: 400 } }, md.length, " chars")), /* @__PURE__ */ React.createElement("div", { className: "re-tools" }, /* @__PURE__ */ React.createElement("button", { className: "re-tool", onClick: () => insertAtCaret(SNIPPETS.section) }, "\uFF0B ## section"), /* @__PURE__ */ React.createElement("button", { className: "re-tool", onClick: () => insertAtCaret(SNIPPETS.tree) }, "\uFF0B tree"), /* @__PURE__ */ React.createElement("button", { className: "re-tool", onClick: () => insertAtCaret(SNIPPETS.deriv) }, "\uFF0B deriv"), /* @__PURE__ */ React.createElement("button", { className: "re-tool", onClick: () => insertAtCaret(SNIPPETS.lexicon) }, "\uFF0B lexicon"), /* @__PURE__ */ React.createElement("button", { className: "re-tool", onClick: () => insertAtCaret(SNIPPETS.gloss) }, "\uFF0B gloss"), /* @__PURE__ */ React.createElement("button", { className: "re-tool", onClick: () => insertAtCaret(SNIPPETS.ex) }, "\uFF0B examples")), /* @__PURE__ */ React.createElement(
     "textarea",
     {
       ref: taRef,
       className: "re-ta",
       value: md,
       spellCheck: false,
-      placeholder: "# Chapter 11 \xB7 Events\n\nWrite the notes in Markdown. Use ## for sections that exercises can link to.\n\n```tree\n[S [DP Gandalf] [VP sang]]\n```",
+      placeholder: "# Chapter 11 \xB7 Events\n\nMarkdown skeleton + the LaTeX linguists already write: $\\lambda x. dog(x)$, \\den{dog}, \\ex \u2026 \\xe, \\begingl \u2026 \\endgl,\n\\begin{forest} [S [DP Gandalf] [VP sang]] \\end{forest}, \\begin{derivation} \u2026 \\end{derivation}.\n\nUse ## for sections that exercises can link to.",
       onChange: (e) => onChange(e.target.value)
     }
-  ), /* @__PURE__ */ React.createElement("div", { className: "re-guide" }, /* @__PURE__ */ React.createElement("details", null, /* @__PURE__ */ React.createElement("summary", null, /* @__PURE__ */ React.createElement("span", { className: "gi" }, "\u25B8"), " How auto-generate works"), /* @__PURE__ */ React.createElement("div", { className: "gbody" }, /* @__PURE__ */ React.createElement("p", null, "Auto-generate is ", /* @__PURE__ */ React.createElement("b", null, "optional"), ". It reads two kinds of fenced block and builds exercises with built-in parsing (no AI):"), /* @__PURE__ */ React.createElement("p", null, /* @__PURE__ */ React.createElement("b", null, "1 \xB7 Word meanings"), " \u2014 a ", /* @__PURE__ */ React.createElement("code", null, "deriv"), " or ", /* @__PURE__ */ React.createElement("code", null, "lexicon"), " block. Lines like ", /* @__PURE__ */ React.createElement("code", null, "[[sing]] = lambda e.sing(e) : <v,t>"), " or ", /* @__PURE__ */ React.createElement("code", null, "sing = lambda e.sing(e)"), " become lexicon entries (\u03BB-notation is converted to COMPOSE\u2019s ", /* @__PURE__ */ React.createElement("code", null, "L \u2026 & ~ ->"), "). Lines whose head is a node label (S, VP, NegP\u2026) are treated as derivation steps and skipped."), /* @__PURE__ */ React.createElement("p", null, /* @__PURE__ */ React.createElement("b", null, "2 \xB7 Trees"), " \u2014 each ", /* @__PURE__ */ React.createElement("code", null, "tree"), " block becomes one exercise. The student-facing sentence is the joined leaf words; the ", /* @__PURE__ */ React.createElement("b", null, "target"), " is the root node\u2019s ", /* @__PURE__ */ React.createElement("code", null, "{\u2026}"), " denotation."), /* @__PURE__ */ React.createElement("p", null, "Each ", /* @__PURE__ */ React.createElement("code", null, "##"), " heading starts a new exercise group; trees under it become its items and anchor to that section. Generated trees are checked against the engine and flagged, but you can link them anyway and fix later. Applying ", /* @__PURE__ */ React.createElement("b", null, "overwrites"), " the editor\u2019s current lexicon and exercises."), /* @__PURE__ */ React.createElement("pre", null, "## 11.6 Negation", "\n", "\n", "```deriv", "\n", "[[Gandalf]] = g          : e", "\n", "[[sing]]    = lambda e.sing(e) : <v,t>", "\n", "```", "\n", "\n", "```tree", "\n", "[S", "{", "~exists e[sing(e)]", "}", " [DP Gandalf] [VP [V sing]]]", "\n", "```"))))), /* @__PURE__ */ React.createElement("div", { className: "re-pane" }, /* @__PURE__ */ React.createElement("div", { className: "re-pane-head" }, "Student preview"), /* @__PURE__ */ React.createElement("div", { className: "re-preview" }, !md.trim() && /* @__PURE__ */ React.createElement("div", { className: "re-empty" }, "Nothing to preview yet."), /* @__PURE__ */ React.createElement("div", { ref: prevRef })), /* @__PURE__ */ React.createElement("div", { className: "re-sections" }, /* @__PURE__ */ React.createElement("span", { className: "re-sec-label" }, "Sections"), sections.length ? sections.map((s, i) => /* @__PURE__ */ React.createElement("span", { className: "re-sec-chip", key: i }, /* @__PURE__ */ React.createElement("span", { className: "k" }, s.key), s.title.replace(/^\s*§?\s*[0-9.]+\s*/, ""))) : /* @__PURE__ */ React.createElement("span", { className: "re-sec-none" }, "Add ", /* @__PURE__ */ React.createElement("code", { className: "mono" }, "## headings"), " \u2014 exercises can anchor to them.")))), /* @__PURE__ */ React.createElement("div", { className: "re-foot" }, /* @__PURE__ */ React.createElement("span", { className: "hint" }, standalone ? "Auto-generate builds a full assignment; \u201CUse in exercise editor\u201D attaches these notes to a new set you can edit and save." : "Embedded in the set as the notes; exercises link to a section. Exports: .md, standalone .html, or inside the .json."), /* @__PURE__ */ React.createElement("span", { style: { flex: 1 } }), standalone && onSendToEditor && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: onSendToEditor, title: "Create a new exercise set with these notes attached and open it in the exercise editor" }, "Use in exercise editor \u2192"), /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", onClick: onClose }, standalone ? "Close" : "Done")), autogen && /* @__PURE__ */ React.createElement(
+  ), /* @__PURE__ */ React.createElement("div", { className: "re-guide" }, /* @__PURE__ */ React.createElement("details", null, /* @__PURE__ */ React.createElement("summary", null, /* @__PURE__ */ React.createElement("span", { className: "gi" }, "\u25B8"), " How auto-generate works"), /* @__PURE__ */ React.createElement("div", { className: "gbody" }, /* @__PURE__ */ React.createElement("p", null, "Auto-generate is ", /* @__PURE__ */ React.createElement("b", null, "optional"), ". It reads two kinds of block from the notes and builds exercises with built-in parsing (no AI):"), /* @__PURE__ */ React.createElement("p", null, /* @__PURE__ */ React.createElement("b", null, "1 \xB7 Word meanings"), " \u2014 a ", /* @__PURE__ */ React.createElement("code", null, "\\begin", "{", "derivation", "}", "\u2026\\end", "{", "derivation", "}"), " block. Lines like ", /* @__PURE__ */ React.createElement("code", null, "[[sing]] = lambda e.sing(e) : <v,t>"), ", ", /* @__PURE__ */ React.createElement("code", null, "\u27E6sing\u27E7 = \u2026"), " or ", /* @__PURE__ */ React.createElement("code", null, "sing = lambda e.sing(e)"), " become lexicon entries (\u03BB-notation is converted to COMPOSE\u2019s ", /* @__PURE__ */ React.createElement("code", null, "L \u2026 & ~ ->"), "). Lines whose head is a node label (S, VP, NegP\u2026) are treated as derivation steps and skipped."), /* @__PURE__ */ React.createElement("p", null, /* @__PURE__ */ React.createElement("b", null, "2 \xB7 Trees"), " \u2014 each ", /* @__PURE__ */ React.createElement("code", null, "\\begin", "{", "forest", "}"), " or ", /* @__PURE__ */ React.createElement("code", null, "\\Tree"), " block becomes one exercise. The student-facing sentence is the joined leaf words; the ", /* @__PURE__ */ React.createElement("b", null, "target"), " is the root node\u2019s ", /* @__PURE__ */ React.createElement("code", null, "{\u2026}"), " denotation. (The pre-S14 fenced ", /* @__PURE__ */ React.createElement("code", null, "```tree"), "/", /* @__PURE__ */ React.createElement("code", null, "```deriv"), " blocks still work in old drafts.)"), /* @__PURE__ */ React.createElement("p", null, "Each ", /* @__PURE__ */ React.createElement("code", null, "##"), " heading starts a new exercise group; trees under it become its items and anchor to that section. Generated trees are checked against the engine and flagged, but you can link them anyway and fix later. Applying ", /* @__PURE__ */ React.createElement("b", null, "overwrites"), " the editor\u2019s current lexicon and exercises."), /* @__PURE__ */ React.createElement("pre", null, "## 11.6 Negation", "\n", "\n", "\\begin", "{", "derivation", "}", "\n", "[[Gandalf]] = g          : e", "\n", "[[sing]]    = lambda e.sing(e) : <v,t>", "\n", "\\end", "{", "derivation", "}", "\n", "\n", "\\begin", "{", "forest", "}", "\n", "[S", "{", "~exists e[sing(e)]", "}", " [DP Gandalf] [VP [V sing]]]", "\n", "\\end", "{", "forest", "}"))))), /* @__PURE__ */ React.createElement("div", { className: "re-pane" }, /* @__PURE__ */ React.createElement("div", { className: "re-pane-head" }, "Student preview"), /* @__PURE__ */ React.createElement("div", { className: "re-preview" }, !md.trim() && /* @__PURE__ */ React.createElement("div", { className: "re-empty" }, "Nothing to preview yet."), /* @__PURE__ */ React.createElement("div", { ref: prevRef })), /* @__PURE__ */ React.createElement("div", { className: "re-sections" }, /* @__PURE__ */ React.createElement("span", { className: "re-sec-label" }, "Sections"), sections.length ? sections.map((s, i) => /* @__PURE__ */ React.createElement("span", { className: "re-sec-chip", key: i }, /* @__PURE__ */ React.createElement("span", { className: "k" }, s.key), s.title.replace(/^\s*§?\s*[0-9.]+\s*/, ""))) : /* @__PURE__ */ React.createElement("span", { className: "re-sec-none" }, "Add ", /* @__PURE__ */ React.createElement("code", { className: "mono" }, "## headings"), " \u2014 exercises can anchor to them.")))), /* @__PURE__ */ React.createElement("div", { className: "re-foot" }, /* @__PURE__ */ React.createElement("span", { className: "hint" }, standalone ? "Auto-generate builds a full assignment; \u201CUse in exercise editor\u201D attaches these notes to a new set you can edit and save." : "Embedded in the set as the notes; exercises link to a section. Exports: .md, standalone .html, or inside the .json."), /* @__PURE__ */ React.createElement("span", { style: { flex: 1 } }), standalone && onSendToEditor && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: onSendToEditor, title: "Create a new exercise set with these notes attached and open it in the exercise editor" }, "Use in exercise editor \u2192"), /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", onClick: onClose }, standalone ? "Close" : "Done")), autogen && /* @__PURE__ */ React.createElement(
     AutogenPanel,
     {
       result: autogen,
@@ -9875,7 +9913,7 @@ function VersionShareModal({ v, onClose }) {
   }
   return /* @__PURE__ */ React.createElement("div", { className: "modal-backdrop", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal vd-share", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h3", { className: "vd-share-title" }, v.title), window.QRCode ? /* @__PURE__ */ React.createElement("canvas", { ref: canvasRef, className: "vd-qr", width: 300, height: 300 }) : null, /* @__PURE__ */ React.createElement("div", { className: "vd-share-url mono" }, url), /* @__PURE__ */ React.createElement("div", { className: "vd-share-actions" }, /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", onClick: copy }, copied ? "\u2713 Copied" : "\u29C9 Copy link"), window.QRCode ? /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: downloadPng }, "\u2B07 QR as PNG") : null, window.QRCode ? /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: printHandout }, "\u{1F5A8} Print A4 handout") : null, /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: onClose }, "Close")), /* @__PURE__ */ React.createElement("div", { className: "vd-share-note" }, "Links are live: editing the version updates what students see at this same URL \u2014 printed QR codes stay valid.")));
 }
-function VersionsPage({ token, onBack, onAssign, onAuthGone }) {
+function VersionsPage({ token, onBack, onAssign, onEdit, onAuthGone }) {
   const [versions, setVersions] = useState(null);
   const [err, setErr] = useState(null);
   const [openId, setOpenId] = useState(null);
@@ -10048,7 +10086,7 @@ function VersionsPage({ token, onBack, onAssign, onAuthGone }) {
     )), /* @__PURE__ */ React.createElement("div", { className: "vd-row-meta" }, /* @__PURE__ */ React.createElement("a", { className: "vd-slug mono", href: "/v/" + v.slug, target: "_blank", rel: "noopener", onClick: (e) => e.stopPropagation() }, "/v/", v.slug), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-link-btn", onClick: (e) => {
       e.stopPropagation();
       copy(v.id + ":url", window.location.origin + "/v/" + v.slug);
-    } }, copiedWhat === v.id + ":url" ? "\u2713 copied" : "\u29C9 copy link"), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", null, sheets.length, " worksheet", sheets.length === 1 ? "" : "s", ", ", derivN, " derivation", derivN === 1 ? "" : "s"), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", { title: "Times the student link has been opened" }, v.opens || 0, " opens"), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", null, "updated ", String(v.updated || "").slice(0, 10)))), /* @__PURE__ */ React.createElement("div", { className: "vd-row-actions", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("a", { className: "vd-btn", href: "/edit/" + v.id, title: "Open this version's worksheets in the hosted editor" }, "\u270E Editor"), onAssign && /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Choose which worksheets this class sees (Assign & share)", onClick: () => onAssign(v.id) }, "\u2611 Assign"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Share: QR code, link, printable handout", onClick: () => setSharing(v) }, "\u21D7 Share"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn vd-del", title: "Delete this version", onClick: () => del(v) }, "\u2715"))), isOpen && /* @__PURE__ */ React.createElement("div", { className: "vd-row-body" }, sheets.map((w) => /* @__PURE__ */ React.createElement("div", { className: "vd-ws", key: w.key }, /* @__PURE__ */ React.createElement("div", { className: "vd-ws-main" }, /* @__PURE__ */ React.createElement("div", { className: "vd-ws-title" }, w.title), /* @__PURE__ */ React.createElement("div", { className: "vd-ws-meta" }, /* @__PURE__ */ React.createElement("span", { className: "mono" }, w.key), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", null, w.n, " derivation", w.n === 1 ? "" : "s"))))), sheets.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "vd-ws-none" }, "No worksheets yet \u2014 open the editor and \u201C\u2601 Save to server\u201D, or import a bundle below."), /* @__PURE__ */ React.createElement("div", { className: "vd-row-foot" }, /* @__PURE__ */ React.createElement("div", { className: "vd-code-box" }, /* @__PURE__ */ React.createElement("span", { className: "vd-code-kicker" }, "Unlock code"), /* @__PURE__ */ React.createElement("span", { className: "vd-code mono" }, v.unlockCode || "\u2014"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Copy the unlock code", onClick: () => copy(v.id + ":code", v.unlockCode || "") }, copiedWhat === v.id + ":code" ? "\u2713 copied" : "\u29C9 Copy"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", disabled: busyId === v.id, title: "Generate a new code \u2014 the old one stops working", onClick: () => newCode(v) }, busyId === v.id ? "\u2026" : "\u21BB New code")), /* @__PURE__ */ React.createElement("span", { className: "vd-flex" }), /* @__PURE__ */ React.createElement("span", { className: "vd-notes-state" }, (v.notes || "").trim() ? "Notes \u25CF" : "No notes"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Download the companion bundle as a file", onClick: () => window.composeDownload((v.slug || "version") + ".compose-bundle.json", JSON.stringify(v.bundle, null, 2), "application/json") }, "\u2B07 bundle.json"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Import a bundle file (replaces this version's worksheets)", onClick: () => {
+    } }, copiedWhat === v.id + ":url" ? "\u2713 copied" : "\u29C9 copy link"), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", null, sheets.length, " worksheet", sheets.length === 1 ? "" : "s", ", ", derivN, " derivation", derivN === 1 ? "" : "s"), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", { title: "Times the student link has been opened" }, v.opens || 0, " opens"), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", null, "updated ", String(v.updated || "").slice(0, 10)))), /* @__PURE__ */ React.createElement("div", { className: "vd-row-actions", onClick: (e) => e.stopPropagation() }, onEdit && /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Open this version's worksheets in the in-app editor", onClick: () => onEdit(v) }, "\u270E Edit"), onAssign && /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Choose which worksheets this class sees (Assign & share)", onClick: () => onAssign(v.id) }, "\u2611 Assign"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Share: QR code, link, printable handout", onClick: () => setSharing(v) }, "\u21D7 Share"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn vd-del", title: "Delete this version", onClick: () => del(v) }, "\u2715"))), isOpen && /* @__PURE__ */ React.createElement("div", { className: "vd-row-body" }, sheets.map((w) => /* @__PURE__ */ React.createElement("div", { className: "vd-ws", key: w.key }, /* @__PURE__ */ React.createElement("div", { className: "vd-ws-main" }, /* @__PURE__ */ React.createElement("div", { className: "vd-ws-title" }, w.title), /* @__PURE__ */ React.createElement("div", { className: "vd-ws-meta" }, /* @__PURE__ */ React.createElement("span", { className: "mono" }, w.key), /* @__PURE__ */ React.createElement("span", { className: "vd-sep", "aria-hidden": "true" }, "\xB7"), /* @__PURE__ */ React.createElement("span", null, w.n, " derivation", w.n === 1 ? "" : "s"))), onEdit && /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Edit this worksheet in the app editor", onClick: () => onEdit(v, w.key) }, "\u270E Edit"))), sheets.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "vd-ws-none" }, "No worksheets yet \u2014 open the editor and \u201C\u2601 Save to server\u201D, or import a bundle below."), /* @__PURE__ */ React.createElement("div", { className: "vd-row-foot" }, /* @__PURE__ */ React.createElement("div", { className: "vd-code-box" }, /* @__PURE__ */ React.createElement("span", { className: "vd-code-kicker" }, "Unlock code"), /* @__PURE__ */ React.createElement("span", { className: "vd-code mono" }, v.unlockCode || "\u2014"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Copy the unlock code", onClick: () => copy(v.id + ":code", v.unlockCode || "") }, copiedWhat === v.id + ":code" ? "\u2713 copied" : "\u29C9 Copy"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", disabled: busyId === v.id, title: "Generate a new code \u2014 the old one stops working", onClick: () => newCode(v) }, busyId === v.id ? "\u2026" : "\u21BB New code")), /* @__PURE__ */ React.createElement("span", { className: "vd-flex" }), /* @__PURE__ */ React.createElement("span", { className: "vd-notes-state" }, (v.notes || "").trim() ? "Notes \u25CF" : "No notes"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Download the companion bundle as a file", onClick: () => window.composeDownload((v.slug || "version") + ".compose-bundle.json", JSON.stringify(v.bundle, null, 2), "application/json") }, "\u2B07 bundle.json"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "vd-btn", title: "Import a bundle file (replaces this version's worksheets)", onClick: () => {
       importForRef.current = v;
       if (bundleReplaceRef.current) bundleReplaceRef.current.click();
     } }, "\u2B06 Replace bundle\u2026"))));
@@ -10305,7 +10343,7 @@ function App() {
   const [modal, setModal] = useState(null);
   const [custom, setCustom] = useState(null);
   const [allowedMap, setAllowedMap] = useState(() => sanitizeAllowedMap(load("lc2-allowed", {})));
-  const [teacherMode, setTeacherMode] = useState(() => isStudentBuild ? false : load("lc2-teacher", ["hosted-teacher", "hosted-sandbox"].includes(String((window.COMPOSE_BUILD || {}).id || ""))));
+  const [teacherMode, setTeacherMode] = useState(() => isStudentBuild ? false : load("lc2-teacher", ["hosted-sandbox"].includes(String((window.COMPOSE_BUILD || {}).id || ""))));
   const [darkMode, setDarkMode] = useState(() => load("lc2-dark", false));
   const [panelTouched, setPanelTouched] = useState(() => !!load("lc2-panel-touched", false));
   const [panelOpen, setPanelOpen] = useState(() => load("lc2-panel-touched", false) ? !!load("lc2-panel", true) : typeof window !== "undefined" && window.innerWidth >= 1180);
@@ -10340,6 +10378,7 @@ function App() {
   const [seenSets, setSeenSets] = useState(() => load("lc2-seen-sets", {}));
   const [exporting, setExporting] = useState(false);
   const [editorInit, setEditorInit] = useState(null);
+  const [hosted, setHosted] = useState(null);
   const [editorMin, setEditorMin] = useState(null);
   useEffect(() => {
     save("lc2-collapse", collapseResolved);
@@ -10699,8 +10738,8 @@ function App() {
   const [netNotice, setNetNotice] = useState(null);
   useEffect(() => {
     const b = window.COMPOSE_BUILD || {};
-    const hosted = String(b.id || "").indexOf("hosted") === 0 && b.id !== "hosted-teacher" && b.id !== "hosted-sandbox";
-    if (!hosted || !("serviceWorker" in navigator) || window.location.protocol !== "https:") return;
+    const hosted2 = String(b.id || "").indexOf("hosted") === 0 && b.id !== "hosted-sandbox";
+    if (!hosted2 || !("serviceWorker" in navigator) || window.location.protocol !== "https:") return;
     try {
       navigator.serviceWorker.register("/sw.js").catch(() => {
       });
@@ -10896,55 +10935,45 @@ function App() {
     }
   }
   function newUserExercise() {
+    setHosted(null);
     setEditorInit({ text: null, key: null });
     openEditorSurface();
   }
-  async function hostedFork(key) {
-    const H = window.COMPOSE_HOSTED;
-    const f = window.LC_FILES && window.LC_FILES[key];
-    if (!H || !f || !window.PocketBase) return;
-    const pb = new window.PocketBase(window.location.origin);
-    if (!pb.authStore.isValid) {
-      window.alert("Not logged in \u2014 open /dash, log in, then fork again.");
-      return;
-    }
-    try {
-      const newKey = key + "-fork" + Math.random().toString(36).slice(2, 6);
-      const title = (f.title || key) + " (copy)";
-      let content = null;
-      try {
-        content = JSON.parse(f.text);
-        if (content && content.title) content.title = title;
-      } catch (e2) {
-      }
-      const v = await pb.collection("versions").getOne(H.versionId);
-      const bundle = v.bundle && v.bundle.compose_bundle ? v.bundle : { compose_bundle: 1, title: v.title, chapters: [], worksheets: [] };
-      let list = bundle.worksheets || bundle.exercises;
-      if (!list) {
-        bundle.worksheets = [];
-        list = bundle.worksheets;
-      }
-      list.push(content ? { key: newKey, title, content } : { key: newKey, title, text: f.text });
-      await pb.collection("versions").update(H.versionId, { bundle });
-      if (Array.isArray(H.keys)) H.keys.push(newKey);
-      setEditorInit({ text: content ? JSON.stringify(content) : f.text, key: newKey });
-      openEditorSurface();
-    } catch (err) {
-      const detail = err && err.response && err.response.message || err && err.message || "unknown error";
-      window.alert("Fork failed: " + detail);
-    }
-  }
-  function hostedEdit(key) {
-    const f = window.LC_FILES && window.LC_FILES[key];
-    if (!f) return;
-    setEditorInit({ text: f.text, key });
+  function openHostedEditor(v, wsKey) {
+    const bundle = v.bundle && v.bundle.compose_bundle ? v.bundle : { compose_bundle: 1, title: v.title, chapters: [], worksheets: [] };
+    const list = bundle.worksheets || bundle.exercises || [];
+    const w = (wsKey ? list.find((x) => x && x.key === wsKey) : list[0]) || null;
+    const text = w ? typeof w.text === "string" ? w.text : JSON.stringify(w.content) : null;
+    setHosted({ versionId: v.id, slug: v.slug, mode: v.mode || "practice", title: v.title });
+    setEditorInit({ text, key: w ? w.key : null });
     openEditorSurface();
   }
   function editUserExercise(key) {
     const f = userFiles.find((x) => x.key === key);
+    setHosted(null);
     setEditorInit({ text: f ? f.text : null, key });
     openEditorSurface();
   }
+  useEffect(() => {
+    if (!isFullBuild) return;
+    const m = /[?&]edit=([A-Za-z0-9_-]+)/.exec(window.location.search || "");
+    if (!m) return;
+    try {
+      const u = new URL(window.location.href);
+      u.searchParams.delete("edit");
+      window.history.replaceState({}, "", u.pathname + (u.search || "") + u.hash);
+    } catch (e) {
+    }
+    if (tier !== "instructor" || !auth) {
+      setSigninMode("login");
+      setPage("signin");
+      return;
+    }
+    fetch("/api/collections/versions/records/" + m[1], { headers: { Authorization: auth.token } }).then((r) => {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    }).then((v) => openHostedEditor(v)).catch(() => setPage("dash"));
+  }, []);
   const groups = (custom ? [{ id: "custom", kind: "tree", title: "Custom", problems: [custom.problem] }] : set ? set.groups : []).filter((g) => g.kind === "tree");
   const applyHash = useCallback((hash) => {
     if (hash === "#scratchpad") {
@@ -11453,7 +11482,7 @@ function App() {
     } }, "Sign in"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn-ghost sb-signin-btn", onClick: () => {
       setSigninMode("register");
       setPage("signin");
-    } }, "Create an account"))) : /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-id-card" }, /* @__PURE__ */ React.createElement("div", { className: "sb-id-email" }, auth.record && auth.record.email || "Signed in"), /* @__PURE__ */ React.createElement("div", { className: "sb-id-meta" }, /* @__PURE__ */ React.createElement("span", { className: "sb-tier-badge" }, tier === "instructor" ? "instructor" : "student"))), tier === "instructor" && /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row" + (page === "dash" ? " on" : ""), onClick: () => setPage("dash") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25C8"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "My versions")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
+    } }, "Create an account"))) : /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-id-card" }, /* @__PURE__ */ React.createElement("div", { className: "sb-id-email" }, auth.record && auth.record.email || "Signed in"), /* @__PURE__ */ React.createElement("div", { className: "sb-id-meta" }, /* @__PURE__ */ React.createElement("span", { className: "sb-tier-badge" }, tier === "instructor" ? "instructor" : "student"))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
       setAuth(null);
       setPage("practice");
     } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2192"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Sign out")))))), /* @__PURE__ */ React.createElement("div", { className: "sb-foot" }, !isStudentBuild && /* @__PURE__ */ React.createElement(
@@ -11620,8 +11649,11 @@ function App() {
           closeEditorSurface();
           setEditorInit(null);
           setEditorMin(null);
+          setHosted(null);
         },
         baseSet: set,
+        hosted,
+        hostedToken: auth && auth.token,
         initialText: editorInit && editorInit.text,
         initialKey: editorInit && editorInit.key,
         onSaveToLibrary: ({ title, text, editKey }) => saveUserExercise({ title, text, editKey }),
@@ -11888,6 +11920,7 @@ function App() {
             setAssignFor(id);
             setPage("assign");
           },
+          onEdit: (v, k) => openHostedEditor(v, k),
           onAuthGone: () => {
             setAuth(null);
             setSigninMode("login");
@@ -11928,7 +11961,8 @@ function App() {
             setPage("practice");
             setMtab("derive");
           },
-          onPromote: window.COMPOSE_HOSTED || canAuthor ? (text) => {
+          onPromote: canAuthor ? (text) => {
+            setHosted(null);
             setEditorInit({ text, key: null });
             openEditorSurface();
           } : null
@@ -12306,14 +12340,7 @@ function App() {
                 }
               },
               /* @__PURE__ */ React.createElement("span", { className: "fc-icon" }, active ? "\u{1F4D6}" : "\u{1F4D8}"),
-              /* @__PURE__ */ React.createElement("div", { style: { flex: 1 } }, /* @__PURE__ */ React.createElement("div", { className: "fc-title" }, l.title), /* @__PURE__ */ React.createElement("div", { className: "fc-meta" }, counts, " derivations \xB7 ", l.set.lexList.length, " entries")),
-              window.COMPOSE_HOSTED && !isStudentBuild && ((window.COMPOSE_HOSTED.keys || []).includes(l.key) ? /* @__PURE__ */ React.createElement("button", { className: "fc-remove", title: "Edit this worksheet (saved on the server)", onClick: (e) => {
-                e.stopPropagation();
-                hostedEdit(l.key);
-              } }, "\u270E") : /* @__PURE__ */ React.createElement("button", { className: "fc-remove", title: "\u2442 Copy into my version for editing", onClick: (e) => {
-                e.stopPropagation();
-                hostedFork(l.key);
-              } }, "\u2442"))
+              /* @__PURE__ */ React.createElement("div", { style: { flex: 1 } }, /* @__PURE__ */ React.createElement("div", { className: "fc-title" }, l.title), /* @__PURE__ */ React.createElement("div", { className: "fc-meta" }, counts, " derivations \xB7 ", l.set.lexList.length, " entries"))
             );
           }));
         }), bundles.length > 0 && bundles.map((b) => {
@@ -12397,6 +12424,7 @@ function App() {
         {
           onClose: () => setModal(null),
           onCreateSet: (text) => {
+            setHosted(null);
             setEditorInit({ text, key: null });
             openEditorSurface();
           }

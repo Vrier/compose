@@ -37,7 +37,6 @@ if (!fs.existsSync(PB)) {
   process.exit(0);
 }
 if (!fs.existsSync(path.join(SERVER, 'template.html')) ||
-    !fs.existsSync(path.join(SERVER, 'template-edit.html')) ||
     !fs.existsSync(path.join(SERVER, 'pb_hooks', 'vendor', 'lcformat.js'))) {
   console.log('  (server artifacts missing — running build:server once)');
   execFileSync(process.execPath, [path.join(ROOT, 'build', 'server.mjs')], { cwd: ROOT, stdio: 'ignore' });
@@ -149,14 +148,13 @@ async function main() {
   r = await req('GET', '/', { raw: true });
   contains('root serves the hosted root instance', r.text, 'hosted-root');
 
-  // W4 — edit route + dash
+  // W4 → S40 — /edit/:id is retired from navigation; the route serves a
+  // minimal "moved" page pointing old bookmarks at the in-app editor.
   page = (await req('GET', `/edit/${VID}`, { raw: true })).text;
-  contains('edit page: instructor identity', page, 'hosted-teacher');
-  contains('edit page: COMPOSE_HOSTED context', page, `"versionId":"${VID}"`);
-  contains('edit page: version worksheets in hosted keys', page, '"keys":["suitews"]');
-  contains('edit page: SDK vendored', page, 'PocketBase');
-  lacks('edit page: built-ins NOT preloaded (S13.4)', page, '"ch7.1-adj":{');
-  contains('edit page: version worksheet gets ★ chapter', page, '"label":"★"');
+  contains('edit route: serves the moved page', page, 'moved into the app');
+  contains('edit route: links to the in-app editor', page, `/?edit=${VID}`);
+  lacks('edit route: no hosted-editor app anymore', page, 'COMPOSE_HOSTED');
+  lacks('edit route: no instructor identity anymore', page, 'hosted-teacher');
   r = await req('GET', '/edit/nonexistent12345', { raw: true });
   expect('edit page for unknown id 404s', r.status === 404, r.status);
   r = await req('GET', '/dash/', { raw: true });

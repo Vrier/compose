@@ -16,7 +16,6 @@ bad(){ FAIL=$((FAIL+1)); say "  FAIL  $1"; }
 check(){ case "$2" in *"$3"*) ok "$1";; *) bad "$1 — expected: $3"; say "        got: $(printf '%s' "$2" | head -c 160)";; esac }
 
 [ -x "$SERVER/pocketbase" ] || { say "server/pocketbase missing — run server/get-pocketbase.sh"; exit 2; }
-[ -f "$SERVER/template-edit.html" ] || { say "server/template-edit.html missing — run npm run build:server"; exit 2; }
 
 ( cd "$SERVER" && ./pocketbase serve --http "127.0.0.1:$PORT" --dir "$DATA" \
     --hooksDir ./pb_hooks --migrationsDir ./pb_migrations --publicDir ./pb_public >"$DATA/pb.log" 2>&1 ) &
@@ -38,16 +37,10 @@ VID=$(printf '%s' "$R" | sed -n 's/.*"id":"\([^"]*\)".*/\1/p')
 SLUG=$(printf '%s' "$R" | sed -n 's/.*"slug":"\([a-z0-9]\{8\}\)".*/\1/p')
 [ -n "$VID" ] && ok "version created ($VID, /v/$SLUG)" || { bad "creation failed: $R"; exit 1; }
 
-say "— /edit/:id (instructor page)"
+say "— /edit/:id (retired S40: serves the moved page)"
 PAGE=$(curl -s "$B/edit/$VID")
-check "instructor identity injected"        "$PAGE" 'hosted-teacher'
-check "role is instructor"                  "$PAGE" '"role":"instructor"'
-check "COMPOSE_HOSTED context injected"     "$PAGE" "\"versionId\":\"$VID\""
-check "hosted keys list carries s4test"     "$PAGE" '"keys":["s4test"]'
-check "PocketBase SDK vendored into page"   "$PAGE" 'PocketBase'
-check "built-in library merged in (ch7.1)"  "$PAGE" 'ch7.1-adj'
-check "version worksheet merged in"         "$PAGE" 's4test'
-check "version worksheet gets ★ chapter"    "$PAGE" '"label":"★"'
+check "moved page serves"                   "$PAGE" 'moved into the app'
+check "links to the in-app editor"          "$PAGE" "/?edit=$VID"
 R=$(curl -s -o /dev/null -w '%{http_code}' "$B/edit/nonexistent123")
 [ "$R" = "404" ] && ok "unknown version id 404s" || bad "/edit/bad returned $R"
 

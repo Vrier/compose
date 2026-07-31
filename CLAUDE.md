@@ -47,8 +47,10 @@ syncs per account). `/` = bare starter (demo worksheet only, S13);
 per-family progress islands; `/v/:slug` = per-version student pages, kept as
 the no-account path (server-side template substitution, isolated
 localStorage via `island`); `/dash/` = legacy instructor dashboard (notes
-editing); `/edit/:id` = hosted editor (version's own worksheets only,
-S13.4); `/editor/` = account-less editor sandbox; `/files/` = worksheet
+editing); `/edit/:id` = retired (S40): the route serves a small "moved"
+page linking to `/?edit=<id>`, which opens the IN-APP editor with that
+version's worksheet (hosted editing = My versions → ✎ Edit; ☁ Save to
+server uses the account token); `/editor/` = account-less editor sandbox; `/files/` = worksheet
 downloads + site map; `/help/` (+`/help/guides/`, with video walkthroughs)
 = student help (S23/S24); `/guide/` = instructor guide (screenshots
 regenerate via scripts/capture-guide.mjs + capture-dash.mjs; videos via

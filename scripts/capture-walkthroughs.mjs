@@ -307,6 +307,9 @@ if (SCENE === 'first') {
   await act(() => center(null, `() => document.querySelector('.si-submit')`), 'log in');
   await new Promise((r) => setTimeout(r, 1400));
   await rec(6); // back in practice, Account section open with the identity card
+  // S40: My versions lives only under Assign & share now — open that section
+  await act(() => center(null, `() => [...document.querySelectorAll('.sb-sec-head')].find(b => b.textContent.includes('Assign & share'))`), 'Assign & share section');
+  await new Promise((r) => setTimeout(r, 600));
   await act(() => sbRow('My versions'), 'My versions row');
   await new Promise((r) => setTimeout(r, 900));
   await rec(6);

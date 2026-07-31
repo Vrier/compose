@@ -61,6 +61,25 @@ ok('tipa', L.tipaHtml('T').includes('θ') && L.tipaHtml('@').includes('ə'));
 /* ---- prose passthrough --------------------------------------------------------- */
 ok('markdown skeleton stays prose', types('# H\n\nSome *prose* with $\\lambda x.x$.') === 'prose');
 
+/* ---- S40: the notes editor's snippet toolbar must emit RENDERABLE blocks -------- */
+// Root cause of the S40 preview bug: the toolbar inserted pre-S14 ```fenced
+// blocks that parseDoc treats as prose (raw backticks in the student view).
+// Extract the SNIPPETS object from reading-editor.jsx and require each
+// non-section snippet to parse to a real block type.
+{
+  const reSrc = fs.readFileSync(path.join(SRC, 'reading-editor.jsx'), 'utf8');
+  const m = reSrc.match(/const SNIPPETS = (\{[\s\S]*?\});/);
+  ok('reading-editor SNIPPETS found', !!m);
+  if (m) {
+    const SNIPPETS = eval('(' + m[1] + ')');
+    const want = { tree: 'tree', deriv: 'deriv', lexicon: 'deriv', gloss: 'gloss', ex: 'ex' };
+    for (const [k, t] of Object.entries(want)) {
+      ok('snippet "' + k + '" parses as ' + t, types(SNIPPETS[k]) === t, 'got ' + types(SNIPPETS[k]));
+    }
+    ok('no snippet uses fenced blocks', !Object.values(SNIPPETS).some((v) => v.includes('```')));
+  }
+}
+
 /* ---- migrated corpus: every reading parses with real blocks, no legacy ---------- */
 const readingDir = path.join(SRC, 'reading');
 const exDir = path.join(SRC, 'exercises');

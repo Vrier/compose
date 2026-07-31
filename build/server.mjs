@@ -7,11 +7,8 @@
                                placeholders __COMPOSE_IDENTITY__ and
                                __COMPOSE_LIBRARY__ (each wrapped in a JS
                                block comment in the emitted HTML)
-   server/template-edit.html   instructor app shell: same two tokens PLUS the
-                               vendored PocketBase SDK and a third token
-                               __COMPOSE_HOSTED__ for the hosted context
-   server/library.json         the built-in LC_FILES map — the /edit route
-                               merges it with a version's own worksheets
+   server/library.json         the built-in LC_FILES map (kept for tooling;
+                               no server route reads it since S13.4/S40)
    server/pb_public/index.html the hosted root instance (full C&C companion)
    server/pb_public/dash/index.html
                                the instructor dashboard (compose/dash.jsx)
@@ -25,14 +22,14 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import esbuild from 'esbuild';
-import { buildParts, assemblePage, inlineLibraryJS, libraryMap, safe, IDENTITY_TOKEN, LIBRARY_TOKEN, HOSTED_TOKEN } from './assemble.mjs';
+import { buildParts, assemblePage, inlineLibraryJS, libraryMap, safe, IDENTITY_TOKEN, LIBRARY_TOKEN } from './assemble.mjs';
 import { createRequire } from 'node:module';
 const { COMPOSE_VERSION, COMPOSE_DATE } = createRequire(import.meta.url)('../compose/version.js');
 
 const SRC = process.env.COMPOSE_SRC || 'compose';
 const OUT = process.env.COMPOSE_SERVER_OUT || 'server';
 
-export { IDENTITY_TOKEN, LIBRARY_TOKEN, HOSTED_TOKEN };
+export { IDENTITY_TOKEN, LIBRARY_TOKEN };
 
 const parts = buildParts(SRC);
 const sdk = fs.readFileSync('node_modules/pocketbase/dist/pocketbase.umd.js', 'utf8');
@@ -52,13 +49,8 @@ const template = assemblePage(parts, {
   libraryJS: LIBRARY_TOKEN, // truthy ⇒ the <script> block exists for substitution
 });
 
-/* ---- 2 · The instructor (editor) template ------------------------------ */
-const templateEdit = assemblePage(parts, {
-  title: 'COMPOSE — Editor',
-  identityJS: IDENTITY_TOKEN,
-  libraryJS: LIBRARY_TOKEN,
-  extraHeadJS: sdk + '\n' + HOSTED_TOKEN,
-});
+/* (The /edit/:id instructor template was retired in S40 — hosted worksheets
+   are edited in the in-app editor; edit.pb.js serves a "moved" page.) */
 
 /* ---- 3 · The hosted root instance (full C&C companion) ----------------- */
 // S13: the root is the bare starter — just the bundled "Getting Started"
@@ -536,7 +528,6 @@ const sitemapXml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http:
 const robotsTxt = 'User-agent: *\nAllow: /\nDisallow: /dash/\nDisallow: /edit/\nDisallow: /_/\nSitemap: ' + SITE + '/sitemap.xml\n';
 
 write('template.html', template);
-write('template-edit.html', templateEdit);
 write('library.json', JSON.stringify(libraryMap(SRC)));
 write(path.join('pb_public', 'index.html'), rootPage);
 write(path.join('pb_public', 'dash', 'index.html'), dashPage);

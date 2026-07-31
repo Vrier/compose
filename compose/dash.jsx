@@ -276,7 +276,7 @@
             onClick={() => patch({ published: !v.published })}>
             {v.published ? '● live' : '○ hidden'}
           </button>
-          <a className="btn-primary dash-edit-btn" href={'/edit/' + v.id}>✎ Open editor</a>
+          <a className="btn-primary dash-edit-btn" href={'/?edit=' + v.id} title="Opens the in-app editor (the standalone /edit page was retired)">✎ Open editor</a>
           <button className="btn-ghost dash-mini" title="Share: QR code, link, printable handout" onClick={() => setSharing(true)}>▤ Share</button>
           <button className="btn-ghost dash-mini" title="Instructor notes shown to students on this version — Markdown skeleton + LaTeX (expex, forest, \\llbracket…)" onClick={() => setNoting(true)}>📖 Notes{(v.notes || '').trim() ? ' ●' : ''}</button>
           {sharing && <ShareModal v={v} onClose={() => setSharing(false)} />}
@@ -318,7 +318,7 @@
         });
         await refresh();
         setErr(null);
-        window.location.href = '/edit/' + v.id; // straight into authoring
+        window.location.href = '/?edit=' + v.id; // straight into the in-app editor (S40)
       } catch (e) { setErr('Create failed: ' + errMsg(e)); }
       setCreating(false);
     }

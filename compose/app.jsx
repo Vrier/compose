@@ -321,7 +321,7 @@ function VersionShareModal({ v, onClose }) {
 }
 
 /* ---- My versions page (instructor tier; spec: max-width 940px rows) ------ */
-function VersionsPage({ token, onBack, onAssign, onAuthGone }) {
+function VersionsPage({ token, onBack, onAssign, onEdit, onAuthGone }) {
   const [versions, setVersions] = useState(null);
   const [err, setErr] = useState(null);
   const [openId, setOpenId] = useState(null);
@@ -482,7 +482,7 @@ function VersionsPage({ token, onBack, onAssign, onAuthGone }) {
                     </div>
                   </div>
                   <div className="vd-row-actions" onClick={(e) => e.stopPropagation()}>
-                    <a className="vd-btn" href={'/edit/' + v.id} title="Open this version's worksheets in the hosted editor">✎ Editor</a>
+                    {onEdit && <button type="button" className="vd-btn" title="Open this version's worksheets in the in-app editor" onClick={() => onEdit(v)}>✎ Edit</button>}
                     {onAssign && <button type="button" className="vd-btn" title="Choose which worksheets this class sees (Assign & share)" onClick={() => onAssign(v.id)}>☑ Assign</button>}
                     <button type="button" className="vd-btn" title="Share: QR code, link, printable handout" onClick={() => setSharing(v)}>⇗ Share</button>
                     <button type="button" className="vd-btn vd-del" title="Delete this version" onClick={() => del(v)}>✕</button>
@@ -496,6 +496,7 @@ function VersionsPage({ token, onBack, onAssign, onAuthGone }) {
                           <div className="vd-ws-title">{w.title}</div>
                           <div className="vd-ws-meta"><span className="mono">{w.key}</span><span className="vd-sep" aria-hidden="true">·</span><span>{w.n} derivation{w.n === 1 ? '' : 's'}</span></div>
                         </div>
+                        {onEdit && <button type="button" className="vd-btn" title="Edit this worksheet in the app editor" onClick={() => onEdit(v, w.key)}>✎ Edit</button>}
                       </div>
                     ))}
                     {sheets.length === 0 && <div className="vd-ws-none">No worksheets yet — open the editor and “☁ Save to server”, or import a bundle below.</div>}
@@ -871,9 +872,10 @@ function App() {
   const [modal, setModal] = useState(null); // 'files' | 'editor' | 'rules' | null
   const [custom, setCustom] = useState(null); // {set, problem}
   const [allowedMap, setAllowedMap] = useState(() => sanitizeAllowedMap(load('lc2-allowed', {})));
-  // Hosted editor pages (/edit/:id) open IN teacher mode — that's what the
-  // instructor came for; the toggle preference still persists per build.
-  const [teacherMode, setTeacherMode] = useState(() => isStudentBuild ? false : load('lc2-teacher', ['hosted-teacher', 'hosted-sandbox'].includes(String((window.COMPOSE_BUILD || {}).id || ''))));
+  // The /editor sandbox opens IN teacher mode — that's what its visitors
+  // came for; the toggle preference still persists per build. (The old
+  // hosted-teacher /edit/:id build id is retired — S40.)
+  const [teacherMode, setTeacherMode] = useState(() => isStudentBuild ? false : load('lc2-teacher', ['hosted-sandbox'].includes(String((window.COMPOSE_BUILD || {}).id || ''))));
   const [darkMode, setDarkMode] = useState(() => load('lc2-dark', false));
   // ---- N3 (S31): right reference panel (Lexicon / Rules / Notes) --------
   // Open by default at viewports >=1180px, closed below; once the user
@@ -906,6 +908,11 @@ function App() {
   const [seenSets, setSeenSets] = useState(() => load('lc2-seen-sets', {}));
   const [exporting, setExporting] = useState(false);
   const [editorInit, setEditorInit] = useState(null); // { text, key } | null
+  // S40: hosted editing context — set when the in-app editor opens on a
+  // hosted version's worksheet (My versions ✎ Edit, or a /?edit=<id> link
+  // from a retired /edit/:id bookmark). Cleared when a local edit starts or
+  // the editor is closed outright; survives minimise so ☁ Save keeps working.
+  const [hosted, setHosted] = useState(null); // { versionId, slug, mode, title } | null
   const [editorMin, setEditorMin] = useState(null); // minimized editor: { title, key } | null
   useEffect(() => { save('lc2-collapse', collapseResolved); }, [collapseResolved]);
   useEffect(() => { save('lc2-auto-nn', autoNN); }, [autoNN]);
@@ -1211,7 +1218,7 @@ function App() {
   const [netNotice, setNetNotice] = useState(null);
   useEffect(() => {
     const b = window.COMPOSE_BUILD || {};
-    const hosted = String(b.id || '').indexOf('hosted') === 0 && b.id !== 'hosted-teacher' && b.id !== 'hosted-sandbox';
+    const hosted = String(b.id || '').indexOf('hosted') === 0 && b.id !== 'hosted-sandbox'; // (hosted-teacher retired S40)
     if (!hosted || !('serviceWorker' in navigator) || window.location.protocol !== 'https:') return;
     try {
       navigator.serviceWorker.register('/sw.js').catch(() => {});
@@ -1400,45 +1407,44 @@ function App() {
     setUserFiles([]);
     if (keys.has(fileKey)) { setFileKey(BUILTIN[0] ? BUILTIN[0].key : null); setSel({ gi: 0, pi: 0 }); }
   }
-  function newUserExercise() { setEditorInit({ text: null, key: null }); openEditorSurface(); }
-  // ---- hosted instructor actions (S4/W4) --------------------------------
-  // ⑂ fork: copy a worksheet into the hosted version's bundle, open editor.
-  // ✎ edit: open one of the version's own worksheets in the editor.
-  async function hostedFork(key) {
-    const H = window.COMPOSE_HOSTED; const f = window.LC_FILES && window.LC_FILES[key];
-    if (!H || !f || !window.PocketBase) return;
-    const pb = new window.PocketBase(window.location.origin);
-    if (!pb.authStore.isValid) { window.alert('Not logged in — open /dash, log in, then fork again.'); return; }
-    try {
-      const newKey = key + '-fork' + Math.random().toString(36).slice(2, 6);
-      const title = (f.title || key) + ' (copy)';
-      let content = null;
-      try { content = JSON.parse(f.text); if (content && content.title) content.title = title; } catch (e2) {}
-      const v = await pb.collection('versions').getOne(H.versionId);
-      const bundle = (v.bundle && v.bundle.compose_bundle) ? v.bundle : { compose_bundle: 1, title: v.title, chapters: [], worksheets: [] };
-      let list = bundle.worksheets || bundle.exercises;
-      if (!list) { bundle.worksheets = []; list = bundle.worksheets; }
-      list.push(content ? { key: newKey, title, content } : { key: newKey, title, text: f.text });
-      await pb.collection('versions').update(H.versionId, { bundle });
-      if (Array.isArray(H.keys)) H.keys.push(newKey);
-      setEditorInit({ text: content ? JSON.stringify(content) : f.text, key: newKey });
-      openEditorSurface();
-    } catch (err) {
-      const detail = (err && err.response && err.response.message) || (err && err.message) || 'unknown error';
-      window.alert('Fork failed: ' + detail);
-    }
-  }
-  function hostedEdit(key) {
-    const f = window.LC_FILES && window.LC_FILES[key];
-    if (!f) return;
-    setEditorInit({ text: f.text, key });
+  function newUserExercise() { setHosted(null); setEditorInit({ text: null, key: null }); openEditorSurface(); }
+  // ---- hosted instructor actions (S40; formerly the /edit/:id page) ------
+  // ✎ Edit on My versions opens one of the version's worksheets in the
+  // IN-APP editor page with the hosted context set; the editor's
+  // "☁ Save to server" upserts into the version's bundle with the account
+  // token. The standalone /edit/:id editor page is retired (the route now
+  // serves a "moved" page linking to /?edit=<id>).
+  function openHostedEditor(v, wsKey) {
+    const bundle = (v.bundle && v.bundle.compose_bundle) ? v.bundle : { compose_bundle: 1, title: v.title, chapters: [], worksheets: [] };
+    const list = bundle.worksheets || bundle.exercises || [];
+    const w = (wsKey ? list.find((x) => x && x.key === wsKey) : list[0]) || null;
+    const text = w ? (typeof w.text === 'string' ? w.text : JSON.stringify(w.content)) : null;
+    setHosted({ versionId: v.id, slug: v.slug, mode: v.mode || 'practice', title: v.title });
+    setEditorInit({ text, key: w ? w.key : null });
     openEditorSurface();
   }
   function editUserExercise(key) {
     const f = userFiles.find((x) => x.key === key);
+    setHosted(null);
     setEditorInit({ text: f ? f.text : null, key });
     openEditorSurface();
   }
+
+  // S40: /?edit=<versionId> — where retired /edit/:id bookmarks land. A
+  // signed-in instructor goes straight into the hosted editor; anyone else
+  // gets the sign-in page. The param is stripped from the URL either way.
+  useEffect(() => {
+    if (!isFullBuild) return;
+    const m = /[?&]edit=([A-Za-z0-9_-]+)/.exec(window.location.search || '');
+    if (!m) return;
+    try { const u = new URL(window.location.href); u.searchParams.delete('edit'); window.history.replaceState({}, '', u.pathname + (u.search || '') + u.hash); } catch (e) {}
+    if (tier !== 'instructor' || !auth) { setSigninMode('login'); setPage('signin'); return; }
+    fetch('/api/collections/versions/records/' + m[1], { headers: { Authorization: auth.token } })
+      .then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then((v) => openHostedEditor(v))
+      .catch(() => setPage('dash'));
+    // eslint-disable-next-line
+  }, []);
 
   const groups = (custom ? [{ id: 'custom', kind: 'tree', title: 'Custom', problems: [custom.problem] }] : (set ? set.groups : [])).filter(g => g.kind === 'tree');
 
@@ -2019,9 +2025,6 @@ function App() {
                         <span className="sb-tier-badge">{tier === 'instructor' ? 'instructor' : 'student'}</span>
                       </div>
                     </div>
-                    {tier === 'instructor' && (
-                      <button type="button" className={'sb-row' + (page === 'dash' ? ' on' : '')} onClick={() => setPage('dash')}><span className="sb-ico" aria-hidden="true">◈</span><span className="sb-row-label">My versions</span></button>
-                    )}
                     <button type="button" className="sb-row" onClick={() => { setAuth(null); setPage('practice'); }}><span className="sb-ico" aria-hidden="true">→</span><span className="sb-row-label">Sign out</span></button>
                   </div>
                 )
@@ -2173,7 +2176,8 @@ function App() {
 
   function renderEditorSurface(asPage) {
     return (
-      <ExerciseEditor asPage={asPage} onClose={() => { closeEditorSurface(); setEditorInit(null); setEditorMin(null); }} baseSet={set}
+      <ExerciseEditor asPage={asPage} onClose={() => { closeEditorSurface(); setEditorInit(null); setEditorMin(null); setHosted(null); }} baseSet={set}
+        hosted={hosted} hostedToken={auth && auth.token}
         initialText={editorInit && editorInit.text} initialKey={editorInit && editorInit.key}
         onSaveToLibrary={({ title, text, editKey }) => saveUserExercise({ title, text, editKey })}
         onMinimize={({ title, editKey }) => { setEditorMin({ title: (title || '').trim() || 'Untitled exercise', key: editKey || null }); setEditorInit({ text: null, key: editKey || null }); closeEditorSurface(); }}
@@ -2487,6 +2491,7 @@ function App() {
       return <VersionsPage token={auth.token}
         onBack={() => setPage('practice')}
         onAssign={(id) => { setAssignFor(id); setPage('assign'); }}
+        onEdit={(v, k) => openHostedEditor(v, k)}
         onAuthGone={() => { setAuth(null); setSigninMode('login'); setPage('signin'); }} />;
     }
     if (page === 'assign') {
@@ -2505,7 +2510,7 @@ function App() {
           if (callowed) setAllowedMap((m) => ({ ...m, [cset.id || 'scratchpad']: callowed }));
           setSel({ gi: 0, pi: 0 }); setPage('practice'); setMtab('derive');
         }}
-        onPromote={(window.COMPOSE_HOSTED || canAuthor) ? ((text) => { setEditorInit({ text, key: null }); openEditorSurface(); }) : null} />;
+        onPromote={canAuthor ? ((text) => { setHosted(null); setEditorInit({ text, key: null }); openEditorSurface(); }) : null} />;
     }
     return null;
   }
@@ -2928,11 +2933,6 @@ function App() {
                               <span className="fc-icon">{active ? '📖' : '📘'}</span>
                               <div style={{ flex: 1 }}><div className="fc-title">{l.title}</div>
                                 <div className="fc-meta">{counts} derivations · {l.set.lexList.length} entries</div></div>
-                              {window.COMPOSE_HOSTED && !isStudentBuild && (
-                                (window.COMPOSE_HOSTED.keys || []).includes(l.key)
-                                  ? <button className="fc-remove" title="Edit this worksheet (saved on the server)" onClick={(e) => { e.stopPropagation(); hostedEdit(l.key); }}>✎</button>
-                                  : <button className="fc-remove" title="⑂ Copy into my version for editing" onClick={(e) => { e.stopPropagation(); hostedFork(l.key); }}>⑂</button>
-                              )}
                             </div>
                           );
                         })}
@@ -3014,7 +3014,7 @@ function App() {
         const ReadingStandalone = window.ReadingEditorStandalone;
         return <ReadingStandalone
           onClose={() => setModal(null)}
-          onCreateSet={(text) => { setEditorInit({ text, key: null }); openEditorSurface(); }} />;
+          onCreateSet={(text) => { setHosted(null); setEditorInit({ text, key: null }); openEditorSurface(); }} />;
       })()}
 
       {editorMin && !modal && page !== 'editor' && canAuthor && (

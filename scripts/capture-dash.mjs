@@ -87,8 +87,9 @@ await page.goto(B + '/cc/ch6/', { waitUntil: 'networkidle2' });
 await page.evaluate((a) => localStorage.setItem('lc2-auth', a), JSON.stringify({ token: auth.token, record: auth.record }));
 await page.reload({ waitUntil: 'networkidle2' });
 await sleep(900);
-// sidebar → Account → My versions; expand the row so the unlock code shows
-await page.evaluate(() => { const b = document.querySelector('.rail-btn[title="Account"]'); if (b) b.click(); });
+// sidebar → Assign & share → My versions (S40: the Account section no
+// longer duplicates the My-versions row); expand the row for the code
+await page.evaluate(() => { const b = document.querySelector('.rail-btn[title="Assign & share"]'); if (b) b.click(); });
 await sleep(400);
 await clickText('.sb-row', 'My versions');
 await page.waitForSelector('.vd-row', { timeout: 10000 });

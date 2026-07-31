@@ -56,6 +56,7 @@ function convTree(src) {
   function node() {
     ws(); if (src[i] !== '[') return ''; i++; ws();
     let label = ''; while (i < n && !/[\s\[\]{]/.test(src[i])) label += src[i++];
+    if (label.charAt(0) === '.') label = label.slice(1); // qtree [.S … form
     let den = null;
     if (src[i] === '{') { i++; den = ''; let d = 1; while (i < n && d > 0) { const c = src[i]; if (c === '{') d++; else if (c === '}') { d--; if (d === 0) { i++; break; } } den += c; i++; } }
     if (depth === 0 && den != null && rootDen === null) rootDen = den;
@@ -87,8 +88,34 @@ const NODE_PHRASES = new Set(['S', "S'", 'DP', 'NP', 'VP', "V'", 'PP', 'AP', 'CP
 // Silent functional heads — kept as tree nodes but dropped from the auto-sentence.
 const SILENT_HEADS = new Set(['Agent', 'Theme', 'Event']);
 
+/* S40: the notes are authored in S14 LaTeX (forest/qtree trees, derivation
+   environments) — map those onto the fenced ```tree/```deriv blocks the
+   scanner below has always read, so auto-generate works on real notes.
+   ⟦word⟧/\den{word} heads are normalised to the [[word]] form first. */
+function latexBlocksToFences(md) {
+  let s2 = String(md || '');
+  s2 = s2.replace(/\\begin\{forest\}([\s\S]*?)\\end\{forest\}/g, (m, b) => {
+    const at = b.indexOf('['); return '\n```tree\n' + (at > 0 ? b.slice(at) : b) + '\n```\n';
+  });
+  s2 = s2.replace(/\\begin\{(?:derivation|deriv)\}([\s\S]*?)\\end\{(?:derivation|deriv)\}/g,
+    (m, b) => '\n```deriv\n' + b + '\n```\n');
+  // \Tree [.S …] — take the bracket-balanced body
+  const lines = s2.split('\n'); const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    const t = lines[i].trim();
+    if (/^\\Tree\b/.test(t)) {
+      let buf = lines[i].replace(/^\s*\\Tree\s*/, '');
+      const depth = (str) => { let d = 0; for (const ch of str) { if (ch === '[') d++; else if (ch === ']') d--; } return d; };
+      while (i + 1 < lines.length && (depth(buf) > 0 || !buf.trim())) { i++; buf += '\n' + lines[i]; }
+      out.push('```tree', buf, '```');
+    } else out.push(lines[i]);
+  }
+  return out.join('\n');
+}
+
 /* ---- the auto-generator: markdown → {lexicon, groups, events, ...} ------ */
 function composeAutogen(md) {
+  md = latexBlocksToFences(md);
   const lexMap = new Map();      // word → { den, type }
   const allLeaves = new Set();   // every terminal seen in a tree (used to prune lexicon)
   const groups = []; let cur = null; let curSec = null; let events = false;
@@ -104,7 +131,8 @@ function composeAutogen(md) {
       const body = nl < 0 ? '' : part.slice(nl + 1);
       if (lang === 'deriv' || lang === 'den' || lang === 'denotation' || lang === 'lexicon') {
         body.split('\n').forEach((line) => {
-          const L = line.trim(); if (!L) return;
+          let L = line.trim(); if (!L) return;
+          L = L.replace(/⟦\s*/g, '[[').replace(/\s*⟧/g, ']]').replace(/\\den\{([^{}]*)\}/g, '[[$1]]');
           let m = L.match(/^\[\[\s*([^\]]+?)\s*\]\]\s*=\s*(.+?)\s*(?::\s*([^:]+))?$/) ||
                   L.match(/^([^=:][^=:]*?)\s*=\s*(.+?)\s*(?::\s*([^:]+))?$/);
           let word, den, type = '';
@@ -292,18 +320,13 @@ function ReadingEditor({ markdown, onChange, onClose, onApplyAutogen, title, sta
   }
   const SNIPPETS = {
     section: '\n## 11.6 New section\n\n',
-    tree: '\n```tree\n[S{~exists e[sing(e) /\\ Ag(e)=g]}\n  [DP Gandalf]\n  [NegP [Neg didn\u2019t] [VP{lambda e.sing(e)} [V sing]]]]\n```\n',
-    deriv: '\n```deriv\n[[sing]]   = lambda e.sing(e)   : <v,t>\n[[Gandalf]] = g               : e\n```\n',
-    lexicon: '\n```lexicon\nsing = lambda e.sing(e)\nGandalf = g\n```\n',
-    gloss: '\n```gloss\nNe    parle    pas\nNEG   speak    NEG\n"doesn\u2019t speak"\n```\n',
-    ex: '\n```ex\nGandalf didn\u2019t sing.\n* Gandalf not sang.\n```\n',
+    tree: '\n\\begin{forest}\n[S{~exists e[sing(e) /\\ Ag(e)=g]}\n  [DP Gandalf]\n  [NegP [Neg didn\u2019t] [VP{lambda e.sing(e)} [V sing]]]]\n\\end{forest}\n',
+    deriv: '\n\\begin{derivation}\n[[sing]]   = lambda e.sing(e)   : <v,t>\n[[Gandalf]] = g               : e\n\\end{derivation}\n',
+    lexicon: '\n\\begin{derivation}\nsing = lambda e.sing(e) : <v,t>\nGandalf = g : e\n\\end{derivation}\n',
+    gloss: '\n\\begingl\n\\gla Ne parle pas//\n\\glb NEG speak NEG//\n\\glft \u2018doesn\u2019t speak\u2019//\n\\endgl\n',
+    ex: '\n\\pex\n\\a Gandalf didn\u2019t sing.\n\\a *Gandalf not sang.\n\\xe\n',
   };
 
-  function loadMd() {
-    const inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.md,.markdown,.txt';
-    inp.onchange = async () => { const f = inp.files[0]; if (!f) return; onChange(await f.text()); };
-    inp.click();
-  }
   function exportMd() {
     const name = (window.composeSlug ? window.composeSlug(title || 'reading') : 'reading') + '.md';
     if (window.composeDownload) window.composeDownload(name, md, 'text/markdown');
@@ -323,7 +346,6 @@ function ReadingEditor({ markdown, onChange, onClose, onApplyAutogen, title, sta
           <span className="re-sub">{standalone ? 'standalone draft — send to the exercise editor when ready' : (title ? '“' + title + '”' : 'notes attached to this set')}</span>
           <span className="sp" />
           <div className="re-actions">
-            <button className="btn-ghost" onClick={loadMd}>⬆ Load .md</button>
             <button className="btn-ghost" onClick={exportMd}>⬇ .md</button>
             <button className="btn-ghost" onClick={exportHtml}>⬇ .html</button>
             <button className="btn btn-primary" onClick={runAutogen} title="Generate exercises from the tree + deriv/lexicon blocks in these notes">⚙ Auto-generate exercises</button>
@@ -344,17 +366,17 @@ function ReadingEditor({ markdown, onChange, onClose, onApplyAutogen, title, sta
               <button className="re-tool" onClick={() => insertAtCaret(SNIPPETS.ex)}>＋ examples</button>
             </div>
             <textarea ref={taRef} className="re-ta" value={md} spellCheck={false}
-              placeholder={'# Chapter 11 · Events\n\nWrite the notes in Markdown. Use ## for sections that exercises can link to.\n\n```tree\n[S [DP Gandalf] [VP sang]]\n```'}
+              placeholder={'# Chapter 11 \u00b7 Events\n\nMarkdown skeleton + the LaTeX linguists already write: $\\lambda x. dog(x)$, \\den{dog}, \\ex \u2026 \\xe, \\begingl \u2026 \\endgl,\n\\begin{forest} [S [DP Gandalf] [VP sang]] \\end{forest}, \\begin{derivation} \u2026 \\end{derivation}.\n\nUse ## for sections that exercises can link to.'}
               onChange={(e) => onChange(e.target.value)} />
             <div className="re-guide">
               <details>
                 <summary><span className="gi">▸</span> How auto-generate works</summary>
                 <div className="gbody">
-                  <p>Auto-generate is <b>optional</b>. It reads two kinds of fenced block and builds exercises with built-in parsing (no AI):</p>
-                  <p><b>1 · Word meanings</b> — a <code>deriv</code> or <code>lexicon</code> block. Lines like <code>[[sing]] = lambda e.sing(e) : &lt;v,t&gt;</code> or <code>sing = lambda e.sing(e)</code> become lexicon entries (λ-notation is converted to COMPOSE’s <code>L … &amp; ~ -&gt;</code>). Lines whose head is a node label (S, VP, NegP…) are treated as derivation steps and skipped.</p>
-                  <p><b>2 · Trees</b> — each <code>tree</code> block becomes one exercise. The student-facing sentence is the joined leaf words; the <b>target</b> is the root node’s <code>{'{…}'}</code> denotation.</p>
+                  <p>Auto-generate is <b>optional</b>. It reads two kinds of block from the notes and builds exercises with built-in parsing (no AI):</p>
+                  <p><b>1 · Word meanings</b> — a <code>\begin{'{'}derivation{'}'}…\end{'{'}derivation{'}'}</code> block. Lines like <code>[[sing]] = lambda e.sing(e) : &lt;v,t&gt;</code>, <code>⟦sing⟧ = …</code> or <code>sing = lambda e.sing(e)</code> become lexicon entries (λ-notation is converted to COMPOSE’s <code>L … &amp; ~ -&gt;</code>). Lines whose head is a node label (S, VP, NegP…) are treated as derivation steps and skipped.</p>
+                  <p><b>2 · Trees</b> — each <code>\begin{'{'}forest{'}'}</code> or <code>\Tree</code> block becomes one exercise. The student-facing sentence is the joined leaf words; the <b>target</b> is the root node’s <code>{'{…}'}</code> denotation. (The pre-S14 fenced <code>```tree</code>/<code>```deriv</code> blocks still work in old drafts.)</p>
                   <p>Each <code>##</code> heading starts a new exercise group; trees under it become its items and anchor to that section. Generated trees are checked against the engine and flagged, but you can link them anyway and fix later. Applying <b>overwrites</b> the editor’s current lexicon and exercises.</p>
-                  <pre>## 11.6 Negation{'\n'}{'\n'}```deriv{'\n'}[[Gandalf]] = g          : e{'\n'}[[sing]]    = lambda e.sing(e) : &lt;v,t&gt;{'\n'}```{'\n'}{'\n'}```tree{'\n'}[S{'{'}~exists e[sing(e)]{'}'} [DP Gandalf] [VP [V sing]]]{'\n'}```</pre>
+                  <pre>## 11.6 Negation{'\n'}{'\n'}\begin{'{'}derivation{'}'}{'\n'}[[Gandalf]] = g          : e{'\n'}[[sing]]    = lambda e.sing(e) : &lt;v,t&gt;{'\n'}\end{'{'}derivation{'}'}{'\n'}{'\n'}\begin{'{'}forest{'}'}{'\n'}[S{'{'}~exists e[sing(e)]{'}'} [DP Gandalf] [VP [V sing]]]{'\n'}\end{'{'}forest{'}'}</pre>
                 </div>
               </details>
             </div>

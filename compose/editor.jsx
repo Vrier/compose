@@ -689,7 +689,7 @@ function ExercisesPanel({ groups, setGroups, trialSet, onTest, sections }) {
 }
 
 /* ---- FileEditor (main) ---------------------------------------------------- */
-function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey, asPage }) {
+function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey, asPage, hosted, hostedToken }) {
   const [state, setState] = useState(() => {
     if (initialText != null) { const p = parseFromText(initialText); if (p) return p; }
     const saved = load('lc2-fe-state', null);
@@ -757,20 +757,23 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
     else onClose();
   }
 
-  // ---- Save to server (S4/W4): upsert this worksheet into the hosted
-  // version's bundle. Visible only when served from /edit/:id (COMPOSE_HOSTED).
+  // ---- Save to server (S4/W4, reworked S40): upsert this worksheet into
+  // the hosted version's bundle. Visible only when the app opened the editor
+  // with a hosted context (My versions ✎ Edit / ?edit=<id>); auth is the
+  // in-app account token — the vendored-SDK path died with /edit/:id.
   const [srvMsg, setSrvMsg] = useState(null);
   const [srvBusy, setSrvBusy] = useState(false);
   async function saveToServer() {
-    const H = window.COMPOSE_HOSTED;
-    if (!H || !window.PocketBase) return;
-    const pb = new window.PocketBase(window.location.origin);
-    if (!pb.authStore.isValid) { setSrvMsg({ kind: 'err', msg: 'Not logged in — open /dash, log in, then come back and save again.' }); return; }
+    const H = hosted;
+    if (!H) return;
+    if (!hostedToken) { setSrvMsg({ kind: 'err', msg: 'Not signed in — sign in and try again.' }); return; }
     setSrvBusy(true); setSrvMsg(null);
     try {
       const text = generateJSON(state);
       const obj = JSON.parse(text);
-      const v = await pb.collection('versions').getOne(H.versionId);
+      const vr = await fetch('/api/collections/versions/records/' + H.versionId, { headers: { Authorization: hostedToken } });
+      if (!vr.ok) throw new Error('could not load the version (' + vr.status + ')');
+      const v = await vr.json();
       const bundle = (v.bundle && v.bundle.compose_bundle) ? v.bundle : { compose_bundle: 1, title: v.title, chapters: [], worksheets: [] };
       let list = bundle.worksheets || bundle.exercises;
       if (!list) { bundle.worksheets = []; list = bundle.worksheets; }
@@ -780,13 +783,18 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
       const idx = list.findIndex((w) => w && w.key === key);
       if (idx >= 0) list[idx] = entry; else list.push(entry);
       bundle.engineVersion = (window.LC && window.LC.VERSION) || undefined; // W14: grader-version provenance
-      await pb.collection('versions').update(H.versionId, { bundle });
+      const pr = await fetch('/api/collections/versions/records/' + H.versionId, {
+        method: 'PATCH', headers: { Authorization: hostedToken, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bundle }),
+      });
+      if (!pr.ok) {
+        let j = null; try { j = await pr.json(); } catch (e2) {}
+        throw new Error((j && (j.error || j.message)) || ('request failed (' + pr.status + ')'));
+      }
       setEditKey(key);
-      if (Array.isArray(H.keys) && H.keys.indexOf(key) < 0) H.keys.push(key);
       setSrvMsg({ kind: 'ok', msg: 'Saved — live for students at /v/' + H.slug });
     } catch (err) {
-      const detail = (err && err.response && err.response.message) || (err && err.message) || 'unknown error';
-      setSrvMsg({ kind: 'err', msg: 'Save to server failed: ' + detail });
+      setSrvMsg({ kind: 'err', msg: 'Save to server failed: ' + (err.message || 'unknown error') });
     }
     setSrvBusy(false);
   }
@@ -843,7 +851,7 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
             <div className="fe-header-title">
               {asPage && (
                 <div className="fe-page-kicker">
-                  <span className="fe-page-kicker-label">Worksheet editor{window.COMPOSE_HOSTED ? ' · ' + window.COMPOSE_HOSTED.title : ''}</span>
+                  <span className="fe-page-kicker-label">Worksheet editor{hosted ? ' · ' + hosted.title : ''}</span>
                   <span className={'fe-page-status' + (srvMsg ? (srvMsg.kind === 'ok' ? ' ok' : ' err') : (savedFlash ? ' ok' : ''))} role="status" aria-live="polite">
                     <span className="fe-status-dot" aria-hidden="true" />
                     {srvMsg ? srvMsg.msg : (savedFlash ? 'Saved' : (editKey ? 'Editing a saved worksheet' : 'Draft — kept in this browser'))}
@@ -866,9 +874,9 @@ function FileEditor({ onClose, onLaunch, onSaveToLibrary, onLoadIntoApp, onMinim
             <button className="btn-ghost" onClick={() => setShowReading(true)} title="Attach or edit notes (Markdown) and link sections to exercises">📝 Notes{reading.markdown && reading.markdown.trim() ? <span className="fe-reading-dot" /> : null}</button>
             <button className="btn-ghost fe-import-btn" onClick={doImport}>⬆ Import</button>
             <button className="btn-ghost fe-export-btn" onClick={doExport}>⬇ .json</button>
-            {window.COMPOSE_HOSTED && (
+            {hosted && (
               <button className="btn-primary fe-export-btn" onClick={saveToServer} disabled={srvBusy}
-                title={'Save this worksheet into the hosted version "' + window.COMPOSE_HOSTED.title + '" — students see the change immediately'}>
+                title={'Save this worksheet into the hosted version "' + hosted.title + '" — students see the change immediately'}>
                 {srvBusy ? '⟳ Saving…' : '☁ Save to server'}
               </button>
             )}
@@ -1006,9 +1014,9 @@ function UserExerciseManager({ items, fileKey, custom, instructor, onOpen, onRen
 window.UserExerciseManager = UserExerciseManager;
 
 /* ---- Top-level ExerciseEditor --------------------------------------------- */
-function ExerciseEditor({ onClose, onLaunch, baseSet, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey, asPage }) {
+function ExerciseEditor({ onClose, onLaunch, baseSet, onSaveToLibrary, onLoadIntoApp, onMinimize, initialText, initialKey, asPage, hosted, hostedToken }) {
   return <FileEditor onClose={onClose} onSaveToLibrary={onSaveToLibrary} onLoadIntoApp={onLoadIntoApp} onMinimize={onMinimize}
-        initialText={initialText} initialKey={initialKey} asPage={asPage}
+        initialText={initialText} initialKey={initialKey} asPage={asPage} hosted={hosted} hostedToken={hostedToken}
         onLaunch={p => { onLaunch(p); }} />;
 }
 
