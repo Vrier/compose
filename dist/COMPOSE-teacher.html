@@ -1270,6 +1270,44 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .app-main-mobile { display: flex; min-height: 0; }
 .app-main-mobile > .col-center { flex: 1; min-width: 0; max-width: 100%; }
 
+/* ---- S55: tablet adaptive-drawer layout -------------------------------- */
+/* Full-width stage under a slim app-bar; navigation + reference live in
+   slide-over drawers (Sheet side=left / side=right), never in columns. */
+.app.is-tablet { display: flex; flex-direction: column; overflow-x: hidden; height: 100dvh; height: 100vh; }
+.app.is-tablet > .app-main { flex: 1; min-height: 0; min-width: 0; width: 100%; }
+.app-main-tablet { display: flex; min-height: 0; }
+.app-main-tablet > .col-center { flex: 1; min-width: 0; max-width: 100%; }
+.tb-bar {
+  flex: none; display: flex; align-items: center; gap: 10px;
+  padding: 8px 14px; min-height: 52px; box-sizing: border-box;
+  border-bottom: 1px solid var(--line); background: var(--panel);
+}
+.tb-btn {
+  flex: none; border: 1px solid var(--line); background: var(--panel); color: var(--ink-soft);
+  border-radius: 9px; min-height: 38px; padding: 0 12px; font: inherit; font-size: 15px;
+  cursor: pointer; -webkit-tap-highlight-color: transparent; display: inline-flex;
+  align-items: center; gap: 6px;
+}
+.tb-btn:hover { border-color: var(--accent); color: var(--accent-ink); }
+.tb-btn.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
+.tb-menu { font-size: 18px; padding: 0 13px; }
+.tb-title-wrap { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+.tb-crumb { font-size: 10px; letter-spacing: .11em; text-transform: uppercase; color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tb-title { font-size: 16px; font-weight: 600; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.25; }
+.tb-step { flex: none; display: flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--panel); }
+.tb-arrow { width: 34px; height: 36px; border: 0; background: transparent; color: var(--ink-soft); cursor: pointer; font-size: 15px; font-family: inherit; }
+.tb-arrow:hover:not(:disabled) { color: var(--accent-ink); background: var(--panel-2); }
+.tb-arrow:disabled { opacity: .34; cursor: default; }
+.tb-score { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--accent-ink); min-width: 38px; text-align: center; }
+.tb-ref-label { font-size: 13.5px; font-weight: 600; }
+/* the drawers reuse the Sheet chrome; give their bodies a comfortable pad
+   and let the reused columns fill the drawer height */
+.tb-drawer .sheet-body { display: flex; flex-direction: column; }
+.tb-drawer-nav .sheet-body > .col-ex,
+.tb-drawer-nav .sheet-body > .sb-body { flex: 1; min-height: 0; }
+.tb-drawer-nav .col-ex { position: static; box-shadow: none; width: 100%; border: 0; }
+.tb-drawer-ref .mb-view { flex: 1; min-height: 0; }
+
 /* ---- mobile mini-segment in desktop Settings (layout switch) ----------- */
 .settings-layout-row { cursor: default; }
 .seg-mini { display: inline-flex; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
@@ -1470,6 +1508,17 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
   animation: sheet-up 0.26s cubic-bezier(.22,.61,.36,1);
 }
 .sheet-list { height: 78vh; }
+/* S55: side drawers (tablet nav + reference). Full height, slide in from the
+   named edge, capped width so the stage stays visible behind the backdrop. */
+.sheet-left, .sheet-right {
+  height: 100%; max-height: 100%; width: min(88vw, 360px);
+  box-shadow: 0 8px 44px oklch(0 0 0 / 0.30);
+}
+.sheet-left { border-radius: 0 18px 18px 0; animation: sheet-in-left 0.24s cubic-bezier(.22,.61,.36,1); }
+.sheet-right { border-radius: 18px 0 0 18px; animation: sheet-in-right 0.24s cubic-bezier(.22,.61,.36,1); }
+.sheet-drawer-wide { width: min(92vw, 420px); }
+@keyframes sheet-in-left { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes sheet-in-right { from { transform: translateX(100%); } to { transform: translateX(0); } }
 @keyframes sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
 @keyframes sheet-fade { from { opacity: 0; } to { opacity: 1; } }
 .sheet-grip { display: grid; place-items: center; padding: 9px 0 2px; flex-shrink: 0; }
@@ -1778,11 +1827,14 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
   min-height: 0; animation: sbSlideIn .16s ease;
 }
 @keyframes sbSlideIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+/* S55: the old <1040px floating-column overlay is retired — that band is now
+   the tablet adaptive-drawer layout (.is-tablet), which never renders the
+   desktop .col-ex / .rp-panel columns. The rule below only matters if the
+   user forces "Desktop" layout on a narrow screen (three columns then), so it
+   stays scoped to the non-tablet shell. */
 @media (max-width: 1040px) {
-  /* S46: the sidebar stays expanded while drilled in, so the floating
-     column anchors to its 272px edge — or the 58px rail when collapsed */
-  .col-ex { position: absolute; left: 272px; top: 0; bottom: 0; z-index: 6; box-shadow: var(--shadow); }
-  .sidebar.rail + .col-ex { left: 58px; }
+  .app:not(.is-tablet) .col-ex { position: absolute; left: 272px; top: 0; bottom: 0; z-index: 6; box-shadow: var(--shadow); }
+  .app:not(.is-tablet) .sidebar.rail + .col-ex { left: 58px; }
 }
 .colx-head {
   display: flex; align-items: center; gap: 9px; width: 100%;
@@ -2085,7 +2137,7 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 /* <1180px: closed by default (JS initial state); if opened it floats over
    the content so the derivation stage never squashes (README breakpoint). */
 @media (max-width: 1180px) {
-  .app-main > .rp-panel { position: absolute; right: 0; top: 0; bottom: 0; z-index: 7; box-shadow: var(--shadow); }
+  .app:not(.is-tablet) .app-main > .rp-panel { position: absolute; right: 0; top: 0; bottom: 0; z-index: 7; box-shadow: var(--shadow); }
 }
 
 /* =========================================================================
@@ -2355,52 +2407,6 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .about-sub { color: var(--ink-soft); margin-bottom: 20px; }
 .about-wrap h2 { font-size: 20px; margin: 38px 0 10px; padding-top: 8px; border-top: 1px solid var(--line); scroll-margin-top: 24px; }
 .about-wrap h3 { font-size: 16.5px; margin: 26px 0 8px; }
-.about-wrap p, .about-wrap li, .about-wrap td, .about-wrap th { font-size: 15px; color: var(--ink); }
-.about-wrap a { color: var(--accent-ink, #b5532f); }
-.about-cite {
-  background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
-  padding: 14px 16px; font-family: 'IBM Plex Mono', ui-monospace, monospace;
-  font-size: 12.5px; white-space: pre-wrap; margin: 10px 0;
-}
-.about-foot { margin-top: 40px; font-size: 12.5px; color: var(--ink-soft); }
-.files-table { width: 100%; border-collapse: collapse; margin: 6px 0 14px; }
-.files-table th, .files-table td { text-align: left; padding: 6px 12px 6px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
-.files-table th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); }
-.files-table .fnum { text-align: right; padding-right: 0; }
-.guide-wrap { max-width: 1080px; }
-.guide-wrap h2 { scroll-margin-top: 24px; }
-.guide-layout { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 34px; align-items: start; }
-.guide-side { position: sticky; top: 12px; }
-.guide-toc { display: flex; flex-direction: column; gap: 7px; font-size: 13.5px; line-height: 1.35; border-left: 2px solid var(--line); padding-left: 14px; }
-.guide-toc-head { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-soft); margin-bottom: 2px; }
-.guide-toc a { text-decoration: none; }
-.guide-toc a:hover { text-decoration: underline; }
-.guide-toc .guide-top { margin-top: 10px; color: var(--ink-soft); }
-@media (max-width: 860px) {
-  .guide-layout { display: block; }
-  .guide-side { position: static; margin-bottom: 18px; }
-  .guide-toc { flex-direction: row; flex-wrap: wrap; gap: 6px 14px; border-left: 0; padding-left: 0; }
-  .guide-toc .guide-top { display: none; }
-}
-.guide-fig { margin: 18px 0 26px; }
-.guide-fig img, .guide-fig video { width: 100%; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 2px 10px rgba(60,40,20,.07); }
-.guide-fig figcaption { font-size: 13px; color: var(--ink-soft); margin-top: 8px; line-height: 1.5; }
-.guide-pre { background: var(--panel, rgba(0,0,0,.03)); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; font-size: 13px; line-height: 1.55; overflow-x: auto; }
-
-/* ---- S43: curated unlock codes — sidebar & footer affordances ------------ */
-.sb-row-split { display: flex; align-items: center; }
-.sb-row-split .sb-row { flex: 1 1 auto; min-width: 0; }
-.sb-coll-row { display: flex; align-items: center; }
-.sb-coll-row .sb-coll-head { flex: 1 1 auto; min-width: 0; }
-.sb-code-btn, .sb-code-x {
-  flex: none; width: 24px; height: 24px; margin-right: 10px;
-  border: none; border-radius: 6px; background: transparent;
-  color: var(--faint); font-size: 12px; line-height: 1; cursor: pointer;
-}
-.sb-code-btn:hover { background: var(--panel-2); color: var(--accent); }
-.sb-code-x:hover { background: var(--panel-2); color: var(--accent-ink); }
-.sb-code-btn:focus-visible, .sb-code-x:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-
 
 /* ===========================================================================
    lingdown.css — typesetting for the lingdown engine. Themable via --ld-*
@@ -5654,6 +5660,36 @@ function useIsMobile(breakpoint) {
     };
   }, [bp]);
   return mobile;
+}
+function useLayoutMode(phoneBp, tabletBp) {
+  const pbp = phoneBp || 760;
+  const tbp = tabletBp || 1180;
+  const compute = () => {
+    let forced = null;
+    try {
+      forced = localStorage.getItem("lc2-force-layout");
+    } catch (e) {
+    }
+    if (forced === "desktop") return "desktop";
+    if (forced === "mobile") return "phone";
+    const w = typeof window !== "undefined" ? window.innerWidth : 1200;
+    if (w <= pbp) return "phone";
+    if (w < tbp) return "tablet";
+    return "desktop";
+  };
+  const [mode, setMode] = React.useState(compute);
+  React.useEffect(() => {
+    const on = () => setMode(compute());
+    window.addEventListener("resize", on);
+    window.addEventListener("orientationchange", on);
+    window.addEventListener("storage", on);
+    return () => {
+      window.removeEventListener("resize", on);
+      window.removeEventListener("orientationchange", on);
+      window.removeEventListener("storage", on);
+    };
+  }, [pbp, tbp]);
+  return mode;
 }
 function setForceLayout(val) {
   try {
@@ -10546,12 +10582,18 @@ function App() {
     setPanelTouched(true);
     setPanelOpen(open);
   }, []);
-  const isMobile = useIsMobile(760);
+  const layoutMode = useLayoutMode(760, 1180);
+  const isMobile = layoutMode === "phone";
+  const isTablet = layoutMode === "tablet";
   const [mtab, setMtab] = useState("derive");
   const [sheet, setSheet] = useState(null);
+  const [drawer, setDrawer] = useState(null);
   React.useEffect(() => {
     if (!isMobile) setSheet(null);
   }, [isMobile]);
+  React.useEffect(() => {
+    if (!isTablet) setDrawer(null);
+  }, [isTablet]);
   const [collapseResolved, setCollapseResolved] = useState(() => load("lc2-collapse", false));
   const [autoNN, setAutoNN] = useState(() => load("lc2-auto-nn", false));
   const [autoCompose, setAutoCompose] = useState(() => load("lc2-auto-compose", false));
@@ -10629,6 +10671,13 @@ function App() {
     save("lc2-recents", recents);
   }, [recents]);
   const [page, setPage] = useState("practice");
+  const drawerSelRef = React.useRef({ fileKey, gi: sel.gi, pi: sel.pi, page });
+  React.useEffect(() => {
+    const prev = drawerSelRef.current;
+    const changed = prev.fileKey !== fileKey || prev.gi !== sel.gi || prev.pi !== sel.pi || prev.page !== page;
+    drawerSelRef.current = { fileKey, gi: sel.gi, pi: sel.pi, page };
+    if (changed) setDrawer((d) => d === "nav" ? null : d);
+  }, [fileKey, sel.gi, sel.pi, page]);
   const DOC_PAGES = [
     { path: "/guide/", title: "Instructor guide", glyph: "\u25C6", hay: "guide instructor hosting authoring" },
     { path: "/help/", title: "Student help", glyph: "?", hay: "help student rules symbols grading" },
@@ -12204,6 +12253,36 @@ function App() {
       shareBusy ? "\u27F3 \u2026" : "\u21D7 Share \xB7 code + QR"
     )));
   }
+  function renderTabletBar() {
+    const pushed = page !== "practice";
+    const title = pushed ? page === "doc" ? (DOC_PAGES.find((d) => d.path === docPath) || {}).title || "Guide & help" : MB_TITLES[page] || "COMPOSE" : custom ? "Custom exercise" : lib ? lib.title : "No worksheet";
+    const crumb = pushed ? null : custom ? "Scratch" : collectionOf(lib) || null;
+    return /* @__PURE__ */ React.createElement("div", { className: "tb-bar" }, /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "tb-btn tb-menu",
+        "aria-label": "Open navigation",
+        title: "Menu",
+        onClick: () => setDrawer(drawer === "nav" ? null : "nav")
+      },
+      "\u2630"
+    ), /* @__PURE__ */ React.createElement("div", { className: "tb-title-wrap" }, crumb && /* @__PURE__ */ React.createElement("span", { className: "tb-crumb" }, crumb), /* @__PURE__ */ React.createElement("span", { className: "tb-title lx" }, title)), !pushed && hasContent && flatNav.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "tb-step", role: "group", "aria-label": "Exercise navigation" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "tb-arrow", disabled: flatIdx <= 0, onClick: () => gotoFlat(-1), title: "Previous exercise (J)", "aria-label": "Previous exercise (J)" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "tb-score" }, doneCount, "/", probCount), /* @__PURE__ */ React.createElement("button", { type: "button", className: "tb-arrow", disabled: flatIdx < 0 || flatIdx >= flatNav.length - 1, onClick: () => gotoFlat(1), title: "Next exercise (K)", "aria-label": "Next exercise (K)" }, "\u203A")), pushed && /* @__PURE__ */ React.createElement("button", { type: "button", className: "tb-btn tb-back", onClick: () => setPage("practice"), title: "Back to derivations" }, "\u2039", " Derive"), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "tb-btn tb-ref" + (drawer === "ref" ? " on" : ""),
+        "aria-label": "Open reference panel",
+        title: "Reference \u2014 Lexicon, Rules, Notes",
+        onClick: () => setDrawer(drawer === "ref" ? null : "ref")
+      },
+      /* @__PURE__ */ React.createElement("span", { "aria-hidden": "true" }, "\u{1D453}"),
+      /* @__PURE__ */ React.createElement("span", { className: "tb-ref-label" }, "Reference")
+    ));
+  }
+  function renderTabletDrawers() {
+    return /* @__PURE__ */ React.createElement(React.Fragment, null, drawer === "nav" && /* @__PURE__ */ React.createElement(Sheet, { title: "Navigation", side: "left", className: "tb-drawer tb-drawer-nav", onClose: () => setDrawer(null) }, hasContent && exOpen ? renderExColumn() : renderSidebarBody()), drawer === "ref" && /* @__PURE__ */ React.createElement(Sheet, { title: "Reference", side: "right", className: "tb-drawer tb-drawer-ref sheet-drawer-wide", onClose: () => setDrawer(null) }, renderMobileReference()));
+  }
   function renderEditorSurface(asPage) {
     return /* @__PURE__ */ React.createElement(
       ExerciseEditor,
@@ -12693,28 +12772,13 @@ function App() {
   }
   function renderMobileFoot() {
     const pushed = page !== "practice";
-    const ctx = pushed ? mbPageTitle() : { derive: "Derive", exercises: "Exercises", reference: "Reference", menu: "Menu" }[mtab];
     const tabs = [
       { id: "derive", glyph: "\u22D4", label: "Derive" },
       { id: "exercises", glyph: "\u2630", label: "Exercises" },
       { id: "reference", glyph: "\u274F", label: "Reference" },
       { id: "menu", glyph: "\u22EF", label: "Menu" }
     ];
-    return /* @__PURE__ */ React.createElement("div", { className: "mb-foot" }, /* @__PURE__ */ React.createElement("div", { className: "mb-chips" }, /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        type: "button",
-        className: "mb-chip mb-chip-ws" + (sheet === "ws" ? " on" : ""),
-        onClick: () => setSheet(sheet === "ws" ? null : "ws"),
-        title: "Switch worksheet"
-      },
-      /* @__PURE__ */ React.createElement("span", { "aria-hidden": "true" }, "\u274F"),
-      /* @__PURE__ */ React.createElement("span", { className: "mb-chip-label" }, custom ? "Custom exercise" : lib ? lib.title : "Choose a worksheet"),
-      /* @__PURE__ */ React.createElement("span", { "aria-hidden": "true" }, "\u25BE")
-    ), isFullBuild && /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-chip" + (unlockOpen ? " on" : ""), onClick: () => {
-      setSheet(null);
-      setUnlockOpen(true);
-    } }, "\u2295 Unlock"), /* @__PURE__ */ React.createElement("span", { className: "mb-chip mb-chip-ctx on" }, ctx)), /* @__PURE__ */ React.createElement("nav", { className: "mb-tabbar", role: "tablist", "aria-label": "Main tabs" }, tabs.map((tb) => {
+    return /* @__PURE__ */ React.createElement("div", { className: "mb-foot mb-foot-slim" }, /* @__PURE__ */ React.createElement("nav", { className: "mb-tabbar", role: "tablist", "aria-label": "Main tabs" }, tabs.map((tb) => {
       const on = pushed ? tb.id === "menu" : mtab === tb.id;
       return /* @__PURE__ */ React.createElement(
         "button",
@@ -12757,7 +12821,7 @@ function App() {
   return /* @__PURE__ */ React.createElement(
     "div",
     {
-      className: "app" + (isMobile ? " is-mobile" : ""),
+      className: "app" + (isMobile ? " is-mobile" : "") + (isTablet ? " is-tablet" : ""),
       onDragOver: !hasContent ? (e) => {
         e.preventDefault();
       } : void 0,
@@ -12795,7 +12859,8 @@ function App() {
       }
     ),
     !isMobile && /* @__PURE__ */ React.createElement("a", { className: "skip-link", href: "#main" }, "Skip to content"),
-    /* @__PURE__ */ React.createElement("div", { className: "app-main" + (isMobile ? " app-main-mobile" : "") }, !isMobile && renderSidebar(), !isMobile && page === "practice" && hasContent && exOpen && renderExColumn(), /* @__PURE__ */ React.createElement("main", { id: "main", className: "col-center" }, isMobile ? renderMobileMain() : page === "practice" ? /* @__PURE__ */ React.createElement(React.Fragment, null, renderPracticeHead(), renderCenter()) : renderPageView()), !isMobile && page === "practice" && (panelOpen ? (() => {
+    isTablet && renderTabletBar(),
+    /* @__PURE__ */ React.createElement("div", { className: "app-main" + (isMobile ? " app-main-mobile" : "") + (isTablet ? " app-main-tablet" : "") }, !isMobile && !isTablet && renderSidebar(), !isMobile && !isTablet && page === "practice" && hasContent && exOpen && renderExColumn(), /* @__PURE__ */ React.createElement("main", { id: "main", className: "col-center" }, isMobile ? renderMobileMain() : isTablet ? page === "practice" ? renderCenter() : renderPageView() : page === "practice" ? /* @__PURE__ */ React.createElement(React.Fragment, null, renderPracticeHead(), renderCenter()) : renderPageView()), !isMobile && !isTablet && page === "practice" && (panelOpen ? (() => {
       const panelTab = refTab === "notes" && !hasReading ? "lexicon" : refTab;
       return /* @__PURE__ */ React.createElement("aside", { className: "col col-right rp-panel", "aria-label": "Reference panel" }, /* @__PURE__ */ React.createElement("div", { className: "rp-tabs", role: "tablist", "aria-label": "Reference panel tabs" }, /* @__PURE__ */ React.createElement(
         "button",
@@ -12854,7 +12919,8 @@ function App() {
       "\u2039 Lexicon \xB7 Rules \xB7 Notes"
     ))),
     isMobile && renderMobileFoot(),
-    isMobile && sheet === "ws" && renderWsSheet(),
+    isTablet && renderTabletDrawers(),
+    (isMobile || isTablet) && sheet === "ws" && renderWsSheet(),
     ctxMenu && !isMobile && /* @__PURE__ */ React.createElement(
       "div",
       {

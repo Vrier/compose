@@ -1095,15 +1095,26 @@ function App() {
   // keeps whatever tab was last chosen, defaulting to Lexicon.)
   const openPanelTab = useCallback((tab) => { setRefTab(tab); setPanelOpen(true); setPanelTouched(true); }, []);
   const touchPanel = useCallback((open) => { setPanelTouched(true); setPanelOpen(open); }, []);
-  const isMobile = useIsMobile(760);
+  // S55: three-way responsive mode. phone (<760) keeps the bottom-tab layout;
+  // tablet (760–1180) is the new adaptive-drawer layout (full-width stage +
+  // slim app-bar + two slide-over drawers); desktop (>=1180) is the unchanged
+  // three-column shell. `isMobile` still gates the phone-only chrome.
+  const layoutMode = useLayoutMode(760, 1180);
+  const isMobile = layoutMode === 'phone';
+  const isTablet = layoutMode === 'tablet';
   // ---- N6 (S34): mobile chrome — bottom tabs + sheets ---------------------
   // mtab: which of the four bottom tabs is active (Derive is the stage).
   // sheet: 'ws' (switch-worksheet bottom sheet) | null; the unlock sheet
   // reuses the N5 unlockOpen state (same dialog, restyled as a sheet).
   const [mtab, setMtab] = useState('derive');
   const [sheet, setSheet] = useState(null);
+  // S55: tablet slide-over drawers — 'nav' | 'ref' | null. Neither pushes the
+  // stage; both overlay with a backdrop and close on close/backdrop/Escape.
+  const [drawer, setDrawer] = useState(null);
   // Close any open mobile sheet when we grow back to desktop
   React.useEffect(() => { if (!isMobile) setSheet(null); }, [isMobile]);
+  // Close tablet drawers whenever we leave the tablet band
+  React.useEffect(() => { if (!isTablet) setDrawer(null); }, [isTablet]);
   const [collapseResolved, setCollapseResolved] = useState(() => load('lc2-collapse', false));
   const [autoNN, setAutoNN] = useState(() => load('lc2-auto-nn', false));
   const [autoCompose, setAutoCompose] = useState(() => load('lc2-auto-compose', false));
@@ -1184,6 +1195,15 @@ function App() {
   // Desktop renders non-practice pages in the centre column; mobile (N6)
   // renders them as pushed views with a title + back row (back -> Menu tab).
   const [page, setPage] = useState('practice');
+  // S55: selecting a worksheet or exercise (or navigating to a page) from the
+  // nav drawer reveals it on the stage — close the drawer so the tree shows.
+  const drawerSelRef = React.useRef({ fileKey: fileKey, gi: sel.gi, pi: sel.pi, page: page });
+  React.useEffect(() => {
+    const prev = drawerSelRef.current;
+    const changed = prev.fileKey !== fileKey || prev.gi !== sel.gi || prev.pi !== sel.pi || prev.page !== page;
+    drawerSelRef.current = { fileKey: fileKey, gi: sel.gi, pi: sel.pi, page: page };
+    if (changed) setDrawer((d) => (d === 'nav' ? null : d));
+  }, [fileKey, sel.gi, sel.pi, page]);
   // N7/A1: in-app doc pages. The standalone /guide /help /files /about pages
   // keep serving (SEO, deep links, /v users) — but the sidebar's Guide & help
   // rows and the palette's page rows render them INSIDE the shell: fetch the
@@ -2741,6 +2761,59 @@ function App() {
     );
   }
 
+  // ---- S55: tablet adaptive-drawer chrome --------------------------------
+  // A slim app-bar over a full-width stage. The menu button opens the nav
+  // drawer (sidebar sections + the drill-in exercises list + foot actions);
+  // the reference button opens the reference drawer (Lexicon/Rules/Notes).
+  // Both overlay with a backdrop and never narrow the stage. On a pushed page
+  // (editor/progress/doc) the bar shows a back-to-Derive control.
+  function renderTabletBar() {
+    const pushed = page !== 'practice';
+    const title = pushed
+      ? (page === 'doc' ? ((DOC_PAGES.find((d) => d.path === docPath) || {}).title || 'Guide & help') : (MB_TITLES[page] || 'COMPOSE'))
+      : (custom ? 'Custom exercise' : (lib ? lib.title : 'No worksheet'));
+    const crumb = pushed ? null : (custom ? 'Scratch' : (collectionOf(lib) || null));
+    return (
+      <div className="tb-bar">
+        <button type="button" className="tb-btn tb-menu" aria-label="Open navigation" title="Menu"
+          onClick={() => setDrawer(drawer === 'nav' ? null : 'nav')}>{'\u2630'}</button>
+        <div className="tb-title-wrap">
+          {crumb && <span className="tb-crumb">{crumb}</span>}
+          <span className="tb-title lx">{title}</span>
+        </div>
+        {!pushed && hasContent && flatNav.length > 0 && (
+          <div className="tb-step" role="group" aria-label="Exercise navigation">
+            <button type="button" className="tb-arrow" disabled={flatIdx <= 0} onClick={() => gotoFlat(-1)} title="Previous exercise (J)" aria-label="Previous exercise (J)">{'\u2039'}</button>
+            <span className="tb-score">{doneCount}/{probCount}</span>
+            <button type="button" className="tb-arrow" disabled={flatIdx < 0 || flatIdx >= flatNav.length - 1} onClick={() => gotoFlat(1)} title="Next exercise (K)" aria-label="Next exercise (K)">{'\u203a'}</button>
+          </div>
+        )}
+        {pushed && (
+          <button type="button" className="tb-btn tb-back" onClick={() => setPage('practice')} title="Back to derivations">{'\u2039'} Derive</button>
+        )}
+        <button type="button" className={'tb-btn tb-ref' + (drawer === 'ref' ? ' on' : '')} aria-label="Open reference panel"
+          title="Reference — Lexicon, Rules, Notes" onClick={() => setDrawer(drawer === 'ref' ? null : 'ref')}>
+          <span aria-hidden="true">{'\uD835\uDC53'}</span><span className="tb-ref-label">Reference</span></button>
+      </div>
+    );
+  }
+  function renderTabletDrawers() {
+    return (
+      <React.Fragment>
+        {drawer === 'nav' && (
+          <Sheet title="Navigation" side="left" className="tb-drawer tb-drawer-nav" onClose={() => setDrawer(null)}>
+            {hasContent && exOpen ? renderExColumn() : renderSidebarBody()}
+          </Sheet>
+        )}
+        {drawer === 'ref' && (
+          <Sheet title="Reference" side="right" className="tb-drawer tb-drawer-ref sheet-drawer-wide" onClose={() => setDrawer(null)}>
+            {renderMobileReference()}
+          </Sheet>
+        )}
+      </React.Fragment>
+    );
+  }
+
   function renderEditorSurface(asPage) {
     return (
       <ExerciseEditor asPage={asPage} onClose={() => { closeEditorSurface(); setEditorInit(null); setEditorMin(null); setHosted(null); }} baseSet={set}
@@ -3324,8 +3397,12 @@ function App() {
     return renderMobileMenu();
   }
   function renderMobileFoot() {
+    // S55: the old chip row is gone — its ws-switch chip duplicated the Derive
+    // header's switch button and the Exercises tab, and its context chip
+    // duplicated the active tab. Worksheet-switching now lives in the Derive
+    // header and the Exercises tab; Unlock lives in the Menu tab. The foot is
+    // now just the four-destination tab bar, giving the tree more room.
     const pushed = page !== 'practice';
-    const ctx = pushed ? mbPageTitle() : ({ derive: 'Derive', exercises: 'Exercises', reference: 'Reference', menu: 'Menu' })[mtab];
     const tabs = [
       { id: 'derive', glyph: '⋔', label: 'Derive' },
       { id: 'exercises', glyph: '☰', label: 'Exercises' },
@@ -3333,19 +3410,7 @@ function App() {
       { id: 'menu', glyph: '⋯', label: 'Menu' },
     ];
     return (
-      <div className="mb-foot">
-        <div className="mb-chips">
-          <button type="button" className={'mb-chip mb-chip-ws' + (sheet === 'ws' ? ' on' : '')}
-            onClick={() => setSheet(sheet === 'ws' ? null : 'ws')} title="Switch worksheet">
-            <span aria-hidden="true">❏</span>
-            <span className="mb-chip-label">{custom ? 'Custom exercise' : (lib ? lib.title : 'Choose a worksheet')}</span>
-            <span aria-hidden="true">▾</span>
-          </button>
-          {isFullBuild && (
-            <button type="button" className={'mb-chip' + (unlockOpen ? ' on' : '')} onClick={() => { setSheet(null); setUnlockOpen(true); }}>⊕ Unlock</button>
-          )}
-          <span className="mb-chip mb-chip-ctx on">{ctx}</span>
-        </div>
+      <div className="mb-foot mb-foot-slim">
         <nav className="mb-tabbar" role="tablist" aria-label="Main tabs">
           {tabs.map((tb) => {
             const on = pushed ? tb.id === 'menu' : mtab === tb.id;
@@ -3399,7 +3464,7 @@ function App() {
   }
 
   return (
-    <div className={'app' + (isMobile ? ' is-mobile' : '')}
+    <div className={'app' + (isMobile ? ' is-mobile' : '') + (isTablet ? ' is-tablet' : '')}
       onDragOver={!hasContent ? (e) => { e.preventDefault(); } : undefined}
       onDrop={!hasContent ? (e) => { e.preventDefault(); importFiles(e.dataTransfer.files); } : undefined}>
       <input ref={fileInput} type="file" accept=".json,.compose.json,.compose-bundle.json,.txt,.lbd,.lc,application/json,text/plain" multiple style={{ display: 'none' }}
@@ -3408,19 +3473,23 @@ function App() {
         onChange={(e) => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) composeImportProgress(f); }} />
       {!isMobile && <a className="skip-link" href="#main">Skip to content</a>}
 
-      <div className={'app-main' + (isMobile ? ' app-main-mobile' : '')}>
-        {!isMobile && renderSidebar()}
-        {!isMobile && page === 'practice' && hasContent && exOpen && renderExColumn()}
+      {isTablet && renderTabletBar()}
+
+      <div className={'app-main' + (isMobile ? ' app-main-mobile' : '') + (isTablet ? ' app-main-tablet' : '')}>
+        {!isMobile && !isTablet && renderSidebar()}
+        {!isMobile && !isTablet && page === 'practice' && hasContent && exOpen && renderExColumn()}
 
         <main id="main" className="col-center">
           {isMobile
             ? renderMobileMain()
-            : (page === 'practice'
-              ? <React.Fragment>{renderPracticeHead()}{renderCenter()}</React.Fragment>
-              : renderPageView())}
+            : isTablet
+              ? (page === 'practice' ? renderCenter() : renderPageView())
+              : (page === 'practice'
+                ? <React.Fragment>{renderPracticeHead()}{renderCenter()}</React.Fragment>
+                : renderPageView())}
         </main>
 
-        {!isMobile && page === 'practice' && (panelOpen ? (() => {
+        {!isMobile && !isTablet && page === 'practice' && (panelOpen ? (() => {
           // Notes tab only exists when the worksheet carries a reading;
           // fall back to Lexicon if the current worksheet has none.
           const panelTab = (refTab === 'notes' && !hasReading) ? 'lexicon' : refTab;
@@ -3461,7 +3530,9 @@ function App() {
 
       {isMobile && renderMobileFoot()}
 
-      {isMobile && sheet === 'ws' && renderWsSheet()}
+      {isTablet && renderTabletDrawers()}
+
+      {(isMobile || isTablet) && sheet === 'ws' && renderWsSheet()}
 
       {ctxMenu && !isMobile && (
         <div className="ctx-overlay" onMouseDown={() => setCtxMenu(null)}

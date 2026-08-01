@@ -40,6 +40,38 @@ function useIsMobile(breakpoint) {
 /* Read / set the layout override. Writing dispatches a storage-like event so
    useIsMobile re-evaluates in the same tab (native 'storage' only fires in
    *other* tabs). */
+/* Three-way layout mode: 'phone' | 'tablet' | 'desktop'. The forced-layout
+   override collapses to phone/desktop only (the More-sheet toggle offers those
+   two). S55: tablet gets its own adaptive-drawer chrome between the phone
+   breakpoint and the desktop three-column layout. */
+function useLayoutMode(phoneBp, tabletBp) {
+  const pbp = phoneBp || 760;
+  const tbp = tabletBp || 1180;
+  const compute = () => {
+    let forced = null;
+    try { forced = localStorage.getItem('lc2-force-layout'); } catch (e) {}
+    if (forced === 'desktop') return 'desktop';
+    if (forced === 'mobile') return 'phone';
+    const w = (typeof window !== 'undefined') ? window.innerWidth : 1200;
+    if (w <= pbp) return 'phone';
+    if (w < tbp) return 'tablet';
+    return 'desktop';
+  };
+  const [mode, setMode] = React.useState(compute);
+  React.useEffect(() => {
+    const on = () => setMode(compute());
+    window.addEventListener('resize', on);
+    window.addEventListener('orientationchange', on);
+    window.addEventListener('storage', on);
+    return () => {
+      window.removeEventListener('resize', on);
+      window.removeEventListener('orientationchange', on);
+      window.removeEventListener('storage', on);
+    };
+  }, [pbp, tbp]);
+  return mode;
+}
+
 function setForceLayout(val) {
   try {
     if (val == null) localStorage.removeItem('lc2-force-layout');

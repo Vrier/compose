@@ -282,7 +282,7 @@ async function main() {
   contains('service-worker registration shipped', page, 'serviceWorker.register');
   r = await req('GET', '/sw.js', { raw: true });
   expect('sw.js served', r.status === 200, r.status);
-  contains('sw cache name is versioned', r.text, "CACHE = 'compose-v1.2.0'");
+  contains('sw cache name is versioned', r.text, "CACHE = 'compose-v1.3.0'");
   contains('sw never touches dash/edit/admin/api', r.text, "p.startsWith('/dash') || p.startsWith('/edit') || p.startsWith('/_') || p.startsWith('/api')");
   r = await req('GET', '/manifest.json', { raw: true });
   contains('web manifest served', r.text, '"short_name": "COMPOSE"');
@@ -431,7 +431,7 @@ async function main() {
   // W9 — about page (S8)
   r = await req('GET', '/about/', { raw: true });
   contains('about page serves', r.text, 'How to cite');
-  contains('about page carries the canonical version', r.text, 'version 1.2.0');
+  contains('about page carries the canonical version', r.text, 'version 1.3.0');
   contains('about page shares the family codes as app links (S44)', r.text, '/?code=KT6WF4');
   contains('about page states what accounts store (N7)', r.text, 'password hash');
 
