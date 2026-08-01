@@ -76,11 +76,14 @@ const CH7 = JSON.parse(fs.readFileSync('compose/curated-codes.json', 'utf8'))
   .entries.find((e) => e.kind === 'chapter' && e.key === 'cc/ch7').code;
 
 if (SCENE === 'student') {
-  // ch7 via unlock code, fresh profile: the reference panel opens on Rules once
+  // ch7 via unlock code, fresh profile (S46: the panel no longer auto-opens
+  // on Rules — click the tab for the rules-panel figure)
   await page.goto(B + '/?code=' + CH7, { waitUntil: 'networkidle2' });
   await page.waitForFunction(() => (localStorage.getItem('build-hosted-root:lc2-file') || '').includes('ch7'), { timeout: 20000 });
   await page.waitForSelector('.rp-panel', { timeout: 15000 });
   await sleep(900);
+  await clickText('.rp-tab', 'Rules');
+  await sleep(500);
   await shot('rules-panel');
   await clickText('.rp-tab', 'Lexicon');
   await sleep(500);
@@ -100,8 +103,9 @@ if (SCENE === 'student') {
   await page.goto(B + '/', { waitUntil: 'networkidle2' });
   await sleep(1200);
   await shot('root-starter');
-  // the sign-in page, reached from the sidebar's Account section
-  await page.evaluate(() => { const b = document.querySelector('.rail-btn[title="Account"]'); if (b) b.click(); });
+  // the sign-in page, reached from the sidebar's Account section (S46:
+  // the sidebar boots expanded — open the section head directly)
+  await clickText('.sb-sec-head', 'Account');
   await sleep(400);
   await clickText('.sb-signin-btn', 'Sign in');
   await page.waitForSelector('.si-card', { timeout: 8000 });
@@ -113,8 +117,8 @@ if (SCENE === 'student') {
   await page.waitForFunction(() => (localStorage.getItem('build-hosted-root:lc2-file') || '').includes('ch7'), { timeout: 20000 });
   await sleep(1200);
   // no phone interstitial on the root app (it only guards assignment
-  // configs, i.e. /v pages); first visit lands on Reference·Rules once —
-  // the guide figure shows Derive
+  // configs, i.e. /v pages); S46: first visits stay on Derive — the tap
+  // below is just a no-op safety for stale profiles
   await clickText('.mb-tab', 'Derive');
   await sleep(700);
   await shot('mobile-view');

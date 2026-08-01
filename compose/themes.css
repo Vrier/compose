@@ -340,7 +340,11 @@ body {
 .compose-line .lead { font-size: 13px; color: var(--muted); font-style: italic; }
 
 /* input */
-.entry-row { display: flex; gap: 10px; align-items: stretch; }
+.entry-row { display: flex; gap: 10px; align-items: stretch; flex-wrap: wrap; }
+/* S46: with the sidebar staying expanded the centre stage can get narrow on
+   small desktops — the answer row wraps (input keeps a workable minimum)
+   so the Check-answer button drops below instead of clipping. */
+.entry-row > .entry { min-width: 220px; }
 .entry {
   flex: 1; display: flex; align-items: center; gap: 10px;
   border: 1.5px solid var(--line); border-radius: 10px; background: var(--bg);
@@ -1732,6 +1736,23 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .rail-btn.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
 .rail-spacer { flex: 1; }
 
+/* ---- S46: right-click context menu (worksheet/chapter rows) -------------- */
+.ctx-overlay { position: fixed; inset: 0; z-index: 60; }
+.ctx-menu {
+  position: fixed; min-width: 190px; padding: 5px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+  box-shadow: var(--shadow); animation: ctxIn .1s ease;
+}
+@keyframes ctxIn { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; transform: none; } }
+.ctx-item {
+  display: flex; align-items: center; gap: 9px; width: 100%;
+  padding: 8px 10px; border: 0; border-radius: 7px; background: transparent;
+  font-family: inherit; font-size: 12.5px; color: var(--ink-soft);
+  cursor: pointer; text-align: left; white-space: nowrap;
+}
+.ctx-item:hover { background: var(--panel-2); color: var(--accent-ink); }
+.ctx-ico { width: 16px; flex: none; text-align: center; opacity: .8; font-size: 12px; }
+
 /* ---- drill-in exercises column ---------------------------------------------- */
 .col-ex {
   width: 272px; flex: none; display: flex; flex-direction: column;
@@ -1740,7 +1761,10 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 }
 @keyframes sbSlideIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
 @media (max-width: 1040px) {
-  .col-ex { position: absolute; left: 58px; top: 0; bottom: 0; z-index: 6; box-shadow: var(--shadow); }
+  /* S46: the sidebar stays expanded while drilled in, so the floating
+     column anchors to its 272px edge — or the 58px rail when collapsed */
+  .col-ex { position: absolute; left: 272px; top: 0; bottom: 0; z-index: 6; box-shadow: var(--shadow); }
+  .sidebar.rail + .col-ex { left: 58px; }
 }
 .colx-head {
   display: flex; align-items: center; gap: 9px; width: 100%;

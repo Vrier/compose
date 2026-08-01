@@ -17,8 +17,8 @@
      tv     — demo, switching to "Frodo greets Gandalf" in the drill-in
               exercises column; FA at VP (object first), FA at S
      pm     — "mischievous hobbit" (ch7.1-adj, opened in the root app via
-              its unlock code — S44): the first-visit reference panel opens
-              on Rules; FA refused with the reason, then PM
+              its unlock code — S44): a look at the Rules tab (S46: no
+              auto-open), then FA refused with the reason, then PM
      editor — sidebar Author → the editor PAGE: title, two lexicon rows, a
               tree with the live ✓ badge, ▶ Load into app  (for /guide)
      host   — THROWAWAY local PocketBase: in-app sign-in → My versions →
@@ -216,8 +216,9 @@ async function solve(label, abbr, answer) {
     dock: ((document.querySelector('.dock') || {}).textContent || '').slice(0, 80),
   })));
 }
-/* the first visit opens the reference panel on Rules (N3); for derivation
-   scenes switch it to Lexicon so the leaves' denotations are on screen */
+/* for derivation scenes keep the panel on Lexicon so the leaves'
+   denotations are on screen (S46: the panel defaults there — this is a
+   safety for profiles that had another tab recorded) */
 async function panelToLexicon() {
   if (await refTab('Lexicon')) { await act(() => refTab('Lexicon'), 'Lexicon tab'); await rec(2); }
 }
@@ -271,7 +272,11 @@ if (SCENE === 'first') {
   await page.waitForFunction(() => (localStorage.getItem('build-hosted-root:lc2-file') || '').includes('ch7.1-adj'), { timeout: 20000 });
   await new Promise((r) => setTimeout(r, 1100));
   await installCursor();
-  await rec(14);                           // first visit: the panel opens on the Rules tab — linger
+  await rec(6);
+  // S46: the panel no longer auto-opens on Rules — visit the tab briefly
+  // (the caption points at the worksheet's allowed rules), then back
+  await act(() => refTab('Rules'), 'Rules tab');
+  await rec(10);
   await panelToLexicon();
   await rec(4);
   await solve('AP', 'NN');                 // mischievous
@@ -325,7 +330,7 @@ if (SCENE === 'first') {
   await new Promise((r) => setTimeout(r, 900));
   await installCursor();
   await rec(4);
-  await act(() => center(null, `() => document.querySelector('.rail-btn[title="Account"]')`), 'Account rail');
+  await act(() => center(null, `() => document.querySelector('.rail-btn[title="Account"]') || [...document.querySelectorAll('.sb-sec-head')].find(h => h.textContent.includes('Account'))`), 'Account section');
   await rec(4);
   await act(() => center(null, `() => [...document.querySelectorAll('.sb-signin-btn')].find(b => b.textContent.trim() === 'Sign in')`), 'Sign in');
   await new Promise((r) => setTimeout(r, 700));

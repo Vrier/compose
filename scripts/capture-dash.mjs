@@ -89,7 +89,10 @@ await page.reload({ waitUntil: 'networkidle2' });
 await sleep(900);
 // sidebar → Assign & share → My versions (S40: the Account section no
 // longer duplicates the My-versions row); expand the row for the code
-await page.evaluate(() => { const b = document.querySelector('.rail-btn[title="Assign & share"]'); if (b) b.click(); });
+await page.evaluate(() => { // S46: the sidebar boots expanded (rail only when collapsed by hand)
+  const b = document.querySelector('.rail-btn[title="Assign & share"]')
+    || [...document.querySelectorAll('.sb-sec-head')].find((h) => h.textContent.includes('Assign & share'));
+  if (b) b.click(); });
 await sleep(400);
 await clickText('.sb-row', 'My versions');
 await page.waitForSelector('.vd-row', { timeout: 10000 });

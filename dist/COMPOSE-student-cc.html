@@ -354,7 +354,11 @@ body {
 .compose-line .lead { font-size: 13px; color: var(--muted); font-style: italic; }
 
 /* input */
-.entry-row { display: flex; gap: 10px; align-items: stretch; }
+.entry-row { display: flex; gap: 10px; align-items: stretch; flex-wrap: wrap; }
+/* S46: with the sidebar staying expanded the centre stage can get narrow on
+   small desktops — the answer row wraps (input keeps a workable minimum)
+   so the Check-answer button drops below instead of clipping. */
+.entry-row > .entry { min-width: 220px; }
 .entry {
   flex: 1; display: flex; align-items: center; gap: 10px;
   border: 1.5px solid var(--line); border-radius: 10px; background: var(--bg);
@@ -1746,6 +1750,23 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .rail-btn.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
 .rail-spacer { flex: 1; }
 
+/* ---- S46: right-click context menu (worksheet/chapter rows) -------------- */
+.ctx-overlay { position: fixed; inset: 0; z-index: 60; }
+.ctx-menu {
+  position: fixed; min-width: 190px; padding: 5px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+  box-shadow: var(--shadow); animation: ctxIn .1s ease;
+}
+@keyframes ctxIn { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; transform: none; } }
+.ctx-item {
+  display: flex; align-items: center; gap: 9px; width: 100%;
+  padding: 8px 10px; border: 0; border-radius: 7px; background: transparent;
+  font-family: inherit; font-size: 12.5px; color: var(--ink-soft);
+  cursor: pointer; text-align: left; white-space: nowrap;
+}
+.ctx-item:hover { background: var(--panel-2); color: var(--accent-ink); }
+.ctx-ico { width: 16px; flex: none; text-align: center; opacity: .8; font-size: 12px; }
+
 /* ---- drill-in exercises column ---------------------------------------------- */
 .col-ex {
   width: 272px; flex: none; display: flex; flex-direction: column;
@@ -1754,7 +1775,10 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 }
 @keyframes sbSlideIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
 @media (max-width: 1040px) {
-  .col-ex { position: absolute; left: 58px; top: 0; bottom: 0; z-index: 6; box-shadow: var(--shadow); }
+  /* S46: the sidebar stays expanded while drilled in, so the floating
+     column anchors to its 272px edge — or the 58px rail when collapsed */
+  .col-ex { position: absolute; left: 272px; top: 0; bottom: 0; z-index: 6; box-shadow: var(--shadow); }
+  .sidebar.rail + .col-ex { left: 58px; }
 }
 .colx-head {
   display: flex; align-items: center; gap: 9px; width: 100%;
@@ -10505,10 +10529,10 @@ function App() {
   useEffect(() => {
     save("lc2-ref-tab", refTab);
   }, [refTab]);
-  const openPanelTab = useCallback((tab, touch) => {
+  const openPanelTab = useCallback((tab) => {
     setRefTab(tab);
     setPanelOpen(true);
-    if (touch) setPanelTouched(true);
+    setPanelTouched(true);
   }, []);
   const touchPanel = useCallback((open) => {
     setPanelTouched(true);
@@ -10523,7 +10547,6 @@ function App() {
   const [collapseResolved, setCollapseResolved] = useState(() => load("lc2-collapse", false));
   const [autoNN, setAutoNN] = useState(() => load("lc2-auto-nn", false));
   const [autoCompose, setAutoCompose] = useState(() => load("lc2-auto-compose", false));
-  const [seenSets, setSeenSets] = useState(() => load("lc2-seen-sets", {}));
   const [exporting, setExporting] = useState(false);
   const [editorInit, setEditorInit] = useState(null);
   const [hosted, setHosted] = useState(null);
@@ -10534,6 +10557,7 @@ function App() {
   const [codeEntry, setCodeEntry] = useState(null);
   const [unlockPrefill, setUnlockPrefill] = useState("");
   const [footCopied, setFootCopied] = useState(false);
+  const [ctxMenu, setCtxMenu] = useState(null);
   const [libFiles, setLibFiles] = useState({});
   const libFetchRef = useRef({});
   const [pendingOpen, setPendingOpen] = useState(null);
@@ -10569,9 +10593,6 @@ function App() {
   useEffect(() => {
     save("lc2-auto-compose", autoCompose);
   }, [autoCompose]);
-  useEffect(() => {
-    save("lc2-seen-sets", seenSets);
-  }, [seenSets]);
   useEffect(() => {
     document.documentElement.setAttribute("data-dark", darkMode ? "true" : "false");
     save("lc2-dark", darkMode);
@@ -10973,15 +10994,6 @@ function App() {
     return null;
   }, [set, lib]);
   const hasReading = !!readingSet;
-  useEffect(() => {
-    if (teacherMode || custom || !set || !set.key) return;
-    if (seenSets[set.key]) return;
-    setSeenSets((s) => ({ ...s, [set.key]: true }));
-    if (isMobile) {
-      setRefTab("rules");
-      setMtab("reference");
-    } else openPanelTab("rules", false);
-  }, [set && set.key, teacherMode, custom]);
   async function importBundle(file) {
     setLoadErr(null);
     const text = await file.text();
@@ -11400,12 +11412,9 @@ function App() {
     const wsKey = set.key, ex = group.id + "." + problem.id;
     setRecents((prev) => [{ ws: wsKey, ex, at: Date.now() }].concat((Array.isArray(prev) ? prev : []).filter((r) => !(r.ws === wsKey && r.ex === ex))).slice(0, 8));
   }, [curKey, custom]);
-  const railShown = !isMobile && (railCollapsed || exOpen && hasContent);
+  const railShown = !isMobile && railCollapsed;
   function toggleRail() {
-    if (railShown) {
-      setRailCollapsed(false);
-      setExOpen(false);
-    } else setRailCollapsed(true);
+    setRailCollapsed((v) => !v);
   }
   useEffect(() => {
     if (isMobile) return;
@@ -11420,6 +11429,11 @@ function App() {
         return;
       }
       if (e.key === "Escape" && !inPalette) {
+        if (ctxMenu) {
+          e.preventDefault();
+          setCtxMenu(null);
+          return;
+        }
         if (palette) {
           e.preventDefault();
           closePalette();
@@ -11444,10 +11458,7 @@ function App() {
       if (typing) return;
       if ((e.metaKey || e.ctrlKey) && e.key === "\\") {
         e.preventDefault();
-        if (railCollapsed || exOpen && hasContent) {
-          setRailCollapsed(false);
-          setExOpen(false);
-        } else setRailCollapsed(true);
+        setRailCollapsed((v) => !v);
         return;
       }
       if ((e.metaKey || e.ctrlKey) && (e.key === "e" || e.key === "E") && canAuthor) {
@@ -11687,6 +11698,51 @@ function App() {
     if (userLib.length) cols.push({ id: "__mine", label: "My worksheets", items: userLib });
     return cols;
   }
+  function openCtxMenu(e, items) {
+    const its = (items || []).filter(Boolean);
+    if (!its.length || isMobile) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const w = 210, h = its.length * 34 + 12;
+    const x = Math.min(e.clientX, Math.max(8, window.innerWidth - w - 8));
+    const y = Math.min(e.clientY, Math.max(8, window.innerHeight - h - 8));
+    setCtxMenu({ x, y, items: its });
+  }
+  function ctxCodeItems(entry) {
+    if (!entry) return [];
+    return [
+      { glyph: "\u2317", label: "Share code", act: () => setCodeEntry(entry) },
+      { glyph: "\u25A6", label: "QR & link", act: () => setCodeEntry(entry) }
+    ];
+  }
+  function ctxCopyToEditor(key, fallbackTitle) {
+    const l = LIB.find((x) => x.key === key);
+    const text = l && l.text || window.LC_FILES && window.LC_FILES[key] && window.LC_FILES[key].text || libFiles[key] && libFiles[key].text || null;
+    const finish = (t2) => {
+      let out = t2;
+      try {
+        const obj = JSON.parse(t2);
+        obj.title = (obj.title || fallbackTitle || key) + " (copy)";
+        out = JSON.stringify(obj, null, 2);
+      } catch (e) {
+      }
+      setHosted(null);
+      setEditorInit({ text: out, key: null });
+      openEditorSurface();
+    };
+    if (text) {
+      finish(text);
+      return;
+    }
+    fetch("/files/worksheets/" + key + ".compose.json", { credentials: "same-origin" }).then((r) => {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.text();
+    }).then(finish).catch(() => window.alert("Could not load this worksheet to copy."));
+  }
+  function ctxItemsForWs(l) {
+    const entry = isFullBuild && !l.classSlug ? composeCuratedForWorksheet(l.key) : null;
+    return ctxCodeItems(entry).concat(canAuthor ? [{ glyph: "\u270E", label: "Copy to editor", act: () => ctxCopyToEditor(l.key, l.title) }] : []);
+  }
   function renderWsRow(l) {
     const active = !custom && l.key === fileKey;
     const n = l.set.groups.reduce((acc, g) => acc + g.problems.length, 0);
@@ -11697,6 +11753,7 @@ function App() {
         key: l.key,
         className: "sb-row sb-ws-row" + (active ? " on" : ""),
         "aria-current": active ? "true" : void 0,
+        onContextMenu: (e) => openCtxMenu(e, ctxItemsForWs(l)),
         onClick: () => openWorksheetKey(l.key)
       },
       /* @__PURE__ */ React.createElement("span", { className: "sb-ws-dot", "aria-hidden": "true" }),
@@ -11729,6 +11786,7 @@ function App() {
           type: "button",
           className: "sb-coll-head",
           "aria-expanded": openId === c.id,
+          onContextMenu: (e) => openCtxMenu(e, ctxCodeItems(ce)),
           onClick: () => setOpenColl(openId === c.id ? "" : c.id)
         },
         /* @__PURE__ */ React.createElement("span", { className: "sb-coll-caret", "aria-hidden": "true" }, openId === c.id ? "\u25BE" : "\u25B8"),
@@ -11774,7 +11832,17 @@ function App() {
       /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"),
       /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Your progress"),
       /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, grandSolved, " solved")
-    ), isFullBuild && /* @__PURE__ */ React.createElement("div", { className: "sb-unlock-wrap" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-unlock-btn", onClick: () => setUnlockOpen(true) }, "\u2295 Unlock with a code")), isFullBuild && unlockedEntries.length > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, "Unlocked"), unlockedEntries.map((e) => /* @__PURE__ */ React.createElement("div", { className: "sb-row-split", key: e.key }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => openCuratedEntry(e) }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2317"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, e.title)), /* @__PURE__ */ React.createElement(
+    ), isFullBuild && /* @__PURE__ */ React.createElement("div", { className: "sb-unlock-wrap" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-unlock-btn", onClick: () => setUnlockOpen(true) }, "\u2295 Unlock with a code")), isFullBuild && unlockedEntries.length > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, "Unlocked"), unlockedEntries.map((e) => /* @__PURE__ */ React.createElement("div", { className: "sb-row-split", key: e.key }, /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "sb-row",
+        onContextMenu: (ev) => openCtxMenu(ev, ctxCodeItems(e).concat(e.kind === "worksheet" && canAuthor ? [{ glyph: "\u270E", label: "Copy to editor", act: () => ctxCopyToEditor(e.key, e.title) }] : [])),
+        onClick: () => openCuratedEntry(e)
+      },
+      /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2317"),
+      /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, e.title)
+    ), /* @__PURE__ */ React.createElement(
       "button",
       {
         type: "button",
@@ -11786,9 +11854,19 @@ function App() {
       "\u2715"
     )))), isFullBuild && tier === "instructor" && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, "Full library"), [["cc", "Coppock & Champollion"], ["hk", "Heim & Kratzer"], ["papers", "Classic papers"]].map(([fk, label]) => {
       const fe = composeCuratedByKey(fk);
-      return /* @__PURE__ */ React.createElement("div", { className: "sb-row-split", key: fk }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
-        if (fe) applyCuratedEntry(fe);
-      } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, label)), fe && /* @__PURE__ */ React.createElement(
+      return /* @__PURE__ */ React.createElement("div", { className: "sb-row-split", key: fk }, /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          className: "sb-row",
+          onContextMenu: (ev) => openCtxMenu(ev, ctxCodeItems(fe)),
+          onClick: () => {
+            if (fe) applyCuratedEntry(fe);
+          }
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"),
+        /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, label)
+      ), fe && /* @__PURE__ */ React.createElement(
         "button",
         {
           type: "button",
@@ -12670,7 +12748,7 @@ function App() {
           "aria-selected": panelTab === "lexicon",
           "aria-controls": "rp-tabpanel",
           className: "rp-tab" + (panelTab === "lexicon" ? " on" : ""),
-          onClick: () => openPanelTab("lexicon", true)
+          onClick: () => openPanelTab("lexicon")
         },
         "Lexicon ",
         /* @__PURE__ */ React.createElement("span", { className: "rp-count" }, filteredLex.length)
@@ -12683,7 +12761,7 @@ function App() {
           "aria-selected": panelTab === "rules",
           "aria-controls": "rp-tabpanel",
           className: "rp-tab" + (panelTab === "rules" ? " on" : ""),
-          onClick: () => openPanelTab("rules", true)
+          onClick: () => openPanelTab("rules")
         },
         "Rules"
       ), hasReading && /* @__PURE__ */ React.createElement(
@@ -12695,7 +12773,7 @@ function App() {
           "aria-selected": panelTab === "notes",
           "aria-controls": "rp-tabpanel",
           className: "rp-tab" + (panelTab === "notes" ? " on" : ""),
-          onClick: () => openPanelTab("notes", true)
+          onClick: () => openPanelTab("notes")
         },
         "Notes"
       ), /* @__PURE__ */ React.createElement("button", { type: "button", className: "rp-close", title: "Collapse panel", "aria-label": "Collapse the reference panel", onClick: () => touchPanel(false) }, "\u203A")), /* @__PURE__ */ React.createElement("div", { className: "rp-body", role: "tabpanel", id: "rp-tabpanel", "aria-labelledby": "rp-tab-" + panelTab }, panelTab === "rules" ? /* @__PURE__ */ React.createElement("div", { className: "rp-rules" }, /* @__PURE__ */ React.createElement("div", { className: "rp-rules-intro" }, teacherMode ? /* @__PURE__ */ React.createElement(React.Fragment, null, "Choose which rules and type-shifts are active for ", /* @__PURE__ */ React.createElement("b", null, custom ? "this custom exercise" : lib && lib.title), ".") : "Rules available in this exercise. Instructors can switch these on or off in the editor."), /* @__PURE__ */ React.createElement(RulesContent, { allowed, setAllowed, toggleRule, toggleShift, readOnly: !teacherMode }), teacherMode && /* @__PURE__ */ React.createElement("div", { className: "rp-rules-foot" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn-ghost", onClick: () => setAllowedMap((m) => {
@@ -12719,6 +12797,41 @@ function App() {
     ))),
     isMobile && renderMobileFoot(),
     isMobile && sheet === "ws" && renderWsSheet(),
+    ctxMenu && !isMobile && /* @__PURE__ */ React.createElement(
+      "div",
+      {
+        className: "ctx-overlay",
+        onMouseDown: () => setCtxMenu(null),
+        onContextMenu: (e) => {
+          e.preventDefault();
+          setCtxMenu(null);
+        }
+      },
+      /* @__PURE__ */ React.createElement(
+        "div",
+        {
+          className: "ctx-menu",
+          role: "menu",
+          style: { left: ctxMenu.x, top: ctxMenu.y },
+          onMouseDown: (e) => e.stopPropagation()
+        },
+        ctxMenu.items.map((it, i) => /* @__PURE__ */ React.createElement(
+          "button",
+          {
+            type: "button",
+            key: i,
+            className: "ctx-item",
+            role: "menuitem",
+            onClick: () => {
+              setCtxMenu(null);
+              it.act();
+            }
+          },
+          /* @__PURE__ */ React.createElement("span", { className: "ctx-ico", "aria-hidden": "true" }, it.glyph),
+          it.label
+        ))
+      )
+    ),
     modal === "files" && /* @__PURE__ */ React.createElement("div", { className: "modal-backdrop", onClick: () => setModal(null) }, /* @__PURE__ */ React.createElement(
       "div",
       {

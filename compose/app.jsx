@@ -1090,9 +1090,10 @@ function App() {
   const [refTab, setRefTab] = useState(() => load('lc2-ref-tab', 'lexicon')); // 'lexicon' | 'rules' | 'notes'
   useEffect(() => { if (panelTouched) { save('lc2-panel-touched', true); save('lc2-panel', panelOpen); } }, [panelOpen, panelTouched]);
   useEffect(() => { save('lc2-ref-tab', refTab); }, [refTab]);
-  // touch=true records the user's choice; the first-visit auto-open passes
-  // touch=false so it never overrides the remembered/default state.
-  const openPanelTab = useCallback((tab, touch) => { setRefTab(tab); setPanelOpen(true); if (touch) setPanelTouched(true); }, []);
+  // Switching tabs records the user's choice. (S46: the old first-visit
+  // Rules auto-open — and its lc2-seen-sets memory — is retired; the panel
+  // keeps whatever tab was last chosen, defaulting to Lexicon.)
+  const openPanelTab = useCallback((tab) => { setRefTab(tab); setPanelOpen(true); setPanelTouched(true); }, []);
   const touchPanel = useCallback((open) => { setPanelTouched(true); setPanelOpen(open); }, []);
   const isMobile = useIsMobile(760);
   // ---- N6 (S34): mobile chrome — bottom tabs + sheets ---------------------
@@ -1106,7 +1107,6 @@ function App() {
   const [collapseResolved, setCollapseResolved] = useState(() => load('lc2-collapse', false));
   const [autoNN, setAutoNN] = useState(() => load('lc2-auto-nn', false));
   const [autoCompose, setAutoCompose] = useState(() => load('lc2-auto-compose', false));
-  const [seenSets, setSeenSets] = useState(() => load('lc2-seen-sets', {}));
   const [exporting, setExporting] = useState(false);
   const [editorInit, setEditorInit] = useState(null); // { text, key } | null
   // S40: hosted editing context — set when the in-app editor opens on a
@@ -1130,6 +1130,10 @@ function App() {
   const [codeEntry, setCodeEntry] = useState(null);
   const [unlockPrefill, setUnlockPrefill] = useState('');
   const [footCopied, setFootCopied] = useState(false);
+  // S46: right-click context menu on sidebar worksheet/chapter rows —
+  // { x, y, items: [{ glyph, label, act }] } | null. Escape / click-away
+  // closes it; rows with no items keep the browser's own menu.
+  const [ctxMenu, setCtxMenu] = useState(null);
   // S44: on-demand curated library — fetched worksheet files (key → {title,
   // text}), the per-key fetch status, and a worksheet key waiting to open
   // once its fetch lands in LIB.
@@ -1156,7 +1160,6 @@ function App() {
   useEffect(() => { save('lc2-collapse', collapseResolved); }, [collapseResolved]);
   useEffect(() => { save('lc2-auto-nn', autoNN); }, [autoNN]);
   useEffect(() => { save('lc2-auto-compose', autoCompose); }, [autoCompose]);
-  useEffect(() => { save('lc2-seen-sets', seenSets); }, [seenSets]);
   useEffect(() => { document.documentElement.setAttribute('data-dark', darkMode ? 'true' : 'false'); save('lc2-dark', darkMode); }, [darkMode]);
   const [loadErr, setLoadErr] = useState(null);
   const fileInput = useRef(null);
@@ -1525,21 +1528,8 @@ function App() {
   }, [set, lib]);
   const hasReading = !!readingSet;
 
-  // First time a set is opened in student mode, surface its rules — ONCE.
-  // The dismissal is remembered per worksheet in lc2-seen-sets (island-
-  // namespaced localStorage), for students too (S14.1: previously students
-  // got the popup on every visit — the seen-check skipped student builds).
-  useEffect(() => {
-    if (teacherMode || custom || !set || !set.key) return;
-    if (seenSets[set.key]) return;
-    setSeenSets((s) => ({ ...s, [set.key]: true }));
-    // N3: on desktop the rules surface in the right panel's Rules tab
-    // (same once-per-worksheet seenSets memory). N6: mobile retires the
-    // rules modal — the first visit lands on the Reference tab's Rules
-    // subtab instead, the phone counterpart of the panel redirect.
-    if (isMobile) { setRefTab('rules'); setMtab('reference'); }
-    else openPanelTab('rules', false);
-  }, [set && set.key, teacherMode, custom]);
+  // (S46: the S14.1/N3/N6 first-visit rules surfacing is retired — opening
+  // a worksheet never switches the reference panel or the mobile tab.)
 
   // ---- load exercise files from disk ------------------------------------
   async function importBundle(file) {
@@ -1941,11 +1931,11 @@ function App() {
       .concat((Array.isArray(prev) ? prev : []).filter((r) => !(r.ws === wsKey && r.ex === ex)))
       .slice(0, 8));
   }, [curKey, custom]);
-  const railShown = !isMobile && (railCollapsed || (exOpen && hasContent));
-  function toggleRail() {
-    if (railShown) { setRailCollapsed(false); setExOpen(false); }
-    else setRailCollapsed(true);
-  }
+  // S46: selecting a worksheet/exercise no longer minimises the sidebar —
+  // the expanded sidebar and the drill-in exercises column coexist. Only an
+  // explicit collapse (« / Ctrl+\) shows the 58px icon rail.
+  const railShown = !isMobile && railCollapsed;
+  function toggleRail() { setRailCollapsed((v) => !v); }
   useEffect(() => {
     if (isMobile) return;
     function onNavKey(e) {
@@ -1962,7 +1952,8 @@ function App() {
         return;
       }
       if (e.key === 'Escape' && !inPalette) {
-        // README order: palette → unlock modal → shortcuts.
+        // README order: context menu → palette → unlock modal → shortcuts.
+        if (ctxMenu) { e.preventDefault(); setCtxMenu(null); return; }
         if (palette) { e.preventDefault(); closePalette(); return; }
         if (unlockOpen) { e.preventDefault(); setUnlockOpen(false); return; }
         if (shortcutsOpen) { e.preventDefault(); setShortcutsOpen(false); return; }
@@ -1976,8 +1967,7 @@ function App() {
       if (typing) return;
       if ((e.metaKey || e.ctrlKey) && e.key === '\\') {
         e.preventDefault();
-        if (railCollapsed || (exOpen && hasContent)) { setRailCollapsed(false); setExOpen(false); }
-        else setRailCollapsed(true);
+        setRailCollapsed((v) => !v);
         return;
       }
       if ((e.metaKey || e.ctrlKey) && (e.key === 'e' || e.key === 'E') && canAuthor) {
@@ -2215,12 +2205,63 @@ function App() {
     if (userLib.length) cols.push({ id: '__mine', label: 'My worksheets', items: userLib });
     return cols;
   }
+  // ---- S46: right-click context menu on worksheet/chapter rows ----------
+  function openCtxMenu(e, items) {
+    const its = (items || []).filter(Boolean);
+    if (!its.length || isMobile) return;
+    e.preventDefault(); e.stopPropagation();
+    const w = 210, h = its.length * 34 + 12;
+    const x = Math.min(e.clientX, Math.max(8, window.innerWidth - w - 8));
+    const y = Math.min(e.clientY, Math.max(8, window.innerHeight - h - 8));
+    setCtxMenu({ x: x, y: y, items: its });
+  }
+  // Share-code / QR items for a curated registry entry. One dialog carries
+  // both the code and the QR — two labels, same modal (owner's ask).
+  function ctxCodeItems(entry) {
+    if (!entry) return [];
+    return [
+      { glyph: '⌗', label: 'Share code', act: () => setCodeEntry(entry) },
+      { glyph: '▦', label: 'QR & link', act: () => setCodeEntry(entry) },
+    ];
+  }
+  // "Copy to editor": load the worksheet's JSON, retitle it "… (copy)" and
+  // open it in the in-app editor — the same editorInit path imports and the
+  // S38 duplicate flow use. Works for anon: the editor is the open sandbox.
+  function ctxCopyToEditor(key, fallbackTitle) {
+    const l = LIB.find((x) => x.key === key);
+    const text = (l && l.text)
+      || (window.LC_FILES && window.LC_FILES[key] && window.LC_FILES[key].text)
+      || (libFiles[key] && libFiles[key].text) || null;
+    const finish = (t) => {
+      let out = t;
+      try {
+        const obj = JSON.parse(t);
+        obj.title = (obj.title || fallbackTitle || key) + ' (copy)';
+        out = JSON.stringify(obj, null, 2);
+      } catch (e) {}
+      setHosted(null); setEditorInit({ text: out, key: null });
+      openEditorSurface();
+    };
+    if (text) { finish(text); return; }
+    fetch('/files/worksheets/' + key + '.compose.json', { credentials: 'same-origin' })
+      .then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+      .then(finish)
+      .catch(() => window.alert('Could not load this worksheet to copy.'));
+  }
+  function ctxItemsForWs(l) {
+    // class worksheets carry no code a student may share — omit those items
+    const entry = isFullBuild && !l.classSlug ? composeCuratedForWorksheet(l.key) : null;
+    return ctxCodeItems(entry).concat(canAuthor
+      ? [{ glyph: '✎', label: 'Copy to editor', act: () => ctxCopyToEditor(l.key, l.title) }]
+      : []);
+  }
   function renderWsRow(l) {
     const active = !custom && l.key === fileKey;
     const n = l.set.groups.reduce((acc, g) => acc + g.problems.length, 0);
     return (
       <button type="button" key={l.key} className={'sb-row sb-ws-row' + (active ? ' on' : '')}
         aria-current={active ? 'true' : undefined}
+        onContextMenu={(e) => openCtxMenu(e, ctxItemsForWs(l))}
         onClick={() => openWorksheetKey(l.key)}>
         <span className="sb-ws-dot" aria-hidden="true" />
         <span className="sb-row-label">{l.title}</span>
@@ -2270,6 +2311,7 @@ function App() {
                     <div key={c.id}>
                       <div className="sb-coll-row">
                         <button type="button" className="sb-coll-head" aria-expanded={openId === c.id}
+                          onContextMenu={(e) => openCtxMenu(e, ctxCodeItems(ce))}
                           onClick={() => setOpenColl(openId === c.id ? '' : c.id)}>
                           <span className="sb-coll-caret" aria-hidden="true">{openId === c.id ? '▾' : '▸'}</span>
                           <span className="sb-coll-label">{c.label}</span>
@@ -2333,7 +2375,9 @@ function App() {
                       <div className="sb-kicker">Unlocked</div>
                       {unlockedEntries.map((e) => (
                         <div className="sb-row-split" key={e.key}>
-                          <button type="button" className="sb-row" onClick={() => openCuratedEntry(e)}><span className="sb-ico" aria-hidden="true">⌗</span><span className="sb-row-label">{e.title}</span></button>
+                          <button type="button" className="sb-row"
+                            onContextMenu={(ev) => openCtxMenu(ev, ctxCodeItems(e).concat(e.kind === 'worksheet' && canAuthor ? [{ glyph: '✎', label: 'Copy to editor', act: () => ctxCopyToEditor(e.key, e.title) }] : []))}
+                            onClick={() => openCuratedEntry(e)}><span className="sb-ico" aria-hidden="true">⌗</span><span className="sb-row-label">{e.title}</span></button>
                           <button type="button" className="sb-code-x" title="Remove from your list (the code unlocks it again any time)"
                             aria-label={'Remove ' + e.title + ' from your list'} onClick={() => removeUnlocked(e.key)}>✕</button>
                         </div>
@@ -2351,7 +2395,9 @@ function App() {
                         const fe = composeCuratedByKey(fk);
                         return (
                           <div className="sb-row-split" key={fk}>
-                            <button type="button" className="sb-row" onClick={() => { if (fe) applyCuratedEntry(fe); }}><span className="sb-ico" aria-hidden="true">📖</span><span className="sb-row-label">{label}</span></button>
+                            <button type="button" className="sb-row"
+                              onContextMenu={(ev) => openCtxMenu(ev, ctxCodeItems(fe))}
+                              onClick={() => { if (fe) applyCuratedEntry(fe); }}><span className="sb-ico" aria-hidden="true">📖</span><span className="sb-row-label">{label}</span></button>
                             {fe && <button type="button" className="sb-code-btn" title={'Unlock code for the whole ' + label + ' collection — code + QR'}
                               aria-label={'Unlock code for ' + label} onClick={() => setCodeEntry(fe)}>⌗</button>}
                           </div>
@@ -3339,12 +3385,12 @@ function App() {
           <aside className="col col-right rp-panel" aria-label="Reference panel">
             <div className="rp-tabs" role="tablist" aria-label="Reference panel tabs">
               <button type="button" role="tab" id="rp-tab-lexicon" aria-selected={panelTab === 'lexicon'} aria-controls="rp-tabpanel"
-                className={'rp-tab' + (panelTab === 'lexicon' ? ' on' : '')} onClick={() => openPanelTab('lexicon', true)}>
+                className={'rp-tab' + (panelTab === 'lexicon' ? ' on' : '')} onClick={() => openPanelTab('lexicon')}>
                 Lexicon <span className="rp-count">{filteredLex.length}</span></button>
               <button type="button" role="tab" id="rp-tab-rules" aria-selected={panelTab === 'rules'} aria-controls="rp-tabpanel"
-                className={'rp-tab' + (panelTab === 'rules' ? ' on' : '')} onClick={() => openPanelTab('rules', true)}>Rules</button>
+                className={'rp-tab' + (panelTab === 'rules' ? ' on' : '')} onClick={() => openPanelTab('rules')}>Rules</button>
               {hasReading && <button type="button" role="tab" id="rp-tab-notes" aria-selected={panelTab === 'notes'} aria-controls="rp-tabpanel"
-                className={'rp-tab' + (panelTab === 'notes' ? ' on' : '')} onClick={() => openPanelTab('notes', true)}>Notes</button>}
+                className={'rp-tab' + (panelTab === 'notes' ? ' on' : '')} onClick={() => openPanelTab('notes')}>Notes</button>}
               <button type="button" className="rp-close" title="Collapse panel" aria-label="Collapse the reference panel" onClick={() => touchPanel(false)}>›</button>
             </div>
             <div className="rp-body" role="tabpanel" id="rp-tabpanel" aria-labelledby={'rp-tab-' + panelTab}>
@@ -3373,6 +3419,21 @@ function App() {
       {isMobile && renderMobileFoot()}
 
       {isMobile && sheet === 'ws' && renderWsSheet()}
+
+      {ctxMenu && !isMobile && (
+        <div className="ctx-overlay" onMouseDown={() => setCtxMenu(null)}
+          onContextMenu={(e) => { e.preventDefault(); setCtxMenu(null); }}>
+          <div className="ctx-menu" role="menu" style={{ left: ctxMenu.x, top: ctxMenu.y }}
+            onMouseDown={(e) => e.stopPropagation()}>
+            {ctxMenu.items.map((it, i) => (
+              <button type="button" key={i} className="ctx-item" role="menuitem"
+                onClick={() => { setCtxMenu(null); it.act(); }}>
+                <span className="ctx-ico" aria-hidden="true">{it.glyph}</span>{it.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {modal === 'files' && (
         <div className="modal-backdrop" onClick={() => setModal(null)}>
