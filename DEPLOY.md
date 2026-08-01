@@ -191,6 +191,20 @@ full live-PocketBase suite) and, only if green, deploys. Verify: repo →
 Actions tab → the next push shows *test-and-deploy* ending in
 `== live: {"message":"API is healthy.`…
 
+**Caddy caveat (S47).** The auto-deploy (`deploy/deploy.sh`) pulls the repo,
+rebuilds, and restarts the `compose` service — it does **not** touch Caddy.
+So changes to `deploy/Caddyfile` (e.g. the S47 security headers:
+`Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options`)
+do NOT take effect on push. After a Caddyfile change, apply it by hand once:
+
+**[server]**
+
+```
+cp /srv/compose/deploy/Caddyfile /etc/caddy/Caddyfile
+systemctl reload caddy
+curl -sI https://compose.tstephen.com | grep -i 'strict-transport\|x-frame\|x-content'
+```
+
 ## 10 · Restore drill — perform once now, before real content exists
 
 A backup that has never been restored is a hope, not a backup. The drill is

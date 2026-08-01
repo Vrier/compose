@@ -19,6 +19,16 @@ www.tstephen.com {
 
 # COMPOSE — reverse proxy to PocketBase (systemd unit `compose`)
 compose.tstephen.com {
+	# Security headers (S47). HSTS is conservative: ~6 months, NOT preload and
+	# NOT includeSubDomains (tstephen.com is a separate, independently served
+	# site — do not force HTTPS on subdomains we don't control here). No script
+	# CSP: the app injects inline scripts, so a script-src policy would break it;
+	# X-Frame-Options SAMEORIGIN is the safe clickjacking guard instead.
+	header {
+		Strict-Transport-Security "max-age=15768000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+	}
 	reverse_proxy 127.0.0.1:8090
 	encode gzip
 }

@@ -5,7 +5,10 @@
    POST /api/compose/register-student   { email, password }
      Open student registration: no invite code (instructors keep the gated
      /api/compose/register). SMTP is off — no verification email; the UI says
-     so plainly. Rate-limited (5/min/IP, migration 1751700005).
+     so plainly. Rate-limited (5/min/IP, migration 1751700005). role='student'
+     here is a privilege floor: users_guard.pb.js (S47) PINS `role` on every
+     users update, so a student can never self-promote to instructor, and
+     hosting is instructor-only (versions.createRule, migration 1751700007).
 
    POST /api/compose/redeem             { code }          (auth required)
      Redeems a version's unlock code: creates the enrollment (idempotent) and

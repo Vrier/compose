@@ -57,7 +57,12 @@ sent), invite-gated instructor registration; instructors manage versions on
 the in-app My versions + Assign & share pages and hand out per-version
 six-char **unlock codes** (`/api/compose/redeem` → enrollment; progress
 syncs per account); curated codes are checked client-side BEFORE the server
-redeem (curated shadows instructor codes). A worksheet's drill-in footer
+redeem (curated shadows instructor codes). Role is a server-pinned privilege
+flag (S47: users_guard.pb.js re-asserts `role` from the stored record on every
+users update unless the caller is a superuser — no student self-promotion) and
+version HOSTING is instructor-only (versions.createRule requires
+`@request.auth.role = 'instructor'`, migration 1751700007); students may only
+register + redeem + sync progress, never publish `/v/:slug` pages. A worksheet's drill-in footer
 shows "⌗ Code · XXXXXX" + "▦ QR & link"; chapter collections and the
 instructor Full-library rows carry ⌗ code buttons.
 

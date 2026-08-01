@@ -487,6 +487,21 @@ async function main() {
   r = await req('GET', '/api/collections/progress/records', { token: TA });
   expect('progress is owner-only', r.json && r.json.totalItems === 0, r.text);
 
+  // S47 (security hardening) — role is server-pinned; hosting is instructor-only.
+  // Uses existing tokens (TSTU student, TA instructor) — no extra auth budget.
+  r = await req('PATCH', `/api/collections/users/records/${STUID}`, { token: TSTU, body: { role: 'instructor' } });
+  expect('student self-PATCH role does not error (S47)', r.status === 200, r.status + ' ' + r.text.slice(0, 120));
+  r = await req('POST', '/api/collections/users/auth-refresh', { token: TSTU });
+  expect('student cannot self-promote to instructor — role pinned (S47)', r.json && r.json.record && r.json.record.role === 'student', r.json && r.json.record && JSON.stringify(r.json.record.role));
+  r = await req('PATCH', `/api/collections/users/records/${STUID}`, { token: TSTU, body: { emailVisibility: true } });
+  expect('legitimate self-update still works (S47)', r.status === 200, r.status + ' ' + r.text.slice(0, 120));
+  r = await req('POST', '/api/collections/versions/records', { token: TSTU,
+    body: { title: 'Student Host', bundle: bundleOf([{ key: 'shw', title: 'SHW', content: ws('SHW') }]) } });
+  expect('student cannot create a hosted version (S47)', r.status === 403 || r.status === 400, r.status + ' ' + r.text.slice(0, 120));
+  r = await req('POST', '/api/collections/versions/records', { token: TA,
+    body: { title: 'Instructor Host', bundle: bundleOf([{ key: 'ihw', title: 'IHW', content: ws('IHW') }]) } });
+  expect('instructor can still create a hosted version (S47)', r.status === 200 && r.json && r.json.id, r.status + ' ' + r.text.slice(0, 120));
+
   r = await req('POST', '/api/compose/new-code', { token: TSTU, body: { version: VID } });
   expect('non-owner cannot regenerate a code', r.status === 403, r.status);
   r = await req('POST', '/api/compose/new-code', { token: TA, body: { version: VID } });
