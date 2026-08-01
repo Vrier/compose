@@ -106,13 +106,19 @@ notes; opening an exercise scrolls the Notes tab to its section.</p>
 <figure class="guide-fig"><img src="/guide/notes-panel.jpg" alt="The Notes tab open next to a derivation" loading="lazy" />
 <figcaption>The Notes tab on the §7 worksheet showing section 7.2: prose, numbered examples, and a denotation table, with a contents bar at the top.</figcaption></figure>
 
-<p>On phones (below 760px) the same content rearranges into a bottom tab bar
-— Derive, Exercises, Reference (the same Lexicon/Rules/Notes tabs), and a
-Menu that carries the sidebar’s sections — with a chip row above it for
-switching worksheets and entering unlock codes.</p>
+<p>The layout adapts to screen width in three bands (v1.3.0). On <b>tablets</b>
+(760–1180px) the derivation stage is full-width under a slim app-bar; a ☰
+button opens a left <b>navigation drawer</b> (the sidebar sections plus the
+drill-in exercises list), and a <b>Reference</b> button opens a right drawer
+with the Lexicon/Rules/Notes tabs. Both drawers slide over the stage with a
+dimmed backdrop and never shrink the tree. On <b>phones</b> (below 760px) the
+same content lives in a bottom tab bar — Derive, Exercises, Reference (the
+Lexicon/Rules/Notes tabs), and a Menu that carries the sidebar’s sections,
+unlock codes and settings. Worksheet-switching is on the Derive header and the
+Exercises tab.</p>
 
 <figure class="guide-fig guide-fig-narrow"><img src="/guide/mobile-view.jpg" alt="The phone layout: derivation tree above the bottom tab bar" loading="lazy" />
-<figcaption>The phone layout: the stage, the worksheet chip row, and the Derive · Exercises · Reference · Menu tab bar.</figcaption></figure>
+<figcaption>The phone layout: the full-width stage above the Derive · Exercises · Reference · Menu tab bar.</figcaption></figure>
 
 <p><b>Progress.</b> Progress is stored in the browser’s localStorage. Since
 v1.2.0 the app keeps ONE store for everything opened in it — the demo, the

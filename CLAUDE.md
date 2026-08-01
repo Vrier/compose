@@ -36,8 +36,16 @@ behind Caddy (auto-TLS). v1.2.0 (S44) is the FULL CONSOLIDATION on top of the
 §11 navigation & accounts redesign (N0–N7): ONE app entry at `/` — left
 sidebar (Worksheets/Continue/Author/Assign/Display/Guide & help/Account) with
 drill-in exercises column, right reference panel (Lexicon/Rules/Notes), ⌘K
-palette, mobile bottom tab bar; Guide & help rows render the doc pages
-IN-APP (page:'doc' fetches the standalone page's <main>). The curated
+palette; three responsive bands (S55/v1.3.0, `useLayoutMode(760,1180)` in
+mobile.jsx): DESKTOP (>=1180) the three-column shell UNCHANGED; TABLET
+(760–1180) a full-width stage under a slim app-bar (.tb-bar) with a left NAV
+drawer (renderSidebarBody + the drill-in renderExColumn) and a right REFERENCE
+drawer (renderMobileReference), both `Sheet side=left|right` slide-overs with a
+backdrop, never narrowing the stage; PHONE (<760) the bottom tab bar (Derive ·
+Exercises · Reference · Menu, mb-* classes) — the old chip row is gone,
+worksheet-switching lives on the Derive header + Exercises tab, Unlock in the
+Menu tab. Guide & help rows render the doc pages IN-APP
+(page:'doc' fetches the standalone page's <main>). The curated
 library is loaded ON DEMAND by the root app: build/assemble.mjs embeds a
 manifest (`window.COMPOSE_LIBRARY`, families→chapters→worksheet keys+titles,
 derived from build/curated-map.mjs) next to the S43 code registry
