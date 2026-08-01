@@ -771,7 +771,7 @@ function UnlockDialog({ token, initialCode, onClose, onSignin, onUnlocked, onCur
             onChange={(e) => { setCode(e.target.value); if (result) setResult(null); if (needSignin) setNeedSignin(false); }}
             placeholder="e.g. Q7TPKX" aria-label="Unlock code" autoComplete="off" spellCheck="false" />
           {result && <div className={'ul-msg ' + result.kind} role={result.kind === 'err' ? 'alert' : 'status'}>{result.msg}</div>}
-          {needSignin && !result && <div className="ul-msg err" role="alert">That looks like a class code from an instructor — sign in first so the unlock sticks to your account (half a minute, email only).</div>}
+          {needSignin && !result && <div className="ul-msg err" role="alert">No library set matches that code. If it's a class code from your instructor, sign in first and the unlock sticks to your account; if it's a library code, check the spelling.</div>}
           {result && result.kind === 'ok'
             ? <button type="button" className="btn btn-primary ul-submit" onClick={onClose}>Done</button>
             : needSignin
@@ -1086,7 +1086,7 @@ function App() {
   const [panelTouched, setPanelTouched] = useState(() => !!load('lc2-panel-touched', false));
   const [panelOpen, setPanelOpen] = useState(() => load('lc2-panel-touched', false)
     ? !!load('lc2-panel', true)
-    : (typeof window !== 'undefined' && window.innerWidth >= 1180));
+    : (typeof window !== 'undefined' && window.innerWidth >= 1360));
   const [refTab, setRefTab] = useState(() => load('lc2-ref-tab', 'lexicon')); // 'lexicon' | 'rules' | 'notes'
   useEffect(() => { if (panelTouched) { save('lc2-panel-touched', true); save('lc2-panel', panelOpen); } }, [panelOpen, panelTouched]);
   useEffect(() => { save('lc2-ref-tab', refTab); }, [refTab]);
@@ -1785,10 +1785,15 @@ function App() {
   // had been typed into the dialog (QR codes encode this URL). Curated codes
   // auto-apply (works for anonymous visitors); anything else opens the
   // unlock dialog prefilled, which routes into the sign-in/redeem flow.
+  // S49: ?code takes precedence over ?ws when both are present. This effect
+  // runs (and strips the code param) before the ?ws effect below, so record
+  // that a code was seen and have ?ws yield to it.
+  const urlCodeSeenRef = useRef(false);
   useEffect(() => {
     if (!isFullBuild) return;
     const m = /[?&]code=([A-Za-z0-9]+)/.exec(window.location.search || '');
     if (!m) return;
+    urlCodeSeenRef.current = true;
     try { const u = new URL(window.location.href); u.searchParams.delete('code'); window.history.replaceState({}, '', u.pathname + (u.search || '') + u.hash); } catch (e) {}
     const entry = composeCuratedByCode(m[1]);
     if (entry) { applyCuratedEntry(entry); return; }
@@ -1799,6 +1804,7 @@ function App() {
   // S43/S44: ?ws=<key> — open a specific worksheet. Embedded sets open at
   // once; library sets (manifest) are fetched, then opened.
   useEffect(() => {
+    if (urlCodeSeenRef.current) return; // S49: ?code wins over ?ws
     const m = /[?&]ws=([A-Za-z0-9_.\-]+)/.exec(window.location.search || '');
     if (!m) return;
     try { const u = new URL(window.location.href); u.searchParams.delete('ws'); window.history.replaceState({}, '', u.pathname + (u.search || '') + u.hash); } catch (e) {}

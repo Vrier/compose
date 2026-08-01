@@ -10310,7 +10310,7 @@ function UnlockDialog({ token, initialCode, onClose, onSignin, onUnlocked, onCur
       autoComplete: "off",
       spellCheck: "false"
     }
-  ), result && /* @__PURE__ */ React.createElement("div", { className: "ul-msg " + result.kind, role: result.kind === "err" ? "alert" : "status" }, result.msg), needSignin && !result && /* @__PURE__ */ React.createElement("div", { className: "ul-msg err", role: "alert" }, "That looks like a class code from an instructor \u2014 sign in first so the unlock sticks to your account (half a minute, email only)."), result && result.kind === "ok" ? /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary ul-submit", onClick: onClose }, "Done") : needSignin ? /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary ul-submit", onClick: onSignin }, "Sign in to unlock") : /* @__PURE__ */ React.createElement("button", { type: "submit", className: "btn btn-primary ul-submit", disabled: busy || !code.trim() }, busy ? "\u2026" : "Unlock"), /* @__PURE__ */ React.createElement("div", { className: "ul-foot" }, /* @__PURE__ */ React.createElement("span", { className: "ul-foot-glyph", "aria-hidden": "true" }, "\u2317"), /* @__PURE__ */ React.createElement("span", null, token ? "Unlocks are kept on your account and follow you to any device you sign in on." : "Library unlocks are kept in this browser; sign in and they follow you to any device.")))));
+  ), result && /* @__PURE__ */ React.createElement("div", { className: "ul-msg " + result.kind, role: result.kind === "err" ? "alert" : "status" }, result.msg), needSignin && !result && /* @__PURE__ */ React.createElement("div", { className: "ul-msg err", role: "alert" }, "No library set matches that code. If it's a class code from your instructor, sign in first and the unlock sticks to your account; if it's a library code, check the spelling."), result && result.kind === "ok" ? /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary ul-submit", onClick: onClose }, "Done") : needSignin ? /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary ul-submit", onClick: onSignin }, "Sign in to unlock") : /* @__PURE__ */ React.createElement("button", { type: "submit", className: "btn btn-primary ul-submit", disabled: busy || !code.trim() }, busy ? "\u2026" : "Unlock"), /* @__PURE__ */ React.createElement("div", { className: "ul-foot" }, /* @__PURE__ */ React.createElement("span", { className: "ul-foot-glyph", "aria-hidden": "true" }, "\u2317"), /* @__PURE__ */ React.createElement("span", null, token ? "Unlocks are kept on your account and follow you to any device you sign in on." : "Library unlocks are kept in this browser; sign in and they follow you to any device.")))));
 }
 function AssignPage({ token, initialVersionId, catalogue, onBack, onAuthGone }) {
   const [versions, setVersions] = useState(null);
@@ -10515,7 +10515,7 @@ function App() {
   const [teacherMode, setTeacherMode] = useState(() => isStudentBuild ? false : load("lc2-teacher", ["hosted-sandbox"].includes(String((window.COMPOSE_BUILD || {}).id || ""))));
   const [darkMode, setDarkMode] = useState(() => load("lc2-dark", false));
   const [panelTouched, setPanelTouched] = useState(() => !!load("lc2-panel-touched", false));
-  const [panelOpen, setPanelOpen] = useState(() => load("lc2-panel-touched", false) ? !!load("lc2-panel", true) : typeof window !== "undefined" && window.innerWidth >= 1180);
+  const [panelOpen, setPanelOpen] = useState(() => load("lc2-panel-touched", false) ? !!load("lc2-panel", true) : typeof window !== "undefined" && window.innerWidth >= 1360);
   const [refTab, setRefTab] = useState(() => load("lc2-ref-tab", "lexicon"));
   useEffect(() => {
     if (panelTouched) {
@@ -11246,10 +11246,12 @@ function App() {
     if (pendingOpen.force || page === "practice") openWorksheetKey(pendingOpen.key);
     setPendingOpen(null);
   }, [pendingOpen, LIB]);
+  const urlCodeSeenRef = useRef(false);
   useEffect(() => {
     if (!isFullBuild) return;
     const m = /[?&]code=([A-Za-z0-9]+)/.exec(window.location.search || "");
     if (!m) return;
+    urlCodeSeenRef.current = true;
     try {
       const u = new URL(window.location.href);
       u.searchParams.delete("code");
@@ -11265,6 +11267,7 @@ function App() {
     setUnlockOpen(true);
   }, []);
   useEffect(() => {
+    if (urlCodeSeenRef.current) return;
     const m = /[?&]ws=([A-Za-z0-9_.\-]+)/.exec(window.location.search || "");
     if (!m) return;
     try {
