@@ -18,7 +18,14 @@
     { prefix: 'ch13', label: '§13', title: 'Intensional Semantics' },
     { prefix: 'partee', label: '★', title: 'Partee 1986 — NP Type-Shifting' },
     { prefix: 'montague', label: '★', title: 'Montague 1973 — PTQ' },
-    { prefix: 'hk', label: 'H&K', title: 'Heim & Kratzer 1998' },
+    { prefix: 'hk1',  label: 'H&K', title: 'H&K §1 · Conventions' },
+    { prefix: 'hk2',  label: 'H&K', title: 'H&K §2 · Function Application' },
+    { prefix: 'hk4',  label: 'H&K', title: 'H&K §4 · Definites' },
+    { prefix: 'hk5',  label: 'H&K', title: 'H&K §5 · Relative Clauses' },
+    { prefix: 'hk6',  label: 'H&K', title: 'H&K §6 · Quantifiers' },
+    { prefix: 'hk7',  label: 'H&K', title: 'H&K §7 · Quantification' },
+    { prefix: 'hk9',  label: 'H&K', title: 'H&K §9 · Pronouns' },
+    { prefix: 'hk12', label: 'H&K', title: 'H&K §12 · Intensions' },
   ];
   // Hosted versions (W3): the serving route can append picker chapters for
   // instructor worksheets whose keys match no built-in prefix — without this

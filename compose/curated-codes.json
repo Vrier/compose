@@ -384,56 +384,64 @@
       "kind": "chapter",
       "key": "hk/ch1",
       "title": "H&K ch. 1 Conventions",
-      "url": "/?code=2U95R2"
+      "url": "/?code=2U95R2",
+      "prefix": "hk1"
     },
     {
       "code": "IWAHYZ",
       "kind": "chapter",
       "key": "hk/ch2",
       "title": "H&K ch. 2 Function Application",
-      "url": "/?code=IWAHYZ"
+      "url": "/?code=IWAHYZ",
+      "prefix": "hk2"
     },
     {
       "code": "YPEQCQ",
       "kind": "chapter",
       "key": "hk/ch4",
       "title": "H&K ch. 4 Definites",
-      "url": "/?code=YPEQCQ"
+      "url": "/?code=YPEQCQ",
+      "prefix": "hk4"
     },
     {
       "code": "8IIRCE",
       "kind": "chapter",
       "key": "hk/ch5",
       "title": "H&K ch. 5 Relative Clauses",
-      "url": "/?code=8IIRCE"
+      "url": "/?code=8IIRCE",
+      "prefix": "hk5"
     },
     {
       "code": "3FCWXC",
       "kind": "chapter",
       "key": "hk/ch6",
       "title": "H&K ch. 6 Quantifiers",
-      "url": "/?code=3FCWXC"
+      "url": "/?code=3FCWXC",
+      "prefix": "hk6"
     },
     {
       "code": "AUY39C",
       "kind": "chapter",
       "key": "hk/ch7",
       "title": "H&K ch. 7 Quantification",
-      "url": "/?code=AUY39C"
+      "url": "/?code=AUY39C",
+      "prefix": "hk7"
     },
     {
       "code": "C64QMV",
       "kind": "chapter",
       "key": "hk/ch9",
       "title": "H&K ch. 9 Pronouns",
-      "url": "/?code=C64QMV"
+      "url": "/?code=C64QMV",
+      "prefix": "hk9"
     },
     {
       "code": "R53MVA",
       "kind": "chapter",
       "key": "hk/ch12",
       "title": "H&K ch. 12 Intensions",
-      "url": "/?code=R53MVA"
+      "url": "/?code=R53MVA",
+      "prefix": "hk12"
     },
     {
       "code": "4UV9HE",

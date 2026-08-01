@@ -61,7 +61,7 @@ export function curatedTable(allKeys) {
     { path: 'cc', island: 'lib-cc', title: FAMILY_TITLES.cc, keys: pick(CC_CHAPTERS.map(([p]) => p)) },
     ...CC_CHAPTERS.map(([pfx, label]) => ({ path: 'cc/' + pfx, island: 'lib-cc', title: 'C&C ' + label, keys: pick([pfx]), prefix: pfx })),
     { path: 'hk', island: 'lib-hk', title: FAMILY_TITLES.hk, keys: pick(HK_CHAPTERS.map(([p]) => p)) },
-    ...HK_CHAPTERS.map(([pfx, label]) => ({ path: 'hk/' + pfx.replace('hk', 'ch'), island: 'lib-hk', title: 'H&K ' + label, keys: pick([pfx]) })),
+    ...HK_CHAPTERS.map(([pfx, label]) => ({ path: 'hk/' + pfx.replace('hk', 'ch'), island: 'lib-hk', title: 'H&K ' + label, keys: pick([pfx]), prefix: pfx })),
     { path: 'papers', island: 'lib-papers', title: FAMILY_TITLES.papers, keys: pick(PAPERS_PREFIXES) },
     ...PAPER_PAGES.map(([p, title, prefixes]) => ({ path: p, island: 'lib-papers', title, keys: pick(prefixes) })),
   ];
