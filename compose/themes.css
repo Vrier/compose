@@ -1384,6 +1384,7 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 
 /* menu rows: ≥56px touch targets */
 .mb-kicker { padding: 14px 16px 4px; font-size: 10.5px; letter-spacing: .11em; text-transform: uppercase; color: var(--faint); }
+.mb-kicker-glyph { display: inline-block; width: 1.05em; margin-right: 6px; text-align: center; opacity: .85; letter-spacing: 0; text-transform: none; }
 .mb-row {
   display: flex; align-items: center; gap: 10px; width: 100%; min-height: 56px;
   padding: 6px 16px; border: 0; background: none; font: inherit; font-size: 14px;

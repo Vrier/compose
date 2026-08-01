@@ -3273,44 +3273,37 @@ function App() {
       </button>
     );
   }
+  // S56: the phone Menu mirrors the DESKTOP sidebar (renderSidebarBody):
+  // same section ORDER and same section GLYPHS, Account LAST. Each kicker
+  // carries the desktop section glyph via .mb-kicker-glyph. This is the phone
+  // list (not a fork of the desktop rail), but its structure parallels it:
+  // Worksheets / Continue / Author / Assign & share / Display / Guide & help
+  // / Account.
+  function mbKicker(glyph, label) {
+    return (
+      <div className="mb-kicker">
+        <span className="mb-kicker-glyph" aria-hidden="true">{glyph}</span>{label}
+      </div>
+    );
+  }
   function renderMobileMenu() {
     return (
       <div className="mb-view mb-menu">
         <div className="mb-scroll">
-          {isFullBuild && (
-            <div className="mb-account">
-              {tier === 'anon' ? (
-                <div>
-                  <div className="mb-account-note">Everything works without an account. Signing in only adds keeping: unlocks and progress follow you between devices.</div>
-                  <button type="button" className="btn btn-primary mb-signin-btn" onClick={() => { setSigninMode('login'); mbPush('signin'); }}>Sign in or create an account</button>
-                </div>
-              ) : (
-                <div>
-                  <div className="mb-id">
-                    <span className="mb-id-avatar" aria-hidden="true">◉</span>
-                    <span className="mb-id-main">
-                      <span className="mb-id-email">{(auth.record && auth.record.email) || 'Signed in'}</span>
-                      <span className="mb-id-tier">{tier === 'instructor' ? 'Instructor' : 'Practice account'}</span>
-                    </span>
-                    <button type="button" className="mb-signout" onClick={() => { setAuth(null); setPage('practice'); }}>Sign out</button>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-          <div className="mb-kicker">Worksheets</div>
+          {/* 1. Worksheets -- matches the desktop 'library' section */}
+          {mbKicker('❏', 'Worksheets')}
           {mbRow('ws', '❏', 'Switch worksheet', custom ? 'custom' : (lib ? lib.title : null), () => setSheet('ws'))}
           {mbRow('progress', '✓', 'Your progress', grandSolved + ' solved', () => mbPush('progress'))}
           {isFullBuild && mbRow('unlock', '⊕', 'Unlock with a code', null, () => { setSheet(null); setUnlockOpen(true); })}
           {isFullBuild && unlockedEntries.length > 0 && (
             <div>
-              <div className="mb-kicker">Unlocked</div>
+              {mbKicker('⌗', 'Unlocked')}
               {unlockedEntries.map((e) => mbRow('unl:' + e.key, '⌗', e.title, null, () => { openCuratedEntry(e); setSheet(null); setMtab('derive'); }))}
             </div>
           )}
           {isFullBuild && tier !== 'anon' && classes && classes.length > 0 && (
             <div>
-              <div className="mb-kicker">My classes</div>
+              {mbKicker('❏', 'My classes')}
               {classes.map((c) => {
                 const items = classLib.filter((l) => l.classSlug === c.slug);
                 return mbRow('class:' + c.slug, '❏', c.title, items.length + (items.length === 1 ? ' worksheet' : ' worksheets'),
@@ -3318,22 +3311,46 @@ function App() {
               })}
             </div>
           )}
+
+          {/* 2. Continue -- matches the desktop 'continue' section */}
+          {recents.length > 0 && (
+            <div>
+              {mbKicker('↻', 'Continue')}
+              {recents.slice(0, 6).map((r) => {
+                const l = LIB.find((x) => x.key === r.ws);
+                if (!l) return null;
+                const gs = l.set.groups.filter((g) => g.kind === 'tree');
+                const dot = String(r.ex || '').indexOf('.');
+                const gid = dot > 0 ? r.ex.slice(0, dot) : '', pid = dot > 0 ? r.ex.slice(dot + 1) : '';
+                const g = gs.find((x) => x.id === gid);
+                const pb = g && g.problems.find((x) => x.id === pid);
+                return mbRow('rec:' + r.ws + '/' + r.ex, '↻', pb ? navLabel(g, pb) : l.title, relTime(r.at),
+                  () => { openRecent(r); setSheet(null); setMtab('derive'); });
+              })}
+            </div>
+          )}
+
+          {/* 3. Author -- desktop-gated on canAuthor */}
           {canAuthor && (
             <div>
-              <div className="mb-kicker">Author</div>
+              {mbKicker('✎', 'Author')}
               {mbRow('editor', '✎', 'Worksheet editor', null, () => openEditorSurface())}
               {mbRow('scratch', '♪', 'Scratchpad', 'free', () => mbPush('scratch'))}
               {mbRow('import', '↑', 'Import worksheet…', null, () => { setLoadErr(null); if (fileInput.current) fileInput.current.click(); })}
             </div>
           )}
+
+          {/* 4. Assign & share -- instructor only, matches the desktop 'assign' section */}
           {isFullBuild && tier === 'instructor' && (
             <div>
-              <div className="mb-kicker">Hosting &amp; sharing</div>
+              {mbKicker('☑', 'Assign & share')}
+              {mbRow('assign', '☑', 'Choose what a class sees', null, () => mbPush('assign'))}
               {mbRow('dash', '◈', 'My versions', null, () => mbPush('dash'))}
-              {mbRow('assign', '☑', 'Assign & share', null, () => mbPush('assign'))}
             </div>
           )}
-          <div className="mb-kicker">Display</div>
+
+          {/* 5. Display -- the settings toggles + progress/export actions */}
+          {mbKicker('◐', 'Display')}
           <div className="mb-settings">
             {!isStudentBuild && (
               <label className="settings-row">
@@ -3361,12 +3378,42 @@ function App() {
               </div>
             </div>
           </div>
+          {mbRow('save-prog', '⤓', 'Save progress to a file', null, () => composeExportProgress())}
+          {mbRow('restore-prog', '⤒', 'Restore progress from a file…', null, () => { if (progressFileInput.current) progressFileInput.current.click(); })}
+
+          {/* 6. Guide & help */}
           {isFullBuild && (
             <div>
-              <div className="mb-kicker">Guide &amp; help</div>
+              {mbKicker('ⓘ', 'Guide & help')}
               {/* S37: pushed in-app doc views (page:'doc'), same as the
-                  desktop sidebar — these rows used to leave the app */}
+                  desktop sidebar -- these rows used to leave the app */}
               {DOC_PAGES.map((d) => mbRow('doc' + d.path, d.glyph, d.title, null, () => { setSheet(null); setUnlockOpen(false); openDoc(d.path); }))}
+            </div>
+          )}
+
+          {/* 7. Account -- LAST, matching the desktop 'account' section */}
+          {isFullBuild && (
+            <div>
+              {mbKicker('◉', tier === 'anon' ? 'Account' : 'Account · ' + (tier === 'instructor' ? 'instructor' : 'student'))}
+              <div className="mb-account">
+                {tier === 'anon' ? (
+                  <div>
+                    <div className="mb-account-note">Everything works without an account. Signing in only adds keeping: unlocks and progress follow you between devices.</div>
+                    <button type="button" className="btn btn-primary mb-signin-btn" onClick={() => { setSigninMode('login'); mbPush('signin'); }}>Sign in or create an account</button>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="mb-id">
+                      <span className="mb-id-avatar" aria-hidden="true">◉</span>
+                      <span className="mb-id-main">
+                        <span className="mb-id-email">{(auth.record && auth.record.email) || 'Signed in'}</span>
+                        <span className="mb-id-tier">{tier === 'instructor' ? 'Instructor' : 'Practice account'}</span>
+                      </span>
+                      <button type="button" className="mb-signout" onClick={() => { setAuth(null); setPage('practice'); }}>Sign out</button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
           <div className="mb-stamp">{BUILD.label || 'COMPOSE'}{BUILD.version ? ' · v' + BUILD.version : ''}{BUILD.date ? ' · ' + BUILD.date : ''}</div>
@@ -3406,7 +3453,7 @@ function App() {
     const tabs = [
       { id: 'derive', glyph: '⋔', label: 'Derive' },
       { id: 'exercises', glyph: '☰', label: 'Exercises' },
-      { id: 'reference', glyph: '❏', label: 'Reference' },
+      { id: 'reference', glyph: '𝑓', label: 'Reference' },
       { id: 'menu', glyph: '⋯', label: 'Menu' },
     ];
     return (

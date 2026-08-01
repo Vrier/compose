@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>COMPOSE - Teacher</title>
 <script>
-window.COMPOSE_BUILD = {"id":"teacher-clean","role":"instructor","preload":"none","label":"COMPOSE - Teacher","version":"1.2.0","date":"2026"};
+window.COMPOSE_BUILD = {"id":"teacher-clean","role":"instructor","preload":"none","label":"COMPOSE - Teacher","version":"1.3.0","date":"2026"};
 window.COMPOSE_CONFIG = {"role":"instructor","assignment":null};
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -1398,6 +1398,7 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 
 /* menu rows: ≥56px touch targets */
 .mb-kicker { padding: 14px 16px 4px; font-size: 10.5px; letter-spacing: .11em; text-transform: uppercase; color: var(--faint); }
+.mb-kicker-glyph { display: inline-block; width: 1.05em; margin-right: 6px; text-align: center; opacity: .85; letter-spacing: 0; text-transform: none; }
 .mb-row {
   display: flex; align-items: center; gap: 10px; width: 100%; min-height: 56px;
   padding: 6px 16px; border: 0; background: none; font: inherit; font-size: 14px;
@@ -3056,14 +3057,17 @@ window.COMPOSE_LIBRARY = {"families":[{"key":"cc","title":"Coppock & Champollion
 <script>
 /* ===========================================================================
    COMPOSE — the ONE canonical version string (S8/W9).
-   1.2.0 (S44, 2026-08-01): full consolidation — the root app loads the
-   curated library on demand (/files/worksheets JSON + unlock codes); the
-   old /cc /hk /papers /editor pages are redirect stubs into the app.
+   1.3.0 (S55, 2026-08-01): responsive layout overhaul — a new tablet
+   breakpoint (760–1180) with an adaptive-drawer layout (full-width stage +
+   slim app-bar + slide-over nav/reference drawers), plus a holistic phone
+   rework (bottom-tab bar de-cluttered, no duplicate Derive control).
+   1.2.0 (S44): full consolidation — the root app loads the curated library
+   on demand; /cc /hk /papers /editor are redirect stubs into the app.
    Loaded first in every page's script chain; required by the build scripts
    and (via the vendored copy) by the PocketBase serving hooks. Bump here and
    nowhere else.
    =========================================================================== */
-const COMPOSE_VERSION = '1.2.0';
+const COMPOSE_VERSION = '1.3.0';
 const COMPOSE_DATE = '2026';
 if (typeof window !== 'undefined') { window.COMPOSE_VERSION = COMPOSE_VERSION; window.COMPOSE_DATE = COMPOSE_DATE; }
 if (typeof module !== 'undefined' && module.exports) module.exports = { COMPOSE_VERSION, COMPOSE_DATE };
@@ -12715,21 +12719,18 @@ function App() {
     }
     return /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-row", key, onClick: onActivate }, /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, glyph), /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, label), note != null && /* @__PURE__ */ React.createElement("span", { className: "mb-row-note" }, note), /* @__PURE__ */ React.createElement("span", { className: "mb-row-caret", "aria-hidden": "true" }, "\u203A"));
   }
+  function mbKicker(glyph, label) {
+    return /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, /* @__PURE__ */ React.createElement("span", { className: "mb-kicker-glyph", "aria-hidden": "true" }, glyph), label);
+  }
   function renderMobileMenu() {
-    return /* @__PURE__ */ React.createElement("div", { className: "mb-view mb-menu" }, /* @__PURE__ */ React.createElement("div", { className: "mb-scroll" }, isFullBuild && /* @__PURE__ */ React.createElement("div", { className: "mb-account" }, tier === "anon" ? /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-account-note" }, "Everything works without an account. Signing in only adds keeping: unlocks and progress follow you between devices."), /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary mb-signin-btn", onClick: () => {
-      setSigninMode("login");
-      mbPush("signin");
-    } }, "Sign in or create an account")) : /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-id" }, /* @__PURE__ */ React.createElement("span", { className: "mb-id-avatar", "aria-hidden": "true" }, "\u25C9"), /* @__PURE__ */ React.createElement("span", { className: "mb-id-main" }, /* @__PURE__ */ React.createElement("span", { className: "mb-id-email" }, auth.record && auth.record.email || "Signed in"), /* @__PURE__ */ React.createElement("span", { className: "mb-id-tier" }, tier === "instructor" ? "Instructor" : "Practice account")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-signout", onClick: () => {
-      setAuth(null);
-      setPage("practice");
-    } }, "Sign out")))), /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Worksheets"), mbRow("ws", "\u274F", "Switch worksheet", custom ? "custom" : lib ? lib.title : null, () => setSheet("ws")), mbRow("progress", "\u2713", "Your progress", grandSolved + " solved", () => mbPush("progress")), isFullBuild && mbRow("unlock", "\u2295", "Unlock with a code", null, () => {
+    return /* @__PURE__ */ React.createElement("div", { className: "mb-view mb-menu" }, /* @__PURE__ */ React.createElement("div", { className: "mb-scroll" }, mbKicker("\u274F", "Worksheets"), mbRow("ws", "\u274F", "Switch worksheet", custom ? "custom" : lib ? lib.title : null, () => setSheet("ws")), mbRow("progress", "\u2713", "Your progress", grandSolved + " solved", () => mbPush("progress")), isFullBuild && mbRow("unlock", "\u2295", "Unlock with a code", null, () => {
       setSheet(null);
       setUnlockOpen(true);
-    }), isFullBuild && unlockedEntries.length > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Unlocked"), unlockedEntries.map((e) => mbRow("unl:" + e.key, "\u2317", e.title, null, () => {
+    }), isFullBuild && unlockedEntries.length > 0 && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u2317", "Unlocked"), unlockedEntries.map((e) => mbRow("unl:" + e.key, "\u2317", e.title, null, () => {
       openCuratedEntry(e);
       setSheet(null);
       setMtab("derive");
-    }))), isFullBuild && tier !== "anon" && classes && classes.length > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "My classes"), classes.map((c) => {
+    }))), isFullBuild && tier !== "anon" && classes && classes.length > 0 && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u274F", "My classes"), classes.map((c) => {
       const items = classLib.filter((l) => l.classSlug === c.slug);
       return mbRow(
         "class:" + c.slug,
@@ -12741,21 +12742,48 @@ function App() {
           else setSheet("ws");
         }
       );
-    })), canAuthor && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Author"), mbRow("editor", "\u270E", "Worksheet editor", null, () => openEditorSurface()), mbRow("scratch", "\u266A", "Scratchpad", "free", () => mbPush("scratch")), mbRow("import", "\u2191", "Import worksheet\u2026", null, () => {
+    })), recents.length > 0 && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u21BB", "Continue"), recents.slice(0, 6).map((r) => {
+      const l = LIB.find((x) => x.key === r.ws);
+      if (!l) return null;
+      const gs = l.set.groups.filter((g2) => g2.kind === "tree");
+      const dot = String(r.ex || "").indexOf(".");
+      const gid = dot > 0 ? r.ex.slice(0, dot) : "", pid = dot > 0 ? r.ex.slice(dot + 1) : "";
+      const g = gs.find((x) => x.id === gid);
+      const pb = g && g.problems.find((x) => x.id === pid);
+      return mbRow(
+        "rec:" + r.ws + "/" + r.ex,
+        "\u21BB",
+        pb ? navLabel(g, pb) : l.title,
+        relTime(r.at),
+        () => {
+          openRecent(r);
+          setSheet(null);
+          setMtab("derive");
+        }
+      );
+    })), canAuthor && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u270E", "Author"), mbRow("editor", "\u270E", "Worksheet editor", null, () => openEditorSurface()), mbRow("scratch", "\u266A", "Scratchpad", "free", () => mbPush("scratch")), mbRow("import", "\u2191", "Import worksheet\u2026", null, () => {
       setLoadErr(null);
       if (fileInput.current) fileInput.current.click();
-    })), isFullBuild && tier === "instructor" && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Hosting & sharing"), mbRow("dash", "\u25C8", "My versions", null, () => mbPush("dash")), mbRow("assign", "\u2611", "Assign & share", null, () => mbPush("assign"))), /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Display"), /* @__PURE__ */ React.createElement("div", { className: "mb-settings" }, !isStudentBuild && /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Teacher mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (teacherMode ? " on" : ""), role: "switch", "aria-checked": teacherMode, onClick: () => setTeacherMode((m) => {
+    })), isFullBuild && tier === "instructor" && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u2611", "Assign & share"), mbRow("assign", "\u2611", "Choose what a class sees", null, () => mbPush("assign")), mbRow("dash", "\u25C8", "My versions", null, () => mbPush("dash"))), mbKicker("\u25D0", "Display"), /* @__PURE__ */ React.createElement("div", { className: "mb-settings" }, !isStudentBuild && /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Teacher mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (teacherMode ? " on" : ""), role: "switch", "aria-checked": teacherMode, onClick: () => setTeacherMode((m) => {
       const next = !m;
       if (next) {
         const cur = allowedMap[allowKey] || exerciseDefaults;
         setAllowedMap((am) => ({ ...am, [allowKey]: Object.assign({}, cur, {}) }));
       }
       return next;
-    }) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Dark mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (darkMode ? " on" : ""), role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode((d) => !d) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-resolve non-branching"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoNN ? " on" : ""), role: "switch", "aria-checked": autoNN, onClick: () => setAutoNN((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Collapse resolved subtrees"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (collapseResolved ? " on" : ""), role: "switch", "aria-checked": collapseResolved, onClick: () => setCollapseResolved((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("div", { className: "settings-row settings-layout-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Layout"), /* @__PURE__ */ React.createElement("div", { className: "seg-mini" }, /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() == null ? " on" : ""), onClick: () => setForceLayout(null) }, "Auto"), /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() === "desktop" ? " on" : ""), onClick: () => setForceLayout("desktop") }, "Desktop")))), isFullBuild && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Guide & help"), DOC_PAGES.map((d) => mbRow("doc" + d.path, d.glyph, d.title, null, () => {
+    }) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Dark mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (darkMode ? " on" : ""), role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode((d) => !d) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-resolve non-branching"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoNN ? " on" : ""), role: "switch", "aria-checked": autoNN, onClick: () => setAutoNN((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Collapse resolved subtrees"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (collapseResolved ? " on" : ""), role: "switch", "aria-checked": collapseResolved, onClick: () => setCollapseResolved((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("div", { className: "settings-row settings-layout-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Layout"), /* @__PURE__ */ React.createElement("div", { className: "seg-mini" }, /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() == null ? " on" : ""), onClick: () => setForceLayout(null) }, "Auto"), /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() === "desktop" ? " on" : ""), onClick: () => setForceLayout("desktop") }, "Desktop")))), mbRow("save-prog", "\u2913", "Save progress to a file", null, () => composeExportProgress()), mbRow("restore-prog", "\u2912", "Restore progress from a file\u2026", null, () => {
+      if (progressFileInput.current) progressFileInput.current.click();
+    }), isFullBuild && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u24D8", "Guide & help"), DOC_PAGES.map((d) => mbRow("doc" + d.path, d.glyph, d.title, null, () => {
       setSheet(null);
       setUnlockOpen(false);
       openDoc(d.path);
-    }))), /* @__PURE__ */ React.createElement("div", { className: "mb-stamp" }, BUILD.label || "COMPOSE", BUILD.version ? " \xB7 v" + BUILD.version : "", BUILD.date ? " \xB7 " + BUILD.date : "")));
+    }))), isFullBuild && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u25C9", tier === "anon" ? "Account" : "Account \xB7 " + (tier === "instructor" ? "instructor" : "student")), /* @__PURE__ */ React.createElement("div", { className: "mb-account" }, tier === "anon" ? /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-account-note" }, "Everything works without an account. Signing in only adds keeping: unlocks and progress follow you between devices."), /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary mb-signin-btn", onClick: () => {
+      setSigninMode("login");
+      mbPush("signin");
+    } }, "Sign in or create an account")) : /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-id" }, /* @__PURE__ */ React.createElement("span", { className: "mb-id-avatar", "aria-hidden": "true" }, "\u25C9"), /* @__PURE__ */ React.createElement("span", { className: "mb-id-main" }, /* @__PURE__ */ React.createElement("span", { className: "mb-id-email" }, auth.record && auth.record.email || "Signed in"), /* @__PURE__ */ React.createElement("span", { className: "mb-id-tier" }, tier === "instructor" ? "Instructor" : "Practice account")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-signout", onClick: () => {
+      setAuth(null);
+      setPage("practice");
+    } }, "Sign out"))))), /* @__PURE__ */ React.createElement("div", { className: "mb-stamp" }, BUILD.label || "COMPOSE", BUILD.version ? " \xB7 v" + BUILD.version : "", BUILD.date ? " \xB7 " + BUILD.date : "")));
   }
   function mbPageTitle() {
     if (page === "doc") return (DOC_PAGES.find((d) => d.path === docPath) || {}).title || "Guide & help";
@@ -12775,7 +12803,7 @@ function App() {
     const tabs = [
       { id: "derive", glyph: "\u22D4", label: "Derive" },
       { id: "exercises", glyph: "\u2630", label: "Exercises" },
-      { id: "reference", glyph: "\u274F", label: "Reference" },
+      { id: "reference", glyph: "\u{1D453}", label: "Reference" },
       { id: "menu", glyph: "\u22EF", label: "Menu" }
     ];
     return /* @__PURE__ */ React.createElement("div", { className: "mb-foot mb-foot-slim" }, /* @__PURE__ */ React.createElement("nav", { className: "mb-tabbar", role: "tablist", "aria-label": "Main tabs" }, tabs.map((tb) => {
