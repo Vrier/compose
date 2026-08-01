@@ -10,30 +10,28 @@ condition. Denotations are genuine typed λ-terms: the engine infers types,
 β-reduces, and recognises α-equivalent answers, so it grades *meaning*, not
 surface strings.
 
-**Use it now: [compose.tstephen.com](https://compose.tstephen.com)** — a
-bare starter with a sample worksheet (load any worksheet or bundle file as
-usual). Navigation is a left sidebar (worksheets, recents, display, help,
-account) with a ⌘K command palette; on phones it becomes a bottom tab bar.
-The built-in library lives at stable curated URLs — no login, no install;
-progress lives in the browser and is shared within each family. Accounts are
+**Use it now: [compose.tstephen.com](https://compose.tstephen.com)** — one
+app, one address. It opens with a sample worksheet; the whole built-in
+library loads on demand through fixed six-character **unlock codes** (typed
+into the app, or carried by `/?code=…` links and QR codes) — no login, no
+install; progress lives in the browser, in one store. Navigation is a left
+sidebar (worksheets, recents, author, display, help, account) with a ⌘K
+command palette; on phones it becomes a bottom tab bar. Accounts are
 optional: a free student account syncs progress across devices and redeems
-class **unlock codes**; an invite code makes an account an instructor
-account:
+class codes; an invite code makes an account an instructor account.
 
 | Entry point | Contents |
 |---|---|
-| [/cc](https://compose.tstephen.com/cc/) | Coppock & Champollion, *Invitation to Formal Semantics* — all worksheets |
-| /cc/ch6 … /cc/ch13 | single C&C chapters (§6–§8, §10–§13) |
-| [/hk](https://compose.tstephen.com/hk/) | Heim & Kratzer, *Semantics in Generative Grammar* — all worksheets |
-| /hk/ch1, ch2, ch4, ch5, ch6, ch7, ch9, ch12 | single H&K chapters |
-| [/papers](https://compose.tstephen.com/papers/) | classic papers — Partee 1986, Partee & Rooth 1983, Montague's PTQ (two parts), Davidson 1967, Krifka 1998, Barwise & Cooper 1981, Link 1983 |
-| /papers/partee, /papers/partee-rooth, /papers/ptq, /papers/davidson, /papers/krifka, /papers/barwise-cooper, /papers/link | one paper each |
-| [/editor](https://compose.tstephen.com/editor/) | author worksheets without an account; export .compose.json |
+| [compose.tstephen.com](https://compose.tstephen.com) | the app: demo worksheet, unlock codes, the editor (sidebar → Author), the whole library on demand |
+| [`/?code=KT6WF4`](https://compose.tstephen.com/?code=KT6WF4) | Coppock & Champollion, *Invitation to Formal Semantics* — all worksheets (per-chapter codes in the guide) |
+| [`/?code=CETGZ4`](https://compose.tstephen.com/?code=CETGZ4) | Heim & Kratzer, *Semantics in Generative Grammar* — all worksheets |
+| [`/?code=QIPYVM`](https://compose.tstephen.com/?code=QIPYVM) | classic papers — Partee 1986, Partee & Rooth 1983, Montague's PTQ (two parts), Davidson 1967, Krifka 1998, Barwise & Cooper 1981, Link 1983 |
 | [/files](https://compose.tstephen.com/files/) | every worksheet + bundle as downloadable .compose.json, plus the site map |
-| [/guide](https://compose.tstephen.com/guide/) | the instructor guide, with screenshots and the notes input reference |
+| [/guide](https://compose.tstephen.com/guide/) | the instructor guide, with screenshots, all the codes, and the notes input reference |
 | [/help](https://compose.tstephen.com/help/) | student help: rules, symbols, grading — plus [/help/guides](https://compose.tstephen.com/help/guides/), worked walkthroughs with videos |
 
-The full catalogue is listed on
+Old-style URLs (`/cc`, `/cc/ch7`, `/hk`, `/papers/...`, `/editor`) survive as
+redirects into the app. The full catalogue is listed on
 [compose.tstephen.com/about](https://compose.tstephen.com/about/).
 
 ## For instructors

@@ -90,27 +90,30 @@ const rootPage = assemblePage(parts, {
     'Practise compositional formal semantics in the browser: build derivations tree by tree with Function Application, Predicate Modification, type-shifting and more. Free, no login.', '/'),
 });
 
-/* ---- 3a · Public editor sandbox (S13.2) ---------------------------------
-   /editor — the full authoring surface with NO account and NO server side:
-   no SDK, no __COMPOSE_HOSTED__ context, so Save-to-server / fork / edit
-   never render; worksheets leave as .compose.json downloads.
-   Opens in teacher mode with the Getting Started sample (id gates in
-   app.jsx key off 'hosted-sandbox'). */
-const sandboxIdentityJS =
-  'window.COMPOSE_BUILD = ' + JSON.stringify({
-    id: 'hosted-sandbox', role: 'instructor', preload: 'none',
-    label: 'COMPOSE — Editor sandbox', version: COMPOSE_VERSION, date: COMPOSE_DATE,
-  }) + ';\n' +
-  'window.COMPOSE_CONFIG = ' + JSON.stringify({ role: 'instructor', assignment: null }) + ';';
-
-const sandboxPage = assemblePage(parts, {
-  title: 'COMPOSE — Editor sandbox',
-  identityJS: sandboxIdentityJS,
-  libraryJS: '',
-  extraHeadJS: qrLib,
-  headMeta: metaFor('COMPOSE — Editor sandbox',
-    'Author formal-semantics problem sets in the browser — lexicon, trees, live validation — and export them as JSON. No account needed.', '/editor/'),
-});
+/* ---- 3a · Redirect stubs (S44) -------------------------------------------
+   The curated library and the editor sandbox live IN the root app now. The
+   old entry points (/cc, /hk, /papers, 22 chapter pages, /editor) become
+   tiny redirect stubs — same pattern as the S40 /edit "moved" page — so
+   every old link, bookmark and printed QR still lands on the content, in
+   the app, with no account. The <!--compose-stub--> marker lets
+   scripts/check-links.mjs exclude stubs from the sitemap two-way check. */
+const stubPage = (title, dest) => `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<meta http-equiv="refresh" content="0; url=${dest}" />
+<title>${title} — COMPOSE</title>
+<script>location.replace(${JSON.stringify(dest)});</script>
+</head>
+<body>
+<!--compose-stub-->
+<p>This page moved into the app — <a href="${dest}">continue to COMPOSE</a>.</p>
+</body>
+</html>
+`;
+const sandboxPage = stubPage('Editor sandbox', '/?editor=1');
 
 /* ---- 3b · Curated library entry points (S13) ----------------------------
    Stable, linkable, static pages: whole textbook bundles and per-chapter
@@ -125,29 +128,18 @@ const pick = (prefixes) => {
 
 /* S43: the chapter tables + CURATED table live in build/curated-map.mjs,
    shared with scripts/gen-curated-codes.mjs (unlock-code registry) and
-   test/server.mjs. */
+   test/server.mjs. S44: each curated path now yields a redirect stub into
+   the app at /?code=<its fixed unlock code>. */
 const CURATED = curatedTable(Object.keys(LIB));
+const CODE_BY_KEY = {};
+try {
+  for (const e of JSON.parse(fs.readFileSync(path.join(SRC, 'curated-codes.json'), 'utf8')).entries || []) CODE_BY_KEY[e.key] = e.code;
+} catch (e) {}
 
 function curatedPage(entry) {
-  const files = {};
-  for (const k of entry.keys) files[k] = LIB[k];
-  const identity =
-    'window.COMPOSE_BUILD = ' + JSON.stringify({
-      id: 'hosted-lib-' + entry.path.replace(/\//g, '-'), role: 'student', preload: 'inline',
-      label: entry.title, version: COMPOSE_VERSION, date: COMPOSE_DATE,
-    }) + ';\n' +
-    'window.COMPOSE_CONFIG = ' + JSON.stringify({
-      role: 'student',
-      assignment: { title: entry.title, sets: entry.keys, island: entry.island, mode: 'practice' },
-    }) + ';';
-  return assemblePage(parts, {
-    title: 'COMPOSE — ' + entry.title,
-    identityJS: identity,
-    libraryJS: 'window.LC_FILES_INLINE = ' + JSON.stringify(files) + ';',
-    extraHeadJS: qrLib,
-    headMeta: metaFor('COMPOSE — ' + entry.title,
-      'Interactive problem sets: ' + entry.title + '. Compose derivations step by step with automatic grading — free, in the browser, no login.', '/' + entry.path + '/'),
-  });
+  const code = CODE_BY_KEY[entry.path];
+  if (!code) throw new Error('no curated code for ' + entry.path + ' — run scripts/gen-curated-codes.mjs');
+  return stubPage(entry.title, '/?code=' + code);
 }
 
 /* ---- 4 · The dashboard (standalone page, own script chain) ------------- */
@@ -202,19 +194,23 @@ answers are graded by <em>meaning</em> (α/β/η-equivalence), not surface form.
   url    = {https://compose.tstephen.com}
 }</div>
 <h2>The library</h2>
-<p>Stable entry points, each remembering your progress in the browser:</p>
+<p>Everything lives in one app at <a href="/">compose.tstephen.com</a>. The
+starter page opens with a sample worksheet; the built-in library loads on
+demand through fixed six-character <b>unlock codes</b> — enter one in the app
+("⊕ Unlock with a code"), or open its <code>/?code=…</code> link or QR, and
+the collection joins your sidebar. No account needed:</p>
 <ul>
-<li><a href="/">compose.tstephen.com</a> — the starter: one sample worksheet, load anything else from file</li>
-<li><a href="/cc/">/cc</a> — the full Coppock &amp; Champollion companion (§6–§13); per chapter:
-${CC_CHAPTERS.map(([pfx]) => '<a href="/cc/' + pfx + '/">/cc/' + pfx + '</a>').join(' · ')}</li>
-<li><a href="/hk/">/hk</a> — the Heim &amp; Kratzer companion; per chapter:
-${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk/' + pfx.replace('hk', 'ch') + '</a>').join(' · ')}</li>
-<li><a href="/papers/">/papers</a> — classic papers: <a href="/papers/partee/">/papers/partee</a> · <a href="/papers/partee-rooth/">/papers/partee-rooth</a> · <a href="/papers/ptq/">/papers/ptq</a> · <a href="/papers/davidson/">/papers/davidson</a> · <a href="/papers/krifka/">/papers/krifka</a> · <a href="/papers/barwise-cooper/">/papers/barwise-cooper</a> · <a href="/papers/link/">/papers/link</a></li>
-<li><a href="/editor/">/editor</a> — the editor sandbox: author worksheets and export them as JSON, no account needed (to host worksheets for a class, instructors sign in inside the app — see the <a href="/guide/">guide</a>)</li>
+<li><a href="/?code=${CODE_BY_KEY.cc}">Coppock &amp; Champollion companion</a> (§6–§13, all worksheets) — code <code>${CODE_BY_KEY.cc}</code></li>
+<li><a href="/?code=${CODE_BY_KEY.hk}">Heim &amp; Kratzer companion</a> — code <code>${CODE_BY_KEY.hk}</code></li>
+<li><a href="/?code=${CODE_BY_KEY.papers}">Classic papers</a> (Partee 1986, Partee &amp; Rooth 1983, Montague's PTQ, Davidson 1967, Krifka 1998, Barwise &amp; Cooper 1981, Link 1983) — code <code>${CODE_BY_KEY.papers}</code></li>
+<li>the worksheet editor is the app's <b>Author</b> section — author and export .compose.json worksheets without an account; to host worksheets for a class, instructors sign in — see the <a href="/guide/">guide</a></li>
 <li><a href="/files/">/files</a> — download every worksheet and bundle as .compose.json, plus the full site map</li>
-<li><a href="/guide/">/guide</a> — the instructor guide: what students see, authoring, and hosting your own course</li>
+<li><a href="/guide/">/guide</a> — the instructor guide: what students see, authoring, sharing codes, and hosting your own course (per-chapter codes are listed there)</li>
 <li><a href="/help/">/help</a> — student help: rules, symbols, grading, and worked derivation guides</li>
 </ul>
+<p>Older links (<code>/cc</code>, <code>/hk</code>, <code>/papers</code>, the
+chapter pages, <code>/editor</code>) still work: they forward into the app,
+unlocking the right content as they land.</p>
 <h2>Accounts</h2>
 <p>Everything above works without an account — including the library's own
 unlock codes: every built-in worksheet, chapter and collection has a fixed
@@ -271,7 +267,7 @@ self.addEventListener('fetch', (e) => {
   if (url.origin !== self.location.origin) return;
   const p = url.pathname;
   if (p.startsWith('/dash') || p.startsWith('/edit') || p.startsWith('/_') || p.startsWith('/api')) return;
-  const cacheable = p === '/' || p === '/index.html' || p.startsWith('/v/') || p.startsWith('/about') || p.startsWith('/cc') || p.startsWith('/hk') || p.startsWith('/papers') || p === '/manifest.json' || p === '/icon.svg';
+  const cacheable = p === '/' || p === '/index.html' || p.startsWith('/v/') || p.startsWith('/about') || p.startsWith('/files/worksheets/') || p === '/manifest.json' || p === '/icon.svg';
   if (!cacheable) return;
   e.respondWith((async () => {
     const cache = await caches.open(CACHE);
@@ -401,9 +397,10 @@ html, body { height: auto !important; overflow: auto !important; }
 <h2>Worksheet files</h2>
 <p>Every built-in worksheet is a plain <code>.compose.json</code> file — a
 self-contained problem set (domain, lexicon, rules, trees, targets, and the
-reading notes). Load one on <a href="/">the starter page</a>, adapt it in the
-<a href="/editor/">editor sandbox</a> (no account needed), or use it as the
-template for your own set. The format is documented in
+reading notes). These same files are what <a href="/">the app</a> loads when
+you unlock a collection with a code. Load one by hand on the starter page,
+adapt it in the app's <b>Author → Worksheet editor</b> (no account needed), or
+use it as the template for your own set. The format is documented in
 <a href="https://github.com/Vrier/compose/blob/main/compose/FORMAT.md">FORMAT.md</a>.</p>
 
 <h3>Whole-book bundles</h3>
@@ -419,19 +416,16 @@ ${OTHER_KEYS.length ? filesSection('Other worksheets', OTHER_KEYS) : ''}
 
 <h2>Site map</h2>
 <ul>
-<li><a href="/">/</a> — the starter: one sample worksheet, load any file</li>
-<li><a href="/cc/">/cc</a> — Coppock &amp; Champollion, whole book; chapters:
-${CC_CHAPTERS.map(([pfx]) => '<a href="/cc/' + pfx + '/">/cc/' + pfx + '</a>').join(' · ')}</li>
-<li><a href="/hk/">/hk</a> — Heim &amp; Kratzer, whole book; chapters:
-${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk/' + pfx.replace('hk', 'ch') + '</a>').join(' · ')}</li>
-<li><a href="/papers/">/papers</a> — <a href="/papers/partee/">/papers/partee</a> · <a href="/papers/partee-rooth/">/papers/partee-rooth</a> · <a href="/papers/ptq/">/papers/ptq</a> · <a href="/papers/davidson/">/papers/davidson</a> · <a href="/papers/krifka/">/papers/krifka</a> · <a href="/papers/barwise-cooper/">/papers/barwise-cooper</a> · <a href="/papers/link/">/papers/link</a></li>
-<li><a href="/guide/">/guide</a> — instructor guide with screenshots: navigation, authoring, hosting</li>
+<li><a href="/">/</a> — the app: sample worksheet, unlock codes, the whole library on demand</li>
+<li><a href="/?code=${CODE_BY_KEY.cc}">Coppock &amp; Champollion in the app</a> (code <code>${CODE_BY_KEY.cc}</code>) · <a href="/?code=${CODE_BY_KEY.hk}">Heim &amp; Kratzer</a> (code <code>${CODE_BY_KEY.hk}</code>) · <a href="/?code=${CODE_BY_KEY.papers}">Classic papers</a> (code <code>${CODE_BY_KEY.papers}</code>)</li>
+<li><a href="/guide/">/guide</a> — instructor guide with screenshots: navigation, authoring, sharing codes, hosting</li>
 <li><a href="/help/">/help</a> — student reference: rules, symbols, grading · <a href="/help/guides/">/help/guides</a> — worked walkthroughs</li>
-<li><a href="/editor/">/editor</a> — author worksheets without an account; export JSON</li>
 <li><a href="/dash/">/dash</a> — instructor dashboard (invite-code registration): host your own versions</li>
 <li><a href="/about/">/about</a> — citation, credits, and how COMPOSE works</li>
 <li><a href="/files/">/files</a> — this page</li>
 </ul>
+<p>Old bookmarks to /cc, /hk, /papers, their chapter pages and /editor
+redirect into the app and open the same content there.</p>
 
 <p class="about-foot">COMPOSE v${COMPOSE_VERSION} · <a href="/about/">how to cite</a> ·
 <a href="https://github.com/Vrier/compose">source on GitHub</a></p>
@@ -505,7 +499,9 @@ const helpGuidesPage = docPage({ title: 'Derivation guides', path: '/help/guides
 
 /* machine sitemap + robots (S14.1) */
 const SITE = 'https://compose.tstephen.com';
-const sitemapUrls = ['/', '/about/', '/files/', '/guide/', '/help/', '/help/guides/', '/editor/', ...CURATED.map((e) => '/' + e.path + '/')];
+// S44: the curated paths and /editor are noindex redirect stubs — only the
+// real documents stay in the sitemap.
+const sitemapUrls = ['/', '/about/', '/files/', '/guide/', '/help/', '/help/guides/'];
 const sitemapXml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
   + sitemapUrls.map((u) => '  <url><loc>' + SITE + u + '</loc></url>').join('\n') + '\n</urlset>\n';
 const robotsTxt = 'User-agent: *\nAllow: /\nDisallow: /dash/\nDisallow: /edit/\nDisallow: /_/\nSitemap: ' + SITE + '/sitemap.xml\n';

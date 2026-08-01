@@ -129,6 +129,19 @@ async function main() {
     fs.rmSync(tmpReg, { force: true });
     const rootHtml = fs.readFileSync(path.join(SERVER, 'pb_public', 'index.html'), 'utf8');
     expect('registry embedded in built pages (window.COMPOSE_CURATED)', rootHtml.includes('window.COMPOSE_CURATED'));
+    // S44 — single app entry: registry urls point INTO the app, the library
+    // manifest is embedded, and worksheet files remain byte-identical copies
+    // of compose/exercises (the app fetches them on demand).
+    expect('registry urls are app links (/?code=…, S44)',
+      entries.every((x) => typeof x.url === 'string' && x.url.startsWith('/?code=')));
+    expect('library manifest embedded (window.COMPOSE_LIBRARY, S44)', rootHtml.includes('window.COMPOSE_LIBRARY'));
+    expect('manifest carries the three families (S44)',
+      ['"key":"cc"', '"key":"hk"', '"key":"papers"'].every((n) => rootHtml.includes(n)));
+    expect('manifest lists §13 worksheets (S44)', rootHtml.includes('"ch13.1-worlds"'));
+    expect('/files/worksheets copies are byte-identical to compose/exercises (S44)',
+      wsKeys.every((k) =>
+        fs.readFileSync(path.join(SERVER, 'pb_public', 'files', 'worksheets', k + '.compose.json'), 'utf8')
+        === fs.readFileSync(path.join(ROOT, 'compose', 'exercises', k + '.compose.json'), 'utf8')));
   }
 
   // W2 — registration gating (register budget: 3 of 5)
@@ -269,7 +282,7 @@ async function main() {
   contains('service-worker registration shipped', page, 'serviceWorker.register');
   r = await req('GET', '/sw.js', { raw: true });
   expect('sw.js served', r.status === 200, r.status);
-  contains('sw cache name is versioned', r.text, "CACHE = 'compose-v1.1.0'");
+  contains('sw cache name is versioned', r.text, "CACHE = 'compose-v1.2.0'");
   contains('sw never touches dash/edit/admin/api', r.text, "p.startsWith('/dash') || p.startsWith('/edit') || p.startsWith('/_') || p.startsWith('/api')");
   r = await req('GET', '/manifest.json', { raw: true });
   contains('web manifest served', r.text, '"short_name": "COMPOSE"');
@@ -317,11 +330,12 @@ async function main() {
   // S37 — the scratchpad is a page in the shell (the modal chrome is gone)
   contains('root ships the scratchpad page (S37)', r.text, 'scratch-page');
   lacks('the scratchpad modal chrome is gone (S37)', r.text, 'scratch-modal');
+  // S44 — the standalone editor sandbox is a redirect stub into the app
   r = await req('GET', '/editor/', { raw: true });
-  contains('/editor identifies as the sandbox', r.text, '"id":"hosted-sandbox"');
-  contains('/editor is an instructor surface', r.text, '"role":"instructor"');
-  lacks('/editor has no hosted-version context', r.text, 'window.COMPOSE_HOSTED = ');
-  lacks('/editor does not ship the PocketBase SDK', r.text, 'class ClientResponseError');
+  contains('/editor is a redirect stub (S44)', r.text, '<!--compose-stub-->');
+  contains('/editor stub points at the in-app editor (S44)', r.text, '/?editor=1');
+  lacks('/editor no longer ships the sandbox app (S44)', r.text, '"id":"hosted-sandbox"');
+  contains('root ships the ?editor entry effect (S44)', (await req('GET', '/', { raw: true })).text, 'editor=1');
   // S39 — exercise-HTML export removed: the tokenized template is no longer
   // published at /template.html (the SPA fallback may answer 200 with the
   // root page, so assert on content, not status), and no build embeds an
@@ -337,29 +351,22 @@ async function main() {
     ok('teacher dist has no HTML importer (S39)', !t.includes('importHtmlFile'), 'unexpected importHtmlFile');
   }
 
-  r = await req('GET', '/cc/', { raw: true });
-  contains('/cc carries §7 content', r.text, '"ch7.1-adj":{');
-  contains('/cc carries §13 content', r.text, '"ch13.1-worlds":{');
-  contains('/cc shares the lib-cc island', r.text, '"island":"lib-cc"');
-  contains('/cc carries its canonical (S15)', r.text, 'canonical" href="https://compose.tstephen.com/cc/"');
-  r = await req('GET', '/cc/ch7/', { raw: true });
-  contains('/cc/ch7 carries §7', r.text, '"ch7.1-adj":{');
-  lacks('/cc/ch7 does NOT carry §6', r.text, '"ch6.1-fa":{');
-  contains('/cc/ch7 shares the lib-cc island', r.text, '"island":"lib-cc"');
-  r = await req('GET', '/hk/ch2/', { raw: true });
-  contains('/hk/ch2 carries H&K ch2', r.text, '"hk2-fa":{');
-  lacks('/hk/ch2 does NOT carry ch4', r.text, '"hk4-definites":{');
-  r = await req('GET', '/papers/ptq/', { raw: true });
-  contains('/papers/ptq carries Part A', r.text, '"montague-ptq":{');
-  contains('/papers/ptq carries the intensional Part B (S19)', r.text, '"montague-ptq-int":{');
-  r = await req('GET', '/papers/krifka/', { raw: true });
-  contains('/papers/krifka carries the telicity worksheet (S20)', r.text, '"krifka-telicity":{');
-  r = await req('GET', '/papers/davidson/', { raw: true });
-  contains('/papers/davidson carries the events worksheet (S21)', r.text, '"davidson-events":{');
-  r = await req('GET', '/papers/partee-rooth/', { raw: true });
-  contains('/papers/partee-rooth carries generalized conjunction (S21)', r.text, '"partee-rooth-conj":{');
-  r = await req('GET', '/papers/barwise-cooper/', { raw: true });
-  contains('/papers/barwise-cooper carries the GQ worksheet (S22)', r.text, '"barwise-cooper":{');
+  // S13 → S44 — the 25 curated pages are now tiny redirect stubs: every old
+  // link/QR forwards into the app at /?code=<that set's fixed code>, and no
+  // stub inlines worksheet content any more. Sweep them ALL against the
+  // registry so coverage stays equivalent to the old per-page checks.
+  {
+    const reg = JSON.parse(fs.readFileSync(path.join(ROOT, 'compose', 'curated-codes.json'), 'utf8')).entries;
+    const pageEntries = reg.filter((e) => e.kind === 'chapter' || e.kind === 'family');
+    expect('registry covers all 25 curated paths', pageEntries.length === 25, pageEntries.length);
+    for (const e of pageEntries) {
+      const rr = await req('GET', '/' + e.key + '/', { raw: true });
+      const okStub = rr.status === 200 && rr.text.includes('<!--compose-stub-->')
+        && rr.text.includes('/?code=' + e.code) && !rr.text.includes('window.LC_FILES_INLINE');
+      expect('/' + e.key + '/ is a stub → /?code=' + e.code + ' (S44)', okStub,
+        'status ' + rr.status + ': ' + rr.text.slice(0, 120));
+    }
+  }
   r = await req('GET', '/dash/', { raw: true });
   contains('/dash offers the invite-code contact (S26)', r.text, 'tmurrays@tcd.ie');
   contains('/dash links back to the site (S26)', r.text, 'dash-back');
@@ -381,13 +388,6 @@ async function main() {
     r = await req('GET', ep, { raw: true, noRedirect: true });
     ok('unauthenticated ' + ep + ' rejected', r.status === 401 || r.status === 403 || r.status === 404, 'status ' + r.status);
   }
-  r = await req('GET', '/papers/link/', { raw: true });
-  contains('/papers/link carries the plurals worksheet (S22)', r.text, '"link-plurals":{');
-  lacks('/papers/link does NOT carry linguistics prefixes beyond its own', r.text, '"barwise-cooper":{');
-  r = await req('GET', '/papers/partee/', { raw: true });
-  lacks('/papers/partee is the triangle only (S21)', r.text, '"partee-rooth-conj":{');
-  contains('/papers/partee carries Partee', r.text, '"partee-triangle":{');
-  lacks('/papers/partee does NOT carry PTQ', r.text, '"montague-ptq":{');
   r = await req('GET', '/CC', { raw: true, noRedirect: true });
   ok('uppercase /CC redirects', r.status === 302 && r.headers.get('location') === '/cc/',
     `expected 302 -> /cc/, got ${r.status} -> ${r.headers.get('location')}`);
@@ -395,7 +395,8 @@ async function main() {
   ok('uppercase /HK/ch2 redirects', r.status === 302 && r.headers.get('location') === '/hk/ch2',
     `expected 302 -> /hk/ch2, got ${r.status} -> ${r.headers.get('location')}`);
   r = await req('GET', '/sw.js', { raw: true });
-  contains('sw caches the curated families', r.text, "p.startsWith('/cc')");
+  contains('sw caches the on-demand worksheet files (S44)', r.text, "p.startsWith('/files/worksheets/')");
+  lacks('sw no longer caches the retired curated pages (S44)', r.text, "p.startsWith('/cc')");
 
   // S14.1 — files page, downloads, machine sitemap
   r = await req('GET', '/files/', { raw: true });
@@ -420,7 +421,9 @@ async function main() {
   r = await req('GET', '/guide/student-view.jpg', { raw: true });
   expect('guide screenshot serves', r.status === 200, r.status);
   r = await req('GET', '/sitemap.xml', { raw: true });
-  contains('sitemap lists curated pages', r.text, '<loc>https://compose.tstephen.com/cc/ch7/</loc>');
+  lacks('sitemap no longer lists the stubbed curated pages (S44)', r.text, '/cc/ch7/</loc>');
+  lacks('sitemap no longer lists the stubbed editor (S44)', r.text, '/editor/</loc>');
+  contains('sitemap keeps the real documents', r.text, '<loc>https://compose.tstephen.com/guide/</loc>');
   r = await req('GET', '/robots.txt', { raw: true });
   contains('robots exists and points at the sitemap', r.text, 'Sitemap: https://compose.tstephen.com/sitemap.xml');
   lacks('robots keeps crawlers out of the dash', r.text, 'Allow: /dash');
@@ -428,7 +431,8 @@ async function main() {
   // W9 — about page (S8)
   r = await req('GET', '/about/', { raw: true });
   contains('about page serves', r.text, 'How to cite');
-  contains('about page carries the canonical version', r.text, 'version 1.1.0');
+  contains('about page carries the canonical version', r.text, 'version 1.2.0');
+  contains('about page shares the family codes as app links (S44)', r.text, '/?code=KT6WF4');
   contains('about page states what accounts store (N7)', r.text, 'password hash');
 
   // N0 (§11) — student accounts, unlock codes, enrollments, progress, drafts

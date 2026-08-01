@@ -6,329 +6,329 @@
       "kind": "worksheet",
       "key": "barwise-cooper",
       "title": "Barwise & Cooper 1981 — Generalized Quantifiers and Natural Language",
-      "url": "/papers/barwise-cooper/?ws=barwise-cooper"
+      "url": "/?code=VRAQC9"
     },
     {
       "code": "ZTVEGQ",
       "kind": "worksheet",
       "key": "ch6.1-fa",
       "title": "Function Application (§6.1–6.3)",
-      "url": "/cc/ch6/?ws=ch6.1-fa"
+      "url": "/?code=ZTVEGQ"
     },
     {
       "code": "6U82QI",
       "kind": "worksheet",
       "key": "ch6.2-quant",
       "title": "Quantifiers (§6.4)",
-      "url": "/cc/ch6/?ws=ch6.2-quant"
+      "url": "/?code=6U82QI"
     },
     {
       "code": "MQ6GK7",
       "kind": "worksheet",
       "key": "ch7.1-adj",
       "title": "Adjectives & Predicate Modification (§7.2)",
-      "url": "/cc/ch7/?ws=ch7.1-adj"
+      "url": "/?code=MQ6GK7"
     },
     {
       "code": "H4YJ6X",
       "kind": "worksheet",
       "key": "ch7.2-adjts",
       "title": "Adjective Type-Shifting: MOD (§7.2)",
-      "url": "/cc/ch7/?ws=ch7.2-adjts"
+      "url": "/?code=H4YJ6X"
     },
     {
       "code": "E7Z6MQ",
       "kind": "worksheet",
       "key": "ch7.3-relcl",
       "title": "Relative Clauses (§7.3)",
-      "url": "/cc/ch7/?ws=ch7.3-relcl"
+      "url": "/?code=E7Z6MQ"
     },
     {
       "code": "RRJ87W",
       "kind": "worksheet",
       "key": "ch7.4-objraise",
       "title": "Quantifiers in Object Position (§7.4)",
-      "url": "/cc/ch7/?ws=ch7.4-objraise"
+      "url": "/?code=RRJ87W"
     },
     {
       "code": "SEEXIN",
       "kind": "worksheet",
       "key": "ch7.5-objts",
       "title": "Object Type-Shifting: RaiseO/S (§7.4.2)",
-      "url": "/cc/ch7/?ws=ch7.5-objts"
+      "url": "/?code=SEEXIN"
     },
     {
       "code": "WWRUTM",
       "kind": "worksheet",
       "key": "ch7.6-pron",
       "title": "Pronouns & Binding (§7.5)",
-      "url": "/cc/ch7/?ws=ch7.6-pron"
+      "url": "/?code=WWRUTM"
     },
     {
       "code": "PCAJPS",
       "kind": "worksheet",
       "key": "ch8.1-defn",
       "title": "Definite Descriptions (§8.1–8.2)",
-      "url": "/cc/ch8/?ws=ch8.1-defn"
+      "url": "/?code=PCAJPS"
     },
     {
       "code": "NAUB67",
       "kind": "worksheet",
       "key": "ch8.4-definedness",
       "title": "Definedness Conditions: the ∂ operator (§8.4)",
-      "url": "/cc/ch8/?ws=ch8.4-definedness"
+      "url": "/?code=NAUB67"
     },
     {
       "code": "YJB8SZ",
       "kind": "worksheet",
       "key": "ch10-coord",
       "title": "10.1 Coordination",
-      "url": "/cc/ch10/?ws=ch10-coord"
+      "url": "/?code=YJB8SZ"
     },
     {
       "code": "FHM2JD",
       "kind": "worksheet",
       "key": "ch10-cumulative",
       "title": "10.4 Cumulative Readings",
-      "url": "/cc/ch10/?ws=ch10-cumulative"
+      "url": "/?code=FHM2JD"
     },
     {
       "code": "M7G23G",
       "kind": "worksheet",
       "key": "ch10-lift",
       "title": "10.1 DP Coordination & Montague Lift",
-      "url": "/cc/ch10/?ws=ch10-lift"
+      "url": "/?code=M7G23G"
     },
     {
       "code": "JYHINY",
       "kind": "worksheet",
       "key": "ch10-mereology",
       "title": "10.2 Mereology — Sums and Parthood",
-      "url": "/cc/ch10/?ws=ch10-mereology"
+      "url": "/?code=JYHINY"
     },
     {
       "code": "4YPCFY",
       "kind": "worksheet",
       "key": "ch10-plural",
       "title": "10.3 Plurals & the Star Operator",
-      "url": "/cc/ch10/?ws=ch10-plural"
+      "url": "/?code=4YPCFY"
     },
     {
       "code": "PH72N8",
       "kind": "worksheet",
       "key": "ch10.5-fragment",
       "title": "10.5 The Full Fragment (L∗ with starred verbs)",
-      "url": "/cc/ch10/?ws=ch10.5-fragment"
+      "url": "/?code=PH72N8"
     },
     {
       "code": "HNAWBH",
       "kind": "worksheet",
       "key": "ch11.1-dav",
       "title": "Davidsonian Event Semantics (§11.1–11.2)",
-      "url": "/cc/ch11/?ws=ch11.1-dav"
+      "url": "/?code=HNAWBH"
     },
     {
       "code": "E4BW35",
       "kind": "worksheet",
       "key": "ch11.3-neodav",
       "title": "Neo-Davidsonian Event Semantics (§11.3)",
-      "url": "/cc/ch11/?ws=ch11.3-neodav"
+      "url": "/?code=E4BW35"
     },
     {
       "code": "M8IYND",
       "kind": "worksheet",
       "key": "ch11.4-continuation",
       "title": "Event Quantifiers — the Continuation Approach (§11.4–11.6)",
-      "url": "/cc/ch11/?ws=ch11.4-continuation"
+      "url": "/?code=M8IYND"
     },
     {
       "code": "XNX2G4",
       "kind": "worksheet",
       "key": "ch11.5-conjneg",
       "title": "Conjunction & Negation in Event Semantics (§11.5–11.6)",
-      "url": "/cc/ch11/?ws=ch11.5-conjneg"
+      "url": "/?code=XNX2G4"
     },
     {
       "code": "4TC5QP",
       "kind": "worksheet",
       "key": "ch12.1-times",
       "title": "Tense (§12.2.2.4)",
-      "url": "/cc/ch12/?ws=ch12.1-times"
+      "url": "/?code=4TC5QP"
     },
     {
       "code": "X9TFD7",
       "kind": "worksheet",
       "key": "ch12.2-aspects",
       "title": "The Perfect (§12.2.2.5)",
-      "url": "/cc/ch12/?ws=ch12.2-aspects"
+      "url": "/?code=X9TFD7"
     },
     {
       "code": "KF6257",
       "kind": "worksheet",
       "key": "ch12.3-future",
       "title": "The Future: WOLL, will & would (§12.2.2.4)",
-      "url": "/cc/ch12/?ws=ch12.3-future"
+      "url": "/?code=KF6257"
     },
     {
       "code": "RDH6BD",
       "kind": "worksheet",
       "key": "ch13.1-worlds",
       "title": "World-Indexed Predicates (§13.4)",
-      "url": "/cc/ch13/?ws=ch13.1-worlds"
+      "url": "/?code=RDH6BD"
     },
     {
       "code": "M5M2YF",
       "kind": "worksheet",
       "key": "ch13.2-modals",
       "title": "Modals: Necessity & Possibility (§13.4.4)",
-      "url": "/cc/ch13/?ws=ch13.2-modals"
+      "url": "/?code=M5M2YF"
     },
     {
       "code": "GCJDRA",
       "kind": "worksheet",
       "key": "ch13.3-intensional",
       "title": "Intensional Transitive Verbs (§13.4.4)",
-      "url": "/cc/ch13/?ws=ch13.3-intensional"
+      "url": "/?code=GCJDRA"
     },
     {
       "code": "XSFRSG",
       "kind": "worksheet",
       "key": "ch13.4-attitudes",
       "title": "Propositional Attitudes (§13.5.2)",
-      "url": "/cc/ch13/?ws=ch13.4-attitudes"
+      "url": "/?code=XSFRSG"
     },
     {
       "code": "IESWEU",
       "kind": "worksheet",
       "key": "ch13.5-dere",
       "title": "De dicto vs. De re (§13.6)",
-      "url": "/cc/ch13/?ws=ch13.5-dere"
+      "url": "/?code=IESWEU"
     },
     {
       "code": "KWBI86",
       "kind": "worksheet",
       "key": "ch13.6-worlds-times",
       "title": "Worlds & Times Combined (§12–13)",
-      "url": "/cc/ch13/?ws=ch13.6-worlds-times"
+      "url": "/?code=KWBI86"
     },
     {
       "code": "MVBT2Q",
       "kind": "worksheet",
       "key": "ch13.7-haveto",
       "title": "Contextual Modal Base & Presupposition: have to (§13.5.1)",
-      "url": "/cc/ch13/?ws=ch13.7-haveto"
+      "url": "/?code=MVBT2Q"
     },
     {
       "code": "KSVNS2",
       "kind": "worksheet",
       "key": "davidson-events",
       "title": "Davidson 1967 — The Logical Form of Action Sentences",
-      "url": "/papers/davidson/?ws=davidson-events"
+      "url": "/?code=KSVNS2"
     },
     {
       "code": "KR8IQT",
       "kind": "worksheet",
       "key": "hk1-conventions",
       "title": "Conventions: Types, ⟦·⟧, and =1 (§1)",
-      "url": "/hk/ch1/?ws=hk1-conventions"
+      "url": "/?code=KR8IQT"
     },
     {
       "code": "VWX3ZX",
       "kind": "worksheet",
       "key": "hk2-fa",
       "title": "Function Application & Semantic Types (§2.1–2.4)",
-      "url": "/hk/ch2/?ws=hk2-fa"
+      "url": "/?code=VWX3ZX"
     },
     {
       "code": "26JYAT",
       "kind": "worksheet",
       "key": "hk4-definites",
       "title": "Predicates, Modifiers & the Definite Article (§4.3–4.5)",
-      "url": "/hk/ch4/?ws=hk4-definites"
+      "url": "/?code=26JYAT"
     },
     {
       "code": "X4K47C",
       "kind": "worksheet",
       "key": "hk5-relatives",
       "title": "Relative Clauses & Predicate Abstraction (§5.1–5.3)",
-      "url": "/hk/ch5/?ws=hk5-relatives"
+      "url": "/?code=X4K47C"
     },
     {
       "code": "N58GCN",
       "kind": "worksheet",
       "key": "hk6-quantifiers",
       "title": "Quantifiers: Their Semantic Type (§6.3–6.7)",
-      "url": "/hk/ch6/?ws=hk6-quantifiers"
+      "url": "/?code=N58GCN"
     },
     {
       "code": "X3BK7F",
       "kind": "worksheet",
       "key": "hk7-quantification",
       "title": "Quantification & Grammar (§7.1–7.5)",
-      "url": "/hk/ch7/?ws=hk7-quantification"
+      "url": "/?code=X3BK7F"
     },
     {
       "code": "4PCZHW",
       "kind": "worksheet",
       "key": "hk9-pronouns",
       "title": "Bound & Referential Pronouns (§9.1–9.2)",
-      "url": "/hk/ch9/?ws=hk9-pronouns"
+      "url": "/?code=4PCZHW"
     },
     {
       "code": "AVZ5MK",
       "kind": "worksheet",
       "key": "hk12-intensions",
       "title": "First Steps Towards an Intensional Semantics (§12.1–12.3)",
-      "url": "/hk/ch12/?ws=hk12-intensions"
+      "url": "/?code=AVZ5MK"
     },
     {
       "code": "XVCBZZ",
       "kind": "worksheet",
       "key": "krifka-telicity",
       "title": "Krifka 1998 — The Origins of Telicity",
-      "url": "/papers/krifka/?ws=krifka-telicity"
+      "url": "/?code=XVCBZZ"
     },
     {
       "code": "UNGUKK",
       "kind": "worksheet",
       "key": "link-plurals",
       "title": "Link 1983 — The Logical Analysis of Plurals and Mass Terms",
-      "url": "/papers/link/?ws=link-plurals"
+      "url": "/?code=UNGUKK"
     },
     {
       "code": "2HUWTH",
       "kind": "worksheet",
       "key": "montague-ptq",
       "title": "Montague's PTQ · A — The Extensional Core",
-      "url": "/papers/ptq/?ws=montague-ptq"
+      "url": "/?code=2HUWTH"
     },
     {
       "code": "K8PCPI",
       "kind": "worksheet",
       "key": "montague-ptq-int",
       "title": "Montague's PTQ · B — The Intensional Fragment (TY2)",
-      "url": "/papers/ptq/?ws=montague-ptq-int"
+      "url": "/?code=K8PCPI"
     },
     {
       "code": "KRAW8V",
       "kind": "worksheet",
       "key": "partee-rooth-conj",
       "title": "Partee & Rooth 1983 — Generalized Conjunction",
-      "url": "/papers/partee-rooth/?ws=partee-rooth-conj"
+      "url": "/?code=KRAW8V"
     },
     {
       "code": "6GEFQ4",
       "kind": "worksheet",
       "key": "partee-triangle",
       "title": "Partee 1986 — The Type-Shifting Triangle",
-      "url": "/papers/partee/?ws=partee-triangle"
+      "url": "/?code=6GEFQ4"
     },
     {
       "code": "DXKHFU",
       "kind": "chapter",
       "key": "cc/ch6",
       "title": "C&C §6 Function Application & Quantifiers",
-      "url": "/cc/ch6/",
+      "url": "/?code=DXKHFU",
       "prefix": "ch6"
     },
     {
@@ -336,7 +336,7 @@
       "kind": "chapter",
       "key": "cc/ch7",
       "title": "C&C §7 Adjectives, Relatives & Pronouns",
-      "url": "/cc/ch7/",
+      "url": "/?code=QI753D",
       "prefix": "ch7"
     },
     {
@@ -344,7 +344,7 @@
       "kind": "chapter",
       "key": "cc/ch8",
       "title": "C&C §8 Definites & Possessives",
-      "url": "/cc/ch8/",
+      "url": "/?code=U9INJS",
       "prefix": "ch8"
     },
     {
@@ -352,7 +352,7 @@
       "kind": "chapter",
       "key": "cc/ch10",
       "title": "C&C §10 Coordination & Plurals",
-      "url": "/cc/ch10/",
+      "url": "/?code=JV5NKN",
       "prefix": "ch10"
     },
     {
@@ -360,7 +360,7 @@
       "kind": "chapter",
       "key": "cc/ch11",
       "title": "C&C §11 Event Semantics",
-      "url": "/cc/ch11/",
+      "url": "/?code=F7Q8Y7",
       "prefix": "ch11"
     },
     {
@@ -368,7 +368,7 @@
       "kind": "chapter",
       "key": "cc/ch12",
       "title": "C&C §12 Tense & Aspect",
-      "url": "/cc/ch12/",
+      "url": "/?code=7N7UWF",
       "prefix": "ch12"
     },
     {
@@ -376,7 +376,7 @@
       "kind": "chapter",
       "key": "cc/ch13",
       "title": "C&C §13 Intensional Semantics",
-      "url": "/cc/ch13/",
+      "url": "/?code=VYDXIG",
       "prefix": "ch13"
     },
     {
@@ -384,126 +384,126 @@
       "kind": "chapter",
       "key": "hk/ch1",
       "title": "H&K ch. 1 Conventions",
-      "url": "/hk/ch1/"
+      "url": "/?code=2U95R2"
     },
     {
       "code": "IWAHYZ",
       "kind": "chapter",
       "key": "hk/ch2",
       "title": "H&K ch. 2 Function Application",
-      "url": "/hk/ch2/"
+      "url": "/?code=IWAHYZ"
     },
     {
       "code": "YPEQCQ",
       "kind": "chapter",
       "key": "hk/ch4",
       "title": "H&K ch. 4 Definites",
-      "url": "/hk/ch4/"
+      "url": "/?code=YPEQCQ"
     },
     {
       "code": "8IIRCE",
       "kind": "chapter",
       "key": "hk/ch5",
       "title": "H&K ch. 5 Relative Clauses",
-      "url": "/hk/ch5/"
+      "url": "/?code=8IIRCE"
     },
     {
       "code": "3FCWXC",
       "kind": "chapter",
       "key": "hk/ch6",
       "title": "H&K ch. 6 Quantifiers",
-      "url": "/hk/ch6/"
+      "url": "/?code=3FCWXC"
     },
     {
       "code": "AUY39C",
       "kind": "chapter",
       "key": "hk/ch7",
       "title": "H&K ch. 7 Quantification",
-      "url": "/hk/ch7/"
+      "url": "/?code=AUY39C"
     },
     {
       "code": "C64QMV",
       "kind": "chapter",
       "key": "hk/ch9",
       "title": "H&K ch. 9 Pronouns",
-      "url": "/hk/ch9/"
+      "url": "/?code=C64QMV"
     },
     {
       "code": "R53MVA",
       "kind": "chapter",
       "key": "hk/ch12",
       "title": "H&K ch. 12 Intensions",
-      "url": "/hk/ch12/"
+      "url": "/?code=R53MVA"
     },
     {
       "code": "4UV9HE",
       "kind": "chapter",
       "key": "papers/partee",
       "title": "Partee 1986 — The Type-Shifting Triangle",
-      "url": "/papers/partee/"
+      "url": "/?code=4UV9HE"
     },
     {
       "code": "JKTYCU",
       "kind": "chapter",
       "key": "papers/ptq",
       "title": "Montague 1973 — PTQ",
-      "url": "/papers/ptq/"
+      "url": "/?code=JKTYCU"
     },
     {
       "code": "QGAWIZ",
       "kind": "chapter",
       "key": "papers/krifka",
       "title": "Krifka 1998 — The Origins of Telicity",
-      "url": "/papers/krifka/"
+      "url": "/?code=QGAWIZ"
     },
     {
       "code": "TRGU6C",
       "kind": "chapter",
       "key": "papers/davidson",
       "title": "Davidson 1967 — Action Sentences",
-      "url": "/papers/davidson/"
+      "url": "/?code=TRGU6C"
     },
     {
       "code": "3IKHNW",
       "kind": "chapter",
       "key": "papers/partee-rooth",
       "title": "Partee & Rooth 1983 — Generalized Conjunction",
-      "url": "/papers/partee-rooth/"
+      "url": "/?code=3IKHNW"
     },
     {
       "code": "Y97C9T",
       "kind": "chapter",
       "key": "papers/barwise-cooper",
       "title": "Barwise & Cooper 1981 — Generalized Quantifiers",
-      "url": "/papers/barwise-cooper/"
+      "url": "/?code=Y97C9T"
     },
     {
       "code": "SBG4MN",
       "kind": "chapter",
       "key": "papers/link",
       "title": "Link 1983 — Plurals and Mass Terms",
-      "url": "/papers/link/"
+      "url": "/?code=SBG4MN"
     },
     {
       "code": "KT6WF4",
       "kind": "family",
       "key": "cc",
       "title": "Coppock & Champollion — Invitation to Formal Semantics",
-      "url": "/cc/"
+      "url": "/?code=KT6WF4"
     },
     {
       "code": "CETGZ4",
       "kind": "family",
       "key": "hk",
       "title": "Heim & Kratzer — Semantics in Generative Grammar",
-      "url": "/hk/"
+      "url": "/?code=CETGZ4"
     },
     {
       "code": "QIPYVM",
       "kind": "family",
       "key": "papers",
       "title": "Classic Papers",
-      "url": "/papers/"
+      "url": "/?code=QIPYVM"
     }
   ]
 }

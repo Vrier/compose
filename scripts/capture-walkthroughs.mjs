@@ -16,8 +16,9 @@
      first  — demo "Frodo runs": NN, NN, then FA typing run(f)
      tv     — demo, switching to "Frodo greets Gandalf" in the drill-in
               exercises column; FA at VP (object first), FA at S
-     pm     — /cc/ch7 "mischievous hobbit": the first-visit reference panel
-              opens on Rules; FA refused with the reason, then PM
+     pm     — "mischievous hobbit" (ch7.1-adj, opened in the root app via
+              its unlock code — S44): the first-visit reference panel opens
+              on Rules; FA refused with the reason, then PM
      editor — sidebar Author → the editor PAGE: title, two lexicon rows, a
               tree with the live ✓ badge, ▶ Load into app  (for /guide)
      host   — THROWAWAY local PocketBase: in-app sign-in → My versions →
@@ -247,7 +248,12 @@ if (SCENE === 'first') {
   await solve('S', 'FA', 'greet(f,g)');
   await rec(14);
 } else if (SCENE === 'pm') {
-  await page.goto(B + '/cc/ch7/', { waitUntil: 'networkidle2' });
+  // S44: the curated pages are redirect stubs — open the worksheet in the
+  // root app through its fixed unlock code (fetches ch7.1-adj on demand).
+  const reg = JSON.parse(fs.readFileSync('compose/curated-codes.json', 'utf8')).entries;
+  const wsAdj = reg.find((e) => e.kind === 'worksheet' && e.key === 'ch7.1-adj');
+  await page.goto(B + '/?code=' + wsAdj.code, { waitUntil: 'networkidle2' });
+  await page.waitForFunction(() => (localStorage.getItem('build-hosted-root:lc2-file') || '').includes('ch7.1-adj'), { timeout: 20000 });
   await new Promise((r) => setTimeout(r, 1100));
   await installCursor();
   await rec(14);                           // first visit: the panel opens on the Rules tab — linger
@@ -263,7 +269,9 @@ if (SCENE === 'first') {
   await submit();
   await rec(14);
 } else if (SCENE === 'editor') {
-  await page.goto(B + '/editor/', { waitUntil: 'networkidle2' });
+  // S44: /editor/ is a stub that opens the editor straight away — start on
+  // the root instead so the scene still shows the sidebar Author route.
+  await page.goto(B + '/', { waitUntil: 'networkidle2' });
   await new Promise((r) => setTimeout(r, 1000));
   await installCursor();
   await rec(4);

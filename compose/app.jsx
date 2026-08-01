@@ -387,6 +387,73 @@ function composeWriteUnlocked(list) {
   try { window.localStorage.setItem('lc2-unlocked', JSON.stringify(list)); } catch (e) {}
 }
 
+/* ===========================================================================
+   S44 — single app entry: the curated library is loaded ON DEMAND.
+   window.COMPOSE_LIBRARY (build/assemble.mjs) is the manifest: families →
+   chapters → worksheet keys+titles. Worksheet content is fetched from
+   /files/worksheets/<key>.compose.json (byte-identical to compose/exercises,
+   served static) and parsed through the same LCData.loadText path user files
+   and class bundles use. The old /cc /hk /papers pages are redirect stubs.
+   =========================================================================== */
+function composeLibraryFamilies() {
+  return (typeof window !== 'undefined' && window.COMPOSE_LIBRARY && Array.isArray(window.COMPOSE_LIBRARY.families))
+    ? window.COMPOSE_LIBRARY.families : [];
+}
+/* Worksheet keys covered by a registry entry (worksheet | chapter | family). */
+function composeCuratedScopeKeys(entry) {
+  if (!entry) return [];
+  if (entry.kind === 'worksheet') return [entry.key];
+  const fams = composeLibraryFamilies();
+  if (entry.kind === 'chapter') {
+    for (const f of fams) {
+      const ch = (f.chapters || []).find((c) => c.key === entry.key);
+      if (ch) return (ch.worksheets || []).map((w) => w.key);
+    }
+    return [];
+  }
+  const f = fams.find((x) => x.key === entry.key);
+  return f ? (f.chapters || []).flatMap((c) => (c.worksheets || []).map((w) => w.key)) : [];
+}
+function composePapersKeySet() {
+  const f = composeLibraryFamilies().find((x) => x.key === 'papers');
+  return new Set(f ? (f.chapters || []).flatMap((c) => (c.worksheets || []).map((w) => w.key)) : []);
+}
+
+/* ---------------------------------------------------------------------------
+   S44 — one-time progress migration. Before consolidation the curated pages
+   kept ISOLATED island stores (localStorage prefixes lib-cc: / lib-hk: /
+   lib-papers:, see curated-map.mjs); the root app now hosts that content, so
+   on first load we copy each island's per-derivation progress (and saved
+   work) into the root store — only where the root store has NO entry — then
+   set an un-namespaced flag. Old stores are left in place (harmless; /?code
+   stubs no longer serve them). Signed-in sync and /v islands are untouched.
+--------------------------------------------------------------------------- */
+(function composeMigrateIslands() {
+  try {
+    if (typeof window === 'undefined' || !window.localStorage) return;
+    const bid = (window.COMPOSE_BUILD && window.COMPOSE_BUILD.id) || '';
+    if (bid !== 'hosted-root') return;
+    if (localStorage.getItem('lc2-migrated-islands')) return;
+    const islands = ['lib-cc', 'lib-hk', 'lib-papers'];
+    ['lc2-progress', 'lc2-work'].forEach((what) => {
+      let root = {};
+      try { root = JSON.parse(localStorage.getItem(LC_NS + what) || 'null') || {}; } catch (e) { root = {}; }
+      if (typeof root !== 'object' || Array.isArray(root)) root = {};
+      let changed = false;
+      islands.forEach((isl) => {
+        let old = null;
+        try { old = JSON.parse(localStorage.getItem(isl + ':' + what) || 'null'); } catch (e) {}
+        if (!old || typeof old !== 'object' || Array.isArray(old)) return;
+        Object.keys(old).forEach((k) => {
+          if (!(k in root)) { root[k] = old[k]; changed = true; }
+        });
+      });
+      if (changed) localStorage.setItem(LC_NS + what, JSON.stringify(root));
+    });
+    localStorage.setItem('lc2-migrated-islands', '1');
+  } catch (e) {}
+})();
+
 /* ---- Curated code + QR dialog (S43) ---------------------------------------
    One dialog for every registry entry — a worksheet's footer buttons, a
    chapter's ⌗ on the collection heading, a family's ⌗ on the Full-library
@@ -990,9 +1057,14 @@ function App() {
   const [theme, setTheme] = useState(() => load('lc2-theme', 'parchment'));
   const [userFiles, setUserFiles] = useState(() => load('lc2-userfiles', [])); // [{key,title,text}]
   const [bundles, setBundles] = useState(() => load('lc2-bundles', [])); // [{id,title,chapters,sets:[{key,title,text}]}]
+  // S44: remember what lc2-file held BEFORE this render — the save effect
+  // overwrites it with the fallback on mount, but a curated worksheet that
+  // is fetched on demand needs the original value to restore after reload.
+  const initialSavedFile = useRef(null);
   const [fileKey, setFileKey] = useState(() => {
     const first = BUILTIN[0] ? BUILTIN[0].key : null;
     const saved = load('lc2-file', first);
+    initialSavedFile.current = saved;
     return BUILTIN.find(b => b.key === saved) ? saved : first;
   });
   const [sel, setSel] = useState(() => load('lc2-sel', { gi: 0, pi: 0 }));
@@ -1058,6 +1130,29 @@ function App() {
   const [codeEntry, setCodeEntry] = useState(null);
   const [unlockPrefill, setUnlockPrefill] = useState('');
   const [footCopied, setFootCopied] = useState(false);
+  // S44: on-demand curated library — fetched worksheet files (key → {title,
+  // text}), the per-key fetch status, and a worksheet key waiting to open
+  // once its fetch lands in LIB.
+  const [libFiles, setLibFiles] = useState({});
+  const libFetchRef = useRef({}); // key -> 'pending' | 'done' | 'error'
+  const [pendingOpen, setPendingOpen] = useState(null);
+  function ensureLibKeys(keys) {
+    if (!isFullBuild) return;
+    const need = (keys || []).filter((k) =>
+      k && !libFetchRef.current[k] && !(window.LC_FILES && window.LC_FILES[k]));
+    need.forEach((k) => { libFetchRef.current[k] = 'pending'; });
+    need.forEach((k) => {
+      fetch('/files/worksheets/' + k + '.compose.json', { credentials: 'same-origin' })
+        .then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+        .then((text) => {
+          let title = k;
+          try { title = JSON.parse(text).title || k; } catch (e) {}
+          libFetchRef.current[k] = 'done';
+          setLibFiles((m) => Object.assign({}, m, { [k]: { title: title, text: text } }));
+        })
+        .catch(() => { libFetchRef.current[k] = 'error'; });
+    });
+  }
   useEffect(() => { save('lc2-collapse', collapseResolved); }, [collapseResolved]);
   useEffect(() => { save('lc2-auto-nn', autoNN); }, [autoNN]);
   useEffect(() => { save('lc2-auto-compose', autoCompose); }, [autoCompose]);
@@ -1123,7 +1218,10 @@ function App() {
   // never show sign-in and never read the token.
   const tier = (!isFullBuild || !auth) ? 'anon'
     : (auth.record && auth.record.role === 'instructor' ? 'instructor' : 'account');
-  const canAuthor = !isStudentBuild || tier === 'instructor';
+  // S44: the root app doubles as the account-less editor sandbox (the old
+  // standalone /editor page is a redirect stub) — authoring surfaces are
+  // open to everyone on the root; saving to the server stays instructor-only.
+  const canAuthor = !isStudentBuild || tier === 'instructor' || BID === 'hosted-root';
   useEffect(() => {
     // Validate the persisted token ONCE on boot. auth-refresh counts toward
     // the *:auth rate budget (5/min), so never call it anywhere else.
@@ -1292,7 +1390,26 @@ function App() {
       } catch (e) { return null; }
     }).filter(Boolean);
   }), [classes]);
-  const LIB = React.useMemo(() => [...BUILTIN, ...userLib, ...bundleLib, ...classLib], [userLib, bundleLib, classLib]);
+  // S44: fetched curated worksheets — same loadText path as user files and
+  // class bundles; set.key is the canonical worksheet key, so progress keys
+  // ('<key>/<group>/<derivation>') match what the old curated-page islands
+  // used (the migration above copies those into this store). Keys already
+  // embedded in the page (BUILTIN) never duplicate.
+  const curatedLib = React.useMemo(() => {
+    const have = new Set(BUILTIN.map((b) => b.key));
+    const order = composeLibraryFamilies().flatMap((f) => (f.chapters || []).flatMap((c) => (c.worksheets || []).map((w) => w.key)));
+    return Object.keys(libFiles)
+      .filter((k) => !have.has(k))
+      .sort((a, b) => order.indexOf(a) - order.indexOf(b))
+      .map((k) => {
+        try {
+          const { set } = window.LCData.loadText(libFiles[k].text, libFiles[k].title);
+          set.key = k;
+          return { key: k, title: libFiles[k].title, set, curated: true, text: libFiles[k].text };
+        } catch (e) { return null; }
+      }).filter(Boolean);
+  }, [libFiles]);
+  const LIB = React.useMemo(() => [...BUILTIN, ...curatedLib, ...userLib, ...bundleLib, ...classLib], [curatedLib, userLib, bundleLib, classLib]);
 
   // N5: class progress lives in the version's OWN island — localStorage
   // `<slug>:lc2-progress`, exactly where /v/<slug> keeps it — so solving in
@@ -1625,29 +1742,54 @@ function App() {
     composeWriteUnlocked(composeReadUnlocked().filter((k) => k !== key));
     setUnlocked(composeReadUnlocked());
   }
-  // Redeeming a curated code = remember the key + go to the set. If its page
-  // is THIS page, just open the worksheet locally (no reload loop: entry
-  // URLs carry ?ws=/?code=, which would re-apply on load).
+  // S44: opening a curated entry never navigates away — the app fetches the
+  // scope's worksheets and opens the first one (a worksheet entry opens
+  // itself). openOrQueue defers the open until the fetch lands in LIB.
+  function openOrQueue(key) {
+    if (LIB.some((l) => l.key === key)) { openWorksheetKey(key); setPendingOpen(null); }
+    else setPendingOpen({ key: key, force: true });
+  }
+  function openCuratedEntry(entry) {
+    const keys = composeCuratedScopeKeys(entry);
+    ensureLibKeys(keys);
+    setNavSection('library');
+    const first = entry.kind === 'worksheet' ? entry.key : keys[0];
+    if (first) openOrQueue(first);
+  }
+  // Redeeming a curated code = remember the key + open the content in THIS
+  // app (until S44 this navigated to the set's static page).
   function applyCuratedEntry(entry) {
     addUnlocked(entry.key);
-    const dest = entry.url || '/';
-    const destPath = dest.split('?')[0];
-    if (window.location.pathname === destPath) {
-      if (entry.kind === 'worksheet' && (window.LCData.SETS || {})[entry.key]) openWorksheetKey(entry.key);
-      setUnlockOpen(false);
-      return;
-    }
-    window.location.href = dest;
+    setUnlockOpen(false);
+    openCuratedEntry(entry);
   }
   const unlockedEntries = React.useMemo(
     () => unlocked.map((k) => composeCuratedByKey(k)).filter(Boolean), [unlocked]);
-  // The curated page this build IS (e.g. hosted-lib-cc-ch6 -> cc/ch6): its
-  // registry entry powers the "Code for this collection" row.
-  const pageCuratedEntry = React.useMemo(() => {
-    if (BID.indexOf('hosted-lib-') !== 0) return null;
-    const pth = BID.slice('hosted-lib-'.length).replace(/^(cc|hk|papers)-/, '$1/');
-    return composeCuratedByKey(pth);
-  }, []);
+  // S44: keep every unlocked scope loaded (fetches are cached per key), and
+  // restore the last-open curated worksheet after a reload (lc2-file points
+  // at a key that is no longer embedded in the page).
+  useEffect(() => {
+    if (!isFullBuild) return;
+    const keys = [];
+    unlockedEntries.forEach((e) => composeCuratedScopeKeys(e).forEach((k) => { if (keys.indexOf(k) === -1) keys.push(k); }));
+    if (keys.length) ensureLibKeys(keys);
+    const saved = initialSavedFile.current;
+    if (saved && keys.indexOf(saved) !== -1 && !LIB.some((l) => l.key === saved) && !pendingOpen) {
+      // passive restore: force=false — it never yanks the user off another
+      // page (e.g. the editor opened via /?editor=1) when the fetch lands
+      setPendingOpen({ key: saved, force: false });
+    }
+    // eslint-disable-next-line
+  }, [unlockedEntries]);
+  // A queued open fires as soon as its worksheet lands in LIB. Forced opens
+  // (codes, ?ws, sidebar clicks) always switch to practice; the passive
+  // reload-restore only applies while the user is still on the stage.
+  useEffect(() => {
+    if (!pendingOpen) return;
+    if (!LIB.some((l) => l.key === pendingOpen.key)) return;
+    if (pendingOpen.force || page === 'practice') openWorksheetKey(pendingOpen.key);
+    setPendingOpen(null);
+  }, [pendingOpen, LIB]);
 
   // S43: /?code=XXXXXX — apply an unlock code from the URL exactly as if it
   // had been typed into the dialog (QR codes encode this URL). Curated codes
@@ -1664,13 +1806,26 @@ function App() {
     setUnlockOpen(true);
     // eslint-disable-next-line
   }, []);
-  // S43: ?ws=<key> — open a specific worksheet on a curated page (worksheet
-  // unlock codes' URLs use this to land on the right set).
+  // S43/S44: ?ws=<key> — open a specific worksheet. Embedded sets open at
+  // once; library sets (manifest) are fetched, then opened.
   useEffect(() => {
     const m = /[?&]ws=([A-Za-z0-9_.\-]+)/.exec(window.location.search || '');
     if (!m) return;
     try { const u = new URL(window.location.href); u.searchParams.delete('ws'); window.history.replaceState({}, '', u.pathname + (u.search || '') + u.hash); } catch (e) {}
-    if ((window.LCData.SETS || {})[m[1]]) openWorksheetKey(m[1]);
+    if ((window.LCData.SETS || {})[m[1]]) { openWorksheetKey(m[1]); return; }
+    if (isFullBuild && composeCuratedForWorksheet(m[1])) { ensureLibKeys([m[1]]); setPendingOpen({ key: m[1], force: true }); }
+    // eslint-disable-next-line
+  }, []);
+
+  // S44: /?editor=1 — where the retired standalone /editor sandbox redirects.
+  // Opens the in-app editor for anyone, no account (the authoring surfaces
+  // are open on the root; server hosting stays instructor-only).
+  useEffect(() => {
+    if (!isFullBuild) return;
+    if (!/[?&]editor=1/.test(window.location.search || '')) return;
+    try { const u = new URL(window.location.href); u.searchParams.delete('editor'); window.history.replaceState({}, '', u.pathname + (u.search || '') + u.hash); } catch (e) {}
+    setHosted(null); setEditorInit({ text: null, key: null });
+    openEditorSurface();
     // eslint-disable-next-line
   }, []);
 
@@ -2041,13 +2196,18 @@ function App() {
   function sidebarCollections() {
     const CH = (window.LCData && window.LCData.CHAPTERS) || [];
     const inCh = (l, ch) => l.key === ch.prefix || l.key.startsWith(ch.prefix + '.') || l.key.startsWith(ch.prefix + '-');
+    // S44: the classic-papers shelf groups under ONE collection (matching the
+    // old /papers page) instead of scattering across per-paper prefixes.
+    const paperKeys = composePapersKeySet();
     const cols = [];
-    const loose = LIB.filter((l) => !l.user && !l.classSlug && !CH.some((ch) => inCh(l, ch)));
+    const loose = LIB.filter((l) => !l.user && !l.classSlug && !paperKeys.has(l.key) && !CH.some((ch) => inCh(l, ch)));
     if (loose.length) cols.push({ id: '__loose', label: (ASSIGNMENT && ASSIGNMENT.title) || 'Worksheets', items: loose });
     CH.forEach((ch) => {
-      const items = LIB.filter((l) => !l.user && inCh(l, ch));
+      const items = LIB.filter((l) => !l.user && !paperKeys.has(l.key) && inCh(l, ch));
       if (items.length) cols.push({ id: ch.prefix, label: ch.title, items });
     });
+    const papers = LIB.filter((l) => !l.user && !l.classSlug && paperKeys.has(l.key));
+    if (papers.length) cols.push({ id: 'papers', label: 'Classic papers', items: papers });
     bundles.forEach((b) => {
       const items = bundleLib.filter((l) => l.bundleId === b.id);
       if (items.length) cols.push({ id: b.id, label: b.title, items });
@@ -2102,7 +2262,10 @@ function App() {
                   {cols.map((c) => {
                     // S43: a chapter collection with a curated unlock code
                     // gets a small ⌗ opening the code+QR dialog for the group
-                    const ce = isFullBuild ? composeCuratedForPrefix(c.id) : null;
+                    const ce = isFullBuild
+                      ? (composeCuratedForPrefix(c.id)
+                        || (['cc', 'hk', 'papers'].indexOf(c.id) !== -1 ? composeCuratedByKey(c.id) : null))
+                      : null;
                     return (
                     <div key={c.id}>
                       <div className="sb-coll-row">
@@ -2123,14 +2286,6 @@ function App() {
                     <span className="sb-ico" aria-hidden="true">↑</span>
                     <span className="sb-row-label">Open a file…</span>
                   </button>
-                  {isFullBuild && pageCuratedEntry && (
-                    <button type="button" className="sb-row" title="Unlock code for everything on this page — code + QR"
-                      onClick={() => setCodeEntry(pageCuratedEntry)}>
-                      <span className="sb-ico" aria-hidden="true">⌗</span>
-                      <span className="sb-row-label">Code for this collection</span>
-                      <span className="sb-row-note mono">{pageCuratedEntry.code}</span>
-                    </button>
-                  )}
                   {isFullBuild && tier !== 'anon' && classes && classes.length > 0 && (
                     <div>
                       <div className="sb-kicker">My classes</div>
@@ -2178,7 +2333,7 @@ function App() {
                       <div className="sb-kicker">Unlocked</div>
                       {unlockedEntries.map((e) => (
                         <div className="sb-row-split" key={e.key}>
-                          <a className="sb-row" href={e.url}><span className="sb-ico" aria-hidden="true">⌗</span><span className="sb-row-label">{e.title}</span></a>
+                          <button type="button" className="sb-row" onClick={() => openCuratedEntry(e)}><span className="sb-ico" aria-hidden="true">⌗</span><span className="sb-row-label">{e.title}</span></button>
                           <button type="button" className="sb-code-x" title="Remove from your list (the code unlocks it again any time)"
                             aria-label={'Remove ' + e.title + ' from your list'} onClick={() => removeUnlocked(e.key)}>✕</button>
                         </div>
@@ -2187,15 +2342,16 @@ function App() {
                   )}
                   {isFullBuild && tier === 'instructor' && (
                     <div>
-                      {/* S43: the always-visible library links are instructor-
-                          only now — students reach the curated shelves through
-                          Guide & help, /files, or an unlock code/QR */}
+                      {/* S43/S44: the always-visible library rows are
+                          instructor-only; since S44 they load the collection
+                          IN-APP (adding it to Unlocked) — the /cc /hk /papers
+                          pages are redirect stubs now */}
                       <div className="sb-kicker">Full library</div>
-                      {[['cc', '/cc/', 'Coppock & Champollion'], ['hk', '/hk/', 'Heim & Kratzer'], ['papers', '/papers/', 'Classic papers']].map(([fk, href, label]) => {
+                      {[['cc', 'Coppock & Champollion'], ['hk', 'Heim & Kratzer'], ['papers', 'Classic papers']].map(([fk, label]) => {
                         const fe = composeCuratedByKey(fk);
                         return (
                           <div className="sb-row-split" key={fk}>
-                            <a className="sb-row" href={href}><span className="sb-ico" aria-hidden="true">📖</span><span className="sb-row-label">{label}</span></a>
+                            <button type="button" className="sb-row" onClick={() => { if (fe) applyCuratedEntry(fe); }}><span className="sb-ico" aria-hidden="true">📖</span><span className="sb-row-label">{label}</span></button>
                             {fe && <button type="button" className="sb-code-btn" title={'Unlock code for the whole ' + label + ' collection — code + QR'}
                               aria-label={'Unlock code for ' + label} onClick={() => setCodeEntry(fe)}>⌗</button>}
                           </div>
@@ -2987,7 +3143,7 @@ function App() {
           {isFullBuild && unlockedEntries.length > 0 && (
             <div>
               <div className="mb-kicker">Unlocked</div>
-              {unlockedEntries.map((e) => mbRow('unl:' + e.key, '⌗', e.title, null, null, { href: e.url }))}
+              {unlockedEntries.map((e) => mbRow('unl:' + e.key, '⌗', e.title, null, () => { openCuratedEntry(e); setSheet(null); setMtab('derive'); }))}
             </div>
           )}
           {isFullBuild && tier !== 'anon' && classes && classes.length > 0 && (

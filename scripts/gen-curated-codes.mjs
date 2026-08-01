@@ -61,22 +61,23 @@ function codeFor(key) {
 }
 
 /* Fixed generation order (worksheets → chapters → families) so collision
-   fallbacks are stable across runs. */
+   fallbacks are stable across runs. S44: urls are APP links (/?code=CODE) —
+   the root app resolves the code, unlocks the set and opens it in place; the
+   old /cc-style pages are redirect stubs. Codes themselves are unchanged. */
 const entries = [];
 for (const k of wsKeys) {
-  const page = chapterPages.find((e) => e.keys.includes(k)) || familyPages.find((e) => e.keys.includes(k)) || null;
-  entries.push({
-    code: codeFor(k), kind: 'worksheet', key: k, title: titles[k],
-    url: page ? '/' + page.path + '/?ws=' + k : '/',
-  });
+  const code = codeFor(k);
+  entries.push({ code, kind: 'worksheet', key: k, title: titles[k], url: '/?code=' + code });
 }
 for (const e of chapterPages) {
-  const entry = { code: codeFor(e.path), kind: 'chapter', key: e.path, title: e.title, url: '/' + e.path + '/' };
+  const code = codeFor(e.path);
+  const entry = { code, kind: 'chapter', key: e.path, title: e.title, url: '/?code=' + code };
   if (e.prefix) entry.prefix = e.prefix;
   entries.push(entry);
 }
 for (const e of familyPages) {
-  entries.push({ code: codeFor(e.path), kind: 'family', key: e.path, title: e.title, url: '/' + e.path + '/' });
+  const code = codeFor(e.path);
+  entries.push({ code, kind: 'family', key: e.path, title: e.title, url: '/?code=' + code });
 }
 
 const out = {

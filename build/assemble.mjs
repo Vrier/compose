@@ -31,6 +31,7 @@
 import esbuild from 'esbuild';
 import fs from 'node:fs';
 import path from 'node:path';
+import { curatedTable, FAMILY_TITLES } from './curated-map.mjs';
 
 const NM = 'node_modules';
 
@@ -86,7 +87,30 @@ export function buildParts(srcDir) {
      registry, never a build failure. */
   let curatedEntries = [];
   try { curatedEntries = JSON.parse(read(path.join(srcDir, 'curated-codes.json'))).entries || []; } catch (e) {}
-  const curatedJS = 'window.COMPOSE_CURATED = ' + JSON.stringify(curatedEntries) + ';';
+  let curatedJS = 'window.COMPOSE_CURATED = ' + JSON.stringify(curatedEntries) + ';';
+
+  /* S44: the library MANIFEST (window.COMPOSE_LIBRARY) — families → chapters
+     → worksheet keys+titles, derived from build/curated-map.mjs + the
+     worksheet files. The root app lists unlocked collections from this and
+     fetches each worksheet on demand from /files/worksheets/<key>.compose.json
+     (the curated static pages are redirect stubs since S44). */
+  let manifestJS = '';
+  try {
+    const LM = libraryMap(srcDir);
+    const allKeys = Object.keys(LM).sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+    const curated = curatedTable(allKeys);
+    const families = ['cc', 'hk', 'papers'].map((fk) => ({
+      key: fk,
+      title: FAMILY_TITLES[fk],
+      chapters: curated.filter((e) => e.path.startsWith(fk + '/')).map((e) => {
+        const ch = { key: e.path, title: e.title, worksheets: e.keys.map((k) => ({ key: k, title: (LM[k] && LM[k].title) || k })) };
+        if (e.prefix) ch.prefix = e.prefix;
+        return ch;
+      }),
+    }));
+    manifestJS = '\nwindow.COMPOSE_LIBRARY = ' + JSON.stringify({ families }) + ';';
+  } catch (e) {}
+  curatedJS += manifestJS;
 
   const reactProd    = read(path.join(NM, 'react/umd/react.production.min.js'));
   const reactDomProd = read(path.join(NM, 'react-dom/umd/react-dom.production.min.js'));

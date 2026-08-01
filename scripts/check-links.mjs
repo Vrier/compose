@@ -74,6 +74,9 @@ const built = new Set();
     const fp = path.join(d, f);
     if (fs.statSync(fp).isDirectory()) walk2(fp);
     else if (f === 'index.html') {
+      // S44: redirect stubs (/cc, /hk, /papers, chapter pages, /editor) are
+      // built but deliberately absent from the sitemap (noindex).
+      if (fs.readFileSync(fp, 'utf8').includes('<!--compose-stub-->')) continue;
       const rel = '/' + path.relative(ROOT, d).split(path.sep).join('/');
       built.add(rel === '/.' || rel === '/' ? '/' : rel + '/');
     }

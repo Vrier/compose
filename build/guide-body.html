@@ -20,12 +20,10 @@
 <table class="files-table">
 <thead><tr><th>Page</th><th>Contents</th></tr></thead>
 <tbody>
-<tr><td><a href="/">compose.tstephen.com</a></td><td>The app with one demo worksheet loaded. Additional worksheets are loaded from <code>.compose.json</code> files, or unlocked with a class code (below). Works without an account.</td></tr>
-<tr><td><a href="/cc/">/cc</a></td><td>All 30 worksheets tracking Coppock &amp; Champollion, <em>Invitation to Formal Semantics</em>. Single chapters: <a href="/cc/ch6/">/cc/ch6</a>, <a href="/cc/ch7/">/cc/ch7</a>, /cc/ch8, /cc/ch10, /cc/ch11, /cc/ch12, /cc/ch13.</td></tr>
-<tr><td><a href="/hk/">/hk</a></td><td>Eight worksheets tracking Heim &amp; Kratzer, <em>Semantics in Generative Grammar</em> (chapters 1, 2, 4, 5, 6, 7, 9, 12), at /hk/ch1 … /hk/ch12.</td></tr>
-<tr><td><a href="/papers/">/papers</a></td><td>Classic papers: Partee 1986 (<a href="/papers/partee/">/papers/partee</a>), Partee &amp; Rooth 1983 (<a href="/papers/partee-rooth/">/papers/partee-rooth</a>), Montague’s PTQ in two parts (<a href="/papers/ptq/">/papers/ptq</a>), Davidson 1967 (<a href="/papers/davidson/">/papers/davidson</a>), Krifka 1998 (<a href="/papers/krifka/">/papers/krifka</a>), Barwise &amp; Cooper 1981 (<a href="/papers/barwise-cooper/">/papers/barwise-cooper</a>), Link 1983 (<a href="/papers/link/">/papers/link</a>).</td></tr>
+<tr><td><a href="/">compose.tstephen.com</a></td><td>The app — the single entry point since v1.2.0. It loads with one demo worksheet; everything else arrives through <b>unlock codes</b> (below), <code>/?code=…</code> links/QRs, or <code>.compose.json</code> files. Works without an account.</td></tr>
+<tr><td>The built-in library</td><td>Loaded on demand <em>inside the app</em>. Coppock &amp; Champollion, <em>Invitation to Formal Semantics</em> (30 worksheets, §6–§13): whole collection <a href="/?code=KT6WF4">code <code>KT6WF4</code></a>. Heim &amp; Kratzer, <em>Semantics in Generative Grammar</em> (8 worksheets): <a href="/?code=CETGZ4">code <code>CETGZ4</code></a>. Classic papers (Partee 1986, Partee &amp; Rooth 1983, Montague’s PTQ, Davidson 1967, Krifka 1998, Barwise &amp; Cooper 1981, Link 1983): <a href="/?code=QIPYVM">code <code>QIPYVM</code></a>. Every chapter and single worksheet has a code of its own — find them in the app (⌗ buttons) or in the table below. Old links (<code>/cc</code>, <code>/hk</code>, <code>/papers</code>, chapter pages) redirect into the app and open the same content.</td></tr>
 <tr><td>Sign-in page</td><td>Not a separate URL: the sidebar’s <b>Account</b> section on any of the pages above opens it. Students register free practice accounts (email + password, at least 10 characters); an instructor invite code entered on the same form creates an instructor account. No verification email is sent — the server sends no email at all.</td></tr>
-<tr><td><a href="/editor/">/editor</a></td><td>The worksheet editor, usable without an account. Exports <code>.compose.json</code>. Cannot publish to the server.</td></tr>
+<tr><td>Worksheet editor</td><td>In the app: sidebar → <b>Author</b> → <b>Worksheet editor</b> (or ⌘E). Usable without an account; exports <code>.compose.json</code>; publishing to the server needs an instructor sign-in. The old <code>/editor</code> URL redirects here.</td></tr>
 <tr><td><a href="/dash/">/dash</a></td><td>The original instructor dashboard, same accounts and versions as the in-app pages. Version management now lives in the app itself (sidebar → Assign &amp; share → <b>My versions</b>); /dash remains for editing version notes and as a fallback.</td></tr>
 <tr><td><a href="/files/">/files</a></td><td>All 46 built-in worksheets and both textbook bundles as downloadable <code>.compose.json</code>, with a site map.</td></tr>
 <tr><td><a href="/help/">/help</a></td><td>Student reference (rules, symbols, grading) and <a href="/help/guides/">worked derivation guides</a>.</td></tr>
@@ -72,7 +70,7 @@ and actions; <b>J</b>/<b>K</b> step to the previous/next exercise; a
 shortcuts dialog listing the rest is in the palette’s Actions group.</p>
 
 <figure class="guide-fig"><img src="/guide/student-view.jpg" alt="A worksheet page: sidebar rail, exercises column, derivation tree, reference panel on Lexicon" loading="lazy" />
-<figcaption><a href="/cc/ch7/">/cc/ch7</a>, first derivation, with the reference panel on the Lexicon tab. Nodes marked “ready — select” have resolved children; leaves resolve from the lexicon.</figcaption></figure>
+<figcaption>The §7 adjectives worksheet, first derivation, with the reference panel on the Lexicon tab. Nodes marked “ready — select” have resolved children; leaves resolve from the lexicon.</figcaption></figure>
 
 <figure class="guide-fig"><img src="/guide/rules-panel.jpg" alt="The Rules tab of the reference panel listing FA, PM and NN" loading="lazy" />
 <figcaption>The Rules tab for a §7.2 worksheet: FA, PM and NN are enabled; PA, IFA, type-shifting and QR are not. On a student’s first visit to a worksheet the panel opens here once; afterwards the panel remembers the tab and open/closed state they chose.</figcaption></figure>
@@ -96,7 +94,7 @@ notes; opening an exercise scrolls the Notes tab to its section.</p>
 <figcaption>Hint 1 of 2 on the §7.2 worksheet’s first derivation. The built-in ch6 and ch7.1 worksheets ship two hints per derivation.</figcaption></figure>
 
 <figure class="guide-fig"><img src="/guide/notes-panel.jpg" alt="The Notes tab open next to a derivation" loading="lazy" />
-<figcaption>The Notes tab on /cc/ch7 showing section 7.2: prose, numbered examples, and a denotation table, with a contents bar at the top.</figcaption></figure>
+<figcaption>The Notes tab on the §7 worksheet showing section 7.2: prose, numbered examples, and a denotation table, with a contents bar at the top.</figcaption></figure>
 
 <p>On phones (below 760px) the same content rearranges into a bottom tab bar
 — Derive, Exercises, Reference (the same Lexicon/Rules/Notes tabs), and a
@@ -104,17 +102,20 @@ Menu that carries the sidebar’s sections — with a chip row above it for
 switching worksheets and entering unlock codes.</p>
 
 <figure class="guide-fig guide-fig-narrow"><img src="/guide/mobile-view.jpg" alt="The phone layout: derivation tree above the bottom tab bar" loading="lazy" />
-<figcaption>The phone layout on /cc/ch7: the stage, the worksheet chip row, and the Derive · Exercises · Reference · Menu tab bar.</figcaption></figure>
+<figcaption>The phone layout: the stage, the worksheet chip row, and the Derive · Exercises · Reference · Menu tab bar.</figcaption></figure>
 
-<p><b>Progress.</b> Progress is stored in the browser’s localStorage,
-separately per area: the /cc pages (whole-book and chapters) share one
-record; /hk and /papers each have their own; each hosted version has its
-own. The sidebar’s <b>Your progress</b> page shows per-worksheet solved
-counts and has “Save to a file” / “Restore” buttons for moving progress
-between machines. A signed-in student’s progress additionally syncs to
-their account, so it follows them across browsers. The curated pages
-register a service worker on first visit and afterwards load without a
-network connection.</p>
+<p><b>Progress.</b> Progress is stored in the browser’s localStorage. Since
+v1.2.0 the app keeps ONE store for everything opened in it — the demo, the
+whole built-in library, loaded files — while each hosted version’s
+<code>/v/</code> page keeps its own isolated store. (Progress students made
+on the retired /cc-style pages is migrated into the app store automatically
+on their first visit.) The sidebar’s <b>Your progress</b> page shows
+per-worksheet solved counts and has “Save to a file” / “Restore” buttons for
+moving progress between machines. A signed-in student’s progress
+additionally syncs to their account, so it follows them across browsers.
+The app registers a service worker on first visit and afterwards loads —
+including already-fetched library worksheets — without a network
+connection.</p>
 
 <h2 id="sending">Getting material to students</h2>
 <p>Three ways, in the order we recommend them:</p>
@@ -122,17 +123,15 @@ network connection.</p>
 <thead><tr><th>Method</th><th>Behaviour</th></tr></thead>
 <tbody>
 <tr><td><b>An unlock code</b></td><td>For hosted material you control (a <em>version</em>, <a href="#hosting">below</a>). Students sign in and enter the six-character code once; the class appears in their sidebar under My classes, on every COMPOSE page, and their progress syncs to their account. You can change the content after distribution.</td></tr>
-<tr><td><b>A library code / QR</b></td><td>Every built-in worksheet, every chapter page and each whole collection (/cc, /hk, /papers) has a fixed six-character code of its own — no account needed on either side. Students enter it (or scan the QR, which encodes <code>/?code=CODE</code>) and the set appears under <b>Unlocked</b> in their sidebar; since S43 students no longer see the full library there by default, so the code is how you point a class at exactly the right shelf. Find the codes in the app: a worksheet's <b>⌗ Code</b> and <b>▦ QR &amp; link</b> buttons at the foot of its exercise list, the <b>⌗</b> beside a chapter heading in the worksheet selector, the <b>⌗</b> beside the Full-library rows (instructor sidebar), and the <b>Code for this collection</b> row on every curated page.</td></tr>
-<tr><td><code>/cc/ch7</code> etc.</td><td>Fixed library content. Progress persists in the student’s browser across visits (and syncs if they sign in). Nothing to configure. <code>/cc/ch7/#g1.d2</code> opens the page at exercise group <code>g1</code>, derivation <code>d2</code> — the anchor ids are visible in the worksheet JSON on <a href="/files/">/files</a>.</td></tr>
+<tr><td><b>A library code / QR / link</b></td><td>Every built-in worksheet, chapter and whole collection has a fixed six-character code — no account needed on either side. Students enter it under “⊕ Unlock with a code” (or scan the QR / open the link, which encodes <code>/?code=CODE</code>): the content is fetched into the app, opens immediately, and stays in their sidebar under <b>Unlocked</b>. Students don’t see the full library by default, so the code is how you point a class at exactly the right shelf. Find the codes in the app: a worksheet’s <b>⌗ Code</b> and <b>▦ QR &amp; link</b> buttons at the foot of its exercise list, and the <b>⌗</b> beside chapter headings and the Full-library rows (instructor sidebar). The whole-collection codes: C&amp;C <code>KT6WF4</code>, H&amp;K <code>CETGZ4</code>, papers <code>QIPYVM</code>. Chapter codes: <code>cc/ch6 DXKHFU</code> · <code>cc/ch7 QI753D</code> · <code>cc/ch8 U9INJS</code> · <code>cc/ch10 JV5NKN</code> · <code>cc/ch11 F7Q8Y7</code> · <code>cc/ch12 7N7UWF</code> · <code>cc/ch13 VYDXIG</code> · <code>hk/ch1 2U95R2</code> · <code>hk/ch2 IWAHYZ</code> · <code>hk/ch4 YPEQCQ</code> · <code>hk/ch5 8IIRCE</code> · <code>hk/ch6 3FCWXC</code> · <code>hk/ch7 AUY39C</code> · <code>hk/ch9 C64QMV</code> · <code>hk/ch12 R53MVA</code> · <code>papers/partee 4UV9HE</code> · <code>papers/ptq JKTYCU</code> · <code>papers/krifka QGAWIZ</code> · <code>papers/davidson TRGU6C</code> · <code>papers/partee-rooth 3IKHNW</code> · <code>papers/barwise-cooper Y97C9T</code> · <code>papers/link SBG4MN</code>.</td></tr>
 <tr><td><code>/v/&lt;slug&gt;</code></td><td>A version’s direct student link: the same content the unlock code enrols students in, without an account. Progress stays in that browser only. Kept for handout/QR distribution and as the no-account path; a printed link keeps working alongside the code.</td></tr>
 </tbody>
 </table>
 
 <h2 id="authoring">Authoring worksheets</h2>
 <p>The editor runs without an account: open the sidebar’s <b>Author</b>
-section and pick <b>Worksheet editor</b> (or press ⌘E), on
-<a href="/editor/">/editor</a> or any page where you are signed in as an
-instructor. A worksheet consists of: a domain (constants and variables with
+section and pick <b>Worksheet editor</b> (or press ⌘E). A worksheet
+consists of: a domain (constants and variables with
 types), a lexicon (words with λ-denotations), a rule configuration, and
 exercises (groups of derivations, each a bracketed tree with optional
 targets, hints and notes anchors). The file format is JSON, documented in
@@ -402,10 +401,10 @@ as on library pages.</p>
 <h2 id="files">Files &amp; offline use</h2>
 <figure class="guide-fig"><img src="/guide/files-page.jpg" alt="The files page listing downloadable worksheets" loading="lazy" />
 <figcaption><a href="/files/">/files</a>: every worksheet and bundle as <code>.compose.json</code>, with titles and derivation counts.</figcaption></figure>
-<p>Offline behaviour: the curated pages and the root work offline after a
-first visit (service worker; /dash is never cached). Worksheets
-themselves travel as <code>.compose.json</code> files, which load on any
-COMPOSE page straight from disk.</p>
+<p>Offline behaviour: the app works offline after a first visit, including
+library worksheets it has already fetched (service worker; /dash is never
+cached). Worksheets themselves travel as <code>.compose.json</code> files,
+which load on any COMPOSE page straight from disk.</p>
 
 <p class="about-foot">Invite codes and questions: <a href="/about/">/about</a> ·
 <a href="https://github.com/Vrier/compose">source repository</a></p>

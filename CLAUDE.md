@@ -29,55 +29,60 @@ Champollion's *Invitation to Formal Semantics*.
   flagged rendering/implementation notes (the PTQ-B TY2 §0 pattern), and
   (d) minimal signposting. No unsourced paraphrase presented as fact.
 
-## Architecture (hosted V1.1 — LIVE at compose.tstephen.com)
+## Architecture (hosted V1.2 — LIVE at compose.tstephen.com)
 
 One Hetzner VPS (167.233.233.109) runs PocketBase (pinned, `server/get-pocketbase.sh`)
-behind Caddy (auto-TLS). v1.1.0 is the §11 navigation & accounts redesign
-(N0–N7): app navigation is a left sidebar (Worksheets/Continue/Author/
-Assign/Display/Guide & help/Account) with drill-in exercises column, a
-right reference panel (Lexicon/Rules/Notes tabs), a ⌘K palette, and — on
-phones — a bottom tab bar; the sidebar's Guide & help rows render the doc
-pages IN-APP (page:'doc' fetches the standalone page's <main>). Accounts:
+behind Caddy (auto-TLS). v1.2.0 (S44) is the FULL CONSOLIDATION on top of the
+§11 navigation & accounts redesign (N0–N7): ONE app entry at `/` — left
+sidebar (Worksheets/Continue/Author/Assign/Display/Guide & help/Account) with
+drill-in exercises column, right reference panel (Lexicon/Rules/Notes), ⌘K
+palette, mobile bottom tab bar; Guide & help rows render the doc pages
+IN-APP (page:'doc' fetches the standalone page's <main>). The curated
+library is loaded ON DEMAND by the root app: build/assemble.mjs embeds a
+manifest (`window.COMPOSE_LIBRARY`, families→chapters→worksheet keys+titles,
+derived from build/curated-map.mjs) next to the S43 code registry
+(`window.COMPOSE_CURATED`, compose/curated-codes.json, deterministic
+sha256-derived codes, regenerate with scripts/gen-curated-codes.mjs — codes
+never change, urls are /?code=CODE app links); unlocking (dialog, /?code=
+link/QR, instructor Full-library rows) fetches each worksheet from
+`/files/worksheets/<key>.compose.json` (byte-identical to compose/exercises,
+sw.js runtime-caches them) through the same LCData.loadText path as user
+files, opens it in place, and records it in localStorage `lc2-unlocked`
+(un-namespaced, ✕ to remove). Progress: one root island
+(`build-hosted-root:`) for everything opened in the app; a one-time
+client-side migration (app.jsx, flag `lc2-migrated-islands`) copies the old
+lib-cc/lib-hk/lib-papers island stores in without overwriting. Accounts:
 open student registration (`/api/compose/register-student`, no email ever
 sent), invite-gated instructor registration; instructors manage versions on
 the in-app My versions + Assign & share pages and hand out per-version
 six-char **unlock codes** (`/api/compose/redeem` → enrollment; progress
-syncs per account). S43: every CURATED worksheet/chapter/family also has a
-fixed client-side unlock code (`compose/curated-codes.json`, deterministic
-sha256-derived, regenerate with `scripts/gen-curated-codes.mjs`, embedded as
-`window.COMPOSE_CURATED`) — redeemed in the unlock dialog or via
-`/?code=XXXXXX` links/QRs with NO account, checked BEFORE the server redeem
-(curated shadows instructor codes); redeeming adds the set to the sidebar's
-"Unlocked" list (un-namespaced localStorage `lc2-unlocked`, ✕ to remove).
-Student/anon sidebars no longer show the always-on /cc /hk /papers links
-(instructor tier keeps them, each with a ⌗ code button); students reach the
-shelves via Guide & help, /files, or a code. A worksheet's drill-in footer
-shows its "⌗ Code · XXXXXX" + "▦ QR & link" buttons (the old "Rules for
-this worksheet" button is gone — the right panel's Rules tab covers it);
-chapter headings and curated pages carry ⌗ / "Code for this collection"
-affordances. `/` = bare starter (demo worksheet only, S13);
-`/cc` `/hk` `/papers` (+ per-chapter pages) = curated library with shared
-per-family progress islands; `/v/:slug` = per-version student pages, kept as
-the no-account path (server-side template substitution, isolated
-localStorage via `island`); `/dash/` = legacy instructor dashboard (notes
-editing); `/edit/:id` = retired (S40): the route serves a small "moved"
-page linking to `/?edit=<id>`, which opens the IN-APP editor with that
-version's worksheet (hosted editing = My versions → ✎ Edit; ☁ Save to
-server uses the account token); `/editor/` = account-less editor sandbox; `/files/` = worksheet
-downloads + site map; `/help/` (+`/help/guides/`, with video walkthroughs)
-= student help (S23/S24); `/guide/` = instructor guide (screenshots
-regenerate via scripts/capture-guide.mjs + capture-dash.mjs; videos via
-scripts/capture-walkthroughs.mjs); `/about/` = citation page + what
-accounts store; `/_/` = PB admin. Worksheets are shared through unlock
-codes (instructor version codes or curated library codes) or
-`.compose.json` files only — the exercise-HTML export/import
-pipeline (S13.3 `/template.html`, Export assignment) was removed in S39.
-Instructor content lives in the `versions` collection (bundle JSON), validated
-on save by the real engine running inside PB's goja VM. Deploys: push to
-`main` → GitHub Actions runs all five test suites → SSH → `deploy/deploy.sh`
-(pull, build, restart). PB data lives in `/srv/compose-data`, never touched by
-deploys; nightly PB zips + Hetzner Backups (restore drill passed 2026-07-11,
-`deploy/restore-drill.sh`). See DEPLOY.md for operations.
+syncs per account); curated codes are checked client-side BEFORE the server
+redeem (curated shadows instructor codes). A worksheet's drill-in footer
+shows "⌗ Code · XXXXXX" + "▦ QR & link"; chapter collections and the
+instructor Full-library rows carry ⌗ code buttons.
+
+Routes: `/` = THE app (demo worksheet + on-demand library, S13/S44);
+`/cc` `/hk` `/papers` + 22 chapter pages + `/editor` = tiny REDIRECT STUBS
+(S44, `<!--compose-stub-->` marker, noindex) → `/?code=<fixed code>` and
+`/?editor=1` (the in-app editor is open to ANON as the sandbox — authoring
+surfaces show for everyone on the root; hosting stays instructor-only);
+`/v/:slug` = per-version student pages, kept as the no-account path
+(server-side template substitution, isolated localStorage via `island`);
+`/dash/` = legacy instructor dashboard (notes editing); `/edit/:id` =
+retired (S40): serves a "moved" page linking to `/?edit=<id>`; `/files/` =
+worksheet downloads + site map AND the app's content source; `/help/`
+(+`/help/guides/`, video walkthroughs) = student help (S23/S24); `/guide/`
+= instructor guide (lists all curated codes; screenshots regenerate via
+scripts/capture-guide.mjs + capture-dash.mjs; videos via
+scripts/capture-walkthroughs.mjs); `/about/` = citation page; `/_/` = PB
+admin. Worksheets are shared through unlock codes or `.compose.json` files
+only. Instructor content lives in the `versions` collection (bundle JSON),
+validated on save by the real engine running inside PB's goja VM. Deploys:
+push to `main` → GitHub Actions runs all five test suites → SSH →
+`deploy/deploy.sh` (pull, build, restart). PB data lives in
+`/srv/compose-data`, never touched by deploys; nightly PB zips + Hetzner
+Backups (restore drill passed 2026-07-11, `deploy/restore-drill.sh`). See
+DEPLOY.md for operations.
 
 Key gotchas (hard-won; see PLAN.md §8 session log for details): PB hook
 handlers run in isolated VMs (require() shared code INSIDE handlers); goja
