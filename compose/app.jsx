@@ -2629,8 +2629,9 @@ function App() {
               })}
             </div>
           ))}
-          {!custom && (
-            <div className="colx-foot">
+        </div>
+        {!custom && (
+          <div className="colx-foot">
               {/* S43: the "Rules for this worksheet" button is gone (the right
                   panel's Rules tab has it); in its place, the worksheet's
                   unlock code + QR. Curated worksheets read the embedded
@@ -2668,7 +2669,6 @@ function App() {
               <button type="button" className="sb-row" onClick={resetAllProgress} title="Clear all progress for this worksheet"><span className="sb-ico" aria-hidden="true">↺</span><span className="sb-row-label">Reset all derivations</span></button>
             </div>
           )}
-        </div>
       </aside>
     );
   }

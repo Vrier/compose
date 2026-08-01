@@ -1791,7 +1791,7 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .colx-kicker { font-size: 9.5px; letter-spacing: .11em; text-transform: uppercase; color: var(--faint); }
 .colx-title { font-size: 12.5px; font-weight: 600; margin-top: 2px; line-height: 1.3; color: var(--ink); }
 .colx-score { flex: none; font-size: 10.5px; color: var(--muted); white-space: nowrap; }
-.colx-scroll { padding: 6px 0 10px; }
+.colx-scroll { flex: 1 1 auto; padding: 6px 0 10px; }
 .colx-group { display: flex; align-items: center; gap: 8px; padding: 8px 14px 4px; }
 .colx-group-title { font-size: 11px; font-weight: 600; color: var(--ink-soft); flex: 1; min-width: 0; }
 .colx-group-count { flex: none; font-size: 10px; color: var(--faint); }
@@ -1811,7 +1811,7 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 }
 .colx-item.done .colx-ring { border-color: var(--good); background: var(--good); }
 .colx-gloss { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.colx-foot { display: flex; flex-direction: column; gap: 2px; margin-top: 10px; padding: 10px 4px 0; border-top: 1px solid var(--line-soft); }
+.colx-foot { flex: none; display: flex; flex-direction: column; gap: 2px; padding: 8px 4px; border-top: 1px solid var(--line); background: var(--panel-2); }
 
 /* ---- practice header --------------------------------------------------------- */
 .practice-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 16px 24px 12px; }
@@ -12080,7 +12080,7 @@ function App() {
         /* @__PURE__ */ React.createElement("span", { className: "colx-ring", "aria-hidden": "true" }, progress[k] ? "\u2713" : ""),
         /* @__PURE__ */ React.createElement("span", { className: "colx-gloss lx" }, navLabel(g, p))
       );
-    }))), !custom && /* @__PURE__ */ React.createElement("div", { className: "colx-foot" }, (() => {
+    })))), !custom && /* @__PURE__ */ React.createElement("div", { className: "colx-foot" }, (() => {
       if (!isFullBuild || !lib) return null;
       const entry = composeCuratedForWorksheet(lib.key);
       if (entry) return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(
@@ -12124,7 +12124,7 @@ function App() {
         /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, shareBusy ? "\u2026" : "Code & QR")
       );
       return null;
-    })(), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setPage("progress") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, doneCount, "/", probCount)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => composeExportProgress() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Save progress to a file")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: resetAllProgress, title: "Clear all progress for this worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u21BA"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Reset all derivations")))));
+    })(), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setPage("progress") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, doneCount, "/", probCount)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => composeExportProgress() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Save progress to a file")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: resetAllProgress, title: "Clear all progress for this worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u21BA"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Reset all derivations"))));
   }
   function renderPracticeHead() {
     if (!hasContent || !group || !problem) return null;
