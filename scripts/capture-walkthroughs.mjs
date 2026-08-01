@@ -181,7 +181,22 @@ async function pickRule(abbr) {
   await rec(4);
 }
 async function submit() {
-  await act(checkBtn, 'check button');
+  /* S45: in the PM dock the wide entry row can push the Check-answer button
+     under the reference panel's left edge (a click there hits the panel) —
+     when clipped, submit with Enter from the input (ExpressionInput
+     onSubmit) with the cursor parked on the entry instead. */
+  const btn = await checkBtn();
+  const safe = await page.evaluate(() => {
+    const rp = document.querySelector('.rp-panel');
+    return rp ? rp.getBoundingClientRect().left : window.innerWidth;
+  });
+  if (btn && btn.x < safe - 8) {
+    await act(checkBtn, 'check button');
+  } else {
+    const p = await dockInput();
+    if (p) await moveTo(p.x, p.y);
+    await page.keyboard.press('Enter');
+  }
   await rec(8);
 }
 async function solve(label, abbr, answer) {
@@ -305,7 +320,8 @@ if (SCENE === 'first') {
   await rec(14);
 } else if (SCENE === 'host') {
   // in-app hosting flow: sign in → My versions → unlock code → Assign & share
-  await page.goto(B + '/cc/ch6/', { waitUntil: 'networkidle2' });
+  // (S44: start on the root — the old /cc/ch6/ page is a redirect stub now)
+  await page.goto(B + '/', { waitUntil: 'networkidle2' });
   await new Promise((r) => setTimeout(r, 900));
   await installCursor();
   await rec(4);

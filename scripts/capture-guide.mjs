@@ -7,14 +7,16 @@
    student-version) live in scripts/capture-dash.mjs, which needs PocketBase.
 
      PUPPETEER_EXECUTABLE_PATH=<chrome> node scripts/capture-guide.mjs <scene>
-       student   rules-panel, student-view, rule-dock, hint, notes-panel  (/cc/ch7)
+       student   rules-panel, student-view, rule-dock, hint, notes-panel
+                 (ch7 via its curated unlock code — S44)
        pages     root-starter, files-page, signin
        mobile    mobile-view (390×760, forced mobile layout)
        editor    editor-page, editor-lexicon, editor-derivation,
-                 editor-notes                                      (/editor)
+                 editor-notes                              (root, Ctrl+E)
    =========================================================================== */
 import puppeteer from 'puppeteer';
 import { spawn } from 'node:child_process';
+import fs from 'node:fs';
 
 const SCENE = process.argv[2] || 'student';
 const OUT = 'server/guide-assets';
@@ -68,9 +70,15 @@ const scrollToSel = async (sel) => {
   await sleep(400);
 };
 
+/* S44 made /cc/ch7/ a redirect stub — open chapter 7 in the root app via
+   its fixed curated code (unlocks the set and opens its first worksheet). */
+const CH7 = JSON.parse(fs.readFileSync('compose/curated-codes.json', 'utf8'))
+  .entries.find((e) => e.kind === 'chapter' && e.key === 'cc/ch7').code;
+
 if (SCENE === 'student') {
-  // /cc/ch7, fresh profile: the reference panel opens on the Rules tab once
-  await page.goto(B + '/cc/ch7/', { waitUntil: 'networkidle2' });
+  // ch7 via unlock code, fresh profile: the reference panel opens on Rules once
+  await page.goto(B + '/?code=' + CH7, { waitUntil: 'networkidle2' });
+  await page.waitForFunction(() => (localStorage.getItem('build-hosted-root:lc2-file') || '').includes('ch7'), { timeout: 20000 });
   await page.waitForSelector('.rp-panel', { timeout: 15000 });
   await sleep(900);
   await shot('rules-panel');
@@ -101,19 +109,20 @@ if (SCENE === 'student') {
   await page.goto(B + '/files/', { waitUntil: 'networkidle2' });
   await shot('files-page');
 } else if (SCENE === 'mobile') {
-  await page.goto(B + '/cc/ch7/', { waitUntil: 'networkidle2' });
+  await page.goto(B + '/?code=' + CH7, { waitUntil: 'networkidle2' });
+  await page.waitForFunction(() => (localStorage.getItem('build-hosted-root:lc2-file') || '').includes('ch7'), { timeout: 20000 });
   await sleep(1200);
-  // dismiss the phone interstitial, then: first visit lands on
-  // Reference·Rules once — the guide figure shows Derive
-  await clickText('button, a', 'Continue on this phone anyway');
-  await sleep(900);
+  // no phone interstitial on the root app (it only guards assignment
+  // configs, i.e. /v pages); first visit lands on Reference·Rules once —
+  // the guide figure shows Derive
   await clickText('.mb-tab', 'Derive');
   await sleep(700);
   await shot('mobile-view');
 } else if (SCENE === 'editor') {
-  await page.goto(B + '/editor/', { waitUntil: 'networkidle2' });
+  // S44: /editor/ is a redirect stub — start on the root; ⌘E opens the editor
+  await page.goto(B + '/', { waitUntil: 'networkidle2' });
   await sleep(1000);
-  // sidebar → Author → Worksheet editor (page), then a clean sheet
+  // ⌘E → the editor page, then a clean sheet
   await page.keyboard.down('Control'); await page.keyboard.press('e'); await page.keyboard.up('Control');
   await page.waitForSelector('.fe-title-input', { timeout: 8000 });
   await clickText('button', '✕ Clear');

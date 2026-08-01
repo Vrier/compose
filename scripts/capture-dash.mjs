@@ -83,7 +83,7 @@ const clickText = async (sel, text) => {
   if (!ok) throw new Error('not found: ' + sel + ' ~ ' + text);
 };
 
-await page.goto(B + '/cc/ch6/', { waitUntil: 'networkidle2' });
+await page.goto(B + '/', { waitUntil: 'networkidle2' });
 await page.evaluate((a) => localStorage.setItem('lc2-auth', a), JSON.stringify({ token: auth.token, record: auth.record }));
 await page.reload({ waitUntil: 'networkidle2' });
 await sleep(900);
