@@ -38,15 +38,18 @@ with an “open standalone ↗” link back to the plain URL. The URLs above kee
 working for bookmarks, sharing and search engines.</p>
 
 <figure class="guide-fig"><img src="/guide/root-starter.jpg" alt="The starter page: sidebar, exercises column, derivation tree, reference panel" loading="lazy" />
-<figcaption><a href="/">compose.tstephen.com</a> as it loads: the Getting Started demo worksheet, with the navigation sidebar collapsed to its icon rail (left edge), the exercises column beside it, the tree centre, and the reference panel right.</figcaption></figure>
+<figcaption><a href="/">compose.tstephen.com</a> as it loads: the Getting Started demo worksheet, with the navigation sidebar expanded on the left, the exercises column beside it, the derivation tree centre, and the reference panel (on Lexicon) right.</figcaption></figure>
 
 <h2 id="student">What students see</h2>
 <p>The app is one window with four columns. The <b>sidebar</b> (left) holds
 navigation in accordion sections — Worksheets (the built-in collections, My
 worksheets, and any unlocked classes), Continue (recently opened exercises),
 Display (theme and layout options, plus actions such as saving progress to a
-file), Guide &amp; help, and Account. It collapses to an icon rail with the
-⌘\ shortcut or the header button. Picking a worksheet opens the
+file), Guide &amp; help, and Account. It loads <b>expanded</b> by default and
+stays that way when you pick a worksheet or an exercise — the expanded
+sidebar and the exercises column coexist. Collapsing it to a 58px icon rail
+is a deliberate choice (the ⌘\ shortcut or the header button), and that
+choice persists. Picking a worksheet opens the
 <b>exercises column</b>: the worksheet’s derivations, grouped, with a done
 ring per solved item. The <b>stage</b> (centre) shows the current derivation
 tree. The <b>reference panel</b> (right) has three tabs: <b>Lexicon</b> (the
@@ -54,7 +57,9 @@ worksheet’s words with their typed denotations), <b>Rules</b> (the
 composition rules enabled in this worksheet, with a description and usage
 note each), and
 <b>Notes</b> (the worksheet’s reading companion, present when the worksheet
-has one).</p>
+has one). The panel opens on <b>Lexicon</b> by default and remembers whichever
+tab and open/closed state the student last chose; opening a worksheet never
+forces a particular tab.</p>
 
 <p>The workflow per derivation: click a node whose children are resolved,
 choose a composition rule, type the β-reduced result, submit. The grader
@@ -122,7 +127,7 @@ connection.</p>
 <table class="files-table">
 <thead><tr><th>Method</th><th>Behaviour</th></tr></thead>
 <tbody>
-<tr><td><b>An unlock code</b></td><td>For hosted material you control (a <em>version</em>, <a href="#hosting">below</a>). Students sign in and enter the six-character code once; the class appears in their sidebar under My classes, on every COMPOSE page, and their progress syncs to their account. You can change the content after distribution.</td></tr>
+<tr><td><b>An unlock code</b></td><td>For hosted material you control (a <em>version</em>, <a href="#hosting">below</a>). Students sign in and enter the six-character code once; the class appears in their sidebar under <b>My classes</b> and their progress syncs to their account. You can change the content after distribution. Hosting a version is instructor-only — students can register, redeem codes and sync progress, but cannot publish hosted material.</td></tr>
 <tr><td><b>A library code / QR / link</b></td><td>Every built-in worksheet, chapter and whole collection has a fixed six-character code — no account needed on either side. Students enter it under “⊕ Unlock with a code” (or scan the QR / open the link, which encodes <code>/?code=CODE</code>): the content is fetched into the app, opens immediately, and stays in their sidebar under <b>Unlocked</b>. Students don’t see the full library by default, so the code is how you point a class at exactly the right shelf. Find the codes in the app: a worksheet’s <b>⌗ Code</b> and <b>▦ QR &amp; link</b> buttons at the foot of its exercise list, the <b>⌗</b> beside chapter headings and the Full-library rows (instructor sidebar) — or simply right-click any worksheet or chapter row in the sidebar: a small menu offers <b>⌗ Share code</b>, <b>▦ QR &amp; link</b> and (on worksheets) <b>✎ Copy to editor</b>. The whole-collection codes: C&amp;C <code>KT6WF4</code>, H&amp;K <code>CETGZ4</code>, papers <code>QIPYVM</code>. Chapter codes: <code>cc/ch6 DXKHFU</code> · <code>cc/ch7 QI753D</code> · <code>cc/ch8 U9INJS</code> · <code>cc/ch10 JV5NKN</code> · <code>cc/ch11 F7Q8Y7</code> · <code>cc/ch12 7N7UWF</code> · <code>cc/ch13 VYDXIG</code> · <code>hk/ch1 2U95R2</code> · <code>hk/ch2 IWAHYZ</code> · <code>hk/ch4 YPEQCQ</code> · <code>hk/ch5 8IIRCE</code> · <code>hk/ch6 3FCWXC</code> · <code>hk/ch7 AUY39C</code> · <code>hk/ch9 C64QMV</code> · <code>hk/ch12 R53MVA</code> · <code>papers/partee 4UV9HE</code> · <code>papers/ptq JKTYCU</code> · <code>papers/krifka QGAWIZ</code> · <code>papers/davidson TRGU6C</code> · <code>papers/partee-rooth 3IKHNW</code> · <code>papers/barwise-cooper Y97C9T</code> · <code>papers/link SBG4MN</code>.</td></tr>
 <tr><td><code>/v/&lt;slug&gt;</code></td><td>A version’s direct student link: the same content the unlock code enrols students in, without an account. Progress stays in that browser only. Kept for handout/QR distribution and as the no-account path; a printed link keeps working alongside the code.</td></tr>
 </tbody>
@@ -310,8 +315,10 @@ among others. Unmapped characters pass through unchanged.</p>
 collection the server hosts for you) → choose what it contains on the
 <b>Assign &amp; share</b> page → hand the version’s <b>unlock code</b> to
 your students → each student signs in and enters the code once. The class
-then appears in their sidebar on every COMPOSE page, and their progress is
-kept on their account.</p>
+then appears in their sidebar under <b>My classes</b>, and their progress is
+kept on their account. Hosting versions is <b>instructor-only</b> and enforced
+by the server: a free student account can register, redeem codes and sync its
+progress, but cannot create or publish a hosted <code>/v/</code> version.</p>
 
 <p>Signed in as an instructor, sharing is also <em>one click from the
 worksheet itself</em>: the editor header shows <b>⇗ Share · code + QR</b>
