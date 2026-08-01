@@ -1174,6 +1174,7 @@ function App() {
   const [recents, setRecents] = useState(() => load('lc2-recents', []));
   const [navQuery, setNavQuery] = useState('');
   const [openColl, setOpenColl] = useState(null);
+  const [openFam, setOpenFam] = useState(null); // S53: which textbook family (cc|hk) is expanded
   const searchRef = useRef(null);
   useEffect(() => { save('lc2-rail', railCollapsed); }, [railCollapsed]);
   useEffect(() => { save('lc2-nav-section', navSection); }, [navSection]);
@@ -2200,7 +2201,7 @@ function App() {
     if (loose.length) cols.push({ id: '__loose', label: (ASSIGNMENT && ASSIGNMENT.title) || 'Worksheets', items: loose });
     CH.forEach((ch) => {
       const items = LIB.filter((l) => !l.user && !paperKeys.has(l.key) && inCh(l, ch));
-      if (items.length) cols.push({ id: ch.prefix, label: ch.title, items });
+      if (items.length) cols.push({ id: ch.prefix, label: ch.title, items, family: ch.family || null });
     });
     const papers = LIB.filter((l) => !l.user && !l.classSlug && paperKeys.has(l.key));
     if (papers.length) cols.push({ id: 'papers', label: 'Classic papers', items: papers });
@@ -2306,30 +2307,66 @@ function App() {
             <div>
               {sbSection('library', '❏', 'Worksheets', wsTotal + (wsTotal === 1 ? ' worksheet' : ' worksheets'), (
                 <div>
-                  {cols.map((c) => {
-                    // S43: a chapter collection with a curated unlock code
-                    // gets a small ⌗ opening the code+QR dialog for the group
-                    const ce = isFullBuild
-                      ? (composeCuratedForPrefix(c.id)
-                        || (['cc', 'hk', 'papers'].indexOf(c.id) !== -1 ? composeCuratedByKey(c.id) : null))
-                      : null;
-                    return (
-                    <div key={c.id}>
-                      <div className="sb-coll-row">
-                        <button type="button" className="sb-coll-head" aria-expanded={openId === c.id}
-                          onContextMenu={(e) => openCtxMenu(e, ctxCodeItems(ce))}
-                          onClick={() => setOpenColl(openId === c.id ? '' : c.id)}>
-                          <span className="sb-coll-caret" aria-hidden="true">{openId === c.id ? '▾' : '▸'}</span>
-                          <span className="sb-coll-label">{c.label}</span>
-                          <span className="sb-coll-count">{c.items.length}</span>
-                        </button>
-                        {ce && <button type="button" className="sb-code-btn" title={'Unlock code for “' + c.label + '” — code + QR'}
-                          aria-label={'Unlock code for ' + c.label} onClick={() => setCodeEntry(ce)}>⌗</button>}
-                      </div>
-                      {openId === c.id && c.items.map((l) => renderWsRow(l))}
-                    </div>
-                    );
-                  })}
+                  {(() => {
+                    // one chapter/collection block — used at top level and
+                    // nested inside a family (S53)
+                    const renderColl = (c) => {
+                      const ce = isFullBuild
+                        ? (composeCuratedForPrefix(c.id)
+                          || (['cc', 'hk', 'papers'].indexOf(c.id) !== -1 ? composeCuratedByKey(c.id) : null))
+                        : null;
+                      return (
+                        <div key={c.id}>
+                          <div className="sb-coll-row">
+                            <button type="button" className="sb-coll-head" aria-expanded={openId === c.id}
+                              onContextMenu={(e) => openCtxMenu(e, ctxCodeItems(ce))}
+                              onClick={() => setOpenColl(openId === c.id ? '' : c.id)}>
+                              <span className="sb-coll-caret" aria-hidden="true">{openId === c.id ? '▾' : '▸'}</span>
+                              <span className="sb-coll-label">{c.label}</span>
+                              <span className="sb-coll-count">{c.items.length}</span>
+                            </button>
+                            {ce && <button type="button" className="sb-code-btn" title={'Unlock code for “' + c.label + '” — code + QR'}
+                              aria-label={'Unlock code for ' + c.label} onClick={() => setCodeEntry(ce)}>⌗</button>}
+                          </div>
+                          {openId === c.id && c.items.map((l) => renderWsRow(l))}
+                        </div>
+                      );
+                    };
+                    // S53: chapter collections in a textbook family (cc, hk) nest
+                    // under one family dropdown; the loose demo, Classic papers,
+                    // bundles and My worksheets stay top-level.
+                    const FAMS = { cc: 'Coppock & Champollion', hk: 'Heim & Kratzer' };
+                    const activeFam = activeCol ? activeCol.family : null;
+                    const out = []; const seenFam = {};
+                    cols.forEach((c) => {
+                      if (!c.family) { out.push(renderColl(c)); return; }
+                      if (seenFam[c.family]) return;
+                      seenFam[c.family] = true;
+                      const fk = c.family;
+                      const famCols = cols.filter((x) => x.family === fk);
+                      const famOpen = (openFam != null ? openFam : activeFam) === fk;
+                      const total = famCols.reduce((a, x) => a + x.items.length, 0);
+                      const fce = isFullBuild ? composeCuratedByKey(fk) : null;
+                      const fLabel = FAMS[fk] || fk;
+                      out.push(
+                        <div key={'fam:' + fk}>
+                          <div className="sb-coll-row">
+                            <button type="button" className="sb-coll-head sb-fam-head" aria-expanded={famOpen}
+                              onContextMenu={(e) => openCtxMenu(e, ctxCodeItems(fce))}
+                              onClick={() => setOpenFam(famOpen ? '' : fk)}>
+                              <span className="sb-coll-caret" aria-hidden="true">{famOpen ? '▾' : '▸'}</span>
+                              <span className="sb-coll-label">{fLabel}</span>
+                              <span className="sb-coll-count">{total}</span>
+                            </button>
+                            {fce && <button type="button" className="sb-code-btn" title={'Unlock code for “' + fLabel + '” — code + QR'}
+                              aria-label={'Unlock code for ' + fLabel} onClick={() => setCodeEntry(fce)}>⌗</button>}
+                          </div>
+                          {famOpen && <div className="sb-fam-body">{famCols.map(renderColl)}</div>}
+                        </div>
+                      );
+                    });
+                    return out;
+                  })()}
                   <button type="button" className="sb-row" onClick={() => { setLoadErr(null); setModal('files'); }}>
                     <span className="sb-ico" aria-hidden="true">↑</span>
                     <span className="sb-row-label">Open a file…</span>

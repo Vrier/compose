@@ -9,23 +9,23 @@
   const FILES = window.LC_FILES;
 
   const CHAPTERS = [
-    { prefix: 'ch6',  label: '§6', title: 'Function Application & Quantifiers' },
-    { prefix: 'ch7',  label: '§7', title: 'Adjectives, Relatives & Pronouns' },
-    { prefix: 'ch8',  label: '§8', title: 'Definites & Possessives' },
-    { prefix: 'ch10', label: '§10', title: 'Coordination & Plurals' },
-    { prefix: 'ch11', label: '§11', title: 'Event Semantics' },
-    { prefix: 'ch12', label: '§12', title: 'Tense & Aspect' },
-    { prefix: 'ch13', label: '§13', title: 'Intensional Semantics' },
+    { prefix: 'ch6',  label: '§6', title: 'Function Application & Quantifiers', family: 'cc' },
+    { prefix: 'ch7',  label: '§7', title: 'Adjectives, Relatives & Pronouns', family: 'cc' },
+    { prefix: 'ch8',  label: '§8', title: 'Definites & Possessives', family: 'cc' },
+    { prefix: 'ch10', label: '§10', title: 'Coordination & Plurals', family: 'cc' },
+    { prefix: 'ch11', label: '§11', title: 'Event Semantics', family: 'cc' },
+    { prefix: 'ch12', label: '§12', title: 'Tense & Aspect', family: 'cc' },
+    { prefix: 'ch13', label: '§13', title: 'Intensional Semantics', family: 'cc' },
     { prefix: 'partee', label: '★', title: 'Partee 1986 — NP Type-Shifting' },
     { prefix: 'montague', label: '★', title: 'Montague 1973 — PTQ' },
-    { prefix: 'hk1',  label: 'H&K', title: 'H&K §1 · Conventions' },
-    { prefix: 'hk2',  label: 'H&K', title: 'H&K §2 · Function Application' },
-    { prefix: 'hk4',  label: 'H&K', title: 'H&K §4 · Definites' },
-    { prefix: 'hk5',  label: 'H&K', title: 'H&K §5 · Relative Clauses' },
-    { prefix: 'hk6',  label: 'H&K', title: 'H&K §6 · Quantifiers' },
-    { prefix: 'hk7',  label: 'H&K', title: 'H&K §7 · Quantification' },
-    { prefix: 'hk9',  label: 'H&K', title: 'H&K §9 · Pronouns' },
-    { prefix: 'hk12', label: 'H&K', title: 'H&K §12 · Intensions' },
+    { prefix: 'hk1',  label: '§1',  title: 'Conventions', family: 'hk' },
+    { prefix: 'hk2',  label: '§2',  title: 'Function Application', family: 'hk' },
+    { prefix: 'hk4',  label: '§4',  title: 'Definites', family: 'hk' },
+    { prefix: 'hk5',  label: '§5',  title: 'Relative Clauses', family: 'hk' },
+    { prefix: 'hk6',  label: '§6',  title: 'Quantifiers', family: 'hk' },
+    { prefix: 'hk7',  label: '§7',  title: 'Quantification', family: 'hk' },
+    { prefix: 'hk9',  label: '§9',  title: 'Pronouns', family: 'hk' },
+    { prefix: 'hk12', label: '§12', title: 'Intensions', family: 'hk' },
   ];
   // Hosted versions (W3): the serving route can append picker chapters for
   // instructor worksheets whose keys match no built-in prefix — without this
