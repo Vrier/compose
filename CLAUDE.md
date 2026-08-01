@@ -42,7 +42,20 @@ open student registration (`/api/compose/register-student`, no email ever
 sent), invite-gated instructor registration; instructors manage versions on
 the in-app My versions + Assign & share pages and hand out per-version
 six-char **unlock codes** (`/api/compose/redeem` → enrollment; progress
-syncs per account). `/` = bare starter (demo worksheet only, S13);
+syncs per account). S43: every CURATED worksheet/chapter/family also has a
+fixed client-side unlock code (`compose/curated-codes.json`, deterministic
+sha256-derived, regenerate with `scripts/gen-curated-codes.mjs`, embedded as
+`window.COMPOSE_CURATED`) — redeemed in the unlock dialog or via
+`/?code=XXXXXX` links/QRs with NO account, checked BEFORE the server redeem
+(curated shadows instructor codes); redeeming adds the set to the sidebar's
+"Unlocked" list (un-namespaced localStorage `lc2-unlocked`, ✕ to remove).
+Student/anon sidebars no longer show the always-on /cc /hk /papers links
+(instructor tier keeps them, each with a ⌗ code button); students reach the
+shelves via Guide & help, /files, or a code. A worksheet's drill-in footer
+shows its "⌗ Code · XXXXXX" + "▦ QR & link" buttons (the old "Rules for
+this worksheet" button is gone — the right panel's Rules tab covers it);
+chapter headings and curated pages carry ⌗ / "Code for this collection"
+affordances. `/` = bare starter (demo worksheet only, S13);
 `/cc` `/hk` `/papers` (+ per-chapter pages) = curated library with shared
 per-family progress islands; `/v/:slug` = per-version student pages, kept as
 the no-account path (server-side template substitution, isolated
@@ -56,7 +69,8 @@ downloads + site map; `/help/` (+`/help/guides/`, with video walkthroughs)
 regenerate via scripts/capture-guide.mjs + capture-dash.mjs; videos via
 scripts/capture-walkthroughs.mjs); `/about/` = citation page + what
 accounts store; `/_/` = PB admin. Worksheets are shared through unlock
-codes or `.compose.json` files only — the exercise-HTML export/import
+codes (instructor version codes or curated library codes) or
+`.compose.json` files only — the exercise-HTML export/import
 pipeline (S13.3 `/template.html`, Export assignment) was removed in S39.
 Instructor content lives in the `versions` collection (bundle JSON), validated
 on save by the real engine running inside PB's goja VM. Deploys: push to

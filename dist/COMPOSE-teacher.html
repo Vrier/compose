@@ -2359,6 +2359,20 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .guide-fig figcaption { font-size: 13px; color: var(--ink-soft); margin-top: 8px; line-height: 1.5; }
 .guide-pre { background: var(--panel, rgba(0,0,0,.03)); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; font-size: 13px; line-height: 1.55; overflow-x: auto; }
 
+/* ---- S43: curated unlock codes — sidebar & footer affordances ------------ */
+.sb-row-split { display: flex; align-items: center; }
+.sb-row-split .sb-row { flex: 1 1 auto; min-width: 0; }
+.sb-coll-row { display: flex; align-items: center; }
+.sb-coll-row .sb-coll-head { flex: 1 1 auto; min-width: 0; }
+.sb-code-btn, .sb-code-x {
+  flex: none; width: 24px; height: 24px; margin-right: 10px;
+  border: none; border-radius: 6px; background: transparent;
+  color: var(--faint); font-size: 12px; line-height: 1; cursor: pointer;
+}
+.sb-code-btn:hover { background: var(--panel-2); color: var(--accent); }
+.sb-code-x:hover { background: var(--panel-2); color: var(--accent-ink); }
+.sb-code-btn:focus-visible, .sb-code-x:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
 
 /* ===========================================================================
    lingdown.css — typesetting for the lingdown engine. Themable via --ld-*
@@ -3000,6 +3014,9 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
 !function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"function"==typeof define&&define.amd?define(["exports"],e):e((t="undefined"!=typeof globalThis?globalThis:t||self).htmlToImage={})}(this,(function(t){"use strict";function e(t,e,n,r){return new(n||(n=Promise))((function(i,o){function u(t){try{a(r.next(t))}catch(t){o(t)}}function c(t){try{a(r.throw(t))}catch(t){o(t)}}function a(t){var e;t.done?i(t.value):(e=t.value,e instanceof n?e:new n((function(t){t(e)}))).then(u,c)}a((r=r.apply(t,e||[])).next())}))}function n(t,e){var n,r,i,o,u={label:0,sent:function(){if(1&i[0])throw i[1];return i[1]},trys:[],ops:[]};return o={next:c(0),throw:c(1),return:c(2)},"function"==typeof Symbol&&(o[Symbol.iterator]=function(){return this}),o;function c(c){return function(a){return function(c){if(n)throw new TypeError("Generator is already executing.");for(;o&&(o=0,c[0]&&(u=0)),u;)try{if(n=1,r&&(i=2&c[0]?r.return:c[0]?r.throw||((i=r.return)&&i.call(r),0):r.next)&&!(i=i.call(r,c[1])).done)return i;switch(r=0,i&&(c=[2&c[0],i.value]),c[0]){case 0:case 1:i=c;break;case 4:return u.label++,{value:c[1],done:!1};case 5:u.label++,r=c[1],c=[0];continue;case 7:c=u.ops.pop(),u.trys.pop();continue;default:if(!(i=u.trys,(i=i.length>0&&i[i.length-1])||6!==c[0]&&2!==c[0])){u=0;continue}if(3===c[0]&&(!i||c[1]>i[0]&&c[1]<i[3])){u.label=c[1];break}if(6===c[0]&&u.label<i[1]){u.label=i[1],i=c;break}if(i&&u.label<i[2]){u.label=i[2],u.ops.push(c);break}i[2]&&u.ops.pop(),u.trys.pop();continue}c=e.call(t,u)}catch(t){c=[6,t],r=0}finally{n=i=0}if(5&c[0])throw c[1];return{value:c[0]?c[1]:void 0,done:!0}}([c,a])}}}var r,i=(r=0,function(){return r+=1,"u".concat("0000".concat((Math.random()*Math.pow(36,4)<<0).toString(36)).slice(-4)).concat(r)});function o(t){for(var e=[],n=0,r=t.length;n<r;n++)e.push(t[n]);return e}function u(t,e){var n=(t.ownerDocument.defaultView||window).getComputedStyle(t).getPropertyValue(e);return n?parseFloat(n.replace("px","")):0}function c(t,e){void 0===e&&(e={});var n,r,i,o=e.width||(r=u(n=t,"border-left-width"),i=u(n,"border-right-width"),n.clientWidth+r+i),c=e.height||function(t){var e=u(t,"border-top-width"),n=u(t,"border-bottom-width");return t.clientHeight+e+n}(t);return{width:o,height:c}}var a=16384;function s(t,e){return void 0===e&&(e={}),t.toBlob?new Promise((function(n){t.toBlob(n,e.type?e.type:"image/png",e.quality?e.quality:1)})):new Promise((function(n){for(var r=window.atob(t.toDataURL(e.type?e.type:void 0,e.quality?e.quality:void 0).split(",")[1]),i=r.length,o=new Uint8Array(i),u=0;u<i;u+=1)o[u]=r.charCodeAt(u);n(new Blob([o],{type:e.type?e.type:"image/png"}))}))}function l(t){return new Promise((function(e,n){var r=new Image;r.decode=function(){return e(r)},r.onload=function(){return e(r)},r.onerror=n,r.crossOrigin="anonymous",r.decoding="async",r.src=t}))}function f(t){return e(this,void 0,void 0,(function(){return n(this,(function(e){return[2,Promise.resolve().then((function(){return(new XMLSerializer).serializeToString(t)})).then(encodeURIComponent).then((function(t){return"data:image/svg+xml;charset=utf-8,".concat(t)}))]}))}))}function h(t,r,i){return e(this,void 0,void 0,(function(){var e,o,u;return n(this,(function(n){return e="http://www.w3.org/2000/svg",o=document.createElementNS(e,"svg"),u=document.createElementNS(e,"foreignObject"),o.setAttribute("width","".concat(r)),o.setAttribute("height","".concat(i)),o.setAttribute("viewBox","0 0 ".concat(r," ").concat(i)),u.setAttribute("width","100%"),u.setAttribute("height","100%"),u.setAttribute("x","0"),u.setAttribute("y","0"),u.setAttribute("externalResourcesRequired","true"),o.appendChild(u),u.appendChild(t),[2,f(o)]}))}))}var d=function(t,e){if(t instanceof e)return!0;var n=Object.getPrototypeOf(t);return null!==n&&(n.constructor.name===e.name||d(n,e))};function v(t,e,n){var r=".".concat(t,":").concat(e),i=n.cssText?function(t){var e=t.getPropertyValue("content");return"".concat(t.cssText," content: '").concat(e.replace(/'|"/g,""),"';")}(n):function(t){return o(t).map((function(e){var n=t.getPropertyValue(e),r=t.getPropertyPriority(e);return"".concat(e,": ").concat(n).concat(r?" !important":"",";")})).join(" ")}(n);return document.createTextNode("".concat(r,"{").concat(i,"}"))}function p(t,e,n){var r=window.getComputedStyle(t,n),o=r.getPropertyValue("content");if(""!==o&&"none"!==o){var u=i();try{e.className="".concat(e.className," ").concat(u)}catch(t){return}var c=document.createElement("style");c.appendChild(v(u,n,r)),e.appendChild(c)}}var g="application/font-woff",m="image/jpeg",w={woff:g,woff2:g,ttf:"application/font-truetype",eot:"application/vnd.ms-fontobject",png:"image/png",jpg:m,jpeg:m,gif:"image/gif",tiff:"image/tiff",svg:"image/svg+xml",webp:"image/webp"};function b(t){var e=function(t){var e=/\.([^./]*?)$/g.exec(t);return e?e[1]:""}(t).toLowerCase();return w[e]||""}function y(t){return-1!==t.search(/^(data:)/)}function x(t,e){return"data:".concat(e,";base64,").concat(t)}function S(t,r,i){return e(this,void 0,void 0,(function(){var e,o;return n(this,(function(n){switch(n.label){case 0:return[4,fetch(t,r)];case 1:if(404===(e=n.sent()).status)throw new Error('Resource "'.concat(e.url,'" not found'));return[4,e.blob()];case 2:return o=n.sent(),[2,new Promise((function(t,n){var r=new FileReader;r.onerror=n,r.onloadend=function(){try{t(i({res:e,result:r.result}))}catch(t){n(t)}},r.readAsDataURL(o)}))]}}))}))}var E={};function C(t,r,i){return e(this,void 0,void 0,(function(){var e,o,u,c,a;return n(this,(function(n){switch(n.label){case 0:if(e=function(t,e,n){var r=t.replace(/\?.*/,"");return n&&(r=t),/ttf|otf|eot|woff2?/i.test(r)&&(r=r.replace(/.*\//,"")),e?"[".concat(e,"]").concat(r):r}(t,r,i.includeQueryParams),null!=E[e])return[2,E[e]];i.cacheBust&&(t+=(/\?/.test(t)?"&":"?")+(new Date).getTime()),n.label=1;case 1:return n.trys.push([1,3,,4]),[4,S(t,i.fetchRequestInit,(function(t){var e=t.res,n=t.result;return r||(r=e.headers.get("Content-Type")||""),function(t){return t.split(/,/)[1]}(n)}))];case 2:return u=n.sent(),o=x(u,r),[3,4];case 3:return c=n.sent(),o=i.imagePlaceholder||"",a="Failed to fetch resource: ".concat(t),c&&(a="string"==typeof c?c:c.message),a&&console.warn(a),[3,4];case 4:return E[e]=o,[2,o]}}))}))}function P(t){return e(this,void 0,void 0,(function(){var e;return n(this,(function(n){return"data:,"===(e=t.toDataURL())?[2,t.cloneNode(!1)]:[2,l(e)]}))}))}function R(t,r){return e(this,void 0,void 0,(function(){var e,i,o,u;return n(this,(function(n){switch(n.label){case 0:return t.currentSrc?(e=document.createElement("canvas"),i=e.getContext("2d"),e.width=t.clientWidth,e.height=t.clientHeight,null==i||i.drawImage(t,0,0,e.width,e.height),[2,l(e.toDataURL())]):(o=t.poster,u=b(o),[4,C(o,u,r)]);case 1:return[2,l(n.sent())]}}))}))}function T(t){var r;return e(this,void 0,void 0,(function(){return n(this,(function(e){switch(e.label){case 0:return e.trys.push([0,3,,4]),(null===(r=null==t?void 0:t.contentDocument)||void 0===r?void 0:r.body)?[4,L(t.contentDocument.body,{},!0)]:[3,2];case 1:return[2,e.sent()];case 2:return[3,4];case 3:return e.sent(),[3,4];case 4:return[2,t.cloneNode(!1)]}}))}))}function A(t,e){return d(e,Element)&&(function(t,e){var n=e.style;if(n){var r=window.getComputedStyle(t);r.cssText?(n.cssText=r.cssText,n.transformOrigin=r.transformOrigin):o(r).forEach((function(i){var o=r.getPropertyValue(i);if("font-size"===i&&o.endsWith("px")){var u=Math.floor(parseFloat(o.substring(0,o.length-2)))-.1;o="".concat(u,"px")}d(t,HTMLIFrameElement)&&"display"===i&&"inline"===o&&(o="block"),"d"===i&&e.getAttribute("d")&&(o="path(".concat(e.getAttribute("d"),")")),n.setProperty(i,o,r.getPropertyPriority(i))}))}}(t,e),function(t,e){p(t,e,":before"),p(t,e,":after")}(t,e),function(t,e){d(t,HTMLTextAreaElement)&&(e.innerHTML=t.value),d(t,HTMLInputElement)&&e.setAttribute("value",t.value)}(t,e),function(t,e){if(d(t,HTMLSelectElement)){var n=e,r=Array.from(n.children).find((function(e){return t.value===e.getAttribute("value")}));r&&r.setAttribute("selected","")}}(t,e)),e}function L(t,r,i){return e(this,void 0,void 0,(function(){return n(this,(function(u){return i||!r.filter||r.filter(t)?[2,Promise.resolve(t).then((function(t){return function(t,r){return e(this,void 0,void 0,(function(){return n(this,(function(e){return d(t,HTMLCanvasElement)?[2,P(t)]:d(t,HTMLVideoElement)?[2,R(t,r)]:d(t,HTMLIFrameElement)?[2,T(t)]:[2,t.cloneNode(!1)]}))}))}(t,r)})).then((function(i){return function(t,r,i){var u,c;return e(this,void 0,void 0,(function(){var e;return n(this,(function(n){switch(n.label){case 0:return e=[],0===(e=null!=(a=t).tagName&&"SLOT"===a.tagName.toUpperCase()&&t.assignedNodes?o(t.assignedNodes()):d(t,HTMLIFrameElement)&&(null===(u=t.contentDocument)||void 0===u?void 0:u.body)?o(t.contentDocument.body.childNodes):o((null!==(c=t.shadowRoot)&&void 0!==c?c:t).childNodes)).length||d(t,HTMLVideoElement)?[2,r]:[4,e.reduce((function(t,e){return t.then((function(){return L(e,i)})).then((function(t){t&&r.appendChild(t)}))}),Promise.resolve())];case 1:return n.sent(),[2,r]}var a}))}))}(t,i,r)})).then((function(e){return A(t,e)})).then((function(t){return function(t,r){return e(this,void 0,void 0,(function(){var e,i,o,u,c,a,s,l,f,h,d,v,p;return n(this,(function(n){switch(n.label){case 0:if(0===(e=t.querySelectorAll?t.querySelectorAll("use"):[]).length)return[2,t];i={},p=0,n.label=1;case 1:return p<e.length?(o=e[p],(u=o.getAttribute("xlink:href"))?(c=t.querySelector(u),a=document.querySelector(u),c||!a||i[u]?[3,3]:(s=i,l=u,[4,L(a,r,!0)])):[3,3]):[3,4];case 2:s[l]=n.sent(),n.label=3;case 3:return p++,[3,1];case 4:if((f=Object.values(i)).length){for(h="http://www.w3.org/1999/xhtml",(d=document.createElementNS(h,"svg")).setAttribute("xmlns",h),d.style.position="absolute",d.style.width="0",d.style.height="0",d.style.overflow="hidden",d.style.display="none",v=document.createElementNS(h,"defs"),d.appendChild(v),p=0;p<f.length;p++)v.appendChild(f[p]);t.appendChild(d)}return[2,t]}}))}))}(t,r)}))]:[2,null]}))}))}var N=/url\((['"]?)([^'"]+?)\1\)/g,k=/url\([^)]+\)\s*format\((["']?)([^"']+)\1\)/g,I=/src:\s*(?:url\([^)]+\)\s*format\([^)]+\)[,;]\s*)+/g;function D(t,r,i,o,u){return e(this,void 0,void 0,(function(){var e,c,a,s;return n(this,(function(n){switch(n.label){case 0:return n.trys.push([0,5,,6]),e=i?function(t,e){if(t.match(/^[a-z]+:\/\//i))return t;if(t.match(/^\/\//))return window.location.protocol+t;if(t.match(/^[a-z]+:/i))return t;var n=document.implementation.createHTMLDocument(),r=n.createElement("base"),i=n.createElement("a");return n.head.appendChild(r),n.body.appendChild(i),e&&(r.href=e),i.href=t,i.href}(r,i):r,c=b(r),a=void 0,u?[4,u(e)]:[3,2];case 1:return s=n.sent(),a=x(s,c),[3,4];case 2:return[4,C(e,c,o)];case 3:a=n.sent(),n.label=4;case 4:return[2,t.replace((l=r,f=l.replace(/([.*+?^${}()|\[\]\/\\])/g,"\\$1"),new RegExp("(url\\(['\"]?)(".concat(f,")(['\"]?\\))"),"g")),"$1".concat(a,"$3"))];case 5:return n.sent(),[3,6];case 6:return[2,t]}var l,f}))}))}function M(t){return-1!==t.search(N)}function H(t,r,i){return e(this,void 0,void 0,(function(){var e,o;return n(this,(function(n){return M(t)?(e=function(t,e){var n=e.preferredFontFormat;return n?t.replace(I,(function(t){for(;;){var e=k.exec(t)||[],r=e[0],i=e[2];if(!i)return"";if(i===n)return"src: ".concat(r,";")}})):t}(t,i),o=function(t){var e=[];return t.replace(N,(function(t,n,r){return e.push(r),t})),e.filter((function(t){return!y(t)}))}(e),[2,o.reduce((function(t,e){return t.then((function(t){return D(t,e,r,i)}))}),Promise.resolve(e))]):[2,t]}))}))}function V(t,r,i){var o;return e(this,void 0,void 0,(function(){var e,u;return n(this,(function(n){switch(n.label){case 0:return(e=null===(o=r.style)||void 0===o?void 0:o.getPropertyValue(t))?[4,H(e,null,i)]:[3,2];case 1:return u=n.sent(),r.style.setProperty(t,u,r.style.getPropertyPriority(t)),[2,!0];case 2:return[2,!1]}}))}))}function F(t,r){return e(this,void 0,void 0,(function(){return n(this,(function(e){switch(e.label){case 0:return[4,V("background",t,r)];case 1:return e.sent()?[3,3]:[4,V("background-image",t,r)];case 2:e.sent(),e.label=3;case 3:return[4,V("mask",t,r)];case 4:return e.sent()?[3,6]:[4,V("mask-image",t,r)];case 5:e.sent(),e.label=6;case 6:return[2]}}))}))}function j(t,r){return e(this,void 0,void 0,(function(){var e,i,o;return n(this,(function(n){switch(n.label){case 0:return(e=d(t,HTMLImageElement))&&!y(t.src)||d(t,SVGImageElement)&&!y(t.href.baseVal)?[4,C(i=e?t.src:t.href.baseVal,b(i),r)]:[2];case 1:return o=n.sent(),[4,new Promise((function(n,r){t.onload=n,t.onerror=r;var i=t;i.decode&&(i.decode=n),"lazy"===i.loading&&(i.loading="eager"),e?(t.srcset="",t.src=o):t.href.baseVal=o}))];case 2:return n.sent(),[2]}}))}))}function q(t,r){return e(this,void 0,void 0,(function(){var e,i;return n(this,(function(n){switch(n.label){case 0:return e=o(t.childNodes),i=e.map((function(t){return U(t,r)})),[4,Promise.all(i).then((function(){return t}))];case 1:return n.sent(),[2]}}))}))}function U(t,r){return e(this,void 0,void 0,(function(){return n(this,(function(e){switch(e.label){case 0:return d(t,Element)?[4,F(t,r)]:[3,4];case 1:return e.sent(),[4,j(t,r)];case 2:return e.sent(),[4,q(t,r)];case 3:e.sent(),e.label=4;case 4:return[2]}}))}))}var O={};function B(t){return e(this,void 0,void 0,(function(){var e,r;return n(this,(function(n){switch(n.label){case 0:return null!=(e=O[t])?[2,e]:[4,fetch(t)];case 1:return[4,n.sent().text()];case 2:return r=n.sent(),e={url:t,cssText:r},O[t]=e,[2,e]}}))}))}function z(t,r){return e(this,void 0,void 0,(function(){var i,o,u,c,a=this;return n(this,(function(s){return i=t.cssText,o=/url\(["']?([^"')]+)["']?\)/g,u=i.match(/url\([^)]+\)/g)||[],c=u.map((function(u){return e(a,void 0,void 0,(function(){var e;return n(this,(function(n){return(e=u.replace(o,"$1")).startsWith("https://")||(e=new URL(e,t.url).href),[2,S(e,r.fetchRequestInit,(function(t){var e=t.result;return i=i.replace(u,"url(".concat(e,")")),[u,e]}))]}))}))})),[2,Promise.all(c).then((function(){return i}))]}))}))}function W(t){if(null==t)return[];for(var e=[],n=t.replace(/(\/\*[\s\S]*?\*\/)/gi,""),r=new RegExp("((@.*?keyframes [\\s\\S]*?){([\\s\\S]*?}\\s*?)})","gi");;){if(null===(u=r.exec(n)))break;e.push(u[0])}n=n.replace(r,"");for(var i=/@import[\s\S]*?url\([^)]*\)[\s\S]*?;/gi,o=new RegExp("((\\s*?(?:\\/\\*[\\s\\S]*?\\*\\/)?\\s*?@media[\\s\\S]*?){([\\s\\S]*?)}\\s*?})|(([\\s\\S]*?){([\\s\\S]*?)})","gi");;){var u;if(null===(u=i.exec(n))){if(null===(u=o.exec(n)))break;i.lastIndex=o.lastIndex}else o.lastIndex=i.lastIndex;e.push(u[0])}return e}function $(t,r){return e(this,void 0,void 0,(function(){var e,i;return n(this,(function(n){return e=[],i=[],t.forEach((function(e){if("cssRules"in e)try{o(e.cssRules||[]).forEach((function(t,n){if(t.type===CSSRule.IMPORT_RULE){var o=n+1,u=B(t.href).then((function(t){return z(t,r)})).then((function(t){return W(t).forEach((function(t){try{e.insertRule(t,t.startsWith("@import")?o+=1:e.cssRules.length)}catch(e){console.error("Error inserting rule from remote css",{rule:t,error:e})}}))})).catch((function(t){console.error("Error loading remote css",t.toString())}));i.push(u)}}))}catch(o){var n=t.find((function(t){return null==t.href}))||document.styleSheets[0];null!=e.href&&i.push(B(e.href).then((function(t){return z(t,r)})).then((function(t){return W(t).forEach((function(t){n.insertRule(t,e.cssRules.length)}))})).catch((function(t){console.error("Error loading remote stylesheet",t)}))),console.error("Error inlining remote css file",o)}})),[2,Promise.all(i).then((function(){return t.forEach((function(t){if("cssRules"in t)try{o(t.cssRules||[]).forEach((function(t){e.push(t)}))}catch(e){console.error("Error while reading CSS rules from ".concat(t.href),e)}})),e}))]}))}))}function _(t){return t.filter((function(t){return t.type===CSSRule.FONT_FACE_RULE})).filter((function(t){return M(t.style.getPropertyValue("src"))}))}function G(t,r){return e(this,void 0,void 0,(function(){return n(this,(function(e){switch(e.label){case 0:if(null==t.ownerDocument)throw new Error("Provided element is not within a Document");return[4,$(o(t.ownerDocument.styleSheets),r)];case 1:return[2,_(e.sent())]}}))}))}function J(t,r){return e(this,void 0,void 0,(function(){var e;return n(this,(function(n){switch(n.label){case 0:return[4,G(t,r)];case 1:return e=n.sent(),[4,Promise.all(e.map((function(t){var e=t.parentStyleSheet?t.parentStyleSheet.href:null;return H(t.cssText,e,r)})))];case 2:return[2,n.sent().join("\n")]}}))}))}function Q(t,r){return e(this,void 0,void 0,(function(){var e,i,o,u,c;return n(this,(function(n){switch(n.label){case 0:return null==r.fontEmbedCSS?[3,1]:(i=r.fontEmbedCSS,[3,5]);case 1:return r.skipFonts?(o=null,[3,4]):[3,2];case 2:return[4,J(t,r)];case 3:o=n.sent(),n.label=4;case 4:i=o,n.label=5;case 5:return(e=i)&&(u=document.createElement("style"),c=document.createTextNode(e),u.appendChild(c),t.firstChild?t.insertBefore(u,t.firstChild):t.appendChild(u)),[2]}}))}))}function X(t,r){return void 0===r&&(r={}),e(this,void 0,void 0,(function(){var e,i,o,u;return n(this,(function(n){switch(n.label){case 0:return e=c(t,r),i=e.width,o=e.height,[4,L(t,r,!0)];case 1:return[4,Q(u=n.sent(),r)];case 2:return n.sent(),[4,U(u,r)];case 3:return n.sent(),function(t,e){var n=t.style;e.backgroundColor&&(n.backgroundColor=e.backgroundColor),e.width&&(n.width="".concat(e.width,"px")),e.height&&(n.height="".concat(e.height,"px"));var r=e.style;null!=r&&Object.keys(r).forEach((function(t){n[t]=r[t]}))}(u,r),[4,h(u,i,o)];case 4:return[2,n.sent()]}}))}))}function K(t,r){return void 0===r&&(r={}),e(this,void 0,void 0,(function(){var e,i,o,u,s,f,h,d,v;return n(this,(function(n){switch(n.label){case 0:return e=c(t,r),i=e.width,o=e.height,[4,X(t,r)];case 1:return[4,l(n.sent())];case 2:return u=n.sent(),s=document.createElement("canvas"),f=s.getContext("2d"),h=r.pixelRatio||function(){var t,e;try{e=process}catch(t){}var n=e&&e.env?e.env.devicePixelRatio:null;return n&&(t=parseInt(n,10),Number.isNaN(t)&&(t=1)),t||window.devicePixelRatio||1}(),d=r.canvasWidth||i,v=r.canvasHeight||o,s.width=d*h,s.height=v*h,r.skipAutoScale||function(t){(t.width>a||t.height>a)&&(t.width>a&&t.height>a?t.width>t.height?(t.height*=a/t.width,t.width=a):(t.width*=a/t.height,t.height=a):t.width>a?(t.height*=a/t.width,t.width=a):(t.width*=a/t.height,t.height=a))}(s),s.style.width="".concat(d),s.style.height="".concat(v),r.backgroundColor&&(f.fillStyle=r.backgroundColor,f.fillRect(0,0,s.width,s.height)),f.drawImage(u,0,0,s.width,s.height),[2,s]}}))}))}t.getFontEmbedCSS=function(t,r){return void 0===r&&(r={}),e(this,void 0,void 0,(function(){return n(this,(function(e){return[2,J(t,r)]}))}))},t.toBlob=function(t,r){return void 0===r&&(r={}),e(this,void 0,void 0,(function(){return n(this,(function(e){switch(e.label){case 0:return[4,K(t,r)];case 1:return[4,s(e.sent())];case 2:return[2,e.sent()]}}))}))},t.toCanvas=K,t.toJpeg=function(t,r){return void 0===r&&(r={}),e(this,void 0,void 0,(function(){return n(this,(function(e){switch(e.label){case 0:return[4,K(t,r)];case 1:return[2,e.sent().toDataURL("image/jpeg",r.quality||1)]}}))}))},t.toPixelData=function(t,r){return void 0===r&&(r={}),e(this,void 0,void 0,(function(){var e,i,o,u;return n(this,(function(n){switch(n.label){case 0:return e=c(t,r),i=e.width,o=e.height,[4,K(t,r)];case 1:return u=n.sent(),[2,u.getContext("2d").getImageData(0,0,i,o).data]}}))}))},t.toPng=function(t,r){return void 0===r&&(r={}),e(this,void 0,void 0,(function(){return n(this,(function(e){switch(e.label){case 0:return[4,K(t,r)];case 1:return[2,e.sent().toDataURL()]}}))}))},t.toSvg=X}));
 //# sourceMappingURL=html-to-image.js.map
 
+</script>
+<script>
+window.COMPOSE_CURATED = [{"code":"VRAQC9","kind":"worksheet","key":"barwise-cooper","title":"Barwise & Cooper 1981 — Generalized Quantifiers and Natural Language","url":"/papers/barwise-cooper/?ws=barwise-cooper"},{"code":"ZTVEGQ","kind":"worksheet","key":"ch6.1-fa","title":"Function Application (§6.1–6.3)","url":"/cc/ch6/?ws=ch6.1-fa"},{"code":"6U82QI","kind":"worksheet","key":"ch6.2-quant","title":"Quantifiers (§6.4)","url":"/cc/ch6/?ws=ch6.2-quant"},{"code":"MQ6GK7","kind":"worksheet","key":"ch7.1-adj","title":"Adjectives & Predicate Modification (§7.2)","url":"/cc/ch7/?ws=ch7.1-adj"},{"code":"H4YJ6X","kind":"worksheet","key":"ch7.2-adjts","title":"Adjective Type-Shifting: MOD (§7.2)","url":"/cc/ch7/?ws=ch7.2-adjts"},{"code":"E7Z6MQ","kind":"worksheet","key":"ch7.3-relcl","title":"Relative Clauses (§7.3)","url":"/cc/ch7/?ws=ch7.3-relcl"},{"code":"RRJ87W","kind":"worksheet","key":"ch7.4-objraise","title":"Quantifiers in Object Position (§7.4)","url":"/cc/ch7/?ws=ch7.4-objraise"},{"code":"SEEXIN","kind":"worksheet","key":"ch7.5-objts","title":"Object Type-Shifting: RaiseO/S (§7.4.2)","url":"/cc/ch7/?ws=ch7.5-objts"},{"code":"WWRUTM","kind":"worksheet","key":"ch7.6-pron","title":"Pronouns & Binding (§7.5)","url":"/cc/ch7/?ws=ch7.6-pron"},{"code":"PCAJPS","kind":"worksheet","key":"ch8.1-defn","title":"Definite Descriptions (§8.1–8.2)","url":"/cc/ch8/?ws=ch8.1-defn"},{"code":"NAUB67","kind":"worksheet","key":"ch8.4-definedness","title":"Definedness Conditions: the ∂ operator (§8.4)","url":"/cc/ch8/?ws=ch8.4-definedness"},{"code":"YJB8SZ","kind":"worksheet","key":"ch10-coord","title":"10.1 Coordination","url":"/cc/ch10/?ws=ch10-coord"},{"code":"FHM2JD","kind":"worksheet","key":"ch10-cumulative","title":"10.4 Cumulative Readings","url":"/cc/ch10/?ws=ch10-cumulative"},{"code":"M7G23G","kind":"worksheet","key":"ch10-lift","title":"10.1 DP Coordination & Montague Lift","url":"/cc/ch10/?ws=ch10-lift"},{"code":"JYHINY","kind":"worksheet","key":"ch10-mereology","title":"10.2 Mereology — Sums and Parthood","url":"/cc/ch10/?ws=ch10-mereology"},{"code":"4YPCFY","kind":"worksheet","key":"ch10-plural","title":"10.3 Plurals & the Star Operator","url":"/cc/ch10/?ws=ch10-plural"},{"code":"PH72N8","kind":"worksheet","key":"ch10.5-fragment","title":"10.5 The Full Fragment (L∗ with starred verbs)","url":"/cc/ch10/?ws=ch10.5-fragment"},{"code":"HNAWBH","kind":"worksheet","key":"ch11.1-dav","title":"Davidsonian Event Semantics (§11.1–11.2)","url":"/cc/ch11/?ws=ch11.1-dav"},{"code":"E4BW35","kind":"worksheet","key":"ch11.3-neodav","title":"Neo-Davidsonian Event Semantics (§11.3)","url":"/cc/ch11/?ws=ch11.3-neodav"},{"code":"M8IYND","kind":"worksheet","key":"ch11.4-continuation","title":"Event Quantifiers — the Continuation Approach (§11.4–11.6)","url":"/cc/ch11/?ws=ch11.4-continuation"},{"code":"XNX2G4","kind":"worksheet","key":"ch11.5-conjneg","title":"Conjunction & Negation in Event Semantics (§11.5–11.6)","url":"/cc/ch11/?ws=ch11.5-conjneg"},{"code":"4TC5QP","kind":"worksheet","key":"ch12.1-times","title":"Tense (§12.2.2.4)","url":"/cc/ch12/?ws=ch12.1-times"},{"code":"X9TFD7","kind":"worksheet","key":"ch12.2-aspects","title":"The Perfect (§12.2.2.5)","url":"/cc/ch12/?ws=ch12.2-aspects"},{"code":"KF6257","kind":"worksheet","key":"ch12.3-future","title":"The Future: WOLL, will & would (§12.2.2.4)","url":"/cc/ch12/?ws=ch12.3-future"},{"code":"RDH6BD","kind":"worksheet","key":"ch13.1-worlds","title":"World-Indexed Predicates (§13.4)","url":"/cc/ch13/?ws=ch13.1-worlds"},{"code":"M5M2YF","kind":"worksheet","key":"ch13.2-modals","title":"Modals: Necessity & Possibility (§13.4.4)","url":"/cc/ch13/?ws=ch13.2-modals"},{"code":"GCJDRA","kind":"worksheet","key":"ch13.3-intensional","title":"Intensional Transitive Verbs (§13.4.4)","url":"/cc/ch13/?ws=ch13.3-intensional"},{"code":"XSFRSG","kind":"worksheet","key":"ch13.4-attitudes","title":"Propositional Attitudes (§13.5.2)","url":"/cc/ch13/?ws=ch13.4-attitudes"},{"code":"IESWEU","kind":"worksheet","key":"ch13.5-dere","title":"De dicto vs. De re (§13.6)","url":"/cc/ch13/?ws=ch13.5-dere"},{"code":"KWBI86","kind":"worksheet","key":"ch13.6-worlds-times","title":"Worlds & Times Combined (§12–13)","url":"/cc/ch13/?ws=ch13.6-worlds-times"},{"code":"MVBT2Q","kind":"worksheet","key":"ch13.7-haveto","title":"Contextual Modal Base & Presupposition: have to (§13.5.1)","url":"/cc/ch13/?ws=ch13.7-haveto"},{"code":"KSVNS2","kind":"worksheet","key":"davidson-events","title":"Davidson 1967 — The Logical Form of Action Sentences","url":"/papers/davidson/?ws=davidson-events"},{"code":"KR8IQT","kind":"worksheet","key":"hk1-conventions","title":"Conventions: Types, ⟦·⟧, and =1 (§1)","url":"/hk/ch1/?ws=hk1-conventions"},{"code":"VWX3ZX","kind":"worksheet","key":"hk2-fa","title":"Function Application & Semantic Types (§2.1–2.4)","url":"/hk/ch2/?ws=hk2-fa"},{"code":"26JYAT","kind":"worksheet","key":"hk4-definites","title":"Predicates, Modifiers & the Definite Article (§4.3–4.5)","url":"/hk/ch4/?ws=hk4-definites"},{"code":"X4K47C","kind":"worksheet","key":"hk5-relatives","title":"Relative Clauses & Predicate Abstraction (§5.1–5.3)","url":"/hk/ch5/?ws=hk5-relatives"},{"code":"N58GCN","kind":"worksheet","key":"hk6-quantifiers","title":"Quantifiers: Their Semantic Type (§6.3–6.7)","url":"/hk/ch6/?ws=hk6-quantifiers"},{"code":"X3BK7F","kind":"worksheet","key":"hk7-quantification","title":"Quantification & Grammar (§7.1–7.5)","url":"/hk/ch7/?ws=hk7-quantification"},{"code":"4PCZHW","kind":"worksheet","key":"hk9-pronouns","title":"Bound & Referential Pronouns (§9.1–9.2)","url":"/hk/ch9/?ws=hk9-pronouns"},{"code":"AVZ5MK","kind":"worksheet","key":"hk12-intensions","title":"First Steps Towards an Intensional Semantics (§12.1–12.3)","url":"/hk/ch12/?ws=hk12-intensions"},{"code":"XVCBZZ","kind":"worksheet","key":"krifka-telicity","title":"Krifka 1998 — The Origins of Telicity","url":"/papers/krifka/?ws=krifka-telicity"},{"code":"UNGUKK","kind":"worksheet","key":"link-plurals","title":"Link 1983 — The Logical Analysis of Plurals and Mass Terms","url":"/papers/link/?ws=link-plurals"},{"code":"2HUWTH","kind":"worksheet","key":"montague-ptq","title":"Montague's PTQ · A — The Extensional Core","url":"/papers/ptq/?ws=montague-ptq"},{"code":"K8PCPI","kind":"worksheet","key":"montague-ptq-int","title":"Montague's PTQ · B — The Intensional Fragment (TY2)","url":"/papers/ptq/?ws=montague-ptq-int"},{"code":"KRAW8V","kind":"worksheet","key":"partee-rooth-conj","title":"Partee & Rooth 1983 — Generalized Conjunction","url":"/papers/partee-rooth/?ws=partee-rooth-conj"},{"code":"6GEFQ4","kind":"worksheet","key":"partee-triangle","title":"Partee 1986 — The Type-Shifting Triangle","url":"/papers/partee/?ws=partee-triangle"},{"code":"DXKHFU","kind":"chapter","key":"cc/ch6","title":"C&C §6 Function Application & Quantifiers","url":"/cc/ch6/","prefix":"ch6"},{"code":"QI753D","kind":"chapter","key":"cc/ch7","title":"C&C §7 Adjectives, Relatives & Pronouns","url":"/cc/ch7/","prefix":"ch7"},{"code":"U9INJS","kind":"chapter","key":"cc/ch8","title":"C&C §8 Definites & Possessives","url":"/cc/ch8/","prefix":"ch8"},{"code":"JV5NKN","kind":"chapter","key":"cc/ch10","title":"C&C §10 Coordination & Plurals","url":"/cc/ch10/","prefix":"ch10"},{"code":"F7Q8Y7","kind":"chapter","key":"cc/ch11","title":"C&C §11 Event Semantics","url":"/cc/ch11/","prefix":"ch11"},{"code":"7N7UWF","kind":"chapter","key":"cc/ch12","title":"C&C §12 Tense & Aspect","url":"/cc/ch12/","prefix":"ch12"},{"code":"VYDXIG","kind":"chapter","key":"cc/ch13","title":"C&C §13 Intensional Semantics","url":"/cc/ch13/","prefix":"ch13"},{"code":"2U95R2","kind":"chapter","key":"hk/ch1","title":"H&K ch. 1 Conventions","url":"/hk/ch1/"},{"code":"IWAHYZ","kind":"chapter","key":"hk/ch2","title":"H&K ch. 2 Function Application","url":"/hk/ch2/"},{"code":"YPEQCQ","kind":"chapter","key":"hk/ch4","title":"H&K ch. 4 Definites","url":"/hk/ch4/"},{"code":"8IIRCE","kind":"chapter","key":"hk/ch5","title":"H&K ch. 5 Relative Clauses","url":"/hk/ch5/"},{"code":"3FCWXC","kind":"chapter","key":"hk/ch6","title":"H&K ch. 6 Quantifiers","url":"/hk/ch6/"},{"code":"AUY39C","kind":"chapter","key":"hk/ch7","title":"H&K ch. 7 Quantification","url":"/hk/ch7/"},{"code":"C64QMV","kind":"chapter","key":"hk/ch9","title":"H&K ch. 9 Pronouns","url":"/hk/ch9/"},{"code":"R53MVA","kind":"chapter","key":"hk/ch12","title":"H&K ch. 12 Intensions","url":"/hk/ch12/"},{"code":"4UV9HE","kind":"chapter","key":"papers/partee","title":"Partee 1986 — The Type-Shifting Triangle","url":"/papers/partee/"},{"code":"JKTYCU","kind":"chapter","key":"papers/ptq","title":"Montague 1973 — PTQ","url":"/papers/ptq/"},{"code":"QGAWIZ","kind":"chapter","key":"papers/krifka","title":"Krifka 1998 — The Origins of Telicity","url":"/papers/krifka/"},{"code":"TRGU6C","kind":"chapter","key":"papers/davidson","title":"Davidson 1967 — Action Sentences","url":"/papers/davidson/"},{"code":"3IKHNW","kind":"chapter","key":"papers/partee-rooth","title":"Partee & Rooth 1983 — Generalized Conjunction","url":"/papers/partee-rooth/"},{"code":"Y97C9T","kind":"chapter","key":"papers/barwise-cooper","title":"Barwise & Cooper 1981 — Generalized Quantifiers","url":"/papers/barwise-cooper/"},{"code":"SBG4MN","kind":"chapter","key":"papers/link","title":"Link 1983 — Plurals and Mass Terms","url":"/papers/link/"},{"code":"KT6WF4","kind":"family","key":"cc","title":"Coppock & Champollion — Invitation to Formal Semantics","url":"/cc/"},{"code":"CETGZ4","kind":"family","key":"hk","title":"Heim & Kratzer — Semantics in Generative Grammar","url":"/hk/"},{"code":"QIPYVM","kind":"family","key":"papers","title":"Classic Papers","url":"/papers/"}];
 </script>
 <script>
 /* ===========================================================================
@@ -9898,6 +9915,64 @@ function VersionShareModal({ v, onClose, token, onCode }) {
   }
   return /* @__PURE__ */ React.createElement("div", { className: "modal-backdrop", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal vd-share", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h3", { className: "vd-share-title" }, v.title), /* @__PURE__ */ React.createElement("div", { className: "vd-share-code" }, /* @__PURE__ */ React.createElement("span", { className: "vd-share-code-kicker" }, "Unlock code \u2014 students sign in and enter this"), /* @__PURE__ */ React.createElement("div", { className: "vd-share-code-row" }, /* @__PURE__ */ React.createElement("span", { className: "vd-share-code-big mono" }, code || "\u2014"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary", onClick: copyCode, disabled: !code }, copiedCode ? "\u2713 Copied" : "\u29C9 Copy code"), token ? /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn-ghost", onClick: newCode, disabled: busyCode, title: "Generate a new code \u2014 the old one stops working" }, busyCode ? "\u2026" : "\u21BB New code") : null)), /* @__PURE__ */ React.createElement("div", { className: "vd-share-or" }, "or share the no-account link"), window.QRCode ? /* @__PURE__ */ React.createElement("canvas", { ref: canvasRef, className: "vd-qr", width: 300, height: 300 }) : null, /* @__PURE__ */ React.createElement("div", { className: "vd-share-url mono" }, url), /* @__PURE__ */ React.createElement("div", { className: "vd-share-actions" }, /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", onClick: copy }, copied ? "\u2713 Copied" : "\u29C9 Copy link"), window.QRCode ? /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: downloadPng }, "\u2B07 QR as PNG") : null, window.QRCode ? /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: printHandout }, "\u{1F5A8} Print A4 handout") : null, /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: onClose }, "Close")), /* @__PURE__ */ React.createElement("div", { className: "vd-share-note" }, "Links are live: editing the version updates what students see at this same URL \u2014 printed QR codes stay valid.")));
 }
+function composeCuratedRegistry() {
+  return typeof window !== "undefined" && Array.isArray(window.COMPOSE_CURATED) ? window.COMPOSE_CURATED : [];
+}
+function composeCuratedByCode(code) {
+  const c = String(code || "").trim().toUpperCase();
+  if (!c) return null;
+  return composeCuratedRegistry().find((e) => e.code === c) || null;
+}
+function composeCuratedByKey(key) {
+  return composeCuratedRegistry().find((e) => e.key === key) || null;
+}
+function composeCuratedForWorksheet(key) {
+  return composeCuratedRegistry().find((e) => e.kind === "worksheet" && e.key === key) || null;
+}
+function composeCuratedForPrefix(prefix) {
+  return composeCuratedRegistry().find((e) => e.kind === "chapter" && e.prefix === prefix) || null;
+}
+function composeReadUnlocked() {
+  try {
+    const a = JSON.parse(window.localStorage.getItem("lc2-unlocked") || "[]");
+    return Array.isArray(a) ? a.filter((k) => typeof k === "string") : [];
+  } catch (e) {
+    return [];
+  }
+}
+function composeWriteUnlocked(list) {
+  try {
+    window.localStorage.setItem("lc2-unlocked", JSON.stringify(list));
+  } catch (e) {
+  }
+}
+function CuratedCodeModal({ entry, onClose }) {
+  const url = window.location.origin + "/?code=" + entry.code;
+  const canvasRef = useRef(null);
+  const [copiedCode, setCopiedCode] = useState(false);
+  const [copiedUrl, setCopiedUrl] = useState(false);
+  useEffect(() => {
+    if (canvasRef.current && window.QRCode) {
+      window.QRCode.toCanvas(canvasRef.current, url, { width: 300, margin: 2 }, () => {
+      });
+    }
+  }, [url]);
+  const kindLabel = entry.kind === "family" ? "whole collection" : entry.kind === "chapter" ? "chapter set" : "worksheet";
+  function copy(text, setFlag) {
+    navigator.clipboard.writeText(text).then(() => {
+      setFlag(true);
+      setTimeout(() => setFlag(false), 1500);
+    });
+  }
+  function downloadPng() {
+    if (!canvasRef.current) return;
+    const a = document.createElement("a");
+    a.href = canvasRef.current.toDataURL("image/png");
+    a.download = "compose-" + String(entry.key).replace(/[^a-z0-9]+/gi, "-") + "-qr.png";
+    a.click();
+  }
+  return /* @__PURE__ */ React.createElement("div", { className: "modal-backdrop", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal vd-share", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h3", { className: "vd-share-title" }, entry.title), /* @__PURE__ */ React.createElement("div", { className: "vd-share-code" }, /* @__PURE__ */ React.createElement("span", { className: "vd-share-code-kicker" }, "Unlock code \u2014 adds this ", kindLabel, " to the worksheet list; no account needed"), /* @__PURE__ */ React.createElement("div", { className: "vd-share-code-row" }, /* @__PURE__ */ React.createElement("span", { className: "vd-share-code-big mono" }, entry.code), /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary", onClick: () => copy(entry.code, setCopiedCode) }, copiedCode ? "\u2713 Copied" : "\u29C9 Copy code"))), /* @__PURE__ */ React.createElement("div", { className: "vd-share-or" }, "or scan / share the link"), window.QRCode ? /* @__PURE__ */ React.createElement("canvas", { ref: canvasRef, className: "vd-qr", width: 300, height: 300 }) : null, /* @__PURE__ */ React.createElement("div", { className: "vd-share-url mono" }, url), /* @__PURE__ */ React.createElement("div", { className: "vd-share-actions" }, /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", onClick: () => copy(url, setCopiedUrl) }, copiedUrl ? "\u2713 Copied" : "\u29C9 Copy link"), window.QRCode ? /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: downloadPng }, "\u2B07 QR as PNG") : null, /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: onClose }, "Close")), /* @__PURE__ */ React.createElement("div", { className: "vd-share-note" }, "Students can also type the code into \u201C\u2295 Unlock with a code\u201D on any COMPOSE page \u2014 the ", kindLabel, " then appears in their sidebar, and their progress in it is kept.")));
+}
 function VersionsPage({ token, onBack, onAssign, onEdit, onAuthGone }) {
   const [versions, setVersions] = useState(null);
   const [err, setErr] = useState(null);
@@ -10088,10 +10163,11 @@ function VersionsPage({ token, onBack, onAssign, onEdit, onAuthGone }) {
     }
   ), /* @__PURE__ */ React.createElement("div", { className: "vd-foot" }, "The standalone dashboard at ", /* @__PURE__ */ React.createElement("a", { href: "/dash/" }, "/dash"), " keeps working \u2014 notes editing lives there for now.")));
 }
-function UnlockDialog({ token, onClose, onSignin, onUnlocked }) {
-  const [code, setCode] = useState("");
+function UnlockDialog({ token, initialCode, onClose, onSignin, onUnlocked, onCurated }) {
+  const [code, setCode] = useState(initialCode || "");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState(null);
+  const [needSignin, setNeedSignin] = useState(false);
   const inputRef = useRef(null);
   useEffect(() => {
     const opener = document.activeElement;
@@ -10105,14 +10181,25 @@ function UnlockDialog({ token, onClose, onSignin, onUnlocked }) {
   }, []);
   async function submit(ev) {
     ev.preventDefault();
-    if (!code.trim() || busy) return;
+    const c = code.trim().toUpperCase();
+    if (!c || busy) return;
+    const entry = composeCuratedByCode(c);
+    if (entry) {
+      setResult({ kind: "ok", msg: "Unlocked \u2014 \u201C" + entry.title + "\u201D is joining your worksheet list\u2026" });
+      if (onCurated) onCurated(entry);
+      return;
+    }
+    if (!token) {
+      setNeedSignin(true);
+      return;
+    }
     setBusy(true);
     setResult(null);
     try {
       const r = await fetch("/api/compose/redeem", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: token },
-        body: JSON.stringify({ code: code.trim() })
+        body: JSON.stringify({ code: c })
       });
       const j = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(j.error || j.message || "That code did not work \u2014 check it with your instructor.");
@@ -10124,7 +10211,7 @@ function UnlockDialog({ token, onClose, onSignin, onUnlocked }) {
     }
     setBusy(false);
   }
-  return /* @__PURE__ */ React.createElement("div", { className: "pal-scrim ul-scrim", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "ul-dialog", role: "dialog", "aria-modal": "true", "aria-label": "Unlock a worksheet", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("div", { className: "ul-head" }, /* @__PURE__ */ React.createElement("div", { className: "ul-title" }, "Unlock a worksheet"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "ul-x", "aria-label": "Close", onClick: onClose }, "\u2715")), !token ? /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "ul-sub" }, "Your instructor gives you a code word. Unlocks stick to your account, so sign in first \u2014 a practice account takes half a minute and needs only an email."), /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary ul-submit", onClick: onSignin }, "Sign in to unlock"), /* @__PURE__ */ React.createElement("div", { className: "ul-foot" }, /* @__PURE__ */ React.createElement("span", { className: "ul-foot-glyph", "aria-hidden": "true" }, "\u2317"), /* @__PURE__ */ React.createElement("span", null, "Signed in, everything you unlock \u2014 and your progress in it \u2014 follows you to any device."))) : /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, /* @__PURE__ */ React.createElement("div", { className: "ul-sub" }, "Your instructor gives you a code word. Only what you unlock appears in your worksheet list."), /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "pal-scrim ul-scrim", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "ul-dialog", role: "dialog", "aria-modal": "true", "aria-label": "Unlock a worksheet", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("div", { className: "ul-head" }, /* @__PURE__ */ React.createElement("div", { className: "ul-title" }, "Unlock a worksheet"), /* @__PURE__ */ React.createElement("button", { type: "button", className: "ul-x", "aria-label": "Close", onClick: onClose }, "\u2715")), /* @__PURE__ */ React.createElement("form", { onSubmit: submit }, /* @__PURE__ */ React.createElement("div", { className: "ul-sub" }, "Enter the code word from your instructor, a worksheet page, or a handout. Library codes work without an account; class codes need you to be signed in."), /* @__PURE__ */ React.createElement(
     "input",
     {
       ref: inputRef,
@@ -10133,13 +10220,14 @@ function UnlockDialog({ token, onClose, onSignin, onUnlocked }) {
       onChange: (e) => {
         setCode(e.target.value);
         if (result) setResult(null);
+        if (needSignin) setNeedSignin(false);
       },
       placeholder: "e.g. Q7TPKX",
       "aria-label": "Unlock code",
       autoComplete: "off",
       spellCheck: "false"
     }
-  ), result && /* @__PURE__ */ React.createElement("div", { className: "ul-msg " + result.kind, role: result.kind === "err" ? "alert" : "status" }, result.msg), result && result.kind === "ok" ? /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary ul-submit", onClick: onClose }, "Done") : /* @__PURE__ */ React.createElement("button", { type: "submit", className: "btn btn-primary ul-submit", disabled: busy || !code.trim() }, busy ? "\u2026" : "Unlock"), /* @__PURE__ */ React.createElement("div", { className: "ul-foot" }, /* @__PURE__ */ React.createElement("span", { className: "ul-foot-glyph", "aria-hidden": "true" }, "\u2317"), /* @__PURE__ */ React.createElement("span", null, "Unlocks are kept on your account and follow you to any device you sign in on.")))));
+  ), result && /* @__PURE__ */ React.createElement("div", { className: "ul-msg " + result.kind, role: result.kind === "err" ? "alert" : "status" }, result.msg), needSignin && !result && /* @__PURE__ */ React.createElement("div", { className: "ul-msg err", role: "alert" }, "That looks like a class code from an instructor \u2014 sign in first so the unlock sticks to your account (half a minute, email only)."), result && result.kind === "ok" ? /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary ul-submit", onClick: onClose }, "Done") : needSignin ? /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary ul-submit", onClick: onSignin }, "Sign in to unlock") : /* @__PURE__ */ React.createElement("button", { type: "submit", className: "btn btn-primary ul-submit", disabled: busy || !code.trim() }, busy ? "\u2026" : "Unlock"), /* @__PURE__ */ React.createElement("div", { className: "ul-foot" }, /* @__PURE__ */ React.createElement("span", { className: "ul-foot-glyph", "aria-hidden": "true" }, "\u2317"), /* @__PURE__ */ React.createElement("span", null, token ? "Unlocks are kept on your account and follow you to any device you sign in on." : "Library unlocks are kept in this browser; sign in and they follow you to any device.")))));
 }
 function AssignPage({ token, initialVersionId, catalogue, onBack, onAuthGone }) {
   const [versions, setVersions] = useState(null);
@@ -10378,6 +10466,10 @@ function App() {
   const [editorMin, setEditorMin] = useState(null);
   const [shareVersion, setShareVersion] = useState(null);
   const [shareBusy, setShareBusy] = useState(false);
+  const [unlocked, setUnlocked] = useState(() => composeReadUnlocked());
+  const [codeEntry, setCodeEntry] = useState(null);
+  const [unlockPrefill, setUnlockPrefill] = useState("");
+  const [footCopied, setFootCopied] = useState(false);
   useEffect(() => {
     save("lc2-collapse", collapseResolved);
   }, [collapseResolved]);
@@ -10993,6 +11085,64 @@ function App() {
     }
     setShareBusy(false);
   }
+  function addUnlocked(key) {
+    const cur = composeReadUnlocked();
+    if (cur.indexOf(key) === -1) composeWriteUnlocked(cur.concat([key]));
+    setUnlocked(composeReadUnlocked());
+  }
+  function removeUnlocked(key) {
+    composeWriteUnlocked(composeReadUnlocked().filter((k) => k !== key));
+    setUnlocked(composeReadUnlocked());
+  }
+  function applyCuratedEntry(entry) {
+    addUnlocked(entry.key);
+    const dest = entry.url || "/";
+    const destPath = dest.split("?")[0];
+    if (window.location.pathname === destPath) {
+      if (entry.kind === "worksheet" && (window.LCData.SETS || {})[entry.key]) openWorksheetKey(entry.key);
+      setUnlockOpen(false);
+      return;
+    }
+    window.location.href = dest;
+  }
+  const unlockedEntries = React.useMemo(
+    () => unlocked.map((k) => composeCuratedByKey(k)).filter(Boolean),
+    [unlocked]
+  );
+  const pageCuratedEntry = React.useMemo(() => {
+    if (BID.indexOf("hosted-lib-") !== 0) return null;
+    const pth = BID.slice("hosted-lib-".length).replace(/^(cc|hk|papers)-/, "$1/");
+    return composeCuratedByKey(pth);
+  }, []);
+  useEffect(() => {
+    if (!isFullBuild) return;
+    const m = /[?&]code=([A-Za-z0-9]+)/.exec(window.location.search || "");
+    if (!m) return;
+    try {
+      const u = new URL(window.location.href);
+      u.searchParams.delete("code");
+      window.history.replaceState({}, "", u.pathname + (u.search || "") + u.hash);
+    } catch (e) {
+    }
+    const entry = composeCuratedByCode(m[1]);
+    if (entry) {
+      applyCuratedEntry(entry);
+      return;
+    }
+    setUnlockPrefill(m[1].toUpperCase());
+    setUnlockOpen(true);
+  }, []);
+  useEffect(() => {
+    const m = /[?&]ws=([A-Za-z0-9_.\-]+)/.exec(window.location.search || "");
+    if (!m) return;
+    try {
+      const u = new URL(window.location.href);
+      u.searchParams.delete("ws");
+      window.history.replaceState({}, "", u.pathname + (u.search || "") + u.hash);
+    } catch (e) {
+    }
+    if ((window.LCData.SETS || {})[m[1]]) openWorksheetKey(m[1]);
+  }, []);
   useEffect(() => {
     if (!isFullBuild) return;
     const m = /[?&]edit=([A-Za-z0-9_-]+)/.exec(window.location.search || "");
@@ -11425,21 +11575,45 @@ function App() {
         "aria-label": "Search worksheets",
         placeholder: "Search worksheets\u2026"
       }
-    ), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-kbd", title: "Command palette (\u2318K)", "aria-label": "Open the command palette", onClick: () => openPalette() }, "\u2318K"))), /* @__PURE__ */ React.createElement("div", { className: "sb-scroll" }, results ? /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, results.length, " ", results.length === 1 ? "result" : "results"), results.map((l) => renderWsRow(l)), results.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Nothing matches \u201C", navQuery.trim(), "\u201D. Try a chapter number, or a phrase from a worksheet title.")) : /* @__PURE__ */ React.createElement("div", null, sbSection("library", "\u274F", "Worksheets", wsTotal + (wsTotal === 1 ? " worksheet" : " worksheets"), /* @__PURE__ */ React.createElement("div", null, cols.map((c) => /* @__PURE__ */ React.createElement("div", { key: c.id }, /* @__PURE__ */ React.createElement(
+    ), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-kbd", title: "Command palette (\u2318K)", "aria-label": "Open the command palette", onClick: () => openPalette() }, "\u2318K"))), /* @__PURE__ */ React.createElement("div", { className: "sb-scroll" }, results ? /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, results.length, " ", results.length === 1 ? "result" : "results"), results.map((l) => renderWsRow(l)), results.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Nothing matches \u201C", navQuery.trim(), "\u201D. Try a chapter number, or a phrase from a worksheet title.")) : /* @__PURE__ */ React.createElement("div", null, sbSection("library", "\u274F", "Worksheets", wsTotal + (wsTotal === 1 ? " worksheet" : " worksheets"), /* @__PURE__ */ React.createElement("div", null, cols.map((c) => {
+      const ce = isFullBuild ? composeCuratedForPrefix(c.id) : null;
+      return /* @__PURE__ */ React.createElement("div", { key: c.id }, /* @__PURE__ */ React.createElement("div", { className: "sb-coll-row" }, /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          className: "sb-coll-head",
+          "aria-expanded": openId === c.id,
+          onClick: () => setOpenColl(openId === c.id ? "" : c.id)
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "sb-coll-caret", "aria-hidden": "true" }, openId === c.id ? "\u25BE" : "\u25B8"),
+        /* @__PURE__ */ React.createElement("span", { className: "sb-coll-label" }, c.label),
+        /* @__PURE__ */ React.createElement("span", { className: "sb-coll-count" }, c.items.length)
+      ), ce && /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          className: "sb-code-btn",
+          title: "Unlock code for \u201C" + c.label + "\u201D \u2014 code + QR",
+          "aria-label": "Unlock code for " + c.label,
+          onClick: () => setCodeEntry(ce)
+        },
+        "\u2317"
+      )), openId === c.id && c.items.map((l) => renderWsRow(l)));
+    }), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
+      setLoadErr(null);
+      setModal("files");
+    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2191"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Open a file\u2026")), isFullBuild && pageCuratedEntry && /* @__PURE__ */ React.createElement(
       "button",
       {
         type: "button",
-        className: "sb-coll-head",
-        "aria-expanded": openId === c.id,
-        onClick: () => setOpenColl(openId === c.id ? "" : c.id)
+        className: "sb-row",
+        title: "Unlock code for everything on this page \u2014 code + QR",
+        onClick: () => setCodeEntry(pageCuratedEntry)
       },
-      /* @__PURE__ */ React.createElement("span", { className: "sb-coll-caret", "aria-hidden": "true" }, openId === c.id ? "\u25BE" : "\u25B8"),
-      /* @__PURE__ */ React.createElement("span", { className: "sb-coll-label" }, c.label),
-      /* @__PURE__ */ React.createElement("span", { className: "sb-coll-count" }, c.items.length)
-    ), openId === c.id && c.items.map((l) => renderWsRow(l)))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => {
-      setLoadErr(null);
-      setModal("files");
-    } }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2191"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Open a file\u2026")), isFullBuild && tier !== "anon" && classes && classes.length > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, "My classes"), classes.map((c) => {
+      /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2317"),
+      /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Code for this collection"),
+      /* @__PURE__ */ React.createElement("span", { className: "sb-row-note mono" }, pageCuratedEntry.code)
+    ), isFullBuild && tier !== "anon" && classes && classes.length > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, "My classes"), classes.map((c) => {
       const items = classLib.filter((l) => l.classSlug === c.slug);
       const cid = "class:" + c.slug;
       return /* @__PURE__ */ React.createElement("div", { key: cid }, /* @__PURE__ */ React.createElement(
@@ -11465,7 +11639,30 @@ function App() {
       /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"),
       /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Your progress"),
       /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, grandSolved, " solved")
-    ), isFullBuild && /* @__PURE__ */ React.createElement("div", { className: "sb-unlock-wrap" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-unlock-btn", onClick: () => setUnlockOpen(true) }, "\u2295 Unlock with a code")), isFullBuild && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, "Full library"), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/cc/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Coppock & Champollion")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/hk/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Heim & Kratzer")), /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: "/papers/" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Classic papers"))))), sbSection("continue", "\u21BB", "Continue", recents.length ? String(recents.length) : null, /* @__PURE__ */ React.createElement("div", null, recents.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Open an exercise and it appears here, most recent first."), recents.slice(0, 6).map((r) => {
+    ), isFullBuild && /* @__PURE__ */ React.createElement("div", { className: "sb-unlock-wrap" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-unlock-btn", onClick: () => setUnlockOpen(true) }, "\u2295 Unlock with a code")), isFullBuild && unlockedEntries.length > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, "Unlocked"), unlockedEntries.map((e) => /* @__PURE__ */ React.createElement("div", { className: "sb-row-split", key: e.key }, /* @__PURE__ */ React.createElement("a", { className: "sb-row", href: e.url }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2317"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, e.title)), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "sb-code-x",
+        title: "Remove from your list (the code unlocks it again any time)",
+        "aria-label": "Remove " + e.title + " from your list",
+        onClick: () => removeUnlocked(e.key)
+      },
+      "\u2715"
+    )))), isFullBuild && tier === "instructor" && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, "Full library"), [["cc", "/cc/", "Coppock & Champollion"], ["hk", "/hk/", "Heim & Kratzer"], ["papers", "/papers/", "Classic papers"]].map(([fk, href, label]) => {
+      const fe = composeCuratedByKey(fk);
+      return /* @__PURE__ */ React.createElement("div", { className: "sb-row-split", key: fk }, /* @__PURE__ */ React.createElement("a", { className: "sb-row", href }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, label)), fe && /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          className: "sb-code-btn",
+          title: "Unlock code for the whole " + label + " collection \u2014 code + QR",
+          "aria-label": "Unlock code for " + label,
+          onClick: () => setCodeEntry(fe)
+        },
+        "\u2317"
+      ));
+    })))), sbSection("continue", "\u21BB", "Continue", recents.length ? String(recents.length) : null, /* @__PURE__ */ React.createElement("div", null, recents.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "Open an exercise and it appears here, most recent first."), recents.slice(0, 6).map((r) => {
       const l = LIB.find((x) => x.key === r.ws);
       if (!l) return null;
       const gs = l.set.groups.filter((g2) => g2.kind === "tree");
@@ -11671,7 +11868,51 @@ function App() {
         /* @__PURE__ */ React.createElement("span", { className: "colx-ring", "aria-hidden": "true" }, progress[k] ? "\u2713" : ""),
         /* @__PURE__ */ React.createElement("span", { className: "colx-gloss lx" }, navLabel(g, p))
       );
-    }))), !custom && /* @__PURE__ */ React.createElement("div", { className: "colx-foot" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => openPanelTab("rules", true), title: "View rules for this exercise" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2630"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Rules for this worksheet")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setPage("progress") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, doneCount, "/", probCount)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => composeExportProgress() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Save progress to a file")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: resetAllProgress, title: "Clear all progress for this worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u21BA"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Reset all derivations")))));
+    }))), !custom && /* @__PURE__ */ React.createElement("div", { className: "colx-foot" }, (() => {
+      if (!isFullBuild || !lib) return null;
+      const entry = composeCuratedForWorksheet(lib.key);
+      if (entry) return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          className: "sb-row",
+          title: "Copy the unlock code \u2014 entering it on any COMPOSE page adds this set to the sidebar",
+          onClick: () => {
+            try {
+              navigator.clipboard.writeText(entry.code);
+            } catch (e) {
+            }
+            setFootCopied(true);
+            setTimeout(() => setFootCopied(false), 1500);
+          }
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2317"),
+        /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, footCopied ? "\u2713 Code copied" : "Code \xB7 ", !footCopied && /* @__PURE__ */ React.createElement("span", { className: "mono" }, entry.code))
+      ), /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          className: "sb-row",
+          title: "QR code that unlocks this worksheet \u2014 scan or project it",
+          onClick: () => setCodeEntry(entry)
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25A6"),
+        /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "QR & link")
+      ));
+      if (tier === "instructor" && hosted && hosted.versionId && !lib.classSlug) return /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          className: "sb-row",
+          disabled: shareBusy,
+          title: "Unlock code + QR for this hosted worksheet",
+          onClick: () => shareVersionById(hosted.versionId)
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2317"),
+        /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, shareBusy ? "\u2026" : "Code & QR")
+      );
+      return null;
+    })(), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => setPage("progress") }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2713"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Progress summary"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-note" }, doneCount, "/", probCount)), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: () => composeExportProgress() }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2913"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Save progress to a file")), /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row", onClick: resetAllProgress, title: "Clear all progress for this worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u21BA"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Reset all derivations")))));
   }
   function renderPracticeHead() {
     if (!hasContent || !group || !problem) return null;
@@ -12132,7 +12373,7 @@ function App() {
     } }, "Sign out")))), /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Worksheets"), mbRow("ws", "\u274F", "Switch worksheet", custom ? "custom" : lib ? lib.title : null, () => setSheet("ws")), mbRow("progress", "\u2713", "Your progress", grandSolved + " solved", () => mbPush("progress")), isFullBuild && mbRow("unlock", "\u2295", "Unlock with a code", null, () => {
       setSheet(null);
       setUnlockOpen(true);
-    }), isFullBuild && tier !== "anon" && classes && classes.length > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "My classes"), classes.map((c) => {
+    }), isFullBuild && unlockedEntries.length > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "Unlocked"), unlockedEntries.map((e) => mbRow("unl:" + e.key, "\u2317", e.title, null, null, { href: e.url }))), isFullBuild && tier !== "anon" && classes && classes.length > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, "My classes"), classes.map((c) => {
       const items = classLib.filter((l) => l.classSlug === c.slug);
       return mbRow(
         "class:" + c.slug,
@@ -12458,12 +12699,17 @@ function App() {
       UnlockDialog,
       {
         token: isFullBuild && tier !== "anon" && auth ? auth.token : null,
-        onClose: () => setUnlockOpen(false),
+        initialCode: unlockPrefill,
+        onClose: () => {
+          setUnlockOpen(false);
+          setUnlockPrefill("");
+        },
         onSignin: () => {
           setUnlockOpen(false);
           setSigninMode("login");
           setPage("signin");
         },
+        onCurated: (entry) => applyCuratedEntry(entry),
         onUnlocked: (v) => {
           refreshClasses();
           setNavSection("library");
@@ -12480,6 +12726,7 @@ function App() {
         onCode: (id, uc) => setShareVersion((sv) => sv && sv.id === id ? Object.assign({}, sv, { unlockCode: uc }) : sv)
       }
     ),
+    codeEntry && /* @__PURE__ */ React.createElement(CuratedCodeModal, { entry: codeEntry, onClose: () => setCodeEntry(null) }),
     netNotice && /* @__PURE__ */ React.createElement("div", { className: "net-notice" }, netNotice),
     isMobile && !phoneOk && window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment && /* @__PURE__ */ React.createElement(PhoneInterstitial, { onContinue: () => {
       setPhoneOk(true);

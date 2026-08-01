@@ -23,6 +23,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import esbuild from 'esbuild';
 import { buildParts, assemblePage, inlineLibraryJS, libraryMap, safe, IDENTITY_TOKEN, LIBRARY_TOKEN } from './assemble.mjs';
+import { CC_CHAPTERS, HK_CHAPTERS, PAPERS_PREFIXES, curatedTable } from './curated-map.mjs';
 import { createRequire } from 'node:module';
 const { COMPOSE_VERSION, COMPOSE_DATE } = createRequire(import.meta.url)('../compose/version.js');
 
@@ -122,31 +123,10 @@ const pick = (prefixes) => {
   return ks.sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
 };
 
-const CC_CHAPTERS = [
-  ['ch6', '§6 Function Application & Quantifiers'], ['ch7', '§7 Adjectives, Relatives & Pronouns'],
-  ['ch8', '§8 Definites & Possessives'], ['ch10', '§10 Coordination & Plurals'],
-  ['ch11', '§11 Event Semantics'], ['ch12', '§12 Tense & Aspect'], ['ch13', '§13 Intensional Semantics'],
-];
-const HK_CHAPTERS = [
-  ['hk1', 'ch. 1 Conventions'], ['hk2', 'ch. 2 Function Application'], ['hk4', 'ch. 4 Definites'],
-  ['hk5', 'ch. 5 Relative Clauses'], ['hk6', 'ch. 6 Quantifiers'], ['hk7', 'ch. 7 Quantification'],
-  ['hk9', 'ch. 9 Pronouns'], ['hk12', 'ch. 12 Intensions'],
-];
-
-const CURATED = [
-  { path: 'cc', island: 'lib-cc', title: 'Coppock & Champollion — Invitation to Formal Semantics', keys: pick(CC_CHAPTERS.map(([p]) => p)) },
-  ...CC_CHAPTERS.map(([pfx, label]) => ({ path: 'cc/' + pfx, island: 'lib-cc', title: 'C&C ' + label, keys: pick([pfx]) })),
-  { path: 'hk', island: 'lib-hk', title: 'Heim & Kratzer — Semantics in Generative Grammar', keys: pick(HK_CHAPTERS.map(([p]) => p)) },
-  ...HK_CHAPTERS.map(([pfx, label]) => ({ path: 'hk/' + pfx.replace('hk', 'ch'), island: 'lib-hk', title: 'H&K ' + label, keys: pick([pfx]) })),
-  { path: 'papers', island: 'lib-papers', title: 'Classic Papers', keys: pick(['partee', 'montague', 'krifka', 'davidson', 'barwise-cooper', 'link-plurals']) },
-  { path: 'papers/partee', island: 'lib-papers', title: 'Partee 1986 — The Type-Shifting Triangle', keys: pick(['partee-triangle']) },
-  { path: 'papers/ptq', island: 'lib-papers', title: 'Montague 1973 — PTQ', keys: pick(['montague']) },
-  { path: 'papers/krifka', island: 'lib-papers', title: 'Krifka 1998 — The Origins of Telicity', keys: pick(['krifka']) },
-  { path: 'papers/davidson', island: 'lib-papers', title: 'Davidson 1967 — Action Sentences', keys: pick(['davidson']) },
-  { path: 'papers/partee-rooth', island: 'lib-papers', title: 'Partee & Rooth 1983 — Generalized Conjunction', keys: pick(['partee-rooth']) },
-  { path: 'papers/barwise-cooper', island: 'lib-papers', title: 'Barwise & Cooper 1981 — Generalized Quantifiers', keys: pick(['barwise-cooper']) },
-  { path: 'papers/link', island: 'lib-papers', title: 'Link 1983 — Plurals and Mass Terms', keys: pick(['link-plurals']) },
-];
+/* S43: the chapter tables + CURATED table live in build/curated-map.mjs,
+   shared with scripts/gen-curated-codes.mjs (unlock-code registry) and
+   test/server.mjs. */
+const CURATED = curatedTable(Object.keys(LIB));
 
 function curatedPage(entry) {
   const files = {};
@@ -236,7 +216,10 @@ ${HK_CHAPTERS.map(([pfx]) => '<a href="/hk/' + pfx.replace('hk', 'ch') + '/">/hk
 <li><a href="/help/">/help</a> — student help: rules, symbols, grading, and worked derivation guides</li>
 </ul>
 <h2>Accounts</h2>
-<p>Everything above works without an account. An optional account (created from
+<p>Everything above works without an account — including the library's own
+unlock codes: every built-in worksheet, chapter and collection has a fixed
+six-character code (shown on its page in the app) that adds it to the
+sidebar of whoever enters it, account or not. An optional account (created from
 the app's sign-in page) stores: your email address, a password hash, your
 exercise progress, and — for class codes you redeem — which versions you are
 enrolled in. Instructor accounts additionally own the versions they host. The
@@ -379,7 +362,7 @@ const filesSection = (label, keys) =>
 const ALL_KEYS = Object.keys(LIB).sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
 const CC_KEYS = pick(CC_CHAPTERS.map(([p2]) => p2));
 const HK_KEYS = pick(HK_CHAPTERS.map(([p2]) => p2));
-const PAPER_KEYS = pick(['partee', 'montague', 'krifka', 'davidson', 'barwise-cooper', 'link-plurals']);
+const PAPER_KEYS = pick(PAPERS_PREFIXES);
 const OTHER_KEYS = ALL_KEYS.filter((k) => !CC_KEYS.includes(k) && !HK_KEYS.includes(k) && !PAPER_KEYS.includes(k));
 
 const filesPage = `<!DOCTYPE html>

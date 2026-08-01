@@ -2344,3 +2344,17 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .guide-fig img, .guide-fig video { width: 100%; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 2px 10px rgba(60,40,20,.07); }
 .guide-fig figcaption { font-size: 13px; color: var(--ink-soft); margin-top: 8px; line-height: 1.5; }
 .guide-pre { background: var(--panel, rgba(0,0,0,.03)); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; font-size: 13px; line-height: 1.55; overflow-x: auto; }
+
+/* ---- S43: curated unlock codes — sidebar & footer affordances ------------ */
+.sb-row-split { display: flex; align-items: center; }
+.sb-row-split .sb-row { flex: 1 1 auto; min-width: 0; }
+.sb-coll-row { display: flex; align-items: center; }
+.sb-coll-row .sb-coll-head { flex: 1 1 auto; min-width: 0; }
+.sb-code-btn, .sb-code-x {
+  flex: none; width: 24px; height: 24px; margin-right: 10px;
+  border: none; border-radius: 6px; background: transparent;
+  color: var(--faint); font-size: 12px; line-height: 1; cursor: pointer;
+}
+.sb-code-btn:hover { background: var(--panel-2); color: var(--accent); }
+.sb-code-x:hover { background: var(--panel-2); color: var(--accent-ink); }
+.sb-code-btn:focus-visible, .sb-code-x:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }

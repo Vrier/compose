@@ -22,7 +22,7 @@ import { spawn, execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(HERE, '..');
@@ -99,6 +99,37 @@ async function waitUp() {
 /* ---- journeys ------------------------------------------------------------ */
 async function main() {
   if (!(await waitUp())) { console.error('✗ server did not come up:\n' + serverLog.slice(-800)); cleanup(1); }
+
+  // S43 — curated unlock-code registry (static checks; the app resolves
+  // these codes client-side, BEFORE the server redeem API — curated codes
+  // shadow instructor version codes by design)
+  {
+    const regPath = path.join(ROOT, 'compose', 'curated-codes.json');
+    expect('curated-codes.json exists', fs.existsSync(regPath));
+    const entries = (JSON.parse(fs.readFileSync(regPath, 'utf8')).entries) || [];
+    const codes = entries.map((x) => x.code);
+    expect('registry has no duplicate codes', new Set(codes).size === codes.length, codes.length + ' entries');
+    const ALPH = new Set('abcdefghijkmnpqrstuvwxyz23456789'.toUpperCase());
+    expect('codes are 6 chars in the unlock alphabet',
+      codes.every((c) => c.length === 6 && [...c].every((ch) => ALPH.has(ch))));
+    const wsKeys = fs.readdirSync(path.join(ROOT, 'compose', 'exercises'))
+      .filter((f) => f.endsWith('.compose.json')).map((f) => f.replace('.compose.json', ''));
+    expect('every worksheet key has a code (' + wsKeys.length + ')',
+      wsKeys.every((k) => entries.some((x) => x.kind === 'worksheet' && x.key === k)));
+    const { curatedTable } = await import(pathToFileURL(path.join(ROOT, 'build', 'curated-map.mjs')).href);
+    const curated = curatedTable(wsKeys);
+    expect('every curated chapter page has a code',
+      curated.filter((e) => e.path.includes('/')).every((e) => entries.some((x) => x.kind === 'chapter' && x.key === e.path)));
+    expect('families cc/hk/papers have codes',
+      ['cc', 'hk', 'papers'].every((k) => entries.some((x) => x.kind === 'family' && x.key === k)));
+    const tmpReg = path.join(os.tmpdir(), 'compose-curated-regen-' + process.pid + '.json');
+    execFileSync(process.execPath, [path.join(ROOT, 'scripts', 'gen-curated-codes.mjs'), tmpReg], { cwd: ROOT, stdio: 'ignore' });
+    expect('gen-curated-codes.mjs regenerates the committed registry byte-for-byte',
+      fs.readFileSync(tmpReg, 'utf8') === fs.readFileSync(regPath, 'utf8'));
+    fs.rmSync(tmpReg, { force: true });
+    const rootHtml = fs.readFileSync(path.join(SERVER, 'pb_public', 'index.html'), 'utf8');
+    expect('registry embedded in built pages (window.COMPOSE_CURATED)', rootHtml.includes('window.COMPOSE_CURATED'));
+  }
 
   // W2 — registration gating (register budget: 3 of 5)
   let r = await req('POST', '/api/compose/register', { body: { email: 'a@suite.org', password: 'alicepass123' } });

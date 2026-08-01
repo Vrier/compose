@@ -79,6 +79,15 @@ export function buildParts(srcDir) {
   const css = ['themes.css', 'lingdown.css', 'reading-editor.css']
     .map((f) => read(path.join(srcDir, f))).join('\n\n');
 
+  /* S43: curated unlock-code registry (compose/curated-codes.json, generated
+     by scripts/gen-curated-codes.mjs) rides along on every page as
+     window.COMPOSE_CURATED so codes resolve client-side, without a server
+     round-trip (anon users redeem curated codes too). Missing file = empty
+     registry, never a build failure. */
+  let curatedEntries = [];
+  try { curatedEntries = JSON.parse(read(path.join(srcDir, 'curated-codes.json'))).entries || []; } catch (e) {}
+  const curatedJS = 'window.COMPOSE_CURATED = ' + JSON.stringify(curatedEntries) + ';';
+
   const reactProd    = read(path.join(NM, 'react/umd/react.production.min.js'));
   const reactDomProd = read(path.join(NM, 'react-dom/umd/react-dom.production.min.js'));
   const htmlToImage  = read(path.join(NM, 'html-to-image/dist/html-to-image.js'));
@@ -119,7 +128,7 @@ export function buildParts(srcDir) {
   }
   const appScripts = ORDER.map(compile).map(block).join('\n');
 
-  return { css, reactProd, reactDomProd, htmlToImage, appScripts };
+  return { css, reactProd, reactDomProd, htmlToImage, appScripts, curatedJS };
 }
 
 /* ---- assemblePage -------------------------------------------------------- */
@@ -145,6 +154,7 @@ export function assemblePage(parts, { title, identityJS, libraryJS = '', extraHe
     block(parts.reactDomProd),
     block(parts.htmlToImage),
     libraryJS ? block(libraryJS) : '',
+    parts.curatedJS ? block(parts.curatedJS) : '',
     parts.appScripts,
     '</body>',
     '</html>',
