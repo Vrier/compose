@@ -141,6 +141,10 @@ const checkBtn = () => center(null, `() => [...document.querySelectorAll('.dock 
 const colxItem = (text) => center(null, `() => [...document.querySelectorAll('.colx-item')].find(b => b.textContent.includes(${JSON.stringify(text)}))`);
 const closeBtn = () => center(null, `() => [...document.querySelectorAll('.dock button')].find(b => /Close|Cancel/.test(b.textContent))`);
 const refTab = (label) => center(null, `() => [...document.querySelectorAll('.rp-tab')].find(t => t.textContent.includes(${JSON.stringify(label)}))`);
+/* S54: at the 1200px capture width the reference panel BOOTS COLLAPSED to a
+   rail (panelOpen defaults true only >=1360px). Expand it before touching a
+   tab. */
+const reopenBtn = () => center(null, `() => document.querySelector('.rp-reopen')`);
 const sbRow = (text) => center(null, `() => [...document.querySelectorAll('.sb-row')].find(b => b.textContent.includes(${JSON.stringify(text)}))`);
 
 /* move to a target, then RE-RESOLVE it just before clicking — layout can
@@ -216,10 +220,22 @@ async function solve(label, abbr, answer) {
     dock: ((document.querySelector('.dock') || {}).textContent || '').slice(0, 80),
   })));
 }
+/* S54: expand the reference panel if it booted collapsed (capture width is
+   1200px, below the 1360px auto-open threshold). */
+async function openPanel() {
+  if (await reopenBtn()) { await act(reopenBtn, 'open reference panel'); await rec(3); }
+}
+/* S54: collapse the panel back to the rail so the tree canvas regains full
+   width (at 1200px an open panel overlaps the right-hand tree nodes). */
+async function closePanel() {
+  const collapse = () => center(null, `() => document.querySelector('.rp-panel .rp-close')`);
+  if (await collapse()) { await act(collapse, 'collapse reference panel'); await rec(3); }
+}
 /* for derivation scenes keep the panel on Lexicon so the leaves'
    denotations are on screen (S46: the panel defaults there — this is a
    safety for profiles that had another tab recorded) */
 async function panelToLexicon() {
+  await openPanel();
   if (await refTab('Lexicon')) { await act(() => refTab('Lexicon'), 'Lexicon tab'); await rec(2); }
 }
 
@@ -273,11 +289,15 @@ if (SCENE === 'first') {
   await new Promise((r) => setTimeout(r, 1100));
   await installCursor();
   await rec(6);
-  // S46: the panel no longer auto-opens on Rules — visit the tab briefly
-  // (the caption points at the worksheet's allowed rules), then back
+  // S46: the panel no longer auto-opens on Rules; S54: at 1200px it also
+  // boots collapsed — expand it, then visit the Rules tab briefly (the
+  // caption points at the worksheet's allowed rules), then back to Lexicon
+  await openPanel();
   await act(() => refTab('Rules'), 'Rules tab');
   await rec(10);
-  await panelToLexicon();
+  // S54: collapse the panel again so the derivation tree gets full width
+  // (the branching NP sits at the right edge and an open panel overlaps it)
+  await closePanel();
   await rec(4);
   await solve('AP', 'NN');                 // mischievous
   await solve('NP', 'NN');                 // hobbit (the leaf NP)
