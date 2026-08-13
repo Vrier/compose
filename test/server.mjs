@@ -314,6 +314,8 @@ async function main() {
   contains('root ships the practice/editor Share affordance (S41)', r.text, 'Share this worksheet');
   // S58 — instructor-owned versions render as sidebar rows (My versions)
   contains('root ships the own-version sidebar rows (S58)', r.text, 'This version has no worksheets yet.');
+  // S59 — phone parity: the Exercises tab's rebuilt empty-state copy
+  contains('root ships the phone empty-state copy (S59)', r.text, 'tap the worksheet title on the Derive tab');
   // N3 (S31) — right reference panel compiled into the site bundle
   contains('root ships the right reference panel tabs (N3)', r.text, 'rp-tabs');
   // NB esbuild ASCII-escapes the middots in the strip's label — assert the

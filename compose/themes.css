@@ -2394,3 +2394,104 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .about-sub { color: var(--ink-soft); margin-bottom: 20px; }
 .about-wrap h2 { font-size: 20px; margin: 38px 0 10px; padding-top: 8px; border-top: 1px solid var(--line); scroll-margin-top: 24px; }
 .about-wrap h3 { font-size: 16.5px; margin: 26px 0 8px; }
+
+/* ---- S59 note: the block below was LOST in the S55 commit (the host
+   Write/Edit truncation gotcha hit themes.css too, cutting the file at the
+   .about-wrap h3 rule above) and is restored VERBATIM from the pre-S55 file
+   (c4f44a0): in-app about/files/guide doc styling + the S43 sidebar
+   code-button block (.sb-row-split / .sb-coll-row / .sb-code-btn / .sb-code-x). */
+.about-wrap p, .about-wrap li, .about-wrap td, .about-wrap th { font-size: 15px; color: var(--ink); }
+.about-wrap a { color: var(--accent-ink, #b5532f); }
+.about-cite {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+  padding: 14px 16px; font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 12.5px; white-space: pre-wrap; margin: 10px 0;
+}
+.about-foot { margin-top: 40px; font-size: 12.5px; color: var(--ink-soft); }
+.files-table { width: 100%; border-collapse: collapse; margin: 6px 0 14px; }
+.files-table th, .files-table td { text-align: left; padding: 6px 12px 6px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.files-table th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); }
+.files-table .fnum { text-align: right; padding-right: 0; }
+.guide-wrap { max-width: 1080px; }
+.guide-wrap h2 { scroll-margin-top: 24px; }
+.guide-layout { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 34px; align-items: start; }
+.guide-side { position: sticky; top: 12px; }
+.guide-toc { display: flex; flex-direction: column; gap: 7px; font-size: 13.5px; line-height: 1.35; border-left: 2px solid var(--line); padding-left: 14px; }
+.guide-toc-head { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-soft); margin-bottom: 2px; }
+.guide-toc a { text-decoration: none; }
+.guide-toc a:hover { text-decoration: underline; }
+.guide-toc .guide-top { margin-top: 10px; color: var(--ink-soft); }
+@media (max-width: 860px) {
+  .guide-layout { display: block; }
+  .guide-side { position: static; margin-bottom: 18px; }
+  .guide-toc { flex-direction: row; flex-wrap: wrap; gap: 6px 14px; border-left: 0; padding-left: 0; }
+  .guide-toc .guide-top { display: none; }
+}
+.guide-fig { margin: 18px 0 26px; }
+.guide-fig img, .guide-fig video { width: 100%; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 2px 10px rgba(60,40,20,.07); }
+.guide-fig figcaption { font-size: 13px; color: var(--ink-soft); margin-top: 8px; line-height: 1.5; }
+.guide-pre { background: var(--panel, rgba(0,0,0,.03)); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; font-size: 13px; line-height: 1.55; overflow-x: auto; }
+
+/* ---- S43: curated unlock codes — sidebar & footer affordances ------------ */
+.sb-row-split { display: flex; align-items: center; }
+.sb-row-split .sb-row { flex: 1 1 auto; min-width: 0; }
+.sb-coll-row { display: flex; align-items: center; }
+.sb-coll-row .sb-coll-head { flex: 1 1 auto; min-width: 0; }
+.sb-code-btn, .sb-code-x {
+  flex: none; width: 24px; height: 24px; margin-right: 10px;
+  border: none; border-radius: 6px; background: transparent;
+  color: var(--faint); font-size: 12px; line-height: 1; cursor: pointer;
+}
+.sb-code-btn:hover { background: var(--panel-2); color: var(--accent); }
+.sb-code-x:hover { background: var(--panel-2); color: var(--accent-ink); }
+.sb-code-btn:focus-visible, .sb-code-x:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* ---- S59: phone parity — hierarchical switch sheet, Exercises foot,
+   expandable Menu rows ------------------------------------------------------ */
+/* switch-sheet search (16px input stops iOS zoom) */
+.mb-search {
+  display: flex; align-items: center; gap: 8px; margin: 10px 16px 4px;
+  padding: 0 12px; min-height: 44px; box-sizing: border-box;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--panel-2);
+}
+.mb-search:focus-within { border-color: var(--accent); }
+.mb-search-glyph { color: var(--faint); font-size: 15px; flex: none; }
+.mb-search input { flex: 1; min-width: 0; border: 0; background: transparent; outline: none; font: inherit; font-size: 16px; color: var(--ink); }
+.mb-search input::placeholder { color: var(--faint); }
+/* collection / family heads: the sb-coll-* look scaled for touch */
+.mb-coll-head {
+  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 48px;
+  padding: 6px 16px; border: 0; background: none; font: inherit; font-size: 14px;
+  font-weight: 600; color: var(--ink-soft); text-align: left; cursor: pointer;
+  box-sizing: border-box; -webkit-tap-highlight-color: transparent;
+}
+.mb-coll-head:active { background: var(--accent-soft); }
+.mb-coll-caret { flex: none; width: 12px; font-size: 10px; color: var(--faint); text-align: center; }
+.mb-coll-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mb-coll-count { flex: none; font-size: 11.5px; color: var(--faint); font-weight: 400; }
+.mb-fam-head { color: var(--ink); }
+.mb-fam-body { margin: 0 0 4px 16px; border-left: 1px solid var(--line); }
+.mb-fam-body .mb-coll-head { font-weight: 500; }
+/* Exercises-tab foot bar (the phone's colx-foot) */
+.mb-ex-foot { flex: none; border-top: 1px solid var(--line); background: var(--panel-2); padding: 2px 0 4px; }
+.mb-ex-foot .mb-row { min-height: 48px; }
+/* split rows: a main row + an inline side button (⌗ share / ✕ remove) */
+.mb-row-split { display: flex; align-items: center; }
+.mb-row-split > .mb-row { flex: 1 1 auto; min-width: 0; }
+.mb-row-side {
+  flex: none; width: 48px; min-height: 56px; border: 0; background: none;
+  color: var(--faint); font: inherit; font-size: 15px; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.mb-row-side:active { background: var(--accent-soft); color: var(--accent-ink); }
+/* nested rows inside an expanded Menu class/version */
+.mb-sub { padding-left: 30px; }
+/* two-line recents (desktop sb-recent-* at phone metrics) */
+.mb-recent-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.mb-recent-label { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mb-recent-sub { font-size: 11.5px; color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 1px; }
+.mb-recent-at { flex: none; font-size: 11px; color: var(--faint); white-space: nowrap; }
+.mb-row:disabled { color: var(--faint); cursor: default; }
+.mb-coll-head:focus-visible, .mb-row-side:focus-visible, .mb-search input:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: -2px;
+}

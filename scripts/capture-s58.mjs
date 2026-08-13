@@ -225,6 +225,9 @@ if (SCENE === 'phone') {
   });
   check('version row present with a worksheet count', !!row && row.note === '2 worksheets', JSON.stringify(row));
   await shot('s58-phone-menu.png');
+  // S59: the version row now EXPANDS in place (caret) — opening a worksheet
+  // is a tap on one of the expanded rows. Same end state as before: the
+  // version's first worksheet opens under its class:<slug>: key.
   await page.evaluate(() => {
     const b = [...document.querySelectorAll('.mb-row')].find((x) => {
       const l = x.querySelector('.mb-row-label');
@@ -232,10 +235,14 @@ if (SCENE === 'phone') {
     });
     if (b) b.click();
   });
+  await sleep(400);
+  await page.evaluate(() => {
+    const r = document.querySelector('.mb-ws-row.mb-sub'); if (r) r.click();
+  });
   await page.waitForFunction((want) =>
     (localStorage.getItem('build-hosted-root:lc2-file') || '').includes(want),
     { timeout: 15000 }, 'class:' + version.slug + ':ch6.1-fa');
-  check('tapping the version opens its first worksheet', true);
+  check('expanding the version and tapping its first worksheet opens it', true);
   await sleep(700);
   check('back on the Derive tab (worksheet header shown)', await page.$('.mb-dhead') !== null);
   await shot('s58-phone.png');

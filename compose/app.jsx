@@ -1145,6 +1145,12 @@ function App() {
   const [codeEntry, setCodeEntry] = useState(null);
   const [unlockPrefill, setUnlockPrefill] = useState('');
   const [footCopied, setFootCopied] = useState(false);
+  // S59: phone-only UI state -- the switch sheet's local search query (kept
+  // apart from the desktop navQuery on purpose), the Exercises-foot code-copy
+  // feedback, and which Menu class/version row is expanded in place.
+  const [mbQuery, setMbQuery] = useState('');
+  const [mbFootCopied, setMbFootCopied] = useState(false);
+  const [mbExpanded, setMbExpanded] = useState(null);
   // S46: right-click context menu on sidebar worksheet/chapter rows —
   // { x, y, items: [{ glyph, label, act }] } | null. Escape / click-away
   // closes it; rows with no items keep the browser's own menu.
@@ -2148,8 +2154,9 @@ function App() {
             })}
           </div>
         ))}
-        <div style={{ height: 16 }} />
-        {!custom && <button className="btn-ghost reset-all-btn" title="Clear all progress for this worksheet" onClick={() => { if (window.confirm('Reset all derivation progress for this worksheet?')) { const keys = new Set(); groups.forEach(g => g.problems.forEach(p => keys.add(keyOf(g,p)))); setWork(w => Object.fromEntries(Object.entries(w).filter(([k]) => !keys.has(k)))); setProgress(pr => Object.fromEntries(Object.entries(pr).filter(([k]) => !keys.has(k)))); } }}>↺ Reset all derivations</button>}
+        {/* S59: the Reset-all button moved to the Exercises tab's foot
+            bar (mb-ex-foot), below the code/QR rows -- desktop colx-foot
+            order. This scroll is only rendered by the phone Exercises tab. */}
         <div style={{ height: 8 }} />
       </div>
     );
@@ -3276,11 +3283,11 @@ function App() {
   }
   function mbPush(pg) { setSheet(null); setUnlockOpen(false); setPage(pg); }
   function mbBack() { setPage('practice'); setMtab('menu'); }
-  function mbOpenWorksheet(key) { openWorksheetKey(key); setSheet(null); setMtab('derive'); }
+  function mbOpenWorksheet(key) { openWorksheetKey(key); setSheet(null); setMbQuery(''); setMtab('derive'); }
   function mbCollections() {
     // The sidebar's collections plus My classes — the switch sheet shows the
     // same data the desktop Worksheets section does.
-    const cols = sidebarCollections().map((c) => ({ id: c.id, label: c.label, items: c.items }));
+    const cols = sidebarCollections().map((c) => ({ id: c.id, label: c.label, items: c.items, family: c.family || null }));
     if (isFullBuild && tier !== 'anon' && classes && classes.length) {
       classes.forEach((c) => {
         cols.push({ id: 'class:' + c.slug, label: c.title, items: classLib.filter((l) => l.classSlug === c.slug), klass: c });
@@ -3316,6 +3323,38 @@ function App() {
     );
   }
   function renderMobileExercises() {
+    // S59: foot bar under the scroll -- mirrors the desktop drill-in column's
+    // colx-foot rules EXACTLY: curated worksheet -> Code + QR & link rows; an
+    // instructor's own hosted worksheet -> one Code & QR row; class worksheets
+    // and /v builds -> no code rows. Reset all sits below (moved out of the
+    // scroll so the order matches the desktop foot).
+    const codeRows = (() => {
+      if (!isFullBuild || !lib) return null;
+      const entry = composeCuratedForWorksheet(lib.key);
+      if (entry) return (
+        <React.Fragment>
+          <button type="button" className="mb-row" title="Copy the unlock code — entering it on any COMPOSE page adds this set to the worksheet list"
+            onClick={() => { try { navigator.clipboard.writeText(entry.code).catch(() => {}); } catch (e) {} setMbFootCopied(true); setTimeout(() => setMbFootCopied(false), 1500); }}>
+            <span className="mb-row-glyph" aria-hidden="true">⌗</span>
+            <span className="mb-row-label">{mbFootCopied ? '✓ Code copied' : 'Code · '}{!mbFootCopied && <span className="mono">{entry.code}</span>}</span>
+          </button>
+          <button type="button" className="mb-row" title="QR code that unlocks this worksheet — scan or project it"
+            onClick={() => setCodeEntry(entry)}>
+            <span className="mb-row-glyph" aria-hidden="true">▦</span>
+            <span className="mb-row-label">QR &amp; link</span>
+          </button>
+        </React.Fragment>
+      );
+      const vid = lib.versionId || (hosted && hosted.versionId && !lib.classSlug ? hosted.versionId : null);
+      if (tier === 'instructor' && vid) return (
+        <button type="button" className="mb-row" disabled={shareBusy} title="Unlock code + QR for this hosted worksheet"
+          onClick={() => shareVersionById(vid)}>
+          <span className="mb-row-glyph" aria-hidden="true">⌗</span>
+          <span className="mb-row-label">{shareBusy ? '…' : 'Code & QR'}</span>
+        </button>
+      );
+      return null;
+    })();
     return (
       <div className="mb-view mb-exview">
         <div className="mb-tab-head">
@@ -3328,8 +3367,17 @@ function App() {
         <div className="mb-scroll mb-ex">
           {hasContent
             ? renderExercisesScroll(() => setMtab('derive'))
-            : <div className="empty-note">No worksheet open yet — pick one with the worksheet chip below.</div>}
+            : <div className="empty-note">No worksheet open yet — tap the worksheet title on the Derive tab, or Menu → Switch worksheet.</div>}
         </div>
+        {hasContent && !custom && (
+          <div className="mb-ex-foot">
+            {codeRows}
+            <button type="button" className="mb-row" onClick={resetAllProgress} title="Clear all progress for this worksheet">
+              <span className="mb-row-glyph" aria-hidden="true">↺</span>
+              <span className="mb-row-label">Reset all derivations</span>
+            </button>
+          </div>
+        )}
       </div>
     );
   }
@@ -3375,11 +3423,26 @@ function App() {
       );
     }
     return (
-      <button type="button" className="mb-row" key={key} onClick={onActivate}>
+      <button type="button" className="mb-row" key={key} onClick={onActivate} disabled={o.disabled || undefined}>
         <span className="mb-row-glyph" aria-hidden="true">{glyph}</span>
         <span className="mb-row-label">{label}</span>
         {note != null && <span className="mb-row-note">{note}</span>}
         <span className="mb-row-caret" aria-hidden="true">›</span>
+      </button>
+    );
+  }
+  // S59: one phone worksheet row (dot / title / count) -- the switch sheet's
+  // row markup, shared with the Menu's expanded class/version lists (sub adds
+  // the nested indent).
+  function mbWsRow(l, sub) {
+    const on = !custom && l.key === fileKey;
+    const n = l.set.groups.reduce((a, g) => a + g.problems.length, 0);
+    return (
+      <button type="button" key={l.key} className={'mb-row mb-ws-row' + (on ? ' on' : '') + (sub ? ' mb-sub' : '')}
+        aria-current={on ? 'true' : undefined} onClick={() => mbOpenWorksheet(l.key)}>
+        <span className="mb-ws-dot" aria-hidden="true" />
+        <span className="mb-row-label">{l.title}</span>
+        <span className="mb-row-note">{n}</span>
       </button>
     );
   }
@@ -3400,35 +3463,106 @@ function App() {
     return (
       <div className="mb-view mb-menu">
         <div className="mb-scroll">
-          {/* 1. Worksheets -- matches the desktop 'library' section */}
+          {/* 1. Worksheets -- matches the desktop 'library' section. S59:
+              same ROW ORDER as the desktop sidebar (switch / classes /
+              versions / progress / unlock / unlocked / full library);
+              classes + versions expand IN PLACE (caret) to their worksheet
+              rows -- the inline ⌗ is the phone's stand-in for right-click. */}
           {mbKicker('❏', 'Worksheets')}
           {mbRow('ws', '❏', 'Switch worksheet', custom ? 'custom' : (lib ? lib.title : null), () => setSheet('ws'))}
-          {mbRow('progress', '✓', 'Your progress', grandSolved + ' solved', () => mbPush('progress'))}
-          {isFullBuild && mbRow('unlock', '⊕', 'Unlock with a code', null, () => { setSheet(null); setUnlockOpen(true); })}
-          {isFullBuild && unlockedEntries.length > 0 && (
-            <div>
-              {mbKicker('⌗', 'Unlocked')}
-              {unlockedEntries.map((e) => mbRow('unl:' + e.key, '⌗', e.title, null, () => { openCuratedEntry(e); setSheet(null); setMtab('derive'); }))}
-            </div>
-          )}
           {isFullBuild && tier !== 'anon' && classes && classes.length > 0 && (
             <div>
               {mbKicker('❏', 'My classes')}
               {classes.map((c) => {
                 const items = classLib.filter((l) => l.classSlug === c.slug);
-                return mbRow('class:' + c.slug, '❏', c.title, items.length + (items.length === 1 ? ' worksheet' : ' worksheets'),
-                  () => { if (items.length) mbOpenWorksheet(items[0].key); else setSheet('ws'); });
+                const cid = 'class:' + c.slug;
+                const open = mbExpanded === cid;
+                return (
+                  <div key={cid}>
+                    <button type="button" className="mb-row" aria-expanded={open} onClick={() => setMbExpanded(open ? null : cid)}>
+                      <span className="mb-row-glyph" aria-hidden="true">❏</span>
+                      <span className="mb-row-label">{c.title}</span>
+                      <span className="mb-row-note">{items.length + (items.length === 1 ? ' worksheet' : ' worksheets')}</span>
+                      <span className="mb-row-caret" aria-hidden="true">{open ? '▾' : '▸'}</span>
+                    </button>
+                    {open && items.map((l) => mbWsRow(l, true))}
+                    {open && items.length === 0 && <div className="empty-note">This class has no worksheets yet.</div>}
+                    {open && (
+                      <button type="button" className="mb-row mb-leave-row mb-sub" onClick={() => leaveClass(c)}>
+                        <span className="mb-row-glyph" aria-hidden="true">✕</span>
+                        <span className="mb-row-label">Leave this class…</span>
+                      </button>
+                    )}
+                  </div>
+                );
               })}
             </div>
           )}
           {isFullBuild && tier === 'instructor' && ownVersions && ownVersions.length > 0 && (
             <div>
-              {/* S58: own hosted versions — mirrors the desktop sidebar block */}
+              {/* S58/S59: own hosted versions — expandable like classes, plus
+                  an ✎ editor row and the inline ⌗ share button */}
               {mbKicker('◈', 'My versions')}
               {ownVersions.map((v) => {
                 const items = ownedLib.filter((l) => l.ownSlug === v.slug);
-                return mbRow('own:' + v.slug, '◈', v.title, items.length + (items.length === 1 ? ' worksheet' : ' worksheets'),
-                  () => { if (items.length) mbOpenWorksheet(items[0].key); else setSheet('ws'); });
+                const oid = 'own:' + v.slug;
+                const open = mbExpanded === oid;
+                return (
+                  <div key={oid}>
+                    <div className="mb-row-split">
+                      <button type="button" className="mb-row" aria-expanded={open} onClick={() => setMbExpanded(open ? null : oid)}>
+                        <span className="mb-row-glyph" aria-hidden="true">◈</span>
+                        <span className="mb-row-label">{v.title}</span>
+                        <span className="mb-row-note">{items.length + (items.length === 1 ? ' worksheet' : ' worksheets')}</span>
+                        <span className="mb-row-caret" aria-hidden="true">{open ? '▾' : '▸'}</span>
+                      </button>
+                      <button type="button" className="mb-row-side" title={'Unlock code for “' + v.title + '” — code + QR'}
+                        aria-label={'Unlock code for ' + v.title} onClick={() => shareVersionById(v.id)}>⌗</button>
+                    </div>
+                    {open && items.map((l) => mbWsRow(l, true))}
+                    {open && items.length === 0 && <div className="empty-note">This version has no worksheets yet.</div>}
+                    {open && (
+                      <button type="button" className="mb-row mb-sub" onClick={() => openHostedEditor(v)}>
+                        <span className="mb-row-glyph" aria-hidden="true">✎</span>
+                        <span className="mb-row-label">Edit in worksheet editor</span>
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          {mbRow('progress', '✓', 'Your progress', grandSolved + ' solved', () => mbPush('progress'))}
+          {isFullBuild && mbRow('unlock', '⊕', 'Unlock with a code', null, () => { setSheet(null); setUnlockOpen(true); })}
+          {isFullBuild && unlockedEntries.length > 0 && (
+            <div>
+              {mbKicker('⌗', 'Unlocked')}
+              {unlockedEntries.map((e) => (
+                <div className="mb-row-split" key={'unl:' + e.key}>
+                  {mbRow('unl:' + e.key, '⌗', e.title, null, () => { openCuratedEntry(e); setSheet(null); setMtab('derive'); })}
+                  <button type="button" className="mb-row-side" title="Remove from your list (the code unlocks it again any time)"
+                    aria-label={'Remove ' + e.title + ' from your list'} onClick={() => removeUnlocked(e.key)}>✕</button>
+                </div>
+              ))}
+            </div>
+          )}
+          {isFullBuild && tier === 'instructor' && (
+            <div>
+              {/* S59: instructor Full-library rows — same gating and glyphs
+                  as the desktop sidebar block (tap = load in-app, ⌗ = code) */}
+              {mbKicker('📖', 'Full library')}
+              {[['cc', 'Coppock & Champollion'], ['hk', 'Heim & Kratzer'], ['papers', 'Classic papers']].map(([fk, label]) => {
+                const fe = composeCuratedByKey(fk);
+                return (
+                  <div className="mb-row-split" key={'lib:' + fk}>
+                    <button type="button" className="mb-row" onClick={() => { if (fe) { applyCuratedEntry(fe); setSheet(null); setMtab('derive'); } }}>
+                      <span className="mb-row-glyph" aria-hidden="true">📖</span>
+                      <span className="mb-row-label">{label}</span>
+                    </button>
+                    {fe && <button type="button" className="mb-row-side" title={'Unlock code for the whole ' + label + ' collection — code + QR'}
+                      aria-label={'Unlock code for ' + label} onClick={() => setCodeEntry(fe)}>⌗</button>}
+                  </div>
+                );
               })}
             </div>
           )}
@@ -3445,8 +3579,18 @@ function App() {
                 const gid = dot > 0 ? r.ex.slice(0, dot) : '', pid = dot > 0 ? r.ex.slice(dot + 1) : '';
                 const g = gs.find((x) => x.id === gid);
                 const pb = g && g.problems.find((x) => x.id === pid);
-                return mbRow('rec:' + r.ws + '/' + r.ex, '↻', pb ? navLabel(g, pb) : l.title, relTime(r.at),
-                  () => { openRecent(r); setSheet(null); setMtab('derive'); });
+                // S59: two-line recents, mirroring the desktop sb-recent rows
+                return (
+                  <button type="button" key={'rec:' + r.ws + '/' + r.ex} className="mb-row"
+                    onClick={() => { openRecent(r); setSheet(null); setMtab('derive'); }}>
+                    <span className="mb-row-glyph" aria-hidden="true">▸</span>
+                    <span className="mb-recent-main">
+                      <span className="mb-recent-label lx">{pb ? navLabel(g, pb) : l.title}</span>
+                      <span className="mb-recent-sub">{l.title}</span>
+                    </span>
+                    <span className="mb-recent-at">{relTime(r.at)}</span>
+                  </button>
+                );
               })}
             </div>
           )}
@@ -3457,6 +3601,7 @@ function App() {
               {mbKicker('✎', 'Author')}
               {mbRow('editor', '✎', 'Worksheet editor', null, () => openEditorSurface())}
               {mbRow('scratch', '♪', 'Scratchpad', 'free', () => mbPush('scratch'))}
+              {mbRow('notes', '📝', 'Notes', null, () => { setSheet(null); setModal('reading'); })}
               {mbRow('import', '↑', 'Import worksheet…', null, () => { setLoadErr(null); if (fileInput.current) fileInput.current.click(); })}
             </div>
           )}
@@ -3501,6 +3646,15 @@ function App() {
           </div>
           {mbRow('save-prog', '⤓', 'Save progress to a file', null, () => composeExportProgress())}
           {mbRow('restore-prog', '⤒', 'Restore progress from a file…', null, () => { if (progressFileInput.current) progressFileInput.current.click(); })}
+          {/* S59: the Menu tab never mounts the stage, so exporting from
+              here first returns to Derive and waits for the tree to mount
+              (exportDerivation itself explains if there is no exercise) */}
+          {mbRow('export-png', '⧉', exporting ? 'Rendering…' : 'Export derivation (PNG)', null, () => {
+            mbGoTab('derive');
+            let tries = 0;
+            const go = () => { if (document.querySelector('.tree-wrap') || tries++ > 20) exportDerivation(); else setTimeout(go, 50); };
+            setTimeout(go, 50);
+          }, { disabled: exporting })}
 
           {/* 6. Guide & help */}
           {isFullBuild && (
@@ -3595,33 +3749,76 @@ function App() {
     );
   }
   function renderWsSheet() {
+    // S59: the switch sheet is the desktop worksheet browser, phone-sized.
+    // A local search query (mbQuery -- deliberately NOT the desktop navQuery)
+    // filters LIB exactly like the sidebar search; an empty query shows the
+    // desktop hierarchy -- textbook families > chapter collections, loose
+    // collections, classes and own versions -- driven by the SAME openFam/
+    // openColl state and activeCol/activeFam fallbacks as renderSidebarBody,
+    // so phone and desktop remember the same place.
+    const q = mbQuery.trim().toLowerCase();
+    const results = q ? LIB.filter((l) => (l.title || '').toLowerCase().includes(q)).slice(0, 24) : null;
+    const cols = mbCollections();
+    const activeCol = cols.find((c) => c.items.some((l) => !custom && l.key === fileKey));
+    const openId = openColl != null ? openColl : (activeCol ? activeCol.id : (cols[0] && cols[0].id));
+    const FAMS = { cc: 'Coppock & Champollion', hk: 'Heim & Kratzer' };
+    const activeFam = activeCol ? activeCol.family : null;
+    const renderColl = (c) => (
+      <div key={c.id}>
+        <button type="button" className="mb-coll-head" aria-expanded={openId === c.id}
+          onClick={() => setOpenColl(openId === c.id ? '' : c.id)}>
+          <span className="mb-coll-caret" aria-hidden="true">{openId === c.id ? '▾' : '▸'}</span>
+          <span className="mb-coll-label">{c.label}</span>
+          <span className="mb-coll-count">{c.items.length}</span>
+        </button>
+        {openId === c.id && c.items.map((l) => mbWsRow(l))}
+        {openId === c.id && c.klass && c.items.length === 0 && <div className="empty-note">This class has no worksheets yet.</div>}
+        {openId === c.id && c.klass && (
+          <button type="button" className="mb-row mb-leave-row" onClick={() => leaveClass(c.klass)}>
+            <span className="mb-row-glyph" aria-hidden="true">✕</span>
+            <span className="mb-row-label">Leave this class…</span>
+          </button>
+        )}
+      </div>
+    );
+    const grouped = []; const seenFam = {};
+    cols.forEach((c) => {
+      if (!c.family) { grouped.push(renderColl(c)); return; }
+      if (seenFam[c.family]) return;
+      seenFam[c.family] = true;
+      const fk = c.family;
+      const famCols = cols.filter((x) => x.family === fk);
+      const famOpen = (openFam != null ? openFam : activeFam) === fk;
+      const total = famCols.reduce((a, x) => a + x.items.length, 0);
+      grouped.push(
+        <div key={'fam:' + fk}>
+          <button type="button" className="mb-coll-head mb-fam-head" aria-expanded={famOpen}
+            onClick={() => setOpenFam(famOpen ? '' : fk)}>
+            <span className="mb-coll-caret" aria-hidden="true">{famOpen ? '▾' : '▸'}</span>
+            <span className="mb-coll-label">{FAMS[fk] || fk}</span>
+            <span className="mb-coll-count">{total}</span>
+          </button>
+          {famOpen && <div className="mb-fam-body">{famCols.map(renderColl)}</div>}
+        </div>
+      );
+    });
     return (
-      <Sheet title="Switch worksheet" side="bottom" className="sheet-list mb-ws-sheet" onClose={() => setSheet(null)}>
+      <Sheet title="Switch worksheet" side="bottom" className="sheet-list mb-ws-sheet" onClose={() => { setSheet(null); setMbQuery(''); }}>
         <div className="mb-ws-list">
-          {mbCollections().map((c) => (
-            <div key={c.id}>
-              <div className="mb-kicker">{c.label}</div>
-              {c.items.map((l) => {
-                const on = !custom && l.key === fileKey;
-                const n = l.set.groups.reduce((a, g) => a + g.problems.length, 0);
-                return (
-                  <button type="button" key={l.key} className={'mb-row mb-ws-row' + (on ? ' on' : '')}
-                    aria-current={on ? 'true' : undefined} onClick={() => mbOpenWorksheet(l.key)}>
-                    <span className="mb-ws-dot" aria-hidden="true" />
-                    <span className="mb-row-label">{l.title}</span>
-                    <span className="mb-row-note">{n}</span>
-                  </button>
-                );
-              })}
-              {c.klass && c.items.length === 0 && <div className="empty-note">This class has no worksheets yet.</div>}
-              {c.klass && (
-                <button type="button" className="mb-row mb-leave-row" onClick={() => leaveClass(c.klass)}>
-                  <span className="mb-row-glyph" aria-hidden="true">✕</span>
-                  <span className="mb-row-label">Leave this class…</span>
-                </button>
-              )}
+          <div className="mb-search">
+            <span className="mb-search-glyph" aria-hidden="true">⌕</span>
+            <input value={mbQuery} onChange={(e) => setMbQuery(e.target.value)}
+              aria-label="Search worksheets" placeholder="Search worksheets…" />
+          </div>
+          {results ? (
+            <div>
+              <div className="mb-kicker">{results.length} {results.length === 1 ? 'result' : 'results'}</div>
+              {results.map((l) => mbWsRow(l))}
+              {results.length === 0 && <div className="empty-note">Nothing matches “{mbQuery.trim()}”. Try a chapter number, or a phrase from a worksheet title.</div>}
             </div>
-          ))}
+          ) : (
+            <div>{grouped}</div>
+          )}
           <button type="button" className="mb-row" onClick={() => { setSheet(null); setLoadErr(null); if (fileInput.current) fileInput.current.click(); }}>
             <span className="mb-row-glyph" aria-hidden="true">↑</span>
             <span className="mb-row-label">Open a file…</span>
