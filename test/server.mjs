@@ -312,6 +312,8 @@ async function main() {
   contains('root ships the Host-&-get-code affordance (S41)', r.text, 'Host & get code');
   contains('root ships the big unlock-code share block (S41)', r.text, 'vd-share-code-big');
   contains('root ships the practice/editor Share affordance (S41)', r.text, 'Share this worksheet');
+  // S58 — instructor-owned versions render as sidebar rows (My versions)
+  contains('root ships the own-version sidebar rows (S58)', r.text, 'This version has no worksheets yet.');
   // N3 (S31) — right reference panel compiled into the site bundle
   contains('root ships the right reference panel tabs (N3)', r.text, 'rp-tabs');
   // NB esbuild ASCII-escapes the middots in the strip's label — assert the

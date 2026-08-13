@@ -506,7 +506,7 @@ function CuratedCodeModal({ entry, onClose }) {
 }
 
 /* ---- My versions page (instructor tier; spec: max-width 940px rows) ------ */
-function VersionsPage({ token, onBack, onAssign, onEdit, onAuthGone }) {
+function VersionsPage({ token, onBack, onAssign, onEdit, onAuthGone, onChanged }) {
   const [versions, setVersions] = useState(null);
   const [err, setErr] = useState(null);
   const [openId, setOpenId] = useState(null);
@@ -528,7 +528,11 @@ function VersionsPage({ token, onBack, onAssign, onEdit, onAuthGone }) {
     return j;
   }
   async function refresh() {
-    try { const j = await api('GET', '/api/collections/versions/records?sort=-updated&perPage=200'); setVersions((j && j.items) || []); }
+    try {
+      const j = await api('GET', '/api/collections/versions/records?sort=-updated&perPage=200');
+      setVersions((j && j.items) || []);
+      if (onChanged) onChanged(); // S58: keep the App's My-versions sidebar rows fresh
+    }
     catch (e) { setErr('Could not load your versions: ' + e.message); }
   }
   useEffect(() => { refresh(); }, []);
@@ -1365,6 +1369,24 @@ function App() {
     classIslandsIn.current = {};
     refreshClasses();
   }, [canSync, authId]);
+  // S58: the instructor's OWN hosted versions, surfaced as sidebar rows so
+  // the S46 right-click share/edit menu reaches them (until S58 they shared
+  // only via the ⇗ buttons and the drill-in foot).
+  const [ownVersions, setOwnVersions] = useState(null); // null | version records
+  const ownVersionsFor = useRef(null);
+  const refreshOwnVersions = useCallback(() => {
+    if (tier !== 'instructor' || !canSync) return;
+    fetch('/api/collections/versions/records?sort=-updated&perPage=200', { headers: { Authorization: auth.token } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => { if (j && Array.isArray(j.items)) setOwnVersions(j.items); })
+      .catch(() => {}); // offline: keep whatever we have (mirrors refreshClasses)
+  }, [tier, canSync, auth && auth.token]);
+  useEffect(() => {
+    if (tier !== 'instructor' || !canSync || !authId) { setOwnVersions(null); ownVersionsFor.current = null; return; }
+    if (ownVersionsFor.current === authId) return;
+    ownVersionsFor.current = authId;
+    refreshOwnVersions();
+  }, [tier, canSync, authId]);
   function openEditorSurface() {
     // Desktop: the editor is a page (N2). Mobile keeps the modal path.
     if (isMobile) { setModal('editor'); }
@@ -1414,6 +1436,26 @@ function App() {
       } catch (e) { return null; }
     }).filter(Boolean);
   }), [classes]);
+  // S58: worksheets of the instructor's own hosted versions load exactly
+  // like classes — same loadText path, same 'class:<slug>:<wsKey>' keys, so
+  // the /v-island progress bridge below lines up. A version this account is
+  // ALSO enrolled in stays a class (dedupe guard: no duplicate LIB keys).
+  const ownedLib = React.useMemo(() => {
+    const enrolled = new Set((classes || []).map((c) => c.slug));
+    return (ownVersions || []).filter((v) => v && v.slug && !enrolled.has(v.slug)).flatMap((v) => {
+      const list = (v.bundle && (v.bundle.worksheets || v.bundle.exercises)) || [];
+      return list.map((w) => {
+        if (!w || !w.key) return null;
+        const text = typeof w.text === 'string' ? w.text : JSON.stringify(w.content);
+        try {
+          const { set } = window.LCData.loadText(text, w.title || w.key);
+          set.key = 'class:' + v.slug + ':' + w.key;
+          return { key: set.key, title: w.title || set.title || w.key, set,
+                   ownSlug: v.slug, ownTitle: v.title, versionId: v.id, text };
+        } catch (e) { return null; }
+      }).filter(Boolean);
+    });
+  }, [ownVersions, classes]);
   // S44: fetched curated worksheets — same loadText path as user files and
   // class bundles; set.key is the canonical worksheet key, so progress keys
   // ('<key>/<group>/<derivation>') match what the old curated-page islands
@@ -1433,7 +1475,7 @@ function App() {
         } catch (e) { return null; }
       }).filter(Boolean);
   }, [libFiles]);
-  const LIB = React.useMemo(() => [...BUILTIN, ...curatedLib, ...userLib, ...bundleLib, ...classLib], [curatedLib, userLib, bundleLib, classLib]);
+  const LIB = React.useMemo(() => [...BUILTIN, ...curatedLib, ...userLib, ...bundleLib, ...classLib, ...ownedLib], [curatedLib, userLib, bundleLib, classLib, ownedLib]);
 
   // N5: class progress lives in the version's OWN island — localStorage
   // `<slug>:lc2-progress`, exactly where /v/<slug> keeps it — so solving in
@@ -1441,16 +1483,26 @@ function App() {
   // (union into the app map under the class:<slug>: prefix); the write-back
   // below only ARMS once the import is visibly applied, so it can never
   // clobber an island with a pre-import snapshot.
+  // S58: the bridge covers enrolled classes AND the instructor's own hosted
+  // versions — previewing an own version shares its /v island exactly like
+  // an enrolled student's browser would.
+  const islandSlugs = React.useMemo(() => {
+    const seen = {}; const out = [];
+    (classes || []).concat(ownVersions || []).forEach((x) => {
+      if (x && x.slug && !seen[x.slug]) { seen[x.slug] = true; out.push(x.slug); }
+    });
+    return out;
+  }, [classes, ownVersions]);
   useEffect(() => {
-    if (!classes || !classes.length) return;
+    if (!islandSlugs.length) return;
     const found = {};
-    classes.forEach((c) => {
-      if (classIslandsIn.current[c.slug]) return;
+    islandSlugs.forEach((slug) => {
+      if (classIslandsIn.current[slug]) return;
       let ext = null;
-      try { ext = JSON.parse(localStorage.getItem(c.slug + ':lc2-progress') || 'null'); } catch (e) {}
+      try { ext = JSON.parse(localStorage.getItem(slug + ':lc2-progress') || 'null'); } catch (e) {}
       const keys = (ext && typeof ext === 'object' && !Array.isArray(ext)) ? Object.keys(ext).filter((k) => ext[k]) : [];
-      if (keys.length) { found[c.slug] = keys; classIslandsIn.current[c.slug] = keys; }
-      else classIslandsIn.current[c.slug] = true; // nothing stored — safe at once
+      if (keys.length) { found[slug] = keys; classIslandsIn.current[slug] = keys; }
+      else classIslandsIn.current[slug] = true; // nothing stored — safe at once
     });
     if (!Object.keys(found).length) return;
     setProgress((pr) => {
@@ -1458,24 +1510,24 @@ function App() {
       Object.keys(found).forEach((slug) => found[slug].forEach((k) => { next['class:' + slug + ':' + k] = true; }));
       return next;
     });
-  }, [classes]);
+  }, [islandSlugs]);
   useEffect(() => {
-    (classes || []).forEach((c) => {
-      const st = classIslandsIn.current[c.slug];
+    islandSlugs.forEach((slug) => {
+      const st = classIslandsIn.current[slug];
       if (!st) return;
-      const pre = 'class:' + c.slug + ':';
+      const pre = 'class:' + slug + ':';
       if (st !== true) {
         if (!st.every((k) => progress[pre + k])) return; // import not applied yet
-        classIslandsIn.current[c.slug] = true;
+        classIslandsIn.current[slug] = true;
       }
       const mine = {};
       Object.keys(progress).forEach((k) => { if (progress[k] && k.indexOf(pre) === 0) mine[k.slice(pre.length)] = true; });
       try {
         const next = JSON.stringify(mine);
-        if (localStorage.getItem(c.slug + ':lc2-progress') !== next) localStorage.setItem(c.slug + ':lc2-progress', next);
+        if (localStorage.getItem(slug + ':lc2-progress') !== next) localStorage.setItem(slug + ':lc2-progress', next);
       } catch (e) {}
     });
-  }, [progress, classes]);
+  }, [progress, islandSlugs]);
 
   useEffect(() => {
     try { localStorage.setItem(LC_NS + 'lc2-userfiles', JSON.stringify(userFiles)); window.__lcUserFilesQuotaWarned = false; }
@@ -1738,6 +1790,7 @@ function App() {
       if (!r.ok || !v || !v.id) throw new Error((v && (v.message || v.error)) || ('request failed (' + r.status + ')'));
       setHosted({ versionId: v.id, slug: v.slug, mode: v.mode || 'practice', title: v.title });
       setShareVersion(v);
+      refreshOwnVersions(); // S58: the fresh version appears under My versions
     } catch (e) { window.alert('Host & get code failed: ' + (e.message || 'unknown error')); }
     setShareBusy(false);
   }
@@ -2144,6 +2197,7 @@ function App() {
   function collectionOf(l) {
     if (!l) return null;
     if (l.classTitle) return l.classTitle;
+    if (l.ownTitle) return l.ownTitle; // S58: own hosted version's title
     if (l.bundleTitle) return l.bundleTitle;
     if (l.user) return 'My worksheets';
     const CH = (window.LCData && window.LCData.CHAPTERS) || [];
@@ -2163,7 +2217,7 @@ function App() {
   // people's versions and stay out). Raw text comes from the entry itself
   // (user/bundle files) or the page's inline file map (built-ins).
   const assignCatalogue = React.useMemo(() => LIB.map((l) => {
-    if (l.classSlug) return null;
+    if (l.classSlug || l.ownSlug) return null; // S58: hosted-version copies stay out too
     const text = l.text || (window.LC_FILES && window.LC_FILES[l.key] && window.LC_FILES[l.key].text) || null;
     if (!text) return null;
     return { key: l.key, title: l.title, coll: collectionOf(l) || 'Worksheets',
@@ -2217,7 +2271,7 @@ function App() {
     // old /papers page) instead of scattering across per-paper prefixes.
     const paperKeys = composePapersKeySet();
     const cols = [];
-    const loose = LIB.filter((l) => !l.user && !l.classSlug && !paperKeys.has(l.key) && !CH.some((ch) => inCh(l, ch)));
+    const loose = LIB.filter((l) => !l.user && !l.classSlug && !l.ownSlug && !paperKeys.has(l.key) && !CH.some((ch) => inCh(l, ch)));
     if (loose.length) cols.push({ id: '__loose', label: (ASSIGNMENT && ASSIGNMENT.title) || 'Worksheets', items: loose });
     CH.forEach((ch) => {
       const items = LIB.filter((l) => !l.user && !paperKeys.has(l.key) && inCh(l, ch));
@@ -2276,6 +2330,20 @@ function App() {
       .catch(() => window.alert('Could not load this worksheet to copy.'));
   }
   function ctxItemsForWs(l) {
+    // S58: a worksheet row of the instructor's OWN hosted version — share
+    // the version's unlock code / QR, and jump straight into the hosted
+    // editor on THIS worksheet (no 'Copy to editor': the hosted original is
+    // the thing to edit; raw bundle key = strip the 'class:<slug>:' prefix).
+    if (l.versionId) {
+      const v = (ownVersions || []).find((x) => x.id === l.versionId);
+      if (!v) return [];
+      const rawKey = l.key.split(':').slice(2).join(':');
+      return [
+        { glyph: '⌗', label: 'Share code', act: () => shareVersionById(l.versionId) },
+        { glyph: '▦', label: 'QR & link', act: () => shareVersionById(l.versionId) },
+        { glyph: '✎', label: 'Edit this worksheet', act: () => openHostedEditor(v, rawKey) },
+      ];
+    }
     // class worksheets carry no code a student may share — omit those items
     const entry = isFullBuild && !l.classSlug ? composeCuratedForWorksheet(l.key) : null;
     return ctxCodeItems(entry).concat(canAuthor
@@ -2413,6 +2481,39 @@ function App() {
                                 <span className="sb-row-label">Leave this class…</span>
                               </button>
                             )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {isFullBuild && tier === 'instructor' && ownVersions && ownVersions.length > 0 && (
+                    <div>
+                      {/* S58: the instructor's own hosted versions as
+                          collapsible sidebar rows — right-click a heading or
+                          a worksheet row for share code / QR / edit */}
+                      <div className="sb-kicker">My versions</div>
+                      {ownVersions.map((v) => {
+                        const items = ownedLib.filter((l) => l.ownSlug === v.slug);
+                        const oid = 'own:' + v.slug;
+                        return (
+                          <div key={oid}>
+                            <div className="sb-coll-row">
+                              <button type="button" className="sb-coll-head" aria-expanded={openId === oid}
+                                onContextMenu={(e) => openCtxMenu(e, [
+                                  { glyph: '⌗', label: 'Share code', act: () => shareVersionById(v.id) },
+                                  { glyph: '▦', label: 'QR & link', act: () => shareVersionById(v.id) },
+                                  { glyph: '✎', label: 'Edit in worksheet editor', act: () => openHostedEditor(v) },
+                                ])}
+                                onClick={() => setOpenColl(openId === oid ? '' : oid)}>
+                                <span className="sb-coll-caret" aria-hidden="true">{openId === oid ? '▾' : '▸'}</span>
+                                <span className="sb-coll-label">{v.title}</span>
+                                <span className="sb-coll-count">{items.length}</span>
+                              </button>
+                              <button type="button" className="sb-code-btn" title={'Unlock code for “' + v.title + '” — code + QR'}
+                                aria-label={'Unlock code for ' + v.title} onClick={() => shareVersionById(v.id)}>⌗</button>
+                            </div>
+                            {openId === oid && items.map((l) => renderWsRow(l))}
+                            {openId === oid && items.length === 0 && <div className="sb-empty-note">This version has no worksheets yet.</div>}
                           </div>
                         );
                       })}
@@ -2718,9 +2819,10 @@ function App() {
                     </button>
                   </React.Fragment>
                 );
-                if (tier === 'instructor' && hosted && hosted.versionId && !lib.classSlug) return (
+                const vid = lib.versionId || (hosted && hosted.versionId && !lib.classSlug ? hosted.versionId : null); // S58: sidebar-opened own worksheets carry versionId
+                if (tier === 'instructor' && vid) return (
                   <button type="button" className="sb-row" disabled={shareBusy} title="Unlock code + QR for this hosted worksheet"
-                    onClick={() => shareVersionById(hosted.versionId)}>
+                    onClick={() => shareVersionById(vid)}>
                     <span className="sb-ico" aria-hidden="true">⌗</span>
                     <span className="sb-row-label">{shareBusy ? '…' : 'Code & QR'}</span>
                   </button>
@@ -3137,6 +3239,7 @@ function App() {
         onBack={() => setPage('practice')}
         onAssign={(id) => { setAssignFor(id); setPage('assign'); }}
         onEdit={(v, k) => openHostedEditor(v, k)}
+        onChanged={refreshOwnVersions}
         onAuthGone={() => { setAuth(null); setSigninMode('login'); setPage('signin'); }} />;
     }
     if (page === 'assign') {
@@ -3181,6 +3284,13 @@ function App() {
     if (isFullBuild && tier !== 'anon' && classes && classes.length) {
       classes.forEach((c) => {
         cols.push({ id: 'class:' + c.slug, label: c.title, items: classLib.filter((l) => l.classSlug === c.slug), klass: c });
+      });
+    }
+    if (isFullBuild && tier === 'instructor' && ownVersions && ownVersions.length) {
+      // S58: owned versions group in the switch sheet like classes do
+      ownVersions.forEach((v) => {
+        const items = ownedLib.filter((l) => l.ownSlug === v.slug);
+        if (items.length) cols.push({ id: 'own:' + v.slug, label: v.title, items });
       });
     }
     return cols;
@@ -3307,6 +3417,17 @@ function App() {
               {classes.map((c) => {
                 const items = classLib.filter((l) => l.classSlug === c.slug);
                 return mbRow('class:' + c.slug, '❏', c.title, items.length + (items.length === 1 ? ' worksheet' : ' worksheets'),
+                  () => { if (items.length) mbOpenWorksheet(items[0].key); else setSheet('ws'); });
+              })}
+            </div>
+          )}
+          {isFullBuild && tier === 'instructor' && ownVersions && ownVersions.length > 0 && (
+            <div>
+              {/* S58: own hosted versions — mirrors the desktop sidebar block */}
+              {mbKicker('◈', 'My versions')}
+              {ownVersions.map((v) => {
+                const items = ownedLib.filter((l) => l.ownSlug === v.slug);
+                return mbRow('own:' + v.slug, '◈', v.title, items.length + (items.length === 1 ? ' worksheet' : ' worksheets'),
                   () => { if (items.length) mbOpenWorksheet(items[0].key); else setSheet('ws'); });
               })}
             </div>
