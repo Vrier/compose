@@ -416,10 +416,13 @@ async function main() {
   contains('/guide embeds the assign-page capture (N7)', r.text, '/guide/assign-page.jpg');
   contains('/guide embeds the instructor walkthrough videos (N7)', r.text, '/guide/wt-host.mp4');
   contains('/guide documents the one-click code+QR share (S42)', r.text, 'Host &amp; get code');
+  contains('/guide embeds the tablet-drawer capture (S57)', r.text, '/guide/tablet-view.jpg');
   r = await req('GET', '/guide/my-versions.jpg', { raw: true });
   expect('My-versions screenshot serves (N7)', r.status === 200, r.status);
   r = await req('GET', '/guide/student-view.jpg', { raw: true });
   expect('guide screenshot serves', r.status === 200, r.status);
+  r = await req('GET', '/guide/tablet-view.jpg', { raw: true });
+  expect('tablet screenshot serves (S57)', r.status === 200, r.status);
   r = await req('GET', '/sitemap.xml', { raw: true });
   lacks('sitemap no longer lists the stubbed curated pages (S44)', r.text, '/cc/ch7/</loc>');
   lacks('sitemap no longer lists the stubbed editor (S44)', r.text, '/editor/</loc>');

@@ -11,6 +11,7 @@
                  (ch7 via its curated unlock code — S44)
        pages     root-starter, files-page, signin
        mobile    mobile-view (390×760, forced mobile layout)
+       tablet    tablet-view (820×1180, real tablet band — nav drawer)
        editor    editor-page, editor-lexicon, editor-derivation,
                  editor-notes                              (root, Ctrl+E)
    =========================================================================== */
@@ -23,6 +24,7 @@ const OUT = 'server/guide-assets';
 const PORT = 8196;
 const B = `http://127.0.0.1:${PORT}`;
 const MOBILE = SCENE === 'mobile';
+const TABLET = SCENE === 'tablet';
 
 const srv = spawn('python3', ['-m', 'http.server', String(PORT), '--bind', '127.0.0.1', '-d', 'server/pb_public']);
 process.on('exit', () => { try { srv.kill(); } catch (e) {} });
@@ -37,10 +39,13 @@ const browser = await puppeteer.launch({
   args: ['--no-sandbox'],
   defaultViewport: MOBILE
     ? { width: 390, height: 760, deviceScaleFactor: 2 }
-    : { width: 1440, height: 900, deviceScaleFactor: 1.5 },
+    : TABLET
+      ? { width: 820, height: 1180, deviceScaleFactor: 2 }
+      : { width: 1440, height: 900, deviceScaleFactor: 1.5 },
 });
 const page = await browser.newPage();
-await page.evaluateOnNewDocument((layout) => { try { localStorage.setItem('lc2-force-layout', layout); } catch (e) {} }, MOBILE ? 'mobile' : 'desktop');
+/* S57: tablet needs the REAL band (lc2-force-layout only collapses to phone/desktop) */
+if (!TABLET) await page.evaluateOnNewDocument((layout) => { try { localStorage.setItem('lc2-force-layout', layout); } catch (e) {} }, MOBILE ? 'mobile' : 'desktop');
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const shot = async (name) => {
@@ -122,6 +127,18 @@ if (SCENE === 'student') {
   await clickText('.mb-tab', 'Derive');
   await sleep(700);
   await shot('mobile-view');
+} else if (SCENE === 'tablet') {
+  // S57: shoot the S55 tablet band at a real 820x1180 viewport (no override
+  // exists for it). Open ch7 via its code; the app-bar hamburger opens the
+  // left nav drawer (drill-in exercises column) over the dimmed stage.
+  await page.goto(B + '/?code=' + CH7, { waitUntil: 'networkidle2' });
+  await page.waitForFunction(() => (localStorage.getItem('build-hosted-root:lc2-file') || '').includes('ch7'), { timeout: 20000 });
+  await page.waitForSelector('.tb-bar', { timeout: 15000 });
+  await sleep(900);
+  await page.click('.tb-btn.tb-menu');
+  await page.waitForSelector('.sheet-left', { timeout: 8000 });
+  await sleep(700);
+  await shot('tablet-view');
 } else if (SCENE === 'editor') {
   // S44: /editor/ is a redirect stub — start on the root; ⌘E opens the editor
   await page.goto(B + '/', { waitUntil: 'networkidle2' });
