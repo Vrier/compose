@@ -31,3 +31,6 @@ server/pb_data/
 Thumbs.db
 *.log
 .site-deploy-key*
+
+# local session handoff (never pushed)
+HANDOFF.md
