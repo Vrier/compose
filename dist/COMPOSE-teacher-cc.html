@@ -2409,6 +2409,108 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
 .about-wrap h2 { font-size: 20px; margin: 38px 0 10px; padding-top: 8px; border-top: 1px solid var(--line); scroll-margin-top: 24px; }
 .about-wrap h3 { font-size: 16.5px; margin: 26px 0 8px; }
 
+/* ---- S59 note: the block below was LOST in the S55 commit (the host
+   Write/Edit truncation gotcha hit themes.css too, cutting the file at the
+   .about-wrap h3 rule above) and is restored VERBATIM from the pre-S55 file
+   (c4f44a0): in-app about/files/guide doc styling + the S43 sidebar
+   code-button block (.sb-row-split / .sb-coll-row / .sb-code-btn / .sb-code-x). */
+.about-wrap p, .about-wrap li, .about-wrap td, .about-wrap th { font-size: 15px; color: var(--ink); }
+.about-wrap a { color: var(--accent-ink, #b5532f); }
+.about-cite {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+  padding: 14px 16px; font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 12.5px; white-space: pre-wrap; margin: 10px 0;
+}
+.about-foot { margin-top: 40px; font-size: 12.5px; color: var(--ink-soft); }
+.files-table { width: 100%; border-collapse: collapse; margin: 6px 0 14px; }
+.files-table th, .files-table td { text-align: left; padding: 6px 12px 6px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.files-table th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); }
+.files-table .fnum { text-align: right; padding-right: 0; }
+.guide-wrap { max-width: 1080px; }
+.guide-wrap h2 { scroll-margin-top: 24px; }
+.guide-layout { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 34px; align-items: start; }
+.guide-side { position: sticky; top: 12px; }
+.guide-toc { display: flex; flex-direction: column; gap: 7px; font-size: 13.5px; line-height: 1.35; border-left: 2px solid var(--line); padding-left: 14px; }
+.guide-toc-head { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-soft); margin-bottom: 2px; }
+.guide-toc a { text-decoration: none; }
+.guide-toc a:hover { text-decoration: underline; }
+.guide-toc .guide-top { margin-top: 10px; color: var(--ink-soft); }
+@media (max-width: 860px) {
+  .guide-layout { display: block; }
+  .guide-side { position: static; margin-bottom: 18px; }
+  .guide-toc { flex-direction: row; flex-wrap: wrap; gap: 6px 14px; border-left: 0; padding-left: 0; }
+  .guide-toc .guide-top { display: none; }
+}
+.guide-fig { margin: 18px 0 26px; }
+.guide-fig img, .guide-fig video { width: 100%; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 2px 10px rgba(60,40,20,.07); }
+.guide-fig figcaption { font-size: 13px; color: var(--ink-soft); margin-top: 8px; line-height: 1.5; }
+.guide-pre { background: var(--panel, rgba(0,0,0,.03)); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; font-size: 13px; line-height: 1.55; overflow-x: auto; }
+
+/* ---- S43: curated unlock codes — sidebar & footer affordances ------------ */
+.sb-row-split { display: flex; align-items: center; }
+.sb-row-split .sb-row { flex: 1 1 auto; min-width: 0; }
+.sb-coll-row { display: flex; align-items: center; }
+.sb-coll-row .sb-coll-head { flex: 1 1 auto; min-width: 0; }
+.sb-code-btn, .sb-code-x {
+  flex: none; width: 24px; height: 24px; margin-right: 10px;
+  border: none; border-radius: 6px; background: transparent;
+  color: var(--faint); font-size: 12px; line-height: 1; cursor: pointer;
+}
+.sb-code-btn:hover { background: var(--panel-2); color: var(--accent); }
+.sb-code-x:hover { background: var(--panel-2); color: var(--accent-ink); }
+.sb-code-btn:focus-visible, .sb-code-x:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* ---- S59: phone parity — hierarchical switch sheet, Exercises foot,
+   expandable Menu rows ------------------------------------------------------ */
+/* switch-sheet search (16px input stops iOS zoom) */
+.mb-search {
+  display: flex; align-items: center; gap: 8px; margin: 10px 16px 4px;
+  padding: 0 12px; min-height: 44px; box-sizing: border-box;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--panel-2);
+}
+.mb-search:focus-within { border-color: var(--accent); }
+.mb-search-glyph { color: var(--faint); font-size: 15px; flex: none; }
+.mb-search input { flex: 1; min-width: 0; border: 0; background: transparent; outline: none; font: inherit; font-size: 16px; color: var(--ink); }
+.mb-search input::placeholder { color: var(--faint); }
+/* collection / family heads: the sb-coll-* look scaled for touch */
+.mb-coll-head {
+  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 48px;
+  padding: 6px 16px; border: 0; background: none; font: inherit; font-size: 14px;
+  font-weight: 600; color: var(--ink-soft); text-align: left; cursor: pointer;
+  box-sizing: border-box; -webkit-tap-highlight-color: transparent;
+}
+.mb-coll-head:active { background: var(--accent-soft); }
+.mb-coll-caret { flex: none; width: 12px; font-size: 10px; color: var(--faint); text-align: center; }
+.mb-coll-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mb-coll-count { flex: none; font-size: 11.5px; color: var(--faint); font-weight: 400; }
+.mb-fam-head { color: var(--ink); }
+.mb-fam-body { margin: 0 0 4px 16px; border-left: 1px solid var(--line); }
+.mb-fam-body .mb-coll-head { font-weight: 500; }
+/* Exercises-tab foot bar (the phone's colx-foot) */
+.mb-ex-foot { flex: none; border-top: 1px solid var(--line); background: var(--panel-2); padding: 2px 0 4px; }
+.mb-ex-foot .mb-row { min-height: 48px; }
+/* split rows: a main row + an inline side button (⌗ share / ✕ remove) */
+.mb-row-split { display: flex; align-items: center; }
+.mb-row-split > .mb-row { flex: 1 1 auto; min-width: 0; }
+.mb-row-side {
+  flex: none; width: 48px; min-height: 56px; border: 0; background: none;
+  color: var(--faint); font: inherit; font-size: 15px; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.mb-row-side:active { background: var(--accent-soft); color: var(--accent-ink); }
+/* nested rows inside an expanded Menu class/version */
+.mb-sub { padding-left: 30px; }
+/* two-line recents (desktop sb-recent-* at phone metrics) */
+.mb-recent-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.mb-recent-label { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mb-recent-sub { font-size: 11.5px; color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 1px; }
+.mb-recent-at { flex: none; font-size: 11px; color: var(--faint); white-space: nowrap; }
+.mb-row:disabled { color: var(--faint); cursor: default; }
+.mb-coll-head:focus-visible, .mb-row-side:focus-visible, .mb-search input:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: -2px;
+}
+
+
 /* ===========================================================================
    lingdown.css — typesetting for the lingdown engine. Themable via --ld-*
    custom properties; defaults tuned to the COMPOSE parchment palette.
@@ -10110,7 +10212,7 @@ function CuratedCodeModal({ entry, onClose }) {
   }
   return /* @__PURE__ */ React.createElement("div", { className: "modal-backdrop", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal vd-share", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h3", { className: "vd-share-title" }, entry.title), /* @__PURE__ */ React.createElement("div", { className: "vd-share-code" }, /* @__PURE__ */ React.createElement("span", { className: "vd-share-code-kicker" }, "Unlock code \u2014 adds this ", kindLabel, " to the worksheet list; no account needed"), /* @__PURE__ */ React.createElement("div", { className: "vd-share-code-row" }, /* @__PURE__ */ React.createElement("span", { className: "vd-share-code-big mono" }, entry.code), /* @__PURE__ */ React.createElement("button", { type: "button", className: "btn btn-primary", onClick: () => copy(entry.code, setCopiedCode) }, copiedCode ? "\u2713 Copied" : "\u29C9 Copy code"))), /* @__PURE__ */ React.createElement("div", { className: "vd-share-or" }, "or scan / share the link"), window.QRCode ? /* @__PURE__ */ React.createElement("canvas", { ref: canvasRef, className: "vd-qr", width: 300, height: 300 }) : null, /* @__PURE__ */ React.createElement("div", { className: "vd-share-url mono" }, url), /* @__PURE__ */ React.createElement("div", { className: "vd-share-actions" }, /* @__PURE__ */ React.createElement("button", { className: "btn btn-primary", onClick: () => copy(url, setCopiedUrl) }, copiedUrl ? "\u2713 Copied" : "\u29C9 Copy link"), window.QRCode ? /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: downloadPng }, "\u2B07 QR as PNG") : null, /* @__PURE__ */ React.createElement("button", { className: "btn-ghost", onClick: onClose }, "Close")), /* @__PURE__ */ React.createElement("div", { className: "vd-share-note" }, "Students can also type the code into \u201C\u2295 Unlock with a code\u201D on any COMPOSE page \u2014 the ", kindLabel, " then appears in their sidebar, and their progress in it is kept.")));
 }
-function VersionsPage({ token, onBack, onAssign, onEdit, onAuthGone }) {
+function VersionsPage({ token, onBack, onAssign, onEdit, onAuthGone, onChanged }) {
   const [versions, setVersions] = useState(null);
   const [err, setErr] = useState(null);
   const [openId, setOpenId] = useState(null);
@@ -10141,6 +10243,7 @@ function VersionsPage({ token, onBack, onAssign, onEdit, onAuthGone }) {
     try {
       const j = await api("GET", "/api/collections/versions/records?sort=-updated&perPage=200");
       setVersions(j && j.items || []);
+      if (onChanged) onChanged();
     } catch (e) {
       setErr("Could not load your versions: " + e.message);
     }
@@ -10614,6 +10717,9 @@ function App() {
   const [codeEntry, setCodeEntry] = useState(null);
   const [unlockPrefill, setUnlockPrefill] = useState("");
   const [footCopied, setFootCopied] = useState(false);
+  const [mbQuery, setMbQuery] = useState("");
+  const [mbFootCopied, setMbFootCopied] = useState(false);
+  const [mbExpanded, setMbExpanded] = useState(null);
   const [ctxMenu, setCtxMenu] = useState(null);
   const [libFiles, setLibFiles] = useState({});
   const libFetchRef = useRef({});
@@ -10858,6 +10964,25 @@ function App() {
     classIslandsIn.current = {};
     refreshClasses();
   }, [canSync, authId]);
+  const [ownVersions, setOwnVersions] = useState(null);
+  const ownVersionsFor = useRef(null);
+  const refreshOwnVersions = useCallback(() => {
+    if (tier !== "instructor" || !canSync) return;
+    fetch("/api/collections/versions/records?sort=-updated&perPage=200", { headers: { Authorization: auth.token } }).then((r) => r.ok ? r.json() : null).then((j) => {
+      if (j && Array.isArray(j.items)) setOwnVersions(j.items);
+    }).catch(() => {
+    });
+  }, [tier, canSync, auth && auth.token]);
+  useEffect(() => {
+    if (tier !== "instructor" || !canSync || !authId) {
+      setOwnVersions(null);
+      ownVersionsFor.current = null;
+      return;
+    }
+    if (ownVersionsFor.current === authId) return;
+    ownVersionsFor.current = authId;
+    refreshOwnVersions();
+  }, [tier, canSync, authId]);
   function openEditorSurface() {
     if (isMobile) {
       setModal("editor");
@@ -10916,6 +11041,31 @@ function App() {
       }
     }).filter(Boolean);
   }), [classes]);
+  const ownedLib = React.useMemo(() => {
+    const enrolled = new Set((classes || []).map((c) => c.slug));
+    return (ownVersions || []).filter((v) => v && v.slug && !enrolled.has(v.slug)).flatMap((v) => {
+      const list = v.bundle && (v.bundle.worksheets || v.bundle.exercises) || [];
+      return list.map((w) => {
+        if (!w || !w.key) return null;
+        const text = typeof w.text === "string" ? w.text : JSON.stringify(w.content);
+        try {
+          const { set: set2 } = window.LCData.loadText(text, w.title || w.key);
+          set2.key = "class:" + v.slug + ":" + w.key;
+          return {
+            key: set2.key,
+            title: w.title || set2.title || w.key,
+            set: set2,
+            ownSlug: v.slug,
+            ownTitle: v.title,
+            versionId: v.id,
+            text
+          };
+        } catch (e) {
+          return null;
+        }
+      }).filter(Boolean);
+    });
+  }, [ownVersions, classes]);
   const curatedLib = React.useMemo(() => {
     const have = new Set(BUILTIN.map((b) => b.key));
     const order = composeLibraryFamilies().flatMap((f) => (f.chapters || []).flatMap((c) => (c.worksheets || []).map((w) => w.key)));
@@ -10929,22 +11079,33 @@ function App() {
       }
     }).filter(Boolean);
   }, [libFiles]);
-  const LIB = React.useMemo(() => [...BUILTIN, ...curatedLib, ...userLib, ...bundleLib, ...classLib], [curatedLib, userLib, bundleLib, classLib]);
+  const LIB = React.useMemo(() => [...BUILTIN, ...curatedLib, ...userLib, ...bundleLib, ...classLib, ...ownedLib], [curatedLib, userLib, bundleLib, classLib, ownedLib]);
+  const islandSlugs = React.useMemo(() => {
+    const seen = {};
+    const out = [];
+    (classes || []).concat(ownVersions || []).forEach((x) => {
+      if (x && x.slug && !seen[x.slug]) {
+        seen[x.slug] = true;
+        out.push(x.slug);
+      }
+    });
+    return out;
+  }, [classes, ownVersions]);
   useEffect(() => {
-    if (!classes || !classes.length) return;
+    if (!islandSlugs.length) return;
     const found = {};
-    classes.forEach((c) => {
-      if (classIslandsIn.current[c.slug]) return;
+    islandSlugs.forEach((slug) => {
+      if (classIslandsIn.current[slug]) return;
       let ext = null;
       try {
-        ext = JSON.parse(localStorage.getItem(c.slug + ":lc2-progress") || "null");
+        ext = JSON.parse(localStorage.getItem(slug + ":lc2-progress") || "null");
       } catch (e) {
       }
       const keys = ext && typeof ext === "object" && !Array.isArray(ext) ? Object.keys(ext).filter((k) => ext[k]) : [];
       if (keys.length) {
-        found[c.slug] = keys;
-        classIslandsIn.current[c.slug] = keys;
-      } else classIslandsIn.current[c.slug] = true;
+        found[slug] = keys;
+        classIslandsIn.current[slug] = keys;
+      } else classIslandsIn.current[slug] = true;
     });
     if (!Object.keys(found).length) return;
     setProgress((pr) => {
@@ -10954,15 +11115,15 @@ function App() {
       }));
       return next;
     });
-  }, [classes]);
+  }, [islandSlugs]);
   useEffect(() => {
-    (classes || []).forEach((c) => {
-      const st = classIslandsIn.current[c.slug];
+    islandSlugs.forEach((slug) => {
+      const st = classIslandsIn.current[slug];
       if (!st) return;
-      const pre = "class:" + c.slug + ":";
+      const pre = "class:" + slug + ":";
       if (st !== true) {
         if (!st.every((k) => progress[pre + k])) return;
-        classIslandsIn.current[c.slug] = true;
+        classIslandsIn.current[slug] = true;
       }
       const mine = {};
       Object.keys(progress).forEach((k) => {
@@ -10970,11 +11131,11 @@ function App() {
       });
       try {
         const next = JSON.stringify(mine);
-        if (localStorage.getItem(c.slug + ":lc2-progress") !== next) localStorage.setItem(c.slug + ":lc2-progress", next);
+        if (localStorage.getItem(slug + ":lc2-progress") !== next) localStorage.setItem(slug + ":lc2-progress", next);
       } catch (e) {
       }
     });
-  }, [progress, classes]);
+  }, [progress, islandSlugs]);
   useEffect(() => {
     try {
       localStorage.setItem(LC_NS + "lc2-userfiles", JSON.stringify(userFiles));
@@ -11260,6 +11421,7 @@ function App() {
       if (!r.ok || !v || !v.id) throw new Error(v && (v.message || v.error) || "request failed (" + r.status + ")");
       setHosted({ versionId: v.id, slug: v.slug, mode: v.mode || "practice", title: v.title });
       setShareVersion(v);
+      refreshOwnVersions();
     } catch (e) {
       window.alert("Host & get code failed: " + (e.message || "unknown error"));
     }
@@ -11632,14 +11794,7 @@ function App() {
         /* @__PURE__ */ React.createElement("span", { className: "nav-check" }, "\u2713"),
         /* @__PURE__ */ React.createElement("span", { className: "gloss lx" }, navLabel(g, p))
       );
-    }))), /* @__PURE__ */ React.createElement("div", { style: { height: 16 } }), !custom && /* @__PURE__ */ React.createElement("button", { className: "btn-ghost reset-all-btn", title: "Clear all progress for this worksheet", onClick: () => {
-      if (window.confirm("Reset all derivation progress for this worksheet?")) {
-        const keys = /* @__PURE__ */ new Set();
-        groups.forEach((g) => g.problems.forEach((p) => keys.add(keyOf(g, p))));
-        setWork((w) => Object.fromEntries(Object.entries(w).filter(([k]) => !keys.has(k))));
-        setProgress((pr) => Object.fromEntries(Object.entries(pr).filter(([k]) => !keys.has(k))));
-      }
-    } }, "\u21BA Reset all derivations"), /* @__PURE__ */ React.createElement("div", { style: { height: 8 } }));
+    }))), /* @__PURE__ */ React.createElement("div", { style: { height: 8 } }));
   }
   function renderLexiconScroll() {
     return /* @__PURE__ */ React.createElement("div", { className: "col-scroll" }, filteredLex.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-note" }, "No entries for the current tree."), filteredLex.map((e, i) => /* @__PURE__ */ React.createElement("div", { className: "lex-item", key: i }, /* @__PURE__ */ React.createElement("div", { className: "lex-word" }, e.words.join(", "), e.type && /* @__PURE__ */ React.createElement("span", { className: "lex-type" }, /* @__PURE__ */ React.createElement(TypeBadge, { type: e.type }))), e.term && /* @__PURE__ */ React.createElement("div", { className: "lex-den" }, /* @__PURE__ */ React.createElement(Notation, { ast: e.term })))), /* @__PURE__ */ React.createElement("div", { className: "lex-kbd-ref" }, /* @__PURE__ */ React.createElement("div", { className: "panel-head", style: { marginTop: 8 } }, "Entering symbols"), /* @__PURE__ */ React.createElement("div", { className: "ref-row" }, REF_KEYS.map((r) => /* @__PURE__ */ React.createElement("div", { className: "ref-key", key: r.g }, /* @__PURE__ */ React.createElement("span", { className: "g" }, r.g), r.n, /* @__PURE__ */ React.createElement("span", { className: "k" }, r.k)))), /* @__PURE__ */ React.createElement("div", { style: { padding: "0 18px 22px", fontSize: 12.5, color: "var(--muted)", lineHeight: 1.5 } }, "Type binder letters before a variable (", /* @__PURE__ */ React.createElement("span", { className: "mono" }, "Lx"), " \u2192 \u03BBx). ", /* @__PURE__ */ React.createElement("span", { className: "mono" }, "&"), ", ", /* @__PURE__ */ React.createElement("span", { className: "mono" }, "~"), ", ", /* @__PURE__ */ React.createElement("span", { className: "mono" }, "->"), " convert as you type.")));
@@ -11663,6 +11818,7 @@ function App() {
   function collectionOf(l) {
     if (!l) return null;
     if (l.classTitle) return l.classTitle;
+    if (l.ownTitle) return l.ownTitle;
     if (l.bundleTitle) return l.bundleTitle;
     if (l.user) return "My worksheets";
     const CH = window.LCData && window.LCData.CHAPTERS || [];
@@ -11682,7 +11838,7 @@ function App() {
     }
   }
   const assignCatalogue = React.useMemo(() => LIB.map((l) => {
-    if (l.classSlug) return null;
+    if (l.classSlug || l.ownSlug) return null;
     const text = l.text || window.LC_FILES && window.LC_FILES[l.key] && window.LC_FILES[l.key].text || null;
     if (!text) return null;
     return {
@@ -11751,7 +11907,7 @@ function App() {
     const inCh = (l, ch) => l.key === ch.prefix || l.key.startsWith(ch.prefix + ".") || l.key.startsWith(ch.prefix + "-");
     const paperKeys = composePapersKeySet();
     const cols = [];
-    const loose = LIB.filter((l) => !l.user && !l.classSlug && !paperKeys.has(l.key) && !CH.some((ch) => inCh(l, ch)));
+    const loose = LIB.filter((l) => !l.user && !l.classSlug && !l.ownSlug && !paperKeys.has(l.key) && !CH.some((ch) => inCh(l, ch)));
     if (loose.length) cols.push({ id: "__loose", label: ASSIGNMENT && ASSIGNMENT.title || "Worksheets", items: loose });
     CH.forEach((ch) => {
       const items = LIB.filter((l) => !l.user && !paperKeys.has(l.key) && inCh(l, ch));
@@ -11808,6 +11964,16 @@ function App() {
     }).then(finish).catch(() => window.alert("Could not load this worksheet to copy."));
   }
   function ctxItemsForWs(l) {
+    if (l.versionId) {
+      const v = (ownVersions || []).find((x) => x.id === l.versionId);
+      if (!v) return [];
+      const rawKey = l.key.split(":").slice(2).join(":");
+      return [
+        { glyph: "\u2317", label: "Share code", act: () => shareVersionById(l.versionId) },
+        { glyph: "\u25A6", label: "QR & link", act: () => shareVersionById(l.versionId) },
+        { glyph: "\u270E", label: "Edit this worksheet", act: () => openHostedEditor(v, rawKey) }
+      ];
+    }
     const entry = isFullBuild && !l.classSlug ? composeCuratedForWorksheet(l.key) : null;
     return ctxCodeItems(entry).concat(canAuthor ? [{ glyph: "\u270E", label: "Copy to editor", act: () => ctxCopyToEditor(l.key, l.title) }] : []);
   }
@@ -11935,6 +12101,36 @@ function App() {
         /* @__PURE__ */ React.createElement("span", { className: "sb-coll-label" }, c.title),
         /* @__PURE__ */ React.createElement("span", { className: "sb-coll-count" }, items.length)
       ), openId === cid && items.map((l) => renderWsRow(l)), openId === cid && items.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "This class has no worksheets yet."), openId === cid && /* @__PURE__ */ React.createElement("button", { type: "button", className: "sb-row sb-leave-row", title: "Remove this class from your list", onClick: () => leaveClass(c) }, /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2715"), /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "Leave this class\u2026")));
+    })), isFullBuild && tier === "instructor" && ownVersions && ownVersions.length > 0 && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "sb-kicker" }, "My versions"), ownVersions.map((v) => {
+      const items = ownedLib.filter((l) => l.ownSlug === v.slug);
+      const oid = "own:" + v.slug;
+      return /* @__PURE__ */ React.createElement("div", { key: oid }, /* @__PURE__ */ React.createElement("div", { className: "sb-coll-row" }, /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          className: "sb-coll-head",
+          "aria-expanded": openId === oid,
+          onContextMenu: (e) => openCtxMenu(e, [
+            { glyph: "\u2317", label: "Share code", act: () => shareVersionById(v.id) },
+            { glyph: "\u25A6", label: "QR & link", act: () => shareVersionById(v.id) },
+            { glyph: "\u270E", label: "Edit in worksheet editor", act: () => openHostedEditor(v) }
+          ]),
+          onClick: () => setOpenColl(openId === oid ? "" : oid)
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "sb-coll-caret", "aria-hidden": "true" }, openId === oid ? "\u25BE" : "\u25B8"),
+        /* @__PURE__ */ React.createElement("span", { className: "sb-coll-label" }, v.title),
+        /* @__PURE__ */ React.createElement("span", { className: "sb-coll-count" }, items.length)
+      ), /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          className: "sb-code-btn",
+          title: "Unlock code for \u201C" + v.title + "\u201D \u2014 code + QR",
+          "aria-label": "Unlock code for " + v.title,
+          onClick: () => shareVersionById(v.id)
+        },
+        "\u2317"
+      )), openId === oid && items.map((l) => renderWsRow(l)), openId === oid && items.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "sb-empty-note" }, "This version has no worksheets yet."));
     })), /* @__PURE__ */ React.createElement(
       "button",
       {
@@ -12228,14 +12424,15 @@ function App() {
         /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u25A6"),
         /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, "QR & link")
       ));
-      if (tier === "instructor" && hosted && hosted.versionId && !lib.classSlug) return /* @__PURE__ */ React.createElement(
+      const vid = lib.versionId || (hosted && hosted.versionId && !lib.classSlug ? hosted.versionId : null);
+      if (tier === "instructor" && vid) return /* @__PURE__ */ React.createElement(
         "button",
         {
           type: "button",
           className: "sb-row",
           disabled: shareBusy,
           title: "Unlock code + QR for this hosted worksheet",
-          onClick: () => shareVersionById(hosted.versionId)
+          onClick: () => shareVersionById(vid)
         },
         /* @__PURE__ */ React.createElement("span", { className: "sb-ico", "aria-hidden": "true" }, "\u2317"),
         /* @__PURE__ */ React.createElement("span", { className: "sb-row-label" }, shareBusy ? "\u2026" : "Code & QR")
@@ -12580,6 +12777,7 @@ function App() {
             setPage("assign");
           },
           onEdit: (v, k) => openHostedEditor(v, k),
+          onChanged: refreshOwnVersions,
           onAuthGone: () => {
             setAuth(null);
             setSigninMode("login");
@@ -12650,13 +12848,20 @@ function App() {
   function mbOpenWorksheet(key) {
     openWorksheetKey(key);
     setSheet(null);
+    setMbQuery("");
     setMtab("derive");
   }
   function mbCollections() {
-    const cols = sidebarCollections().map((c) => ({ id: c.id, label: c.label, items: c.items }));
+    const cols = sidebarCollections().map((c) => ({ id: c.id, label: c.label, items: c.items, family: c.family || null }));
     if (isFullBuild && tier !== "anon" && classes && classes.length) {
       classes.forEach((c) => {
         cols.push({ id: "class:" + c.slug, label: c.title, items: classLib.filter((l) => l.classSlug === c.slug), klass: c });
+      });
+    }
+    if (isFullBuild && tier === "instructor" && ownVersions && ownVersions.length) {
+      ownVersions.forEach((v) => {
+        const items = ownedLib.filter((l) => l.ownSlug === v.slug);
+        if (items.length) cols.push({ id: "own:" + v.slug, label: v.title, items });
       });
     }
     return cols;
@@ -12665,7 +12870,54 @@ function App() {
     return /* @__PURE__ */ React.createElement("div", { className: "mb-dhead" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-ws-btn", onClick: () => setSheet("ws"), title: "Switch worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "mb-ws-main" }, /* @__PURE__ */ React.createElement("span", { className: "mb-ws-kicker" }, custom ? "Scratch" : collectionOf(lib) || "Worksheets"), /* @__PURE__ */ React.createElement("span", { className: "mb-ws-title" }, custom ? "Custom exercise" : lib ? lib.title : "No worksheet")), /* @__PURE__ */ React.createElement("span", { className: "mb-ws-switch", "aria-hidden": "true" }, "switch \u25BE")), hasContent && flatNav.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "mb-exnav", role: "group", "aria-label": "Exercise navigation" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-arrow", disabled: flatIdx <= 0, onClick: () => gotoFlat(-1), "aria-label": "Previous exercise" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "mb-score" }, doneCount, "/", probCount), /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-arrow", disabled: flatIdx < 0 || flatIdx >= flatNav.length - 1, onClick: () => gotoFlat(1), "aria-label": "Next exercise" }, "\u203A")));
   }
   function renderMobileExercises() {
-    return /* @__PURE__ */ React.createElement("div", { className: "mb-view mb-exview" }, /* @__PURE__ */ React.createElement("div", { className: "mb-tab-head" }, /* @__PURE__ */ React.createElement("div", { className: "mb-th-kicker" }, custom ? "Scratch" : collectionOf(lib) || "Worksheets"), /* @__PURE__ */ React.createElement("div", { className: "mb-th-row" }, /* @__PURE__ */ React.createElement("div", { className: "mb-th-title" }, custom ? "Custom exercise" : lib ? lib.title : "No worksheet"), probCount > 0 && /* @__PURE__ */ React.createElement("span", { className: "mb-th-score" }, doneCount, "/", probCount))), /* @__PURE__ */ React.createElement("div", { className: "mb-scroll mb-ex" }, hasContent ? renderExercisesScroll(() => setMtab("derive")) : /* @__PURE__ */ React.createElement("div", { className: "empty-note" }, "No worksheet open yet \u2014 pick one with the worksheet chip below.")));
+    const codeRows = (() => {
+      if (!isFullBuild || !lib) return null;
+      const entry = composeCuratedForWorksheet(lib.key);
+      if (entry) return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          className: "mb-row",
+          title: "Copy the unlock code \u2014 entering it on any COMPOSE page adds this set to the worksheet list",
+          onClick: () => {
+            try {
+              navigator.clipboard.writeText(entry.code).catch(() => {
+              });
+            } catch (e) {
+            }
+            setMbFootCopied(true);
+            setTimeout(() => setMbFootCopied(false), 1500);
+          }
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, "\u2317"),
+        /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, mbFootCopied ? "\u2713 Code copied" : "Code \xB7 ", !mbFootCopied && /* @__PURE__ */ React.createElement("span", { className: "mono" }, entry.code))
+      ), /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          className: "mb-row",
+          title: "QR code that unlocks this worksheet \u2014 scan or project it",
+          onClick: () => setCodeEntry(entry)
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, "\u25A6"),
+        /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, "QR & link")
+      ));
+      const vid = lib.versionId || (hosted && hosted.versionId && !lib.classSlug ? hosted.versionId : null);
+      if (tier === "instructor" && vid) return /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          className: "mb-row",
+          disabled: shareBusy,
+          title: "Unlock code + QR for this hosted worksheet",
+          onClick: () => shareVersionById(vid)
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, "\u2317"),
+        /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, shareBusy ? "\u2026" : "Code & QR")
+      );
+      return null;
+    })();
+    return /* @__PURE__ */ React.createElement("div", { className: "mb-view mb-exview" }, /* @__PURE__ */ React.createElement("div", { className: "mb-tab-head" }, /* @__PURE__ */ React.createElement("div", { className: "mb-th-kicker" }, custom ? "Scratch" : collectionOf(lib) || "Worksheets"), /* @__PURE__ */ React.createElement("div", { className: "mb-th-row" }, /* @__PURE__ */ React.createElement("div", { className: "mb-th-title" }, custom ? "Custom exercise" : lib ? lib.title : "No worksheet"), probCount > 0 && /* @__PURE__ */ React.createElement("span", { className: "mb-th-score" }, doneCount, "/", probCount))), /* @__PURE__ */ React.createElement("div", { className: "mb-scroll mb-ex" }, hasContent ? renderExercisesScroll(() => setMtab("derive")) : /* @__PURE__ */ React.createElement("div", { className: "empty-note" }, "No worksheet open yet \u2014 tap the worksheet title on the Derive tab, or Menu \u2192 Switch worksheet.")), hasContent && !custom && /* @__PURE__ */ React.createElement("div", { className: "mb-ex-foot" }, codeRows, /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-row", onClick: resetAllProgress, title: "Clear all progress for this worksheet" }, /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, "\u21BA"), /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, "Reset all derivations"))));
   }
   function renderMobileReference() {
     const tab = refTab === "notes" && !hasReading ? "lexicon" : refTab === "rules" || refTab === "notes" ? refTab : "lexicon";
@@ -12720,31 +12972,85 @@ function App() {
     if (o.href) {
       return /* @__PURE__ */ React.createElement("a", { className: "mb-row", key, href: o.href }, /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, glyph), /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, label), note != null && /* @__PURE__ */ React.createElement("span", { className: "mb-row-note" }, note), /* @__PURE__ */ React.createElement("span", { className: "mb-row-caret", "aria-hidden": "true" }, "\u203A"));
     }
-    return /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-row", key, onClick: onActivate }, /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, glyph), /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, label), note != null && /* @__PURE__ */ React.createElement("span", { className: "mb-row-note" }, note), /* @__PURE__ */ React.createElement("span", { className: "mb-row-caret", "aria-hidden": "true" }, "\u203A"));
+    return /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-row", key, onClick: onActivate, disabled: o.disabled || void 0 }, /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, glyph), /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, label), note != null && /* @__PURE__ */ React.createElement("span", { className: "mb-row-note" }, note), /* @__PURE__ */ React.createElement("span", { className: "mb-row-caret", "aria-hidden": "true" }, "\u203A"));
+  }
+  function mbWsRow(l, sub) {
+    const on = !custom && l.key === fileKey;
+    const n = l.set.groups.reduce((a, g) => a + g.problems.length, 0);
+    return /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        key: l.key,
+        className: "mb-row mb-ws-row" + (on ? " on" : "") + (sub ? " mb-sub" : ""),
+        "aria-current": on ? "true" : void 0,
+        onClick: () => mbOpenWorksheet(l.key)
+      },
+      /* @__PURE__ */ React.createElement("span", { className: "mb-ws-dot", "aria-hidden": "true" }),
+      /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, l.title),
+      /* @__PURE__ */ React.createElement("span", { className: "mb-row-note" }, n)
+    );
   }
   function mbKicker(glyph, label) {
     return /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, /* @__PURE__ */ React.createElement("span", { className: "mb-kicker-glyph", "aria-hidden": "true" }, glyph), label);
   }
   function renderMobileMenu() {
-    return /* @__PURE__ */ React.createElement("div", { className: "mb-view mb-menu" }, /* @__PURE__ */ React.createElement("div", { className: "mb-scroll" }, mbKicker("\u274F", "Worksheets"), mbRow("ws", "\u274F", "Switch worksheet", custom ? "custom" : lib ? lib.title : null, () => setSheet("ws")), mbRow("progress", "\u2713", "Your progress", grandSolved + " solved", () => mbPush("progress")), isFullBuild && mbRow("unlock", "\u2295", "Unlock with a code", null, () => {
+    return /* @__PURE__ */ React.createElement("div", { className: "mb-view mb-menu" }, /* @__PURE__ */ React.createElement("div", { className: "mb-scroll" }, mbKicker("\u274F", "Worksheets"), mbRow("ws", "\u274F", "Switch worksheet", custom ? "custom" : lib ? lib.title : null, () => setSheet("ws")), isFullBuild && tier !== "anon" && classes && classes.length > 0 && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u274F", "My classes"), classes.map((c) => {
+      const items = classLib.filter((l) => l.classSlug === c.slug);
+      const cid = "class:" + c.slug;
+      const open = mbExpanded === cid;
+      return /* @__PURE__ */ React.createElement("div", { key: cid }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-row", "aria-expanded": open, onClick: () => setMbExpanded(open ? null : cid) }, /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, "\u274F"), /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, c.title), /* @__PURE__ */ React.createElement("span", { className: "mb-row-note" }, items.length + (items.length === 1 ? " worksheet" : " worksheets")), /* @__PURE__ */ React.createElement("span", { className: "mb-row-caret", "aria-hidden": "true" }, open ? "\u25BE" : "\u25B8")), open && items.map((l) => mbWsRow(l, true)), open && items.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-note" }, "This class has no worksheets yet."), open && /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-row mb-leave-row mb-sub", onClick: () => leaveClass(c) }, /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, "\u2715"), /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, "Leave this class\u2026")));
+    })), isFullBuild && tier === "instructor" && ownVersions && ownVersions.length > 0 && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u25C8", "My versions"), ownVersions.map((v) => {
+      const items = ownedLib.filter((l) => l.ownSlug === v.slug);
+      const oid = "own:" + v.slug;
+      const open = mbExpanded === oid;
+      return /* @__PURE__ */ React.createElement("div", { key: oid }, /* @__PURE__ */ React.createElement("div", { className: "mb-row-split" }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-row", "aria-expanded": open, onClick: () => setMbExpanded(open ? null : oid) }, /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, "\u25C8"), /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, v.title), /* @__PURE__ */ React.createElement("span", { className: "mb-row-note" }, items.length + (items.length === 1 ? " worksheet" : " worksheets")), /* @__PURE__ */ React.createElement("span", { className: "mb-row-caret", "aria-hidden": "true" }, open ? "\u25BE" : "\u25B8")), /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          className: "mb-row-side",
+          title: "Unlock code for \u201C" + v.title + "\u201D \u2014 code + QR",
+          "aria-label": "Unlock code for " + v.title,
+          onClick: () => shareVersionById(v.id)
+        },
+        "\u2317"
+      )), open && items.map((l) => mbWsRow(l, true)), open && items.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-note" }, "This version has no worksheets yet."), open && /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-row mb-sub", onClick: () => openHostedEditor(v) }, /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, "\u270E"), /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, "Edit in worksheet editor")));
+    })), mbRow("progress", "\u2713", "Your progress", grandSolved + " solved", () => mbPush("progress")), isFullBuild && mbRow("unlock", "\u2295", "Unlock with a code", null, () => {
       setSheet(null);
       setUnlockOpen(true);
-    }), isFullBuild && unlockedEntries.length > 0 && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u2317", "Unlocked"), unlockedEntries.map((e) => mbRow("unl:" + e.key, "\u2317", e.title, null, () => {
+    }), isFullBuild && unlockedEntries.length > 0 && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u2317", "Unlocked"), unlockedEntries.map((e) => /* @__PURE__ */ React.createElement("div", { className: "mb-row-split", key: "unl:" + e.key }, mbRow("unl:" + e.key, "\u2317", e.title, null, () => {
       openCuratedEntry(e);
       setSheet(null);
       setMtab("derive");
-    }))), isFullBuild && tier !== "anon" && classes && classes.length > 0 && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u274F", "My classes"), classes.map((c) => {
-      const items = classLib.filter((l) => l.classSlug === c.slug);
-      return mbRow(
-        "class:" + c.slug,
-        "\u274F",
-        c.title,
-        items.length + (items.length === 1 ? " worksheet" : " worksheets"),
-        () => {
-          if (items.length) mbOpenWorksheet(items[0].key);
-          else setSheet("ws");
+    }), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "mb-row-side",
+        title: "Remove from your list (the code unlocks it again any time)",
+        "aria-label": "Remove " + e.title + " from your list",
+        onClick: () => removeUnlocked(e.key)
+      },
+      "\u2715"
+    )))), isFullBuild && tier === "instructor" && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u{1F4D6}", "Full library"), [["cc", "Coppock & Champollion"], ["hk", "Heim & Kratzer"], ["papers", "Classic papers"]].map(([fk, label]) => {
+      const fe = composeCuratedByKey(fk);
+      return /* @__PURE__ */ React.createElement("div", { className: "mb-row-split", key: "lib:" + fk }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-row", onClick: () => {
+        if (fe) {
+          applyCuratedEntry(fe);
+          setSheet(null);
+          setMtab("derive");
         }
-      );
+      } }, /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, "\u{1F4D6}"), /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, label)), fe && /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          className: "mb-row-side",
+          title: "Unlock code for the whole " + label + " collection \u2014 code + QR",
+          "aria-label": "Unlock code for " + label,
+          onClick: () => setCodeEntry(fe)
+        },
+        "\u2317"
+      ));
     })), recents.length > 0 && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u21BB", "Continue"), recents.slice(0, 6).map((r) => {
       const l = LIB.find((x) => x.key === r.ws);
       if (!l) return null;
@@ -12753,18 +13059,26 @@ function App() {
       const gid = dot > 0 ? r.ex.slice(0, dot) : "", pid = dot > 0 ? r.ex.slice(dot + 1) : "";
       const g = gs.find((x) => x.id === gid);
       const pb = g && g.problems.find((x) => x.id === pid);
-      return mbRow(
-        "rec:" + r.ws + "/" + r.ex,
-        "\u21BB",
-        pb ? navLabel(g, pb) : l.title,
-        relTime(r.at),
-        () => {
-          openRecent(r);
-          setSheet(null);
-          setMtab("derive");
-        }
+      return /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          type: "button",
+          key: "rec:" + r.ws + "/" + r.ex,
+          className: "mb-row",
+          onClick: () => {
+            openRecent(r);
+            setSheet(null);
+            setMtab("derive");
+          }
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, "\u25B8"),
+        /* @__PURE__ */ React.createElement("span", { className: "mb-recent-main" }, /* @__PURE__ */ React.createElement("span", { className: "mb-recent-label lx" }, pb ? navLabel(g, pb) : l.title), /* @__PURE__ */ React.createElement("span", { className: "mb-recent-sub" }, l.title)),
+        /* @__PURE__ */ React.createElement("span", { className: "mb-recent-at" }, relTime(r.at))
       );
-    })), canAuthor && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u270E", "Author"), mbRow("editor", "\u270E", "Worksheet editor", null, () => openEditorSurface()), mbRow("scratch", "\u266A", "Scratchpad", "free", () => mbPush("scratch")), mbRow("import", "\u2191", "Import worksheet\u2026", null, () => {
+    })), canAuthor && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u270E", "Author"), mbRow("editor", "\u270E", "Worksheet editor", null, () => openEditorSurface()), mbRow("scratch", "\u266A", "Scratchpad", "free", () => mbPush("scratch")), mbRow("notes", "\u{1F4DD}", "Notes", null, () => {
+      setSheet(null);
+      setModal("reading");
+    }), mbRow("import", "\u2191", "Import worksheet\u2026", null, () => {
       setLoadErr(null);
       if (fileInput.current) fileInput.current.click();
     })), isFullBuild && tier === "instructor" && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u2611", "Assign & share"), mbRow("assign", "\u2611", "Choose what a class sees", null, () => mbPush("assign")), mbRow("dash", "\u25C8", "My versions", null, () => mbPush("dash"))), mbKicker("\u25D0", "Display"), /* @__PURE__ */ React.createElement("div", { className: "mb-settings" }, !isStudentBuild && /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Teacher mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (teacherMode ? " on" : ""), role: "switch", "aria-checked": teacherMode, onClick: () => setTeacherMode((m) => {
@@ -12776,7 +13090,15 @@ function App() {
       return next;
     }) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Dark mode"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (darkMode ? " on" : ""), role: "switch", "aria-checked": darkMode, onClick: () => setDarkMode((d) => !d) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Auto-resolve non-branching"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (autoNN ? " on" : ""), role: "switch", "aria-checked": autoNN, onClick: () => setAutoNN((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("label", { className: "settings-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Collapse resolved subtrees"), /* @__PURE__ */ React.createElement("button", { className: "beh-toggle" + (collapseResolved ? " on" : ""), role: "switch", "aria-checked": collapseResolved, onClick: () => setCollapseResolved((v) => !v) }, /* @__PURE__ */ React.createElement("span", { className: "beh-knob" }))), /* @__PURE__ */ React.createElement("div", { className: "settings-row settings-layout-row" }, /* @__PURE__ */ React.createElement("span", { className: "settings-label" }, "Layout"), /* @__PURE__ */ React.createElement("div", { className: "seg-mini" }, /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() == null ? " on" : ""), onClick: () => setForceLayout(null) }, "Auto"), /* @__PURE__ */ React.createElement("button", { className: "seg-mini-btn" + (getForceLayout() === "desktop" ? " on" : ""), onClick: () => setForceLayout("desktop") }, "Desktop")))), mbRow("save-prog", "\u2913", "Save progress to a file", null, () => composeExportProgress()), mbRow("restore-prog", "\u2912", "Restore progress from a file\u2026", null, () => {
       if (progressFileInput.current) progressFileInput.current.click();
-    }), isFullBuild && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u24D8", "Guide & help"), DOC_PAGES.map((d) => mbRow("doc" + d.path, d.glyph, d.title, null, () => {
+    }), mbRow("export-png", "\u29C9", exporting ? "Rendering\u2026" : "Export derivation (PNG)", null, () => {
+      mbGoTab("derive");
+      let tries = 0;
+      const go = () => {
+        if (document.querySelector(".tree-wrap") || tries++ > 20) exportDerivation();
+        else setTimeout(go, 50);
+      };
+      setTimeout(go, 50);
+    }, { disabled: exporting }), isFullBuild && /* @__PURE__ */ React.createElement("div", null, mbKicker("\u24D8", "Guide & help"), DOC_PAGES.map((d) => mbRow("doc" + d.path, d.glyph, d.title, null, () => {
       setSheet(null);
       setUnlockOpen(false);
       openDoc(d.path);
@@ -12827,23 +13149,65 @@ function App() {
     })));
   }
   function renderWsSheet() {
-    return /* @__PURE__ */ React.createElement(Sheet, { title: "Switch worksheet", side: "bottom", className: "sheet-list mb-ws-sheet", onClose: () => setSheet(null) }, /* @__PURE__ */ React.createElement("div", { className: "mb-ws-list" }, mbCollections().map((c) => /* @__PURE__ */ React.createElement("div", { key: c.id }, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, c.label), c.items.map((l) => {
-      const on = !custom && l.key === fileKey;
-      const n = l.set.groups.reduce((a, g) => a + g.problems.length, 0);
-      return /* @__PURE__ */ React.createElement(
-        "button",
-        {
-          type: "button",
-          key: l.key,
-          className: "mb-row mb-ws-row" + (on ? " on" : ""),
-          "aria-current": on ? "true" : void 0,
-          onClick: () => mbOpenWorksheet(l.key)
-        },
-        /* @__PURE__ */ React.createElement("span", { className: "mb-ws-dot", "aria-hidden": "true" }),
-        /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, l.title),
-        /* @__PURE__ */ React.createElement("span", { className: "mb-row-note" }, n)
+    const q = mbQuery.trim().toLowerCase();
+    const results = q ? LIB.filter((l) => (l.title || "").toLowerCase().includes(q)).slice(0, 24) : null;
+    const cols = mbCollections();
+    const activeCol = cols.find((c) => c.items.some((l) => !custom && l.key === fileKey));
+    const openId = openColl != null ? openColl : activeCol ? activeCol.id : cols[0] && cols[0].id;
+    const FAMS = { cc: "Coppock & Champollion", hk: "Heim & Kratzer" };
+    const activeFam = activeCol ? activeCol.family : null;
+    const renderColl = (c) => /* @__PURE__ */ React.createElement("div", { key: c.id }, /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        type: "button",
+        className: "mb-coll-head",
+        "aria-expanded": openId === c.id,
+        onClick: () => setOpenColl(openId === c.id ? "" : c.id)
+      },
+      /* @__PURE__ */ React.createElement("span", { className: "mb-coll-caret", "aria-hidden": "true" }, openId === c.id ? "\u25BE" : "\u25B8"),
+      /* @__PURE__ */ React.createElement("span", { className: "mb-coll-label" }, c.label),
+      /* @__PURE__ */ React.createElement("span", { className: "mb-coll-count" }, c.items.length)
+    ), openId === c.id && c.items.map((l) => mbWsRow(l)), openId === c.id && c.klass && c.items.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-note" }, "This class has no worksheets yet."), openId === c.id && c.klass && /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-row mb-leave-row", onClick: () => leaveClass(c.klass) }, /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, "\u2715"), /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, "Leave this class\u2026")));
+    const grouped = [];
+    const seenFam = {};
+    cols.forEach((c) => {
+      if (!c.family) {
+        grouped.push(renderColl(c));
+        return;
+      }
+      if (seenFam[c.family]) return;
+      seenFam[c.family] = true;
+      const fk = c.family;
+      const famCols = cols.filter((x) => x.family === fk);
+      const famOpen = (openFam != null ? openFam : activeFam) === fk;
+      const total = famCols.reduce((a, x) => a + x.items.length, 0);
+      grouped.push(
+        /* @__PURE__ */ React.createElement("div", { key: "fam:" + fk }, /* @__PURE__ */ React.createElement(
+          "button",
+          {
+            type: "button",
+            className: "mb-coll-head mb-fam-head",
+            "aria-expanded": famOpen,
+            onClick: () => setOpenFam(famOpen ? "" : fk)
+          },
+          /* @__PURE__ */ React.createElement("span", { className: "mb-coll-caret", "aria-hidden": "true" }, famOpen ? "\u25BE" : "\u25B8"),
+          /* @__PURE__ */ React.createElement("span", { className: "mb-coll-label" }, FAMS[fk] || fk),
+          /* @__PURE__ */ React.createElement("span", { className: "mb-coll-count" }, total)
+        ), famOpen && /* @__PURE__ */ React.createElement("div", { className: "mb-fam-body" }, famCols.map(renderColl)))
       );
-    }), c.klass && c.items.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-note" }, "This class has no worksheets yet."), c.klass && /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-row mb-leave-row", onClick: () => leaveClass(c.klass) }, /* @__PURE__ */ React.createElement("span", { className: "mb-row-glyph", "aria-hidden": "true" }, "\u2715"), /* @__PURE__ */ React.createElement("span", { className: "mb-row-label" }, "Leave this class\u2026")))), /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-row", onClick: () => {
+    });
+    return /* @__PURE__ */ React.createElement(Sheet, { title: "Switch worksheet", side: "bottom", className: "sheet-list mb-ws-sheet", onClose: () => {
+      setSheet(null);
+      setMbQuery("");
+    } }, /* @__PURE__ */ React.createElement("div", { className: "mb-ws-list" }, /* @__PURE__ */ React.createElement("div", { className: "mb-search" }, /* @__PURE__ */ React.createElement("span", { className: "mb-search-glyph", "aria-hidden": "true" }, "\u2315"), /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        value: mbQuery,
+        onChange: (e) => setMbQuery(e.target.value),
+        "aria-label": "Search worksheets",
+        placeholder: "Search worksheets\u2026"
+      }
+    )), results ? /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "mb-kicker" }, results.length, " ", results.length === 1 ? "result" : "results"), results.map((l) => mbWsRow(l)), results.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-note" }, "Nothing matches \u201C", mbQuery.trim(), "\u201D. Try a chapter number, or a phrase from a worksheet title.")) : /* @__PURE__ */ React.createElement("div", null, grouped), /* @__PURE__ */ React.createElement("button", { type: "button", className: "mb-row", onClick: () => {
       setSheet(null);
       setLoadErr(null);
       if (fileInput.current) fileInput.current.click();
