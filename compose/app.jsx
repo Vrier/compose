@@ -1847,7 +1847,7 @@ function App() {
     if (saved && keys.indexOf(saved) !== -1 && !LIB.some((l) => l.key === saved) && !pendingOpen) {
       // passive restore: force=false — it never yanks the user off another
       // page (e.g. the editor opened via /?editor=1) when the fetch lands
-      setPendingOpen({ key: saved, force: false });
+      setPendingOpen({ key: saved, force: false, keepSel: true });
     }
     // eslint-disable-next-line
   }, [unlockedEntries]);
@@ -1857,7 +1857,7 @@ function App() {
   useEffect(() => {
     if (!pendingOpen) return;
     if (!LIB.some((l) => l.key === pendingOpen.key)) return;
-    if (pendingOpen.force || page === 'practice') openWorksheetKey(pendingOpen.key);
+    if (pendingOpen.force || page === 'practice') openWorksheetKey(pendingOpen.key, { keepSel: pendingOpen.keepSel });
     setPendingOpen(null);
   }, [pendingOpen, LIB]);
 
@@ -1925,7 +1925,8 @@ function App() {
 
   // ---- S10/W15: deep links — #gid.pid (optionally #setKey/gid.pid) --------
   const applyHash = useCallback((hash) => {
-    if (hash === '#scratchpad') { openScratchpad(); return; }
+    const stripHash = () => { try { window.history.replaceState(null, '', window.location.pathname + window.location.search); } catch (e) {} };
+    if (hash === '#scratchpad') { openScratchpad(); stripHash(); return; }
     const m = /^#(?:([^\/]+)\/)?([^.\/]+)\.(.+)$/.exec(hash || '');
     if (!m) return;
     const [, hkey, gid, pid] = m;
@@ -1939,6 +1940,7 @@ function App() {
     setCustom(null);
     if (entry.key !== fileKey) setFileKey(entry.key);
     setSel({ gi, pi });
+    stripHash(); // S62: deep links still open the exercise, but the bar stays clean
   }, [LIB, fileKey]);
   useEffect(() => {
     if (window.location.hash) applyHash(window.location.hash);
@@ -1946,13 +1948,10 @@ function App() {
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
   }, [applyHash]);
-  useEffect(() => {
-    if (custom || !set || !groups.length) return;
-    const g = groups[sel.gi] || groups[0];
-    const pb = g && (g.problems[sel.pi] || g.problems[0]);
-    if (!g || !pb) return;
-    try { window.history.replaceState(null, '', '#' + g.id + '.' + pb.id); } catch (e) {}
-  }, [sel.gi, sel.pi, fileKey, custom, set]);
+  // S62: the app no longer WRITES the #gid.pid position hash (owner ask: a
+  // clean address bar). Incoming #gid.pid / #ws/gid.pid / #scratchpad links
+  // still apply above — they open the target, then strip themselves.
+  // Reload-position restore never needed the hash (lc2-file + lc2-sel).
   const group = groups[sel.gi] || groups[0] || null;
   const problem = group ? (group.problems[sel.pi] || group.problems[0]) : null;
 
@@ -2230,9 +2229,12 @@ function App() {
     return { key: l.key, title: l.title, coll: collectionOf(l) || 'Worksheets',
              n: l.set.groups.reduce((a, g) => a + g.problems.length, 0), text: text };
   }).filter(Boolean), [LIB]);
-  function openWorksheetKey(key) {
+  function openWorksheetKey(key, opts) {
     setPage('practice');
-    setCustom(null); setFileKey(key); setSel({ gi: 0, pi: 0 }); setExOpen(true); setNavQuery('');
+    setCustom(null); setFileKey(key); setExOpen(true); setNavQuery('');
+    // S62: the passive reload-restore keeps the saved lc2-sel position (the
+    // hash used to re-apply it; the bar is clean now). Fresh opens reset.
+    if (!(opts && opts.keepSel)) setSel({ gi: 0, pi: 0 });
   }
   function openRecent(r) {
     const l = LIB.find((x) => x.key === r.ws);
