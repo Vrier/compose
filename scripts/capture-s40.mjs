@@ -24,8 +24,48 @@ const OUT = process.env.S40_OUT || '/tmp';
 const PORT = 8140;
 const B = `http://127.0.0.1:${PORT}`;
 const NEEDS_PB = SCENE === 'account' || SCENE === 'moved';
-const FIX_PATH = process.env.S40_FIXTURE || '/tmp/fixture-s40.txt';
-const FIXTURE = fs.existsSync(FIX_PATH) ? fs.readFileSync(FIX_PATH, 'utf8') : '';
+// S61: the fixture is EMBEDDED — the old /tmp/fixture-s40.txt read had a
+// silent ''-fallback that fail-cascaded all 13 notes checks whenever the file
+// was absent (S60 finding). S40_FIXTURE still overrides (a path), but an
+// empty fixture is a hard error now, never a silent empty document.
+// Mirrors the S40 fixture: \ex + \pex with two \a, \begingl…\endgl, one
+// forest tree with {den} nodes, a derivation, inline $λ$-math, ⟦·⟧ via
+// \den + [[·]] heads, and a \ref cross-reference (built from the
+// reading-editor snippet templates).
+const EMBEDDED_FIXTURE = String.raw`## 11.6 Negation fixture
+
+Where $g$ names Gandalf, \den{runs} is $\lambda e.run(e)$ — the pattern behind (\ref{neg-pair}).
+
+\ex Gandalf sang.
+\xe
+
+\pex<neg-pair>
+\a Gandalf didn’t sing.
+\a *Gandalf not sang.
+\xe
+
+\begingl
+\gla Ne parle pas//
+\glb NEG speak NEG//
+\glft ‘doesn’t speak’//
+\endgl
+
+\begin{forest}
+[S{~exists e[sing(e) /\ Ag(e)=g]}
+  [DP Gandalf]
+  [NegP [Neg didn’t] [VP{lambda e.sing(e)} [V sing]]]]
+\end{forest}
+
+\begin{derivation}
+[[sing]]   = lambda e.sing(e)   : <v,t>
+[[Gandalf]] = g                 : e
+\end{derivation}
+`;
+const FIXTURE = process.env.S40_FIXTURE ? fs.readFileSync(process.env.S40_FIXTURE, 'utf8') : EMBEDDED_FIXTURE;
+if ((SCENE === 'notes' || SCENE === 'tab') && !FIXTURE.trim()) {
+  console.error('FATAL: the S40 LaTeX fixture is EMPTY (bad S40_FIXTURE override?) — refusing to drive the notes/tab scenes against an empty document.');
+  process.exit(1);
+}
 
 let srv, DATA = null;
 if (NEEDS_PB) {
@@ -210,8 +250,17 @@ if (SCENE === 'account' || SCENE === 'moved') {
     await page.evaluate((a) => localStorage.setItem('lc2-auth', a), JSON.stringify({ token: auth.token, record: auth.record }));
     await page.reload({ waitUntil: 'networkidle2' });
     await sleep(900);
-    // Account section: identity card + sign-out, NO My-versions row
-    await page.evaluate(() => { const b = document.querySelector('.rail-btn[title="Account"]'); if (b) b.click(); });
+    // Account section: identity card + sign-out, NO My-versions row.
+    // S46: the sidebar boots EXPANDED — the collapsed-rail
+    // .rail-btn[title="Account"] no longer exists on boot; drill out of the
+    // exercises column and open the Account section head (capture-guide S46
+    // pattern) instead.
+    await page.evaluate(() => { const h = document.querySelector('.colx-head'); if (h) h.click(); });
+    await sleep(400);
+    await page.evaluate(() => {
+      const b = [...document.querySelectorAll('.sb-sec-head')].find((x) => x.textContent.includes('Account'));
+      if (b && b.getAttribute('aria-expanded') !== 'true') b.click();
+    });
     await sleep(500);
     const acctRows = await page.evaluate(() => [...document.querySelectorAll('.sb-row-label')].map((e) => e.textContent));
     console.log('ACCOUNT-SECTION ROWS:', JSON.stringify(acctRows));

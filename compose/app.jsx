@@ -2742,7 +2742,7 @@ function App() {
   }
   function renderSidebar() {
     return (
-      <aside className={'sidebar' + (sidebarExpanded ? '' : ' rail')} role="navigation" aria-label="Main">
+      <nav className={'sidebar' + (sidebarExpanded ? '' : ' rail')} aria-label="Main">{/* S61: nav, not aside role=navigation (aria-allowed-role) */}
         <div className="sb-head">
           <span className="sb-glyph" aria-hidden="true">λ</span>
           {sidebarExpanded && (
@@ -2756,7 +2756,7 @@ function App() {
             aria-label={sidebarExpanded ? 'Collapse the sidebar' : 'Expand the sidebar'}>{sidebarExpanded ? '«' : '»'}</button>
         </div>
         {sidebarExpanded ? renderSidebarBody() : renderRail()}
-      </aside>
+      </nav>
     );
   }
   function renderExColumn() {
@@ -3860,14 +3860,18 @@ function App() {
           const panelTab = (refTab === 'notes' && !hasReading) ? 'lexicon' : refTab;
           return (
           <aside className="col col-right rp-panel" aria-label="Reference panel">
-            <div className="rp-tabs" role="tablist" aria-label="Reference panel tabs">
-              <button type="button" role="tab" id="rp-tab-lexicon" aria-selected={panelTab === 'lexicon'} aria-controls="rp-tabpanel"
-                className={'rp-tab' + (panelTab === 'lexicon' ? ' on' : '')} onClick={() => openPanelTab('lexicon')}>
-                Lexicon <span className="rp-count">{filteredLex.length}</span></button>
-              <button type="button" role="tab" id="rp-tab-rules" aria-selected={panelTab === 'rules'} aria-controls="rp-tabpanel"
-                className={'rp-tab' + (panelTab === 'rules' ? ' on' : '')} onClick={() => openPanelTab('rules')}>Rules</button>
-              {hasReading && <button type="button" role="tab" id="rp-tab-notes" aria-selected={panelTab === 'notes'} aria-controls="rp-tabpanel"
-                className={'rp-tab' + (panelTab === 'notes' ? ' on' : '')} onClick={() => openPanelTab('notes')}>Notes</button>}
+            {/* S61: the collapse button is a SIBLING of the tablist — a
+                role=tablist may only own tabs (axe aria-required-children) */}
+            <div className="rp-tabs-row">
+              <div className="rp-tabs" role="tablist" aria-label="Reference panel tabs">
+                <button type="button" role="tab" id="rp-tab-lexicon" aria-selected={panelTab === 'lexicon'} aria-controls="rp-tabpanel"
+                  className={'rp-tab' + (panelTab === 'lexicon' ? ' on' : '')} onClick={() => openPanelTab('lexicon')}>
+                  Lexicon <span className="rp-count">{filteredLex.length}</span></button>
+                <button type="button" role="tab" id="rp-tab-rules" aria-selected={panelTab === 'rules'} aria-controls="rp-tabpanel"
+                  className={'rp-tab' + (panelTab === 'rules' ? ' on' : '')} onClick={() => openPanelTab('rules')}>Rules</button>
+                {hasReading && <button type="button" role="tab" id="rp-tab-notes" aria-selected={panelTab === 'notes'} aria-controls="rp-tabpanel"
+                  className={'rp-tab' + (panelTab === 'notes' ? ' on' : '')} onClick={() => openPanelTab('notes')}>Notes</button>}
+              </div>
               <button type="button" className="rp-close" title="Collapse panel" aria-label="Collapse the reference panel" onClick={() => touchPanel(false)}>›</button>
             </div>
             <div className="rp-body" role="tabpanel" id="rp-tabpanel" aria-labelledby={'rp-tab-' + panelTab}>

@@ -330,7 +330,7 @@ async function main() {
   contains('root ships the unlock dialog (N5)', r.text, 'ul-dialog');
   contains('root ships the assign & share page (N5)', r.text, 'as-inner');
   contains('root ships the mobile tab bar (N6)', r.text, 'mb-tabbar');
-  contains('root ships the mobile chip row (N6)', r.text, 'mb-chips');
+  contains('root ships the slim phone tab bar (N6/S55; chip row retired, S61 pruned its dead CSS)', r.text, 'mb-foot-slim');
   // S37 — the scratchpad is a page in the shell (the modal chrome is gone)
   contains('root ships the scratchpad page (S37)', r.text, 'scratch-page');
   lacks('the scratchpad modal chrome is gone (S37)', r.text, 'scratch-modal');

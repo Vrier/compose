@@ -5,20 +5,25 @@
 
      node scripts/capture-s43.mjs unlock   anon user on / redeems a curated
                                            CHAPTER code via the unlock dialog
-                                           -> navigated to the chapter page ->
-                                           back on /, the set is in the
-                                           sidebar's Unlocked section -> and
-                                           still there after a reload
-     node scripts/capture-s43.mjs footer   on a curated chapter page, the
+                                           -> S44: stays on /, the chapter's
+                                           first worksheet opens IN PLACE ->
+                                           the set is in the sidebar's
+                                           Unlocked section -> and still
+                                           there after a reload
+     node scripts/capture-s43.mjs footer   via the /cc/ch6/ stub, the
                                            exercises-column footer has the
                                            worksheet's "Code · XXXXXX" +
                                            "QR & link" buttons and NO "Rules
                                            for this worksheet" button; the QR
-                                           button opens the code dialog
+                                           button opens the code dialog; the
+                                           collection head ⌗ opens the
+                                           CuratedCodeModal (S44/S51: the
+                                           "Code for this collection" row is
+                                           retired)
      node scripts/capture-s43.mjs urlcode  /?code=<worksheet code> applies the
-                                           code from the URL: unlock recorded
-                                           + redirected to the chapter page
-                                           with that worksheet open
+                                           code from the URL: unlock recorded,
+                                           param stripped, the worksheet opens
+                                           IN PLACE on / (S44 — no redirect)
 
    Env: PUPPETEER_EXECUTABLE_PATH, S43_OUT (default /tmp).
    =========================================================================== */
@@ -83,14 +88,17 @@ if (SCENE === 'unlock') {
   const anonInput = await page.$('.ul-input');
   check('anon user gets a code input (no forced sign-in)', !!anonInput);
   await page.type('.ul-input', CH6.code.toLowerCase()); // case-insensitive
-  await Promise.all([
-    page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 20000 }),
-    page.click('.ul-submit'),
-  ]);
-  // the app writes a #gid.pid deep-link hash on load — compare the path only
-  check('redeeming the cc/ch6 code navigated to ' + CH6.url, page.url().startsWith(B + CH6.url), page.url());
+  await page.click('.ul-submit');
+  // S44: redeeming NEVER navigates — the app records the unlock, fetches the
+  // chapter's worksheets and opens the first one in place on /
+  await page.waitForFunction(() => (localStorage.getItem('lc2-unlocked') || '').includes('cc/ch6'), { timeout: 15000 });
+  await page.waitForFunction(() => localStorage.getItem('build-hosted-root:lc2-file') === '"ch6.1-fa"', { timeout: 15000 });
+  check('redeeming stays on / (S44 in-place open; #gid.pid hash allowed)',
+    page.url() === B + '/' || page.url().startsWith(B + '/#'), page.url());
   const stored = await page.evaluate(() => localStorage.getItem('lc2-unlocked'));
   check('lc2-unlocked records the key', (stored || '').includes('cc/ch6'), stored);
+  const opened = await page.evaluate(() => localStorage.getItem('build-hosted-root:lc2-file'));
+  check('first ch6 worksheet opened in place (lc2-file=ch6.1-fa)', opened === '"ch6.1-fa"', opened);
   await page.goto(B + '/', { waitUntil: 'networkidle2' });
   await expandSidebar();
   let row = await page.evaluate(() => {
@@ -138,20 +146,36 @@ if (SCENE === 'footer') {
   await expandSidebar();
   const collBtns = await page.evaluate(() => document.querySelectorAll('.sb-coll-row .sb-code-btn').length);
   check('chapter collection heads carry ⌗ code buttons', collBtns > 0, collBtns);
-  const pageRow = await page.evaluate(() => [...document.querySelectorAll('.sb-row')].some((b) => b.textContent.includes('Code for this collection')));
-  check('curated page has a "Code for this collection" row', pageRow);
+  // S44/S51: the "Code for this collection" row is retired — the collection
+  // head's ⌗ opens the CuratedCodeModal for that collection instead
+  const clicked = await page.evaluate(() => {
+    const rows = [...document.querySelectorAll('.sb-coll-row')];
+    const row = rows.find((r) => r.textContent.includes('Function Application') && r.querySelector('.sb-code-btn')) || rows.find((r) => r.querySelector('.sb-code-btn'));
+    const btn = row && row.querySelector('.sb-code-btn');
+    if (btn) { btn.click(); return true; } return false;
+  });
+  check('collection head ⌗ clicked', clicked);
+  await page.waitForSelector('.modal.vd-share', { timeout: 8000 });
+  const collDlg = await page.evaluate(() => document.querySelector('.modal.vd-share').textContent);
+  check('⌗ opens the CuratedCodeModal with the chapter code (' + CH6.code + ')', collDlg.includes(CH6.code), collDlg.slice(0, 150));
+  check('modal names the collection', collDlg.includes('Function Application'), collDlg.slice(0, 150));
+  await shot('s43-coll-code-modal.png');
 }
 
 if (SCENE === 'urlcode') {
   await page.goto(B + '/?code=' + WS.code, { waitUntil: 'networkidle2' });
-  await sleep(800);
-  check('/?code=<worksheet> redirected to its chapter page', page.url().startsWith(B + '/cc/ch6/'), page.url());
+  // S44: the code is applied IN PLACE — no redirect; the app strips the
+  // ?code param (history.replaceState) and opens the worksheet on /
+  await page.waitForFunction(() => (localStorage.getItem('lc2-unlocked') || '').includes('ch6.1-fa'), { timeout: 15000 });
+  await page.waitForFunction(() => localStorage.getItem('build-hosted-root:lc2-file') === '"ch6.1-fa"', { timeout: 15000 });
+  check('/?code=<worksheet> stays on / with the param stripped (S44 in-place)',
+    (page.url() === B + '/' || page.url().startsWith(B + '/#')) && !page.url().includes('code='), page.url());
   const stored = await page.evaluate(() => localStorage.getItem('lc2-unlocked'));
   check('unlock recorded from the URL code', (stored || '').includes('ch6.1-fa'), stored);
   await page.waitForSelector('.colx-head', { timeout: 8000 });
   const title = await page.evaluate(() => document.querySelector('.colx-title') && document.querySelector('.colx-title').textContent);
-  const open = await page.evaluate(() => localStorage.getItem('lib-cc:lc2-file'));
-  check('the encoded worksheet is open (lc2-file=ch6.1-fa)', open === '"ch6.1-fa"', open + ' / title=' + title);
+  const open = await page.evaluate(() => localStorage.getItem('build-hosted-root:lc2-file'));
+  check('the encoded worksheet is open in place (lc2-file=ch6.1-fa)', open === '"ch6.1-fa"', open + ' / title=' + title);
   await shot('s43-urlcode.png');
 }
 

@@ -108,10 +108,29 @@ function Sheet({ title, side, onClose, children, footer, className }) {
     document.body.style.overflow = 'hidden';
     return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = prev; };
   }, [onClose]);
+  // S61: aria-modal declared it, now make it true — Tab cycles inside the
+  // sheet (forward wraps last→first, Shift+Tab first→last) instead of
+  // escaping into the background tree.
+  const trapTab = (e) => {
+    if (e.key !== 'Tab') return;
+    const root = rootRef.current;
+    if (!root) return;
+    const focusables = Array.prototype.slice.call(root.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+      .filter((el) => !el.disabled && !el.hidden && el.getClientRects().length > 0);
+    if (!focusables.length) { e.preventDefault(); return; }
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const cur = document.activeElement;
+    if (e.shiftKey) {
+      if (cur === first || !root.contains(cur)) { e.preventDefault(); last.focus(); }
+    } else if (cur === last || !root.contains(cur)) { e.preventDefault(); first.focus(); }
+  };
   return (
     <div className={'sheet-backdrop sheet-back-' + s} onClick={onClose}>
       <div ref={rootRef} className={'sheet sheet-' + s + (className ? ' ' + className : '')}
-        onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={title || 'Panel'}>
+        onClick={(e) => e.stopPropagation()} onKeyDown={trapTab}
+        role="dialog" aria-modal="true" aria-label={title || 'Panel'}>
         {s === 'bottom' && <div className="sheet-grip" aria-hidden="true"><span /></div>}
         <div className="sheet-head">
           <span className="sheet-title">{title}</span>

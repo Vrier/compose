@@ -292,8 +292,10 @@ if (SCENE === 'signed') {
   await drillOut();
   await openSection('Account');
   check('student tier badge', (await text('.sb-tier-badge')) === 'student');
-  check('student sidebar has NO Author section', !(await page.evaluate(() =>
-    [...document.querySelectorAll('.sb-sec-head')].some((b) => b.textContent.includes('Author')))));
+  // S44: authoring is open on the root build (canAuthor for everyone) — the
+  // signed-in student DOES get the Author section (hosting stays gated)
+  check('student sidebar HAS the Author section (S44 open sandbox)', await page.evaluate(() =>
+    [...document.querySelectorAll('.sb-sec-head')].some((b) => b.textContent.includes('Author'))));
   await shot('s37-student-account.png');
 
   // instructor: invite-gated registration (seeded invite), sidebar gains
