@@ -3,12 +3,12 @@
 *This chapter sets the conventions every later H&K set uses. There are no trees to
 compose yet — read it as the notation key for the bundle.*
 
-To know the meaning of a sentence is, in large part, to know its **truth
+To know the meaning of a sentence is to know its **truth
 conditions** — the circumstances under which it is true. A semantic theory pairs
 each sentence with its truth conditions and shows how they are **composed** from the
 meanings of the parts (Frege's Principle of Compositionality).
 
-## Sets and characteristic functions
+## 1.3 Sets and characteristic functions
 
 A set `A` can be given by listing (`{a, b, c}`) or by **abstraction** — a condition
 its members satisfy: `{x : x is a cat}`, "the set of all `x` such that `x` is a cat."
@@ -26,7 +26,10 @@ the function
 is why, in every H&K set, a one-place predicate is written with the **`=1`**
 convention: the value is a truth value, and `cat(x)=1` says that value is `1`.
 
-## Notation key for the bundle
+## 2 Notation key for the bundle
+
+Everything below debuts in **Chapter 2** — ⟦·⟧ and *=1 iff* (p. 15), characteristic
+functions (§2.2), the types `e`/`t`/`⟨e,t⟩` (§2.3), λ (§2.5; ch. 1 defers it at p. 11).
 
 - **`⟦α⟧`** — the denotation (extension) of expression `α`. Later, `⟦α⟧^g` adds a
   variable assignment (Ch 5, 9) and `⟦α⟧^w` a world (Ch 12).
@@ -40,7 +43,9 @@ convention: the value is a truth value, and `cat(x)=1` says that value is `1`.
   `P(x)=1`, `∀x[P(x)=1 → Q(x)=1]`, etc. (This is the bundle-wide convention; the
   engine treats `P(x)=1` and `P(x)` as the same proposition.)
 - **λ-notation** — `λx . φ` names *the function mapping each `x` to `φ`*. A partial
-  function adds a **definedness condition** after a colon, `λx : ψ . φ` — defined
+  function carries a **domain condition** after the colon, `λx : ψ . φ` — part of
+  H&K's λ-notation from its introduction (§2.5, p. 34), usually suppressed by an
+  abbreviatory convention; Chapter 4 puts it to work for presuppositions — defined
   only when `ψ` holds (Frege's *the*, Ch 4; *both*/*neither*, Ch 6).
 
 ## The plan

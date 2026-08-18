@@ -73,7 +73,9 @@ capture this with a **partial function** (Chapter 4's colon), presupposing `|f|=
 \end{derivation}
 
 The presupposition `|f|=2` rides up: *neither cat* is defined only if there are
-exactly two cats, and *Neither cat has stripes* (\ref{both}) inherits that condition while
+exactly two cats — the book writes the condition set-wise, λA : A ∈ Pow(D) & |A| = 2
+(p. 154 (2)/(3)); our `card2(f)` is the same condition on the characteristic function,
+an engine notation — and *Neither cat has stripes* (\ref{both}) inherits that condition while
 asserting that no cat is striped.
 
 \begin{derivation}
@@ -83,7 +85,8 @@ asserting that no cat is striped.
 
 This is why *both* and *neither* resist a purely **relational** treatment (§6.7.2): a
 relation is a set of pairs, so it can only ever be total — it cannot leave the
-two-cats case truth-valueless. Partiality is essential.
+no-two-cats case truth-valueless — when there are not exactly two cats, (\ref{both})
+should be neither true nor false. Partiality is essential.
 
 \ex<both> Neither cat has stripes.
 \xe
@@ -91,6 +94,9 @@ two-cats case truth-valueless. Partiality is essential.
 \ex Both cats have stripes.
 \xe
 
-> **Beyond this chapter (§6.8).** Whether *every*, *the*, and the weak determiners
-> (*a*, *two*, *most*) are likewise presuppositional is contested; *most* in
-> particular is not first-order, and we leave these cases to the reading.
+> **Beyond this chapter (§6.8).** H&K call §6.7's DP presuppositions (*both*,
+> *neither*, definites) "rather apparent and uncontroversial" (p. 159); the
+> **contested** cases are Strawson's strong determiners (*every*, *all*, *no*,
+> pp. 159–162) and the §6.8.2 weak determiners (*a*, *few*, *most*, p. 163).
+> Separately, *most* is not definable from 1-place quantifiers at all — that
+> argument is ch. 7's (§7.4.2, pp. 191–193). We leave all of these to the book.

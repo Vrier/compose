@@ -229,7 +229,7 @@
       "code": "KR8IQT",
       "kind": "worksheet",
       "key": "hk1-conventions",
-      "title": "Conventions: Types, ⟦·⟧, and =1 (§1)",
+      "title": "Conventions: Types, ⟦·⟧, and =1 (§§1–2)",
       "url": "/?code=KR8IQT"
     },
     {
@@ -257,14 +257,14 @@
       "code": "N58GCN",
       "kind": "worksheet",
       "key": "hk6-quantifiers",
-      "title": "Quantifiers: Their Semantic Type (§6.3–6.7)",
+      "title": "Quantifiers: Their Semantic Type (§6.3–6.4, §6.7)",
       "url": "/?code=N58GCN"
     },
     {
       "code": "X3BK7F",
       "kind": "worksheet",
       "key": "hk7-quantification",
-      "title": "Quantification & Grammar (§7.1–7.5)",
+      "title": "Quantification & Grammar (§7.1–7.3, §7.5)",
       "url": "/?code=X3BK7F"
     },
     {

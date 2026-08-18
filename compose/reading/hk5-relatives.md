@@ -59,8 +59,11 @@ relative pronoun (or index) `i` and a node β, then `⟦α⟧^g = λx . ⟦β⟧
 function mapping each `x` to the value β has when `i` is assigned `x`.
 
 So PA over the object-gap clause gives `λx . abandon(j,x)=1`, type `⟨e,t⟩`, just what
-PM needs (\ref{abandon-deriv}). The relative pronoun *which* / *who* is then semantically
-vacuous, passing the abstract up unchanged.
+PM needs (see the derivation below). The relative pronoun *which* / *who* is then treated
+as semantically vacuous, passing the abstract up unchanged. *(A seam worth knowing:
+in §5.2.3 itself H&K make the pronoun **syncategorematic** — "not simply vacuous"
+(pp. 96–98); the vacuous-pronoun-plus-index-binder treatment we implement is their
+ch. 7 revision (p. 186), back-applied here so one rule set serves both chapters.)*
 
 \begin{derivation}
 [[John abandoned t1]]              = abandon(j,x)=1            : t
@@ -71,7 +74,7 @@ vacuous, passing the abstract up unchanged.
 \end{derivation}
 
 A subject gap works the same way; PA simply abstracts over a trace that happens to
-sit in subject position (\ref{subj-deriv}).
+sit in subject position (as in the derivation just above).
 
 \begin{derivation}
 [[t1 is empty]]                = empty(x)=1            : t
@@ -83,9 +86,12 @@ sit in subject position (\ref{subj-deriv}).
 ## 5.3 Multiple variables and such-that relatives
 
 The same rule scales to **multiple variables** and to *such that* relatives, where
-*such* (like the relative pronoun) is a vacuous binder of the clause-internal index.
+*such* (like the relative pronoun) is a vacuous binder of the clause-internal index
+(H&K's own *such that* cases: "the book such that Joe bought it", p. 107). The
+quantified examples in group C borrow ⟦every⟧/⟦no⟧ from §6.4 ahead (p. 146) — ch. 5
+itself stops at definite heads.
 Once indices, not particular words, drive PA, the rule generalizes to every variable
 binder in the grammar — the engine that Chapter 7 will reuse for quantifier raising.
 
-\ex<such> the picture such that Mary saw it
+\ex<such> the picture such that Mary saw it *(our example, after pp. 90/107)*
 \xe

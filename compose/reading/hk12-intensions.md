@@ -24,11 +24,13 @@ truth value. But Mary can believe one without the other: *believe* creates a
 **non-extensional** (opaque) context. What the verb cares about is not the embedded
 clause's truth value but **which worlds it is true in** — its *intension*.
 
-## 12.2 Intensions
+## 12.2 What to do: intensions
 
 The **intension** of `α` is the function from worlds to its extension at each
 world: `λw . ⟦α⟧^w`. For a sentence, that is a **proposition** — type `⟨s,t⟩`, a
-function from worlds (type `s`) to truth values. The extension stays world-relative,
+function from worlds to truth values. *(Engine note: we treat `s` as a type of its
+own so worlds can be arguments; H&K's official clause only builds ⟨s,a⟩ function
+types (p. 303 (1d)) — there is no bare Dₛ in the book.)* The extension stays world-relative,
 so every predicate now carries the evaluation world; in our metalanguage we write it
 as an argument, `loyal(w,x)`, the formalisation of `⟦loyal⟧^w = λx . x is loyal in w`.
 
@@ -57,8 +59,10 @@ H&K add **one** composition rule to bridge the gap:
 
 IFA feeds the verb the **intension** of its complement — formed on the spot by
 abstracting the embedded clause over the world `w'`. Note that this is a *composition
-rule*, not an operator in the tree: H&K deliberately avoid Montague's `^`/`˅` and
-build intension-formation into the rule itself. Applying it to *Mary believes Jan is
+rule*, not an operator in the tree: unlike Montague's `^`/`˅` operators, H&K's
+system builds intension-formation into the composition rule itself (their endnote
+credits a rule of Bittner's as an analogue; Montague is credited for the type
+system, p. 303). Applying it to *Mary believes Jan is
 loyal* (\ref{break}):
 
 \begin{derivation}
@@ -82,6 +86,10 @@ captured.
 > composes intensions with IFA — H&K's actual rule, *not* Montague's `^`/`˅`
 > operators. The matrix world prints as `w`, shifted worlds as `w'`.
 
-> **Beyond these first steps (§12.4).** A full intensional semantics also relativises
-> to **times** and handles intensional transitives (*seek*), de re/de dicto, and more;
-> H&K take only the first step here, and so do we.
+> **Beyond these first steps (§12.4, "Limitations and prospects").** H&K's actual
+> closing worry is Carnap's: propositions-as-world-sets are too **coarse** for
+> attitudes (Bigelow's pair of sentences true in exactly the same worlds yet not
+> believed together, p. 310) — pointing toward structured meanings. Temporal
+> dependence is set aside back in §12.2 (p. 302), and de re vs de dicto is the
+> book's own Exercise 1 of §12.3 ("Mary hopes that a plumber is available",
+> p. 309). We stop where they do.

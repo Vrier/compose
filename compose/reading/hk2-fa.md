@@ -26,6 +26,10 @@ Plus a rule for the vacuous N/V/VP layers:
 
 **Non-branching Nodes (NN).** If α has a single daughter β, then `⟦α⟧ = ⟦β⟧`.
 
+*(Chapter 2 states these principles only as the anonymous rules (S1)–(S6); the names
+**FA**/**NN**, the general statements above, and the type labels are ch. 3's (§3.1,
+p. 44) — see the ch. 3 note below. We use them from the start.)*
+
 So *Ann smokes* (\ref{smokes}) composes by feeding the subject to the verb's
 characteristic function — the sentence is `1` iff Ann smokes.
 
@@ -35,6 +39,10 @@ characteristic function — the sentence is `1` iff Ann smokes.
 
 \ex<smokes> Ann smokes.
 \xe
+
+*Ann is boring* looks **ahead**: ch. 2's own fragment stops at proper names and
+(in)transitive verbs (p. 13); the vacuous copula `⟦is⟧ = λf . f` is §4.1's entry
+(p. 62). We preview it so predicative adjectives work from day one.
 
 \ex Ann is boring.
 \xe
@@ -62,6 +70,11 @@ So in *Ann likes Jan* (\ref{likes}), FA applies twice: *likes* combines with the
 \xe
 
 ## 2.4 Sentential connectives
+
+The typed entries below solve the book's own exercises: the p. 32 sentence is
+Exercise 2 verbatim (§2.4), the Schönfinkeled `⟨t,⟨t,t⟩⟩` *and* is Exercise 3
+(p. 40), and H&K file the task as "the exercise on connectives in section 2.1"
+(p. 45).
 
 Negation and conjunction operate on truth values. *It is not the case that* is a
 function of type `⟨t,t⟩`, and sentential *and* is of type `⟨t,⟨t,t⟩⟩`:

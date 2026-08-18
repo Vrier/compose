@@ -3,8 +3,8 @@
 Quantifiers in **subject** position composed cleanly: a generalized quantifier of
 type `⟨⟨e,t⟩,t⟩` takes the VP predicate as argument. But quantifiers also appear in
 **object** position, and there a type mismatch arises. This chapter gives H&K's two
-repairs — and shows they are not mere alternatives, because movement does strictly
-more.
+repairs, and weighs them. (How decisively? By the book's own lights, not very —
+see §7.5.)
 
 ## 7.1 The problem of quantifiers in object position
 
@@ -23,7 +23,11 @@ domain, so Functional Application cannot apply, and the VP has no denotation.
 
 ## 7.2 Repair in situ: flexible types (RaiseO)
 
-One repair leaves the quantifier where it is and **raises the verb's type** so the
+One repair leaves the quantifier where it is and retypes something so the pieces
+fit. H&K's illustrated version retypes the **quantifier** (§7.2.1, pp. 180–182;
+the "type-shifted homonym of *every*", p. 187); retyping the **verb** is the
+variant they leave as their endnote-7 exercise, crediting Montague (p. 205). Our
+RaiseO implements that exercise: it **raises the verb's type** so the
 object slot can host a generalized quantifier. The type-shift **RaiseO** turns
 `⟨e,⟨e,t⟩⟩` into `⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩`, after which FA applies twice with no movement.
 The result is exactly the desired truth conditions:
@@ -49,6 +53,9 @@ Both routes give the same truth conditions here. So why prefer movement?
 
 ## 7.5.1 Scope ambiguity and inverse scope
 
+*(Engine note: H&K's ⟦everybody⟧/⟦somebody⟧ quantify over **persons** (p. 180); our
+entries range over all of Dₑ for simplicity — harmless in a domain of people.)*
+
 A sentence with **two** quantifiers, *Somebody offended everybody* (\ref{scope}), has
 **two** readings: a *linear* one (there is one person who offended everyone) and an
 *inverse* one (everyone was offended, by possibly different people). In-situ
@@ -60,8 +67,14 @@ raise the quantifiers in either order and PA delivers two non-equivalent LFs.
 [[Somebody offended everybody]]  (inverse)  = ∀y . ∃x . offend(x,y)=1   : t
 \end{derivation}
 
-This is the decisive argument for movement: it generates inverse scope, which the
-flexible-types approach cannot.
+This is the standard scope argument for movement: it makes the inverse LF trivial
+to derive, while the in-situ proposals the book considers predict only the linear
+reading (p. 194). H&K themselves stop well short of calling it decisive: richer
+type regimes can generate inverse scope in situ (n. 24: Hendriks; Cooper storage),
+the three §7.5 arguments' "ultimate force is very difficult to assess", "we could
+not possibly purport here to give decisive evidence in favor of a pure movement
+approach" (p. 194), and pending independent motivation "the choice seems to be
+just a matter of taste" (p. 193).
 
 \ex<scope> Somebody offended everybody.
 \xe
@@ -86,4 +99,4 @@ once, so the pronoun is read as a bound variable. *Every publisher offended hims
 \xe
 
 > **Beyond this chapter.** Antecedent-contained deletion (§7.5.2) needs an ellipsis
-> resolution mechanism we do not model here; it is discussed in the reading only.
+> resolution mechanism we do not model here; see the book, §7.5.2 (p. 198).

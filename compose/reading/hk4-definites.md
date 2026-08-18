@@ -47,6 +47,10 @@ A prepositional modifier works the same way: *in* is `λy . λx . in(x,y)=1`, so
 \ex Kaline is a cat in Texas.
 \xe
 
+A caveat H&K flag themselves (§4.3.3, p. 68): **nonintersective** adjectives —
+*former*, *alleged* — resist the PM/intersective analysis; the rule is for the
+intersective core.
+
 ## 4.4 The definite article
 
 Following Frege, *the* denotes a **partial function** of type `⟨⟨e,t⟩,e⟩`. It is
