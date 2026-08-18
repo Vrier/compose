@@ -23,6 +23,9 @@ Champollion's *Invitation to Formal Semantics*.
 - Keep the standalone `.md` in `compose/reading/` as the source of truth; re-embed
   into the `.compose.json` when it changes.
 - The textbook is copyrighted — condense and paraphrase, never paste prose verbatim.
+  Since S65 the H&K readings follow the S22 quote standard: rule statements,
+  lexical entries and definitions verbatim with page cites, key claims as short
+  attributed quotes, connective prose minimal.
 - Paper readings (the /papers shelf) follow the quote-only sourcing standard
   (S22): notes text is only (a) short direct quotes from the paper or secondary
   literature, attributed, (b) the papers' numbered definitions, (c) explicitly

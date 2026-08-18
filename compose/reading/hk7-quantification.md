@@ -1,17 +1,12 @@
 # Chapter 7 · Quantification and Grammar
 
-Quantifiers in **subject** position composed cleanly: a generalized quantifier of
-type `⟨⟨e,t⟩,t⟩` takes the VP predicate as argument. But quantifiers also appear in
-**object** position, and there a type mismatch arises. This chapter gives H&K's two
-repairs, and weighs them. (How decisively? By the book's own lights, not very —
-see §7.5.)
+Subject quantifiers compose by FA. Object quantifiers do not: a type mismatch.
+Ch. 7 gives two repairs and weighs them (§7.5).
 
 ## 7.1 The problem of quantifiers in object position
 
-In *John offended every linguist* (\ref{obj}), the verb *offended* is type
-`⟨e,⟨e,t⟩⟩` — it wants an **individual** object. But *every linguist* is a
-generalized quantifier, type `⟨⟨e,t⟩,t⟩`. Neither sister has the other in its
-domain, so Functional Application cannot apply, and the VP has no denotation.
+In (\ref{obj}) the verb is `⟨e,⟨e,t⟩⟩`, the object `⟨⟨e,t⟩,t⟩`: neither sister has
+the other in its domain, FA yields no value for the VP (p. 179).
 
 \begin{derivation}
 [[offended]]        = λy . λx . offend(x,y)=1    : <e,<e,t>>
@@ -23,14 +18,12 @@ domain, so Functional Application cannot apply, and the VP has no denotation.
 
 ## 7.2 Repair in situ: flexible types (RaiseO)
 
-One repair leaves the quantifier where it is and retypes something so the pieces
-fit. H&K's illustrated version retypes the **quantifier** (§7.2.1, pp. 180–182;
-the "type-shifted homonym of *every*", p. 187); retyping the **verb** is the
-variant they leave as their endnote-7 exercise, crediting Montague (p. 205). Our
-RaiseO implements that exercise: it **raises the verb's type** so the
-object slot can host a generalized quantifier. The type-shift **RaiseO** turns
-`⟨e,⟨e,t⟩⟩` into `⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩`, after which FA applies twice with no movement.
-The result is exactly the desired truth conditions:
+Leave the quantifier in place; retype. The book's illustrated variant retypes the
+quantifier — "We will illustrate the first possibility here. You are invited to try
+out the second on your own" (p. 180; the "type-shifted homonym of *every*", p. 187).
+The second, verb-retyping variant is endnote 7's exercise, credited to Montague
+(p. 205) — and is what RaiseO implements: `⟨e,⟨e,t⟩⟩ → ⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩`, then FA
+twice, no movement.
 
 \begin{derivation}
 [[John offended every linguist]]  = ∀x[linguist(x)=1 → offend(j,x)=1]   : t
@@ -38,10 +31,9 @@ The result is exactly the desired truth conditions:
 
 ## 7.3 Repair by movement: Quantifier Raising + PA
 
-The other repair **moves** the object quantifier, adjoining it above the clause and
-leaving a co-indexed **trace**. **Predicate Abstraction** (Chapter 5) over that trace
-makes the remnant clause a property of type `⟨e,t⟩` — a fit argument for the raised
-quantifier. The LF is *[every linguist] 1 [John offended t₁]*:
+Move the object, adjoin it above the clause, leave a co-indexed trace; PA (ch. 5)
+turns the remnant into `⟨e,t⟩`, and the quantifier applies. LF: *[every linguist]
+1 [John offended t₁]* (p. 186).
 
 \begin{derivation}
 [[John offended t1]]      = offend(j,x)=1            : t
@@ -49,32 +41,29 @@ quantifier. The LF is *[every linguist] 1 [John offended t₁]*:
 [[(QR) every linguist …]] = ∀x[linguist(x)=1 → offend(j,x)=1]   : t   (FA)
 \end{derivation}
 
-Both routes give the same truth conditions here. So why prefer movement?
+"We have obtained the correct result… without resorting to a type-shifted homonym
+of 'every'" (p. 187). Same truth conditions either way — so why movement?
 
 ## 7.5.1 Scope ambiguity and inverse scope
 
-*(Engine note: H&K's ⟦everybody⟧/⟦somebody⟧ quantify over **persons** (p. 180); our
-entries range over all of Dₑ for simplicity — harmless in a domain of people.)*
-
-A sentence with **two** quantifiers, *Somebody offended everybody* (\ref{scope}), has
-**two** readings: a *linear* one (there is one person who offended everyone) and an
-*inverse* one (everyone was offended, by possibly different people). In-situ
-interpretation predicts **only** the linear reading. Movement predicts **both**:
-raise the quantifiers in either order and PA delivers two non-equivalent LFs.
+*Somebody offended everybody* (\ref{scope}) "has two readings, not just one"
+(p. 194): linear (one offender for all) and inverse (each was offended, offenders
+possibly different). Raising the quantifiers in either order gives both LFs; the
+in-situ proposals the book considers predict only the linear reading (p. 194).
 
 \begin{derivation}
 [[Somebody offended everybody]]  (linear)   = ∃x . ∀y . offend(x,y)=1   : t
 [[Somebody offended everybody]]  (inverse)  = ∀y . ∃x . offend(x,y)=1   : t
 \end{derivation}
 
-This is the standard scope argument for movement: it makes the inverse LF trivial
-to derive, while the in-situ proposals the book considers predict only the linear
-reading (p. 194). H&K themselves stop well short of calling it decisive: richer
-type regimes can generate inverse scope in situ (n. 24: Hendriks; Cooper storage),
-the three §7.5 arguments' "ultimate force is very difficult to assess", "we could
-not possibly purport here to give decisive evidence in favor of a pure movement
-approach" (p. 194), and pending independent motivation "the choice seems to be
-just a matter of taste" (p. 193).
+H&K stop short of calling this decisive: richer type regimes derive inverse scope
+in situ (n. 24: Hendriks; Cooper storage); the §7.5 arguments' "ultimate force is
+very difficult to assess"; "we could not possibly purport here to give decisive
+evidence in favor of a pure movement approach" (p. 194); pending independent
+motivation, "the choice seems to be just a matter of taste" (p. 193).
+
+Engine note: the book's ⟦everybody⟧/⟦somebody⟧ quantify over persons (p. 180); our
+entries range over all of Dₑ.
 
 \ex<scope> Somebody offended everybody.
 \xe
@@ -84,10 +73,8 @@ just a matter of taste" (p. 193).
 
 ## 7.5.3 Quantifiers that bind pronouns
 
-Movement also lets a quantifier **bind a pronoun**. When the raised subject leaves a
-trace and a pronoun elsewhere carries the **same index**, PA abstracts over both at
-once, so the pronoun is read as a bound variable. *Every publisher offended himself*
-(\ref{bound}) is *[every publisher] 1 [t₁ offended himself₁]*:
+A raised quantifier binds a co-indexed pronoun: PA abstracts over trace and pronoun
+at once. *[every publisher] 1 [t₁ offended himself₁]* (\ref{bound}):
 
 \begin{derivation}
 [[t1 offended himself1]]      = offend(x,x)=1            : t
@@ -98,5 +85,5 @@ once, so the pronoun is read as a bound variable. *Every publisher offended hims
 \ex<bound> Every publisher offended himself.
 \xe
 
-> **Beyond this chapter.** Antecedent-contained deletion (§7.5.2) needs an ellipsis
-> resolution mechanism we do not model here; see the book, §7.5.2 (p. 198).
+> **Beyond this chapter.** Antecedent-contained deletion needs an ellipsis
+> mechanism we do not model; see §7.5.2 (p. 198).

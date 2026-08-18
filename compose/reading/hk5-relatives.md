@@ -1,35 +1,32 @@
 # Chapter 5 · Relative Clauses, Variables, and Variable Binding
 
-A restrictive relative clause is **just another intersective modifier**. Following
-Quine, *which is empty* denotes the very same property as the adjective *empty* — a
-characteristic function of type `⟨e,t⟩` — and so combines with the head noun by
-**Predicate Modification**, exactly as a PP or AP does. The whole point of this
-chapter is to show how a clause *containing a gap* comes to denote such a property.
+A restrictive relative clause is an intersective modifier: following Quine, *which
+is empty* denotes the same `⟨e,t⟩` property as *empty*, and combines with the head
+noun by PM. The chapter's problem is how a clause containing a gap comes to denote a
+property at all.
 
 ## 5.1 Relative clauses as predicates
 
-Take H&K's opening example (\ref{empty}). The DP *the house which is empty* has a head
-noun *house*, a relative clause *which is empty*, and the determiner *the*. If
-*which is empty* denotes `λx . empty(x)=1`, then PM gives *house which is empty* the
-value `λx . house(x)=1 and empty(x)=1`, and Functional Application feeds that to the
-partial *the* from Chapter 4. So *the house which is empty* is defined iff there is
-exactly one empty house, and denotes it; the whole sentence is then true iff that
-house is available.
+In (\ref{empty}), PM gives *house which is empty* the value "λx ∈ Dₑ . x is a house
+and x is empty" (p. 88), and ch. 4's partial *the* applies to that: defined iff
+exactly one empty house.
 
 \ex<empty> The house which is empty is available.
 \xe
 
-This already distinguishes restrictives from non-restrictives: *The house, which is
-empty, is available* presupposes a **unique house** (the *the* applies to *house*
-alone), whereas the restrictive only requires a unique empty house. We set
-non-restrictives aside.
+Restrictive vs non-restrictive: *The house, which is empty, is available*
+presupposes a unique **house**. Set aside (p. 88).
 
 ## 5.2 Inside the relative clause: traces and variables
 
-A relative clause has a relative pronoun at the top and a **trace** in the gap.
-A subject-gap clause *which `t` is empty* is easy; the hard case, already noted by
-Quine, is an **object** gap (\ref{abandon}), where the desired value is `λx . John
-abandoned x` — and that is **not** the value of any subtree.
+An object gap is the hard case: the target is "λx ∈ D . John abandoned x" (p. 90),
+and that is not the value of any subtree. The trace cannot pick up a referent
+(§5.2.1) — no individual-denoting constituent is available, and using the containing
+DP is circular. §5.2.2: the trace is a **variable**, interpreted relative to an
+assignment.
+
+**Traces and Pronouns.** Relative to an assignment `g`, a trace `t_i` (or pronoun)
+denotes `g(i)` — type `e` (p. 111).
 
 \ex<abandon> the picture which John abandoned t
 \xe
@@ -37,33 +34,10 @@ abandoned x` — and that is **not** the value of any subtree.
 \ex the movie which Mary saw t
 \xe
 
-The trace cannot simply pick up a referent (§5.2.1): there is no smaller
-individual-denoting constituent for it to inherit from, and trying to use the whole
-containing DP is viciously circular. The resolution (§5.2.2) is the **variable**.
-
-**Traces and Pronouns.** A trace `t_i` (and likewise a pronoun) denotes, relative to
-an assignment `g`, the individual `g(i)`. So `⟦t_1⟧^g = g(1)`, an individual of type
-`e` — a fine argument for the verb.
-
-With this, the clause body has a value *relative to an assignment*: writing `x` for
-`g(1)`, *John abandoned `t_1`* denotes `abandon(j,x)=1`.
-
 ## 5.2.3 Predicate Abstraction
 
-To turn that open clause into a property, H&K add a third composition rule. The
-moved relative pronoun (and its index) is **syncategorematic** — it has no value of
-its own but triggers abstraction over the indexed variable.
-
-**Predicate Abstraction (PA).** If α is a branching node whose daughters are a
-relative pronoun (or index) `i` and a node β, then `⟦α⟧^g = λx . ⟦β⟧^{g[i→x]}` — the
-function mapping each `x` to the value β has when `i` is assigned `x`.
-
-So PA over the object-gap clause gives `λx . abandon(j,x)=1`, type `⟨e,t⟩`, just what
-PM needs (see the derivation below). The relative pronoun *which* / *who* is then treated
-as semantically vacuous, passing the abstract up unchanged. *(A seam worth knowing:
-in §5.2.3 itself H&K make the pronoun **syncategorematic** — "not simply vacuous"
-(pp. 96–98); the vacuous-pronoun-plus-index-binder treatment we implement is their
-ch. 7 revision (p. 186), back-applied here so one rule set serves both chapters.)*
+**Predicate Abstraction (PA).** If α is a branching node whose daughters are an
+index `i` and a node β, then `⟦α⟧^g = λx . ⟦β⟧^{g[i→x]}`.
 
 \begin{derivation}
 [[John abandoned t1]]              = abandon(j,x)=1            : t
@@ -73,8 +47,14 @@ ch. 7 revision (p. 186), back-applied here so one rule set serves both chapters.
 [[picture which John abandoned]]   = λx . picture(x)=1 and abandon(j,x)=1   : <e,t>   (PM)
 \end{derivation}
 
-A subject gap works the same way; PA simply abstracts over a trace that happens to
-sit in subject position (as in the derivation just above).
+The relative pronoun passes the abstract up unchanged. Seam: in §5.2.3 itself the
+pronoun is syncategorematic — "not simply vacuous" (pp. 96–98); the vacuous-pronoun
+treatment implemented here is the ch. 7 revision (p. 186), back-applied so one rule
+set serves both chapters. The rule as stated above is likewise the book's final
+form (pp. 111–112, 186); §5.2.3's debut version abstracts directly over the
+pronoun's index.
+
+Subject gaps compose the same way:
 
 \begin{derivation}
 [[t1 is empty]]                = empty(x)=1            : t
@@ -85,13 +65,11 @@ sit in subject position (as in the derivation just above).
 
 ## 5.3 Multiple variables and such-that relatives
 
-The same rule scales to **multiple variables** and to *such that* relatives, where
-*such* (like the relative pronoun) is a vacuous binder of the clause-internal index
-(H&K's own *such that* cases: "the book such that Joe bought it", p. 107). The
-quantified examples in group C borrow ⟦every⟧/⟦no⟧ from §6.4 ahead (p. 146) — ch. 5
-itself stops at definite heads.
-Once indices, not particular words, drive PA, the rule generalizes to every variable
-binder in the grammar — the engine that Chapter 7 will reuse for quantifier raising.
+PA scales to multiple variables and to *such that* relatives — *such* binds the
+clause-internal index ("the book such that Joe bought it", p. 107). Once indices
+drive PA, the rule serves every binder in the grammar; ch. 7 reuses it for
+quantifier raising. Group C's quantified heads borrow ⟦every⟧/⟦no⟧ from §6.4
+(p. 146) — ch. 5 itself stops at definite heads.
 
 \ex<such> the picture such that Mary saw it *(our example, after pp. 90/107)*
 \xe

@@ -1,15 +1,15 @@
 # Chapter 12 · First Steps Towards an Intensional Semantics
 
-Everything so far has been **extensional**: a node's denotation is its extension —
-an individual, a truth value, a set. This chapter shows where that breaks down, and
-takes the first step into **intensions**, relativising interpretation to a possible
-world `w`. We write `⟦α⟧^w` for the extension of `α` **at `w`**.
+So far every denotation has been an extension. Ch. 12 shows where that breaks and
+relativises interpretation to a possible world: `⟦α⟧^w`.
 
 ## 12.1 Where the extensional semantics breaks down
 
-A core assumption has been that the denotation of a complex node depends only on the
-**extensions** of its parts — so two parts with the same extension are
-interchangeable. That assumption fails inside *believe*. Take H&K's pair (\ref{break}):
+If composition sees only extensions, co-extensional parts are interchangeable.
+Inside *believe* they are not. H&K's pair (\ref{break}): with Jan loyal and Dick
+deceitful in the actual world, `⟦Jan is loyal⟧^w = ⟦Dick is deceitful⟧^w = 1`, yet
+Mary can believe one report and not the other (pp. 299–300). *Believe* is an opaque
+context: what matters is which worlds the complement is true in.
 
 \ex<break> Mary believes Jan is loyal.
 \xe
@@ -17,22 +17,16 @@ interchangeable. That assumption fails inside *believe*. Take H&K's pair (\ref{b
 \ex Mary believes Dick is deceitful.
 \xe
 
-Suppose in the actual world Jan is loyal and Dick is deceitful, so `⟦Jan is
-loyal⟧^w = ⟦Dick is deceitful⟧^w = 1` — the two embedded sentences have the **same
-extension**. Extensional FA would then predict the two belief reports have the same
-truth value. But Mary can believe one without the other: *believe* creates a
-**non-extensional** (opaque) context. What the verb cares about is not the embedded
-clause's truth value but **which worlds it is true in** — its *intension*.
-
 ## 12.2 What to do: intensions
 
-The **intension** of `α` is the function from worlds to its extension at each
-world: `λw . ⟦α⟧^w`. For a sentence, that is a **proposition** — type `⟨s,t⟩`, a
-function from worlds to truth values. *(Engine note: we treat `s` as a type of its
-own so worlds can be arguments; H&K's official clause only builds ⟨s,a⟩ function
-types (p. 303 (1d)) — there is no bare Dₛ in the book.)* The extension stays world-relative,
-so every predicate now carries the evaluation world; in our metalanguage we write it
-as an argument, `loyal(w,x)`, the formalisation of `⟦loyal⟧^w = λx . x is loyal in w`.
+The intension of `α` is `λw . ⟦α⟧^w`; for a sentence, a **proposition**, type
+`⟨s,t⟩` (p. 307). Names are rigid: `⟦Jan⟧^w = Jan` at every `w` (p. 304). Temporal
+dependence is set aside (p. 302).
+
+Engine notes: H&K's official types only build ⟨s,a⟩ (p. 303 (1d)) — no bare `Dₛ`;
+we treat `s` as a type so worlds can be arguments, writing the world inside the
+predicate: `loyal(w,x)` for `⟦loyal⟧^w = λx . x is loyal in w` (p. 307). The matrix
+world prints as `w`, shifted worlds as `w'`.
 
 \begin{derivation}
 [[Jan is loyal]]^w   = loyal(w,jn)=1            : t
@@ -41,55 +35,36 @@ as an argument, `loyal(w,x)`, the formalisation of `⟦loyal⟧^w = λx . x is l
 
 ## 12.3 An intensional semantics
 
-**Attitude verbs** denote functions on propositions. Following Hintikka, *believe*
-quantifies over the worlds **compatible with what the subject believes** in `w`
-(the subject's *doxastic alternatives*, `Dox`):
+Following Hintikka, ⟦believe⟧ quantifies over the subject's belief-worlds — the
+book's entry: "λp ∈ D⟨s,t⟩ . [λx ∈ D . for all w′ compatible with what x believes
+in w, p(w′) = 1]" (p. 306 (7)); type `⟨⟨s,t⟩,⟨e,t⟩⟩`. In the bundle:
+`λp . λx . ∀w'[Dox(w)(x)(w') → p(w')=1]`.
 
-\begin{derivation}
-[[believes]]^w = λp . λx . ∀w'[ x's belief-worlds in w include w' → p(w')=1 ]   : <<s,t>,<e,t>>
-\end{derivation}
+The verb wants a proposition; the embedded clause supplies `t`. One new rule
+(p. 308 (9)):
 
-written `λp . λx . ∀w'[Dox(w)(x)(w') → p(w')=1]`. The verb wants a **proposition**
-`⟨s,t⟩`, but the embedded clause supplies only a truth value `⟨t⟩` — so FA is stuck.
-H&K add **one** composition rule to bridge the gap:
+**Intensional Functional Application (IFA).** If α is a branching node with
+daughters β and γ, and `⟦β⟧^w` is a function whose domain contains
+`λw' . ⟦γ⟧^w'`, then `⟦α⟧^w = ⟦β⟧^w(λw' . ⟦γ⟧^w')`.
 
-**Intensional Functional Application (IFA).** If α is a branching node with daughters
-β and γ, and `⟦β⟧^w` is a function whose domain contains `λw' . ⟦γ⟧^w'`, then
-`⟦α⟧^w = ⟦β⟧^w(λw' . ⟦γ⟧^w')`.
-
-IFA feeds the verb the **intension** of its complement — formed on the spot by
-abstracting the embedded clause over the world `w'`. Note that this is a *composition
-rule*, not an operator in the tree: unlike Montague's `^`/`˅` operators, H&K's
-system builds intension-formation into the composition rule itself (their endnote
-credits a rule of Bittner's as an analogue; Montague is credited for the type
-system, p. 303). Applying it to *Mary believes Jan is
-loyal* (\ref{break}):
+A composition rule, not an operator in the tree — H&K's endnote credits a rule of
+Bittner's as an analogue; Montague is credited for the type system (p. 303).
 
 \begin{derivation}
 [[believes [Jan is loyal]]]^w  = [[believes]]^w(λw' . loyal(w',jn)=1)            (IFA)
 [[Mary believes Jan is loyal]]^w = ∀w'[Dox(w)(m)(w') → loyal(w',jn)=1]           : t
 \end{derivation}
 
-The report is true at `w` iff Jan is loyal in **every** world compatible with what
-Mary believes in `w`. Because the embedded clause is now evaluated at the belief
-worlds `w'`, swapping in *Dick is deceitful* — true at the actual `w` but not
-necessarily at Mary's belief worlds — gives a **different** result. The opacity is
-captured.
+True at `w` iff Jan is loyal in every world compatible with Mary's beliefs in `w`.
+The complement is evaluated at the belief-worlds `w'`, not at `w` — swapping in
+*Dick is deceitful* changes the result. Opacity captured (pp. 308–309).
 
 \begin{derivation}
 [[Mary believes Dick is deceitful]]^w = ∀w'[Dox(w)(m)(w') → deceitful(w',d)=1]   : t
 \end{derivation}
 
-> **Notation note.** H&K write the world as a **superscript on the bracket**,
-> `⟦α⟧^w`, and keep the metalanguage extensional. COMPOSE threads the same world as
-> an explicit parameter `w` inside predicates (`loyal(w,x)` for `⟦loyal⟧^w(x)`), and
-> composes intensions with IFA — H&K's actual rule, *not* Montague's `^`/`˅`
-> operators. The matrix world prints as `w`, shifted worlds as `w'`.
-
-> **Beyond these first steps (§12.4, "Limitations and prospects").** H&K's actual
-> closing worry is Carnap's: propositions-as-world-sets are too **coarse** for
-> attitudes (Bigelow's pair of sentences true in exactly the same worlds yet not
-> believed together, p. 310) — pointing toward structured meanings. Temporal
-> dependence is set aside back in §12.2 (p. 302), and de re vs de dicto is the
-> book's own Exercise 1 of §12.3 ("Mary hopes that a plumber is available",
-> p. 309). We stop where they do.
+> **Beyond these first steps (§12.4, "Limitations and prospects").** Carnap's
+> objection: propositions-as-world-sets are too coarse for attitudes — Bigelow's
+> pair, true in exactly the same worlds yet not believed together (p. 310);
+> structured meanings beckon. De re vs de dicto is the book's Exercise 1 of §12.3
+> ("Mary hopes that a plumber is available", p. 309). We stop where H&K do.
