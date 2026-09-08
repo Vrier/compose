@@ -1,10 +1,18 @@
 # Chapter 7 · Pronouns and Binding
 
-A pronoun can get its value in two ways: *freely*, from the context of utterance, or *bound*, via a quantifier antecedent. Both are handled compositionally once pronouns are treated as **indexed** expressions.
+The Pronouns and Traces Rule covers pronouns as well as traces: "If α is an
+indexed trace or pronoun, αᵢ ↝ xᵢ" (p. 286) — so he₇ ↝ x₇ (p. 287). §7.3.3
+presents the two ways the variable can end up interpreted: free, with a value
+from the discourse context, or bound by a lambda operator.
 
-## 7.5 Free pronouns
+## 7.3.3.1 Referential uses of pronouns
 
-A **free pronoun** denotes a contextually supplied individual of type e. Its denotation is given directly by the assignment: *he₁* denotes x₁, the value assigned to index 1. Free pronouns are ordinary type-e terms; they compose by Function Application just like proper names.
+Pointing at someone and saying *She is suspicious* ((36), p. 306) makes she
+refer to that person — a DEICTIC use; with a linguistic antecedent instead,
+the use is ANAPHORIC (p. 307). Either way "the pronoun functions as a free
+variable whose value is supplied by the discourse context — by pointing,
+visual salience, or prior mention" (p. 307). A free pronoun is an ordinary
+type-e term and composes by FA like a name.
 
 \ex<free-pron> He is a king.
 \xe
@@ -22,13 +30,24 @@ A **free pronoun** denotes a contextually supplied individual of type e. Its den
 [[He_1 is a king]]    = king(x_1)                      : t
 \end{derivation}
 
-The proposition *king(x₁)* is true or false depending on who x₁ is assigned to — the pronoun is a free variable whose value is fixed by context, not by the grammar.
+The variable x₁ stays free, so the truth of king(x₁) depends on what the
+assignment supplies; the discourse "should determine an assignment function
+that provides a value" for it (p. 314).
 
-Two pronouns with different indices are always disjoint in interpretation. *He₁* and *he₂* can never corefer within a single assignment.
+## 7.3.3.2 Bound pronouns
 
-## 7.5.1 Bound pronouns
+For *No woman blamed herself* ((38), p. 307) there is no answer to "who does
+the pronoun refer to?" — and calling no woman and herself coreferential "is
+strictly speaking a misuse of the term 'coreferential', because coreference
+implies reference" (p. 307). Instead the pronoun is a bound variable: (38)
+translates as ¬∃x.[woman(x) ∧ blamed(x,x)] ((41), p. 307).
 
-A **bound pronoun** is co-indexed with a quantifier. The binding is established by **Predicate Abstraction** over the shared index: the quantifier raises (or is interpreted as raising) via QR, and the LP node at its landing site abstracts over the index that the pronoun also carries.
+The binding mechanism is QR plus PA. A reflexive "comes with an index that
+determines which variable it maps to in the representation language, like
+other pronouns"; its antecedent undergoes QR, and "the trace that it leaves
+behind can be coindexed with the reflexive pronoun" ((46), pp. 312–313). In
+(\ref{bound-pron}) the subject QP raises, its trace and themselves₁ share
+index 1, and one PA step binds both:
 
 \ex<bound-pron> Every dwarf trusts themself.
 \xe
@@ -39,8 +58,6 @@ A **bound pronoun** is co-indexed with a quantifier. The binding is established 
 \ex Some wizard who loves Frodo fears himself.
 \xe
 
-For *Every dwarf trusts themself*, the subject QP and the reflexive *themselves₁* both carry index 1. QR raises the subject, leaving a trace t₁; the reflexive in object position is also x₁. PA over index 1 binds both simultaneously:
-
 \begin{derivation}
 [[trusts themselves_1]]     = lambda x.trust(x,x_1)         : <e,t>
 [[t_1 trusts themselves_1]] = trust(x_1,x_1)                : t
@@ -48,8 +65,6 @@ For *Every dwarf trusts themself*, the subject QP and the reflexive *themselves�
 [[every dwarf]]             = lambda Y.forall x[dwarf(x) -> Y(x)] : <<e,t>,t>
 [[every dwarf trusts themself]] = forall x[dwarf(x) -> trust(x,x)] : t
 \end{derivation}
-
-After PA, the pronoun index is **bound**: every individual that falls in the restrictor is related to itself. The reflexive reading follows without any extra axiom — it is just co-indexation made compositional.
 
 \begin{forest}
 [S{forall x[dwarf(x) -> trust(x,x)]}
@@ -64,6 +79,10 @@ After PA, the pronoun index is **bound**: every individual that falls in the res
         [DP{x_1} themselves_1]]]]]
 \end{forest}
 
-Bound pronouns in relative clauses work the same way. *A ranger who doesn't trust himself* embeds a relative clause whose object gap and reflexive share an index; PA inside the relative CP produces λx.¬trust(x,x).[^refl]
+Reflexives inside relative clauses work the same way: in *ranger who doesn't
+trust himself* the relative's trace and himself₁ share index 1, and PA inside
+the CP yields λx.¬trust(x,x).[^refl]
 
-[^refl]: In this system *himself₁* and trace t₁ are both x₁ — the same individual constant abstracted over by LP. The PA rule therefore captures coreference and binding in a single step.
+[^refl]: Trace and reflexive both translate as x₁ by the Pronouns and Traces
+Rule (p. 286), which is why a single PA step binds the two occurrences at
+once.

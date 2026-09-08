@@ -1,7 +1,7 @@
 {
   "compose": 1,
   "id": "ch7-relcl",
-  "title": "Relative Clauses (§7.3)",
+  "title": "Relative Clauses (§7.3.1)",
   "domain": {
     "multiLetterNames": true,
     "constants": {
@@ -311,7 +311,7 @@
           "sentence": "hobbit who Gandalf loves.",
           "tree": "[.NP [.NP hobbit ] [.CP [.C who ] [.LP 1 [.S [.DP Gandalf ] [.VP [.V loves ] [.DP t1 ] ] ] ] ] ]",
           "reading": {
-            "section": "7.3.2"
+            "section": "7.3.1"
           },
           "targets": [
             "λx.hobbit(x) ∧ love(g, x)"
@@ -322,7 +322,7 @@
           "sentence": "human who Strider doesn't trust.",
           "tree": "[.NP [.NP human ] [.CP [.C who ] [.LP 1 [.S [.DP Strider ] [.VP [.Neg doesnt ] [.VP [.V trusts ] [.DP t1 ] ] ] ] ] ] ]",
           "reading": {
-            "section": "7.3.2"
+            "section": "7.3.1"
           },
           "targets": [
             "λx.human(x) ∧ ¬trust(st, x)"
@@ -333,7 +333,7 @@
           "sentence": "ranger who Frodo is with.",
           "tree": "[.NP [.NP ranger ] [.CP [.C who ] [.LP 1 [.S [.DP Frodo ] [.VP [.V is ] [.PP [.P with ] [.DP t1 ] ] ] ] ] ] ]",
           "reading": {
-            "section": "7.3.2"
+            "section": "7.3.1"
           },
           "targets": [
             "λx.ranger(x) ∧ with(f, x)"
@@ -351,7 +351,7 @@
           "sentence": "Gandalf is a wizard who is wise.",
           "tree": "[.S [.DP Gandalf ] [.VP [.V is ] [.NP [.D a ] [.NP [.NP wizard ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.V is ] [.AP wise ] ] ] ] ] ] ] ] ]",
           "reading": {
-            "section": "7.3.2"
+            "section": "7.3.1"
           },
           "targets": [
             "wizard(g) ∧ wise(g)"
@@ -362,7 +362,7 @@
           "sentence": "Every hobbit who drinks sings.",
           "tree": "[.S [.DP [.D every ] [.NP [.NP hobbit ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP drinks ] ] ] ] ] ] [.VP sings ] ]",
           "reading": {
-            "section": "7.3.2"
+            "section": "7.3.1"
           },
           "targets": [
             "∀x.hobbit(x) ∧ drink(x) → sing(x)"
@@ -373,7 +373,7 @@
           "sentence": "Some wise wizard who fears Sauron visits Saruman.",
           "tree": "[.S [.DP [.D some ] [.NP [.AP wise ] [.NP [.NP wizard ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.V fears ] [.DP Sauron ] ] ] ] ] ] ] ] [.VP [.V visits ] [.DP Saruman ] ] ]",
           "reading": {
-            "section": "7.3.2"
+            "section": "7.3.1"
           },
           "targets": [
             "∃x.wise(x) ∧ wizard(x) ∧ fear(x, n) ∧ visit(x, sr)"
@@ -386,6 +386,6 @@
   ],
   "reading": {
     "format": "latex",
-    "markdown": "# Chapter 7 · Relative Clauses\n\nA relative clause like *who drinks* restricts the set of individuals denoted by the head noun. Compositionally, the clause must produce a predicate of type ⟨e,t⟩ so it can combine with the noun by **Predicate Modification**. The mechanism is **Predicate Abstraction**, which turns a clause containing a gap into a lambda-abstract.\n\n## 7.3 Predicate Abstraction\n\nA relative clause leaves a **trace** — a silent pronoun — in the gap position. The trace is co-indexed with the relative pronoun. A **λ-phrase node** (LP) abstracts over the index, turning the full clause denotation into a function:\n\n**Predicate Abstraction (PA).** ⟦[LP n φ]⟧ = λx. ⟦φ⟧ where every free occurrence of trace t_n in φ is replaced by x.\n\nThe relative pronoun *who* is an identity function λX.X — it passes the LP denotation up unchanged.\n\n## 7.3.1 Subject gap relative clauses\n\nWhen the trace is in subject position, the S-internal predicate is already a one-place property once PA is applied. The resulting CP combines with the head noun by PM.\n\n\\ex<subj-gap> wizard who drinks\n\\xe\n\n\\ex hobbit who is brave\n\\xe\n\n\\ex wizard who doesn't fear Sauron\n\\xe\n\n\\begin{derivation}\n[[drinks]]               = lambda x.drink(x)                        : <e,t>\n[[LP 1 [S t1 drinks]]]   = lambda x.drink(x)                        : <e,t>   (PA)\n[[who]]                  = lambda X.X                                : <<e,t>,<e,t>>\n[[who drinks]]           = lambda x.drink(x)                        : <e,t>\n[[wizard]]               = lambda x.wizard(x)                       : <e,t>\n[[wizard who drinks]]    = lambda x.wizard(x) /\\ drink(x)           : <e,t>   (PM)\n\\end{derivation}\n\n## 7.3.2 Object gap relative clauses\n\nWhen the trace is in **object position**, the clause contains a complete subject and a VP with the trace filling the object slot. PA abstracts over the trace index, producing a predicate that identifies which individuals stand in the relevant relation to the subject.\n\n\\ex<obj-gap> hobbit who Gandalf loves\n\\xe\n\n\\ex human who Strider doesn't trust\n\\xe\n\n\\ex ranger who Frodo is with\n\\xe\n\n\\begin{derivation}\n[[loves]]                         = lambda y.lambda x.love(x,y)          : <e,<e,t>>\n[[loves t1]]                      = lambda x.love(x,t_1)                 : <e,t>\n[[Gandalf loves t1]]              = love(g,t_1)                          : t\n[[LP 1 [S Gandalf loves t1]]]     = lambda x.love(g,x)                   : <e,t>   (PA)\n[[who [LP 1 ...]]]                = lambda x.love(g,x)                   : <e,t>\n[[hobbit]]                        = lambda x.hobbit(x)                   : <e,t>\n[[hobbit who Gandalf loves]]      = lambda x.hobbit(x) /\\ love(g,x)      : <e,t>   (PM)\n\\end{derivation}\n\n\\begin{forest}\n[NP{lambda x.hobbit(x) /\\ love(g,x)}\n  [NP{lambda x.hobbit(x)} hobbit]\n  [CP{lambda x.love(g,x)}\n    [C{lambda X.X} who]\n    [LP{lambda x.love(g,x)} 1\n      [S{love(g,t_1)}\n        [DP{g} Gandalf]\n        [VP{lambda x.love(x,t_1)}\n          [V{lambda y.lambda x.love(x,y)} loves]\n          [DP{t_1} t_1]]]]]]\n\\end{forest}\n\nThe full-sentence exercises in Group C embed relative clauses inside DPs. A restricted quantifier like *every hobbit who drinks* has the restrictor λx.[hobbit(x) ∧ drink(x)] built by PM inside the NP, then the determiner *every* applies as usual:\n\n\\begin{derivation}\n[[hobbit who drinks]]          = lambda x.hobbit(x) /\\ drink(x)                 : <e,t>\n[[every hobbit who drinks]]    = lambda Y.forall x[(hobbit(x) /\\ drink(x)) -> Y(x)] : <<e,t>,t>\n[[every hobbit who drinks sings]] = forall x[(hobbit(x) /\\ drink(x)) -> sing(x)] : t\n\\end{derivation}"
+    "markdown": "# Chapter 7 · Relative Clauses\n\nA relative clause restricts the head noun the way an adjective does: both\n*reasonable* and *which is reasonable* \"serve to restrict the set of doubts\nunder consideration to a subset that are reasonable\" (p. 281). If the clause\ndenotes type ⟨e,t⟩, it combines with the noun by Predicate Modification. The\nmachinery that gets it there is §7.3's.\n\n## 7.3 Variable binding at LF\n\nThe book's three assumptions (p. 285): \"Relative clauses are formed through a\nmovement operation that leaves a trace\"; \"Traces are translated as variables\";\n\"A relative clause is interpreted by introducing a lambda operator that binds\nthis variable\". The moved wh- word and its trace share an INDEX: \"It is the\njob of syntax, rather than semantics, to ensure that all relative pronouns are\nco-indexed with their traces\" (p. 283). Traces translate by rule:\n\n**Pronouns and Traces Rule.** \"If α is an indexed trace or pronoun, αᵢ ↝ xᵢ\"\n(p. 286).\n\nThe lambda operator comes from the second new composition rule:\n\n**Predicate Abstraction (PA).** \"If γ is a syntax tree whose only two subtrees\nare αᵢ and β\", αᵢ \"is a node carrying the index i and the feature WH\", and\nβ ↝ β′, \"then γ ↝ λxᵢ.β′ where the index on αᵢ and xᵢ is the same\" (p. 288).\n\nIn the book's trees the indexed wh- word itself triggers PA at CP, the C head\nis a silent that ↝ λp.p of type ⟨t,t⟩ (p. 287), and relative pronouns carry no\ndenotation at all: \"relative pronouns don't have a denotation of their own,\neven though their presence affects the denotation of the constituents that\ncontain them. An expression like this is called SYNCATEGOREMATIC\" (p. 291).\nEngine note: this set spells the same division of labor with an LP node —\nwho's sister [LP 1 [S ...]] hosts PA over index 1, and who ↝ λX.X passes the\nresult up unchanged.\n\n## 7.3.1 Relative clauses\n\n### Subject gaps\n\nIn *which is reasonable* the trace sits in subject position ((16), p. 285);\nthe words come out in pronounced order, so the movement is \"STRING-VACUOUS\"\n(p. 285). PA turns the S denotation into the one-place predicate, and PM\nconjoins it with the noun.\n\n\\ex<subj-gap> wizard who drinks\n\\xe\n\n\\ex hobbit who is brave\n\\xe\n\n\\ex wizard who doesn't fear Sauron\n\\xe\n\n\\begin{derivation}\n[[drinks]]               = lambda x.drink(x)                        : <e,t>\n[[LP 1 [S t1 drinks]]]   = lambda x.drink(x)                        : <e,t>   (PA)\n[[who]]                  = lambda X.X                                : <<e,t>,<e,t>>\n[[who drinks]]           = lambda x.drink(x)                        : <e,t>\n[[wizard]]               = lambda x.wizard(x)                       : <e,t>\n[[wizard who drinks]]    = lambda x.wizard(x) /\\ drink(x)           : <e,t>   (PM)\n\\end{derivation}\n\n### Object gaps\n\nThe book's core case is *woman who Blake loves* ((15), p. 281), target\nλx.loves(b,x): the subject is complete, the trace fills the object slot, and\nPA over the trace's index yields the property of being loved by Blake ((17),\np. 289).\n\n\\ex<obj-gap> hobbit who Gandalf loves\n\\xe\n\n\\ex human who Strider doesn't trust\n\\xe\n\n\\ex ranger who Frodo is with\n\\xe\n\n\\begin{derivation}\n[[loves]]                         = lambda y.lambda x.love(x,y)          : <e,<e,t>>\n[[loves t1]]                      = lambda x.love(x,t_1)                 : <e,t>\n[[Gandalf loves t1]]              = love(g,t_1)                          : t\n[[LP 1 [S Gandalf loves t1]]]     = lambda x.love(g,x)                   : <e,t>   (PA)\n[[who [LP 1 ...]]]                = lambda x.love(g,x)                   : <e,t>\n[[hobbit]]                        = lambda x.hobbit(x)                   : <e,t>\n[[hobbit who Gandalf loves]]      = lambda x.hobbit(x) /\\ love(g,x)      : <e,t>   (PM)\n\\end{derivation}\n\n\\begin{forest}\n[NP{lambda x.hobbit(x) /\\ love(g,x)}\n  [NP{lambda x.hobbit(x)} hobbit]\n  [CP{lambda x.love(g,x)}\n    [C{lambda X.X} who]\n    [LP{lambda x.love(g,x)} 1\n      [S{love(g,t_1)}\n        [DP{g} Gandalf]\n        [VP{lambda x.love(x,t_1)}\n          [V{lambda y.lambda x.love(x,y)} loves]\n          [DP{t_1} t_1]]]]]]\n\\end{forest}\n\n### Relative clauses inside full sentences\n\nThe book embeds the modified NP under the definite article ((19)–(22),\npp. 292–294). Group C stays with the fragment's identity a/is and the ch. 6\ndeterminers — the PM-built restrictor feeds every ↝ λPλQ.∀x.[P(x) → Q(x)]\n(p. 254) as usual:\n\n\\begin{derivation}\n[[hobbit who drinks]]          = lambda x.hobbit(x) /\\ drink(x)                 : <e,t>\n[[every hobbit who drinks]]    = lambda Y.forall x[(hobbit(x) /\\ drink(x)) -> Y(x)] : <<e,t>,t>\n[[every hobbit who drinks sings]] = forall x[(hobbit(x) /\\ drink(x)) -> sing(x)] : t\n\\end{derivation}"
   }
 }

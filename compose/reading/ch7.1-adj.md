@@ -1,12 +1,30 @@
 # Chapter 7 · Predicate Modification
 
-Chapter 6 established **Function Application** as the core composition rule. Chapter 7 adds a second rule — **Predicate Modification** — for adjective–noun combinations, and widens the type inventory to include predicate modifiers ⟨⟨e,t⟩,⟨e,t⟩⟩.
+Ch. 7 ("Beyond Function Application") extends the ch. 6 fragment: "we will add
+new composition rules: Predicate Modification, Predicate Abstraction, and the
+Pronouns and Traces rule" (p. 275). This set uses the first; §7.1 sorts
+adjectives by their entailments, §7.2 states the rule.
 
 ## 7.2 Predicate Modification
 
-**Predicate Modification (PM).** If two sisters α and β are both type ⟨e,t⟩, their mother denotes λx.[α(x) ∧ β(x)].
+An adjective and a noun are ⟨e,t⟩ sisters — a TYPE MISMATCH for FA: "Type
+mismatches occur when two sister nodes in a tree have denotations that are not
+of the right types for any composition rule to combine them" (p. 278). The new
+rule conjoins instead:
 
-An *intersective* adjective is a plain one-place predicate. It shares type ⟨e,t⟩ with the noun, so the two sisters combine by PM. The determiner *a/an* and copula *is/are* are identity functions that pass their sister's denotation straight up.
+**Predicate Modification (PM).** "If γ is a tree whose only two subtrees are α
+and β", α ↝ α′, β ↝ β′, and "α′ and β′ are of type ⟨e,t⟩", then "γ ↝
+λu.[α′(u) ∧ β′(u)] where u is a variable of type e that does not occur free in
+α′ or β′" (p. 279). "(Intersective Modification would perhaps be a more
+fitting name.)" (p. 279)
+
+An intersective adjective is a plain ⟨e,t⟩ predicate: such adjectives "denote
+sets, and the noun phrase they modify denotes the intersection of those two
+sets" (p. 276). The book's case is *reasonable doubt* ((13), p. 280). The
+copula and article are identity functions — is ↝ λP.P (p. 253; typed
+⟨⟨e,t⟩,⟨e,t⟩⟩ at (18), p. 290) and a ↝ λP.P, listed "in its predicative use,
+as in Alex is a singer" (p. 254) — so the conjoined predicate passes up
+unchanged.
 
 \ex<pm-ex> Pippin is a mischievous hobbit.
 \xe
@@ -40,9 +58,10 @@ An *intersective* adjective is a plain one-place predicate. It shares type ⟨e,
         [NP{lambda x.hobbit(x)} hobbit]]]]]
 \end{forest}
 
-Negation applies after the VP is assembled: `⟦not⟧` = λP.λx.¬P(x), so *is not a mundane creature* = λx.¬[mundane(x) ∧ creature(x)].
+Negation is the fragment's predicate negation, not ↝ λPλx.¬P(x) (Neg, p. 255):
+*is not a mundane creature* = λx.¬[mundane(x) ∧ creature(x)].
 
-Multiple intersective adjectives stack by repeated PM. Each AP sister adds one conjunct (\ref{stack}):
+Stacked adjectives iterate PM — each AP sister adds one conjunct (\ref{stack}):
 
 \ex<stack> Tom is a mischievous magical creature.
 \xe
@@ -57,7 +76,9 @@ Multiple intersective adjectives stack by repeated PM. Each AP sister adds one c
 [[mischievous magical creature]] = lambda x.mischievous(x) /\ magical(x) /\ creature(x) : <e,t>
 \end{derivation}
 
-When the subject is a quantifier, PM assembles the predicate first; then the determiner applies by FA:
+Quantified subjects use the ch. 6 determiners — every ↝ λPλQ.∀x.[P(x) → Q(x)],
+no ↝ λPλQ.¬∃x.[P(x) ∧ Q(x)] (p. 254). PM builds both restrictor and scope
+predicates; FA does the rest:
 
 \begin{derivation}
 [[every]]                               = lambda X.lambda Y.forall x[X(x) -> Y(x)]              : <<e,t>,<<e,t>,t>>
@@ -67,9 +88,23 @@ When the subject is a quantifier, PM assembles the predicate first; then the det
 [[Every traveling hobbit is a brave creature]] = forall x[(traveling(x) /\ hobbit(x)) -> (brave(x) /\ creature(x))] : t
 \end{derivation}
 
-## 7.2.1 Non-intersective adjectives
+## 7.1 Non-intersective adjectives
 
-*Alleged* and *former* are not intersective: an alleged king need not be a king; a former hobbit is no longer one. These adjectives are **predicate modifiers** of type ⟨⟨e,t⟩,⟨e,t⟩⟩ — they take a property and return a (possibly weaker) property. Because one daughter is ⟨⟨e,t⟩,⟨e,t⟩⟩ and the other ⟨e,t⟩, they combine by **FA** — PM would fail since the daughters are not the same type.
+§7.1 classifies adjectives by their entailment patterns. SUBSECTIVE
+adjectives fail the cross-predicate inference: "outstanding physicist denotes
+a subset of the set of physicists, but not their intersection with any fixed
+set of 'outstanding things'" (p. 276). "Yet other adjectives are neither
+intersective nor subsective. This includes adjectives like alleged, former,
+wannabe, counterfeit, and fake" (p. 277): John is an alleged murderer does not
+entail John is a murderer ((8), p. 277).
+
+The analysis: "Subsective adjectives like outstanding and non-subsective
+adjectives like alleged can be given translations of type ⟨⟨e,t⟩,⟨e,t⟩⟩ and
+analyzed via Function Application rather than Predicate Modification; the
+subsectivity entailment is then encoded as a MEANING POSTULATE. We do not
+develop these cases formally here" (p. 280). The set's entries spell that type
+out: alleged ↝ λF.λx.alleged(F)(x). PM cannot apply — the daughters are not
+both ⟨e,t⟩.
 
 \ex<nonintersect> Strider is an alleged king.
 \xe
@@ -92,6 +127,9 @@ When the subject is a quantifier, PM assembles the predicate first; then the det
 [[Bilbo is a former traveling hobbit]] = former(lambda x.traveling(x) /\ hobbit(x))(bi) : t
 \end{derivation}
 
-The notation `alleged(king)(x)` treats *alleged* as mapping the property `king` to a new property, then applying to an individual. No entailment that the individual satisfies `king` is triggered.[^nonintersect]
+`alleged(king)(x)` maps the property `king` to a new property and applies it —
+no entailment that x satisfies `king` follows.[^nonintersect]
 
-[^nonintersect]: *Former* works the same way but adds a temporal flavour: `former(P)(x)` means x once had property P but no longer does. Both predicates are opaque to their nominal argument.
+[^nonintersect]: A subclass of the non-subsective adjectives — "including
+counterfeit, fake, and perhaps former" — is PRIVATIVE: "they seemingly map
+sets to disjoint sets, so that no fake gun is a real gun" (p. 277, fn. 2).

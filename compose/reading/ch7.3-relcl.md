@@ -1,18 +1,46 @@
 # Chapter 7 · Relative Clauses
 
-A relative clause like *who drinks* restricts the set of individuals denoted by the head noun. Compositionally, the clause must produce a predicate of type ⟨e,t⟩ so it can combine with the noun by **Predicate Modification**. The mechanism is **Predicate Abstraction**, which turns a clause containing a gap into a lambda-abstract.
+A relative clause restricts the head noun the way an adjective does: both
+*reasonable* and *which is reasonable* "serve to restrict the set of doubts
+under consideration to a subset that are reasonable" (p. 281). If the clause
+denotes type ⟨e,t⟩, it combines with the noun by Predicate Modification. The
+machinery that gets it there is §7.3's.
 
-## 7.3 Predicate Abstraction
+## 7.3 Variable binding at LF
 
-A relative clause leaves a **trace** — a silent pronoun — in the gap position. The trace is co-indexed with the relative pronoun. A **λ-phrase node** (LP) abstracts over the index, turning the full clause denotation into a function:
+The book's three assumptions (p. 285): "Relative clauses are formed through a
+movement operation that leaves a trace"; "Traces are translated as variables";
+"A relative clause is interpreted by introducing a lambda operator that binds
+this variable". The moved wh- word and its trace share an INDEX: "It is the
+job of syntax, rather than semantics, to ensure that all relative pronouns are
+co-indexed with their traces" (p. 283). Traces translate by rule:
 
-**Predicate Abstraction (PA).** ⟦[LP n φ]⟧ = λx. ⟦φ⟧ where every free occurrence of trace t_n in φ is replaced by x.
+**Pronouns and Traces Rule.** "If α is an indexed trace or pronoun, αᵢ ↝ xᵢ"
+(p. 286).
 
-The relative pronoun *who* is an identity function λX.X — it passes the LP denotation up unchanged.
+The lambda operator comes from the second new composition rule:
 
-## 7.3.1 Subject gap relative clauses
+**Predicate Abstraction (PA).** "If γ is a syntax tree whose only two subtrees
+are αᵢ and β", αᵢ "is a node carrying the index i and the feature WH", and
+β ↝ β′, "then γ ↝ λxᵢ.β′ where the index on αᵢ and xᵢ is the same" (p. 288).
 
-When the trace is in subject position, the S-internal predicate is already a one-place property once PA is applied. The resulting CP combines with the head noun by PM.
+In the book's trees the indexed wh- word itself triggers PA at CP, the C head
+is a silent that ↝ λp.p of type ⟨t,t⟩ (p. 287), and relative pronouns carry no
+denotation at all: "relative pronouns don't have a denotation of their own,
+even though their presence affects the denotation of the constituents that
+contain them. An expression like this is called SYNCATEGOREMATIC" (p. 291).
+Engine note: this set spells the same division of labor with an LP node —
+who's sister [LP 1 [S ...]] hosts PA over index 1, and who ↝ λX.X passes the
+result up unchanged.
+
+## 7.3.1 Relative clauses
+
+### Subject gaps
+
+In *which is reasonable* the trace sits in subject position ((16), p. 285);
+the words come out in pronounced order, so the movement is "STRING-VACUOUS"
+(p. 285). PA turns the S denotation into the one-place predicate, and PM
+conjoins it with the noun.
 
 \ex<subj-gap> wizard who drinks
 \xe
@@ -32,9 +60,12 @@ When the trace is in subject position, the S-internal predicate is already a one
 [[wizard who drinks]]    = lambda x.wizard(x) /\ drink(x)           : <e,t>   (PM)
 \end{derivation}
 
-## 7.3.2 Object gap relative clauses
+### Object gaps
 
-When the trace is in **object position**, the clause contains a complete subject and a VP with the trace filling the object slot. PA abstracts over the trace index, producing a predicate that identifies which individuals stand in the relevant relation to the subject.
+The book's core case is *woman who Blake loves* ((15), p. 281), target
+λx.loves(b,x): the subject is complete, the trace fills the object slot, and
+PA over the trace's index yields the property of being loved by Blake ((17),
+p. 289).
 
 \ex<obj-gap> hobbit who Gandalf loves
 \xe
@@ -68,7 +99,12 @@ When the trace is in **object position**, the clause contains a complete subject
           [DP{t_1} t_1]]]]]]
 \end{forest}
 
-The full-sentence exercises in Group C embed relative clauses inside DPs. A restricted quantifier like *every hobbit who drinks* has the restrictor λx.[hobbit(x) ∧ drink(x)] built by PM inside the NP, then the determiner *every* applies as usual:
+### Relative clauses inside full sentences
+
+The book embeds the modified NP under the definite article ((19)–(22),
+pp. 292–294). Group C stays with the fragment's identity a/is and the ch. 6
+determiners — the PM-built restrictor feeds every ↝ λPλQ.∀x.[P(x) → Q(x)]
+(p. 254) as usual:
 
 \begin{derivation}
 [[hobbit who drinks]]          = lambda x.hobbit(x) /\ drink(x)                 : <e,t>

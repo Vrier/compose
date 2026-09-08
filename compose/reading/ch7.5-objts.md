@@ -1,14 +1,26 @@
 # Chapter 7 · Object and Subject Type-Shifting
 
-An alternative to Quantifier Raising handles object quantifiers without syntactic movement: two **type-shifting rules**, RaiseO and RaiseS, lift the transitive verb so it can combine directly with a generalized quantifier in its base position.
+The in-situ alternative to QR: "interpret the quantifier phrase in situ, i.e.,
+in the position where it is pronounced", applying a type-shift "to change
+either the type of the quantifier phrase or the type of the verb" (p. 314).
+This is the flexible-types route associated with Direct Compositionality
+(§7.4.1); RaiseO and RaiseS instantiate Hendriks's (1993) ARGUMENT RAISING
+schema (p. 315; the general schema is fn. 13, p. 319).
 
-## 7.4.2 RaiseO: object type-shifting
+## 6.6.4 RaiseO: object raising
 
-**RaiseO** takes a transitive verb of type ⟨e,⟨e,t⟩⟩ and returns a function that expects a generalized quantifier as its object:
+Introduced at §6.6.4 (pp. 249–250) and restated as §7.4.1's rule box:
 
-$$\text{RaiseO} = \lambda H.\lambda Q.\lambda x.\, Q(\lambda y.\, H(y)(x))$$
+**Type-Shifting Rule. Object raising (RAISE-O).** "If an English expression α
+is translated into a logical expression α′ of type ⟨e,⟨a,t⟩⟩, for any type a,
+then α also has a translation of type ⟨⟨⟨e,t⟩,t⟩,⟨a,t⟩⟩ of the following
+form: λQ⟨⟨e,t⟩,t⟩ λxₐ.Q(λy.α′(y)(x))" (p. 316).
 
-RaiseO appears as an explicit node in the syntactic tree, sistering the verb. The shifted verb–phrase then takes the object GQ directly by FA, and the subject individual applies to the result.
+The shifted verb takes the object quantifier directly by FA, and the subject
+applies to the result. Notation: "the shift is shown inside the verb's node:
+the shifted denotation and type appear at the top, separated from the base
+denotation and type at the bottom by the ⇑RAISE-O arrow" ((52), p. 250) — you
+apply the shift at the V node; the bracketing does not change.
 
 \ex<raiseo-ex> Gandalf loves every hobbit.
 \xe
@@ -31,21 +43,32 @@ RaiseO appears as an explicit node in the syntactic tree, sistering the verb. Th
 [S{forall y[hobbit(y) -> love(g,y)]}
   [DP{g} Gandalf]
   [VP{lambda x.forall y[hobbit(y) -> love(x,y)]}
-    [V'{lambda Q.lambda x.Q(lambda y.love(x,y))}
-      [V{RaiseO} RaiseO]
-      [V{lambda y.lambda x.love(x,y)} loves]]
+    [V{lambda Q.lambda x.Q(lambda y.love(x,y))} loves]
     [DP{lambda Y.forall x[hobbit(x) -> Y(x)]}
       [D{lambda X.lambda Y.forall x[X(x) -> Y(x)]} every]
       [NP{lambda x.hobbit(x)} hobbit]]]]
 \end{forest}
 
-## 7.4.3 RaiseS: subject type-shifting
+The book's worked case is *likes somebody* ((52), p. 250); "Blake loves
+everybody receives the analysis ∀y.loves(b,y)" (p. 316).
 
-When **both** subject and object are quantifiers, a second rule handles the subject. **RaiseS** shifts the transitive verb so it can absorb the *subject* GQ, with the object remaining as an individual argument:
+## 7.4.1 RaiseS and inverse scope
 
-$$\text{RaiseS} = \lambda H.\lambda Q.\lambda y.\, Q(\lambda x.\, H(y)(x))$$
+With quantifiers in both positions, RaiseO alone gives surface scope: for
+*Somebody loves everybody* it "results in the surface scope reading, i.e. the
+reading in which the subject existential takes scope over the object
+universal" ((48), p. 317). The second shift lifts the subject position
+(pp. 317–318):
 
-The RaiseS-shifted verb takes the **subject GQ** as its first argument and the object individual as its second, yielding the *inverse scope* reading (object GQ takes wide scope; subject GQ is bound inside).
+**Type-Shifting Rule. Subject raising (RAISE-S).** "If an English expression α
+is translated into a logical expression α′ of type ⟨a,⟨e,t⟩⟩, for any type a,
+then α also has a translation of type ⟨a,⟨⟨⟨e,t⟩,t⟩,t⟩⟩ of the following
+form: λyₐ λQ⟨⟨e,t⟩,t⟩.Q(λxₑ.α′(y)(x))" (pp. 317–318).
+
+"Applying RAISE-S first, then RAISE-O, produces a doubly-lifted verb that
+combines with a quantificational subject and a quantificational object. The
+result for Somebody loves everybody is the inverse scope reading
+∀y∃x.loves(x,y)" (p. 318).
 
 \ex<raises-ex> No elf trusts every human.
 \xe
@@ -62,11 +85,17 @@ The RaiseS-shifted verb takes the **subject GQ** as its first argument and the o
 [[RaiseO trusts every human]]   = lambda x.forall y[human(y) -> trust(x,y)]       : <e,t>
 [[no elf]] applied to VP        = ~exists x[elf(x) /\ forall y[human(y) -> trust(x,y)]] : t
 
-[[RaiseS trusts]]               = lambda Q.lambda y.Q(lambda x.trust(x,y))        : <<<e,t>,t>,<e,t>>
-[[RaiseS trusts no elf]]        = lambda y.~exists x[elf(x) /\ trust(x,y)]        : <e,t>
-[[every human]] applied to VP   = forall y[human(y) -> ~exists x[elf(x) /\ trust(x,y)]] : t
+[[RaiseS trusts]]               = lambda y.lambda Q.Q(lambda x.trust(x,y))        : <e,<<<e,t>,t>,t>>
+[[RaiseO [RaiseS trusts]]]      = lambda Q.lambda X.Q(lambda y.X(lambda x.trust(x,y))) : <<<e,t>,t>,<<<e,t>,t>,t>>
+[[RaiseO [RaiseS trusts] every human]] = lambda X.forall y[human(y) -> X(lambda x.trust(x,y))] : <<<e,t>,t>,t>
+[[No elf trusts every human]]   = forall y[human(y) -> ~exists x[elf(x) /\ trust(x,y)]] : t
 \end{derivation}
 
-The two trees yield logically equivalent results for *no*/*every*; the difference is vivid for *some*/*every* — the RaiseO tree gives ∃ > ∀ scope and the RaiseS tree gives ∀ > ∃ scope.[^raiseSvsO]
+RaiseO alone derives the surface no > every reading; RaiseS-then-RaiseO
+derives the inverse every > no reading. Shifting in the other order — RaiseO
+first, then RaiseS — is the book's Exercise 13 (p. 318): it hands the object
+in first but leaves the subject on top, reproducing surface scope.[^raiseSvsO]
 
-[^raiseSvsO]: RaiseO and RaiseS have the same type ⟨⟨e,⟨e,t⟩⟩, ⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩⟩ but differ in *which* argument position the quantifier binds: RaiseO binds the y-position (the lexical object argument); RaiseS binds the x-position (the lexical subject argument).
+[^raiseSvsO]: The two shifts lift different argument positions: RaiseO takes
+⟨e,⟨a,t⟩⟩ to ⟨⟨⟨e,t⟩,t⟩,⟨a,t⟩⟩ (the object slot), RaiseS takes ⟨a,⟨e,t⟩⟩ to
+⟨a,⟨⟨⟨e,t⟩,t⟩,t⟩⟩ (the subject slot) — the book's rule boxes, pp. 316–318.

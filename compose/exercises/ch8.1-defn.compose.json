@@ -1,7 +1,7 @@
 {
   "compose": 1,
   "id": "ch8-defn",
-  "title": "Definite Descriptions (§8.1–8.2)",
+  "title": "Definite Descriptions (§8.3.1, §8.3.3)",
   "domain": {
     "multiLetterNames": true,
     "constants": {
@@ -466,21 +466,21 @@
           "sentence": "Frodo carries the ring.",
           "tree": "[.S [.DP Frodo ] [.VP [.V carries ] [.DP [.D the ] [.NP ring ] ] ] ]",
           "reading": {
-            "section": "8.1"
+            "section": "8.3.1"
           }
         },
         {
           "sentence": "Legolas trusts the rightful king.",
           "tree": "[.S [.DP Legolas ] [.VP [.V trusts ] [.DP [.D the ] [.NP [.AP rightful ] [.NP king ] ] ] ] ]",
           "reading": {
-            "section": "8.1"
+            "section": "8.3.1"
           }
         },
         {
           "sentence": "The elf who trusts Gimli is in Moria.",
           "tree": "[.S [.DP [.D the ] [.NP [.NP elf ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.V trusts ] [.DP Gimli ] ] ] ] ] ] ] [.VP [.V is ] [.PP [.P in ] [.DP Moria ] ] ] ]",
           "reading": {
-            "section": "8.1"
+            "section": "8.3.1"
           }
         }
       ]
@@ -493,48 +493,48 @@
           "sentence": "Boromir's sword.",
           "tree": "[.NP [.DP Boromir ] [.NP [.Poss 's ] [.NP sword ] ] ]",
           "reading": {
-            "section": "8.2"
+            "section": "8.3.3"
           }
         },
         {
           "sentence": "his bow.",
           "tree": "[.NP [.DP he1 ] [.NP [.Poss 's ] [.NP bow ] ] ]",
           "reading": {
-            "section": "8.2"
+            "section": "8.3.3"
           }
         },
         {
           "sentence": "my axe.",
           "tree": "[.NP [.DP my1 ] [.NP [.Poss 's ] [.NP axe ] ] ]",
           "reading": {
-            "section": "8.2"
+            "section": "8.3.3"
           }
         }
       ]
     },
     {
       "title": "C. Definites in context",
-      "instructions": "The definite article interacts with other tools: \"shall\" is the identity function here (tense/aspect come in §12). The last item folds in a possessive definite DP.",
+      "instructions": "The definite article interacts with other tools: \"shall\" is the identity function here (tense/aspect come in Chapter 11). The last item folds in a possessive definite DP.",
       "items": [
         {
           "sentence": "The Balrog shall not pass.",
           "tree": "[.S [.DP [.D the ] [.NP Balrog ] ] [.VP [.V shall ] [.VP [.Neg not ] [.VP pass ] ] ] ]",
           "reading": {
-            "section": "8.2"
+            "section": "8.3.1"
           }
         },
         {
           "sentence": "The Balrog slays our wise wizard.",
           "tree": "[.S [.DP [.D the ] [.NP Balrog ] ] [.VP [.V slays ] [.DP [.D the ] [.NP [.AP wise ] [.NP wizard ] ] ] ] ]",
           "reading": {
-            "section": "8.2"
+            "section": "8.3.1"
           }
         },
         {
           "sentence": "The fellowship flees to Galadriel's kingdom.",
           "tree": "[.S [.DP [.D the ] [.NP fellowship ] ] [.VP [.V flees-to ] [.DP [.DP Galadriel ] [.NP [.Poss 's ] [.NP kingdom ] ] ] ] ]",
           "reading": {
-            "section": "8.2"
+            "section": "8.3.3"
           }
         }
       ]
@@ -551,7 +551,7 @@
             "bound: ∀x[noble(x) → admire(x, ιy.poss(x,y) ∧ hair(y))]"
           ],
           "reading": {
-            "section": "8.2.1"
+            "section": "8.3.3"
           }
         },
         {
@@ -562,7 +562,7 @@
             "Boromir kills every Uruk who hunts himself (bound): ∀x[uruk(x) ∧ hunt(x,x) → kill(b,x)]"
           ],
           "reading": {
-            "section": "8.2.1"
+            "section": "8.3.3"
           }
         },
         {
@@ -575,7 +575,7 @@
             "him = the king, he = the king: love(ιy.poss(b,y) ∧ king(y), ιy.poss(b,y) ∧ king(y)) ∧ until(die(ιy.poss(b,y) ∧ king(y)))"
           ],
           "reading": {
-            "section": "8.2.1"
+            "section": "8.3.3"
           }
         }
       ]
@@ -583,6 +583,6 @@
   ],
   "reading": {
     "format": "latex",
-    "markdown": "# Chapter 8 · Definite Descriptions\n\nChapter 7 showed how to build complex predicates. Chapter 8 introduces a new kind of DP: the **definite description**, built with the **iota operator** ι, which picks out a unique individual satisfying a predicate.\n\n## 8.1 The iota operator\n\n**The definite article.** `⟦the⟧` = λX.ιx.X(x) : ⟨⟨e,t⟩,e⟩. It takes a predicate and returns the unique individual satisfying it; the result is type e, just like a proper name.\n\nThe uniqueness condition is a **presupposition**: *the ring* is only defined if exactly one thing is a ring in the context.\n\n\\ex<defn-ex> Frodo carries the ring.\n\\xe\n\n\\ex Legolas trusts the rightful king.\n\\xe\n\n\\ex The elf who trusts Gimli is in Moria.\n\\xe\n\n\\begin{derivation}\n[[the]]              = lambda X.iota x.X(x)                          : <<e,t>,e>\n[[ring]]             = lambda x.ring(x)                              : <e,t>\n[[the ring]]         = iota x.ring(x)                                : e\n[[carries]]          = lambda y.lambda x.carry(x,y)                  : <e,<e,t>>\n[[carries the ring]] = lambda x.carry(x,iota y.ring(y))              : <e,t>\n[[Frodo carries the ring]] = carry(f,iota y.ring(y))                 : t\n\\end{derivation}\n\n\\begin{forest}\n[S{carry(f,iota y.ring(y))}\n  [DP{f} Frodo]\n  [VP{lambda x.carry(x,iota y.ring(y))}\n    [V{lambda y.lambda x.carry(x,y)} carries]\n    [DP{iota x.ring(x)}\n      [D{lambda X.iota x.X(x)} the]\n      [NP{lambda x.ring(x)} ring]]]]\n\\end{forest}\n\nA non-intersective adjective like *rightful* combines with the noun by FA before iota applies (\\ref{defn-ex}):\n\n\\begin{derivation}\n[[rightful]]              = lambda F.lambda x.rightful(F)(x)               : <<e,t>,<e,t>>\n[[king]]                  = lambda x.king(x)                               : <e,t>\n[[rightful king]]         = lambda x.rightful(king)(x)                     : <e,t>\n[[the rightful king]]     = iota x.rightful(king)(x)                       : e\n[[trusts the rightful king]] = lambda x.trust(x,iota y.rightful(king)(y))  : <e,t>\n[[Legolas trusts the rightful king]] = trust(l,iota y.rightful(king)(y))   : t\n\\end{derivation}\n\nA definite DP can embed a relative clause. The NP assembles its full predicate (by PM + PA) before *the* applies (\\ref{defn-ex}):\n\n\\begin{derivation}\n[[trusts Gimli]]                  = lambda x.trust(x,m)                    : <e,t>\n[[elf who trusts Gimli]]          = lambda x.elf(x) /\\ trust(x,m)          : <e,t>\n[[the elf who trusts Gimli]]      = iota x.(elf(x) /\\ trust(x,m))          : e\n[[in Moria]]                      = lambda x.in(x,mr)                      : <e,t>\n[[The elf who trusts Gimli is in Moria]] = in(iota x.(elf(x) /\\ trust(x,m)),mr) : t\n\\end{derivation}\n\n## 8.2 Possessives\n\nThe clitic **'s** builds a definite description relative to a possessor: `⟦'s⟧` = λP.λx.ιy.[poss(x,y) ∧ P(y)] : ⟨⟨e,t⟩,⟨e,e⟩⟩. It takes the possessed noun and the possessor individual and returns the unique object standing in the possession relation to that possessor.\n\n\\ex<poss-ex> Boromir's sword.\n\\xe\n\n\\ex his₁ bow.\n\\xe\n\n\\ex my₁ axe.\n\\xe\n\n\\begin{derivation}\n[['s]]                    = lambda P.lambda x.iota y.poss(x,y) /\\ P(y)    : <<e,t>,<e,e>>\n[[sword]]                 = lambda x.sword(x)                              : <e,t>\n[['s sword]]              = lambda x.iota y.poss(x,y) /\\ sword(y)         : <e,e>\n[[Boromir's sword]]       = iota y.poss(b,y) /\\ sword(y)                  : e\n\n[[his_1]]                 = x_1                                            : e\n[['s bow]]                = lambda x.iota y.poss(x,y) /\\ bow(y)           : <e,e>\n[[his_1 bow]]             = iota y.poss(x_1,y) /\\ bow(y)                  : e\n\n[[my_1 axe]]              = iota y.poss(x_1,y) /\\ axe(y)                  : e\n\\end{derivation}\n\nThe possessor `x_1` in *his/my* is supplied by context — a free variable assigned to whoever is the contextually salient referent. This parallels the free reading of a pronoun.\n\nIn more complex DPs, 'the' need not appear: a possessive NP already delivers type e, so *Galadriel's kingdom* is directly an individual without a separate definite article (\\ref{poss-ex}).\n\n## 8.2.1 Free and bound readings\n\nA pronoun inside a possessive can be **free** (its index is assigned by context) or **bound** (its index is abstracted over by a higher quantifier). The two readings differ in their truth conditions.\n\n\\ex<bound-ex> Galadriel admires her₁ hair.\n\\xe\n\n\\ex Boromir's sword kills every Uruk-hai who hunts him-B.\n\\xe\n\n\\ex Boromir's king will love him until he dies.\n\\xe\n\n**Free reading** — the possessor index is set by context (\\ref{bound-ex}):\n\n\\begin{derivation}\n[['s hair]]                         = lambda x.iota y.poss(x,y) /\\ hair(y)      : <e,e>\n[[her_1 hair]]                      = iota y.poss(x_1,y) /\\ hair(y)             : e\n[[admires her_1 hair]]              = lambda x.admire(x,iota y.poss(x_1,y) /\\ hair(y)) : <e,t>\n[[Galadriel admires her_1 hair]]    = admire(w,iota y.poss(x_1,y) /\\ hair(y))   : t\n\\end{derivation}\n\nWhen x₁ is assigned to Galadriel (w), this gives the reflexive reading: Galadriel admires her own hair. When x₁ is assigned to another contextually prominent individual, it is a non-reflexive free reading.\n\n**Definite-pronoun reading** — *him-K* abbreviates the complex definite ιy.[poss(b,y) ∧ king(y)] (Boromir's king), giving the anaphoric referent as a definite description rather than a free variable:\n\n\\begin{derivation}\n[[boromirs-king]]     = iota y.poss(b,y) /\\ king(y)                      : e\n[[him-B]]             = b                                                  : e\n[[him-K]]             = iota y.poss(b,y) /\\ king(y)                      : e\n[[will]]              = lambda X.X                                         : <<e,t>,<e,t>>\n[[until]]             = lambda q.lambda p.p /\\ until(q)                   : <t,<t,t>>\n[[dies]]              = lambda x.die(x)                                   : <e,t>\n[[he-B dies]]         = die(b)                                             : t\n[[until he-B dies]]   = lambda p.p /\\ until(die(b))                       : <t,t>\n[[love him-B]]        = lambda x.love(x,b)                                : <e,t>\n[[will love him-B until he-B dies]] = lambda x.love(x,b) /\\ until(die(b)) : <e,t>\n[[Boromir's king will love him-B until he-B dies]] = love(iota y.poss(b,y) /\\ king(y),b) /\\ until(die(b)) : t\n\\end{derivation}\n\nThe *him-K* variant replaces the object `b` with `ιy.[poss(b,y) ∧ king(y)]`, making the pronoun co-refer with the subject definite description — a **bridging** inference made explicit in the denotation.[^bridge]\n\n[^bridge]: *will* and *shall* are both identity functions here — tense and modality are analysed properly in Chapters 12–13. The *until* operator introduces a second conjunct that the temporal connective holds."
+    "markdown": "# Chapter 8 · Presupposition: Definites and Possessives\n\nChapter 7 built complex predicates with Predicate Modification (p. 279) and Predicate Abstraction (p. 288). Chapter 8 (\"Presupposition\") extends undefinedness past type t: §8.3 asks \"can non-propositional expressions—expressions of type e, for example—also be undefined?\" and argues \"that they can, examining the definite determiner and possessives as the primary cases\" (p. 352).\n\n## 8.3.1 The definite determiner\n\nDefinite descriptions convey \"EXISTENCE\" and \"UNIQUENESS (that there is at most one)\" (p. 352). Russell (1905) makes both entailed content: *The princess smokes* means 'There is exactly one princess and she smokes', $\\exists x.[princess(x) \\wedge \\forall y.[princess(y) \\rightarrow x = y] \\wedge smokes(x)]$ ((28), p. 353). Strawson (1950), building on Frege, replies that with no king of France \"the question of whether his statement was true or false simply did not arise\" (p. 355); for Frege, forming a proper name with the definite article \"is at any rate permissible when one and only one object falls under the concept\" (p. 355). The book formalizes the Frege/Strawson view by \"treating *the* as denoting a function of type ⟨⟨e,t⟩,e⟩ that returns the unique satisfier of its input predicate if there is exactly one, and a special 'undefined' value otherwise\" (p. 356).\n\nThe formal tool is the **iota operator**: ιx.P(x) is an expression of type e that \"denotes the unique individual satisfying P if there is exactly one such individual, otherwise it denotes m_e\", the undefined individual (p. 356). The entry is \"the ↝ λP.ιx.P(x)\" ((29), p. 358); the book's specimen derivation computes ιx.moon(x) for *the moon* ((30), p. 358). A successful description, \"like a proper name, denotes an individual\" (p. 355) — it is simply type e. Our counterpart is *the ring* (\\ref{defn-ex}):\n\n\\ex<defn-ex> Frodo carries the ring.\n\\xe\n\n\\ex Legolas trusts the rightful king.\n\\xe\n\n\\ex The elf who trusts Gimli is in Moria.\n\\xe\n\n\\begin{derivation}\n[[the]]              = lambda X.iota x.X(x)                          : <<e,t>,e>\n[[ring]]             = lambda x.ring(x)                              : <e,t>\n[[the ring]]         = iota x.ring(x)                                : e\n[[carries]]          = lambda y.lambda x.carry(x,y)                  : <e,<e,t>>\n[[carries the ring]] = lambda x.carry(x,iota y.ring(y))              : <e,t>\n[[Frodo carries the ring]] = carry(f,iota y.ring(y))                 : t\n\\end{derivation}\n\n\\begin{forest}\n[S{carry(f,iota y.ring(y))}\n  [DP{f} Frodo]\n  [VP{lambda x.carry(x,iota y.ring(y))}\n    [V{lambda y.lambda x.carry(x,y)} carries]\n    [DP{iota x.ring(x)}\n      [D{lambda X.iota x.X(x)} the]\n      [NP{lambda x.ring(x)} ring]]]]\n\\end{forest}\n\n*Rightful* is not intersective. The book gives subsective and non-subsective adjectives \"translations of type ⟨⟨e,t⟩,⟨e,t⟩⟩\" that are \"analyzed via Function Application rather than Predicate Modification\" (p. 280); our constant rightful follows that recipe, composing with the noun by FA before ι applies:\n\n\\begin{derivation}\n[[rightful]]              = lambda F.lambda x.rightful(F)(x)               : <<e,t>,<e,t>>\n[[king]]                  = lambda x.king(x)                               : <e,t>\n[[rightful king]]         = lambda x.rightful(king)(x)                     : <e,t>\n[[the rightful king]]     = iota x.rightful(king)(x)                       : e\n[[trusts the rightful king]] = lambda x.trust(x,iota y.rightful(king)(y))  : <e,t>\n[[Legolas trusts the rightful king]] = trust(l,iota y.rightful(king)(y))   : t\n\\end{derivation}\n\nA relative clause denotes a type ⟨e,t⟩ predicate — *who Blake loves* ↝ λx.loves(b,x) (p. 281), by Predicate Abstraction (p. 288) — and combines with the noun by Predicate Modification; *the* then applies to the assembled predicate:\n\n\\begin{derivation}\n[[trusts Gimli]]                  = lambda x.trust(x,m)                    : <e,t>\n[[elf who trusts Gimli]]          = lambda x.elf(x) /\\ trust(x,m)          : <e,t>\n[[the elf who trusts Gimli]]      = iota x.(elf(x) /\\ trust(x,m))          : e\n[[in Moria]]                      = lambda x.in(x,mr)                      : <e,t>\n[[The elf who trusts Gimli is in Moria]] = in(iota x.(elf(x) /\\ trust(x,m)),mr) : t\n\\end{derivation}\n\n## 8.3.3 Possessives\n\n\"possessives trigger presuppositions\": (32) *Blake loves Alex's sister* ≫ *Alex has a sister*, and the inference is presuppositional \"via the projection test; for example, Blake doesn't love Alex's sister also implies that Alex has a sister\" (p. 363).\n\nThe book's route treats *sister* as a relational noun of type ⟨e,⟨e,t⟩⟩ (following the appendix to Chapter 6) with \"'s ↝ λyλR.λx.R(y)(x)\" ((33), p. 363); a possessive in argument position is then shifted by the silent iota type-shift — \"If α has a translation α′ of type ⟨e,t⟩, then α also has a translation of type e: ιx.α′(x)\" (p. 364) — so \"the uniqueness presupposition of (32) … arises not from the lexical entry of 's but from the iota type-shift\" (p. 364). Engine note: this set compresses that route into one lexical step, `⟦'s⟧` = λP.λx.ιy.[poss(x,y) ∧ P(y)] : ⟨⟨e,t⟩,⟨e,e⟩⟩ — a sortal noun plus an unanalysed possession relation poss (ours, not the book's), with the ι built in. The ⟨e,e⟩ possessive applies directly to the possessor, so the whole DP is type e with no article, like *Blake's sister* in the book's (35) (p. 364) (\\ref{poss-ex}).\n\n\\ex<poss-ex> Boromir's sword.\n\\xe\n\n\\ex his₁ bow.\n\\xe\n\n\\ex my₁ axe.\n\\xe\n\n\\begin{derivation}\n[['s]]                    = lambda P.lambda x.iota y.poss(x,y) /\\ P(y)    : <<e,t>,<e,e>>\n[[sword]]                 = lambda x.sword(x)                              : <e,t>\n[['s sword]]              = lambda x.iota y.poss(x,y) /\\ sword(y)         : <e,e>\n[[Boromir's sword]]       = iota y.poss(b,y) /\\ sword(y)                  : e\n\n[[his_1]]                 = x_1                                            : e\n[['s bow]]                = lambda x.iota y.poss(x,y) /\\ bow(y)           : <e,e>\n[[his_1 bow]]             = iota y.poss(x_1,y) /\\ bow(y)                  : e\n\n[[my_1 axe]]              = iota y.poss(x_1,y) /\\ axe(y)                  : e\n\\end{derivation}\n\nA pronominal possessor is a free variable: the book's Exercise 13 derives *Blake loves his teacher* from \"he₃ ↝ v₃, where v₃ is a variable of type e\" (pp. 361, 365–366); our his₁/my₁ translate as x₁. In such uses \"the pronoun functions as a free variable whose value is supplied by the discourse context — by pointing, visual salience, or prior mention\" (p. 307).\n\n### Free and bound readings\n\n\"pronouns, like logical variables, can be either free or bound\" (p. 311). *Every boy loves his mother* is among the book's bound-variable cases (p. 307), and its Exercise 14 asks for an LF of *everyone loves her teacher* \"capturing a reading where everyone binds her\" (p. 366). The two readings differ in truth conditions (\\ref{bound-ex}):\n\n\\ex<bound-ex> Galadriel admires her₁ hair.\n\\xe\n\n\\ex Boromir's sword kills every Uruk-hai who hunts him-B.\n\\xe\n\n\\ex Boromir's king will love him until he dies.\n\\xe\n\nFree reading — the possessor index is supplied by the assignment:\n\n\\begin{derivation}\n[['s hair]]                         = lambda x.iota y.poss(x,y) /\\ hair(y)      : <e,e>\n[[her_1 hair]]                      = iota y.poss(x_1,y) /\\ hair(y)             : e\n[[admires her_1 hair]]              = lambda x.admire(x,iota y.poss(x_1,y) /\\ hair(y)) : <e,t>\n[[Galadriel admires her_1 hair]]    = admire(w,iota y.poss(x_1,y) /\\ hair(y))   : t\n\\end{derivation}\n\nWith x₁ assigned to Galadriel (w) this is the reflexive reading; assigned to some other salient individual, the non-reflexive free reading.\n\nFor *Boromir's king will love him until he dies*, the set fixes each pronoun's referent lexically (our device — the book has no counterpart): him-B/he-B translate as the constant b, and him-K/he-K as the description ιy.[poss(b,y) ∧ king(y)], so the four target readings are the four ways of resolving the two pronouns.[^aux]\n\n\\begin{derivation}\n[[boromirs-king]]     = iota y.poss(b,y) /\\ king(y)                      : e\n[[him-B]]             = b                                                  : e\n[[him-K]]             = iota y.poss(b,y) /\\ king(y)                      : e\n[[will]]              = lambda X.X                                         : <<e,t>,<e,t>>\n[[until]]             = lambda q.lambda p.p /\\ until(q)                   : <t,<t,t>>\n[[dies]]              = lambda x.die(x)                                   : <e,t>\n[[he-B dies]]         = die(b)                                             : t\n[[until he-B dies]]   = lambda p.p /\\ until(die(b))                       : <t,t>\n[[love him-B]]        = lambda x.love(x,b)                                : <e,t>\n[[will love him-B until he-B dies]] = lambda x.love(x,b) /\\ until(die(b)) : <e,t>\n[[Boromir's king will love him-B until he-B dies]] = love(iota y.poss(b,y) /\\ king(y),b) /\\ until(die(b)) : t\n\\end{derivation}\n\nThe him-K variant replaces the object b with ιy.[poss(b,y) ∧ king(y)], making the pronoun co-refer with the subject description.\n\n[^aux]: *will* and *shall* are identity functions in this set and *until* adds a conjunct until(q) — placeholders only; tense and aspect are the subject of Chapter 11, intensionality of Chapter 12."
   }
 }

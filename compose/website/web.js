@@ -57,7 +57,7 @@
     ['ch7','Adjective Type-Shifting: MOD (§7.2)',9,38,false,''],
     ['ch7','Relative Clauses (§7.3)',9,38,false,''],
     ['ch7','Quantifiers in Object Position (§7.4)',6,37,false,''],
-    ['ch7','Object Type-Shifting: RaiseO / RaiseS (§7.4.2)',6,36,false,''],
+    ['ch7','Object Type-Shifting: RaiseO / RaiseS (§6.6.4)',6,36,false,''],
     ['ch7','Pronouns & Binding (§7.5)',6,39,false,''],
     ['ch8','Definite Descriptions (§8.1–8.2)',12,68,false,''],
     ['ch8','Definedness Conditions: the ∂ operator (§8.4)',6,16,false,'Presuppositional determiners — neither, every — with Beaver & Krahmer\u2019s partial operator'],

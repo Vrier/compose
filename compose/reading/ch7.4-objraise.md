@@ -1,10 +1,31 @@
 # Chapter 7 · Quantifiers in Object Position
 
-When a transitive verb takes an individual (type e) as its object, FA applies cleanly. But a quantifier phrase like *every hobbit* has type ⟨⟨e,t⟩,t⟩ — it cannot serve as the direct argument of a verb expecting type e. **Quantifier Raising (QR)** resolves the mismatch by moving the quantifier out of its base position.
+A quantifier phrase is type ⟨⟨e,t⟩,t⟩; a transitive verb wants type e. In
+object position "the transitive verb is expecting an individual, so the
+quantifier phrase cannot be fed as an argument to the verb. And the quantifier
+phrase is expecting an ⟨e,t⟩-type predicate, so the verb cannot be fed as an
+argument to the quantifier phrase" (p. 297). §7.3.2's repair is movement; the
+in-situ type-shifting repair is the RaiseO/S set.
 
-## 7.4 Quantifier Raising
+## 7.3.2 Quantifier raising
 
-**Quantifier Raising (QR).** The object DP moves covertly to adjoin at S-level, leaving a trace t_n of type e. A λ-phrase node (LP) hosts Predicate Abstraction over n, creating the ⟨e,t⟩ argument the quantifier needs.
+"QUANTIFIER RAISING is a syntactic transformation that moves a quantifier (an
+expression of type ⟨⟨e,t⟩,t⟩) to a position in the tree where it can be
+interpreted, and leaves a DP trace in its previous position" (p. 298). It maps
+Surface Structure to LOGICAL FORM (LF): "At Logical Form, constituents do not
+necessarily appear in the position where they are pronounced, but they are in
+the position where they are to be interpreted by the semantics" (p. 298).
+Since the reordering happens after pronunciation is fixed, the movement is
+COVERT (p. 301).
+
+At the landing site the quantifier's sister is a binder node: "The node with
+λ1 in the syntax tree plays the same role as a relative pronoun like which in
+a relative clause: It triggers Predicate Abstraction" (p. 299). The λS node
+"was introduced by Heim & Kratzer (1998) and has been widely adopted, though
+the name we use is specific to our textbook" (p. 299). Engine note: the book's
+λS with its λ1 binder appears here as the LP node with a numeral leaf; PA
+resolves it exactly as in the relative-clause set. The book's worked case is
+*Blake loves everybody* — LF (30b), derivation (31), pp. 298–300.
 
 \ex<qr-ex> Gandalf loves every hobbit.
 \xe
@@ -21,7 +42,7 @@ When a transitive verb takes an individual (type e) as its object, FA applies cl
 [[Gandalf loves t1]]             = love(g,t_1)                                  : t
 [[LP 1 [S Gandalf loves t1]]]    = lambda y.love(g,y)                           : <e,t>   (PA)
 [[every hobbit]]                 = lambda Y.forall x[hobbit(x) -> Y(x)]         : <<e,t>,t>
-[[every hobbit loves Gandalf]]   = forall x[hobbit(x) -> love(g,x)]             : t
+[[Gandalf loves every hobbit]]   = forall x[hobbit(x) -> love(g,x)]             : t
 \end{derivation}
 
 \begin{forest}
@@ -37,9 +58,12 @@ When a transitive verb takes an individual (type e) as its object, FA applies cl
         [DP{t_1} t_1]]]]]
 \end{forest}
 
-## 7.4.1 Two quantifiers and scope
+### Two quantifiers and scope
 
-When both subject and object are quantifiers, QR can apply to either or both, generating different **scope orderings**. Raising the object above the subject yields object-wide scope; the base order (subject above raised object) yields subject-wide scope.
+With quantifiers in both positions, the order of raising fixes the scope.
+"There can be a preference for surface scope. If both the subject and the
+object are quantificational, the subject is likely to be interpreted as taking
+scope over the object" (p. 302), but QR generates both orders.
 
 \ex<scope-ex> No elf trusts every human.
 \xe
@@ -50,15 +74,21 @@ When both subject and object are quantifiers, QR can apply to either or both, ge
 \ex Every hobbit who travels fears some evil creature.
 \xe
 
-**Subject wide scope** (no > every): the object is QR'd, the subject remains in situ.
+Raising the object to adjoin above S, subject in situ, puts the object on top —
+this derivation yields the inverse, every > no reading of (\ref{scope-ex}):
 
 \begin{derivation}
 [[LP 1 [S no-elf [VP trusts t1]]]] = lambda y.~exists x[elf(x) /\ trust(x,y)] : <e,t>   (PA)
 [[every human applied]]            = forall y[human(y) -> ~exists x[elf(x) /\ trust(x,y)]] : t
 \end{derivation}
 
-**Object wide scope** (every > no): the object LP is embedded *within* a second LP that abstracts over the subject trace.
+For the surface no > every reading, raise the subject as well, above the
+landed object — each QR step adds its own LP node, and the highest quantifier
+scopes widest.
 
-The two readings differ in truth conditions when the quantifiers are *some* and *every*: the subject-wide reading requires one witness to stand in the relation to all objects, while the object-wide reading only requires that for each object some (possibly different) subject qualifies.[^scope]
-
-[^scope]: For *no* and *every* the two readings are logically equivalent. The asymmetry becomes vivid with *some*: *some elf councils every creature* (∃-wide) entails a single elf does the counselling; the inverse (∀-wide) only requires each creature to be counselled by some elf, possibly different ones.
+The book's ambiguity case is Exercise 8 (pp. 304–305): "Some linguist offended
+every philosopher is ambiguous; it can mean either that there was one
+universally offensive linguist or that for every philosopher there was a
+linguist, and there may have been different linguists for different
+philosophers." The set's *Some elf councils every good wise creature* has the
+same two readings.
