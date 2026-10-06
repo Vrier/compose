@@ -83,8 +83,9 @@ with the SDK. `server/pb_hooks/dace.pb.js` + migration 1751700008 add
 `users.judge` / `users.dace_admin` (pinned by users_guard like `role`),
 `invite_codes.judge` (a judge code: accepted only by `/api/dace/register`,
 refused by `/api/compose/register`) and the `dace_judgements` collection
-(owner-only, judges only). `GET /api/dace/judges` and the per-judge
-`judgements.csv` / `annotations.json` routes need `dace_admin`. To add a judge:
+(owner-only, judges only). `GET /api/dace/judges`, the per-judge
+`judgements.csv` / `annotations.json` routes and `GET /api/dace/agreement[.csv]`
+(cells judged by ≥2 judges, pairwise agreement, disagreements) need `dace_admin`. To add a judge:
 admin dashboard → invite_codes → new record with `judge` ticked; to let an
 account download the CSVs: tick `dace_admin` on it. The Judge's UI and the
 plan live in Vrier/dace (PLAN.md, "Judge accounts").
