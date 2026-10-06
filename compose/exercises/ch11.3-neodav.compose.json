@@ -259,7 +259,7 @@
   "exercises": [
     {
       "title": "A. Intransitive verbs",
-      "instructions": "The Agent head combines with the subject to give λe.agent(e,f). Predicate Modification conjoins it with the verb's event predicate; EC binds the event.",
+      "instructions": "The Agent head combines with the subject to give λe.agent(e,f). Predicate Modification conjoins it with the verb's event predicate, and EC binds the event.",
       "items": [
         {
           "sentence": "Frodo runs.",
@@ -340,7 +340,7 @@
     },
     {
       "title": "D. Quantified subjects",
-      "instructions": "The Agent head needs a type-e subject, so a quantified subject must raise. Quantifier-raise the subject DP, leaving a trace; build the full event predicate by Predicate Modification, then apply EC LOW (at the ⟨v,t⟩ node) so the event closes below the quantifier. Predicate Abstraction over the trace gives an ⟨e,t⟩ predicate the quantifier binds.",
+      "instructions": "The Agent head needs a type-e subject, so a quantified subject must raise. Quantifier-raise the subject DP, leaving a trace; build the full event predicate by Predicate Modification, then apply EC at the ⟨v,t⟩ node so the event closes below the quantifier. Predicate Abstraction over the trace gives an ⟨e,t⟩ predicate for the quantifier to bind.",
       "items": [
         {
           "sentence": "Every hobbit runs.",
@@ -367,7 +367,7 @@
     },
     {
       "title": "E. Quantified objects",
-      "instructions": "A quantified object enters via the Theme head, which needs a type-e argument. Quantifier-raise the object DP, leaving a trace; build the event predicate by Predicate Modification, apply EC LOW, then Predicate Abstraction lets the object quantifier bind.",
+      "instructions": "A quantified object enters through the Theme head, which needs a type-e argument. Quantifier-raise the object DP, leaving a trace; build the event predicate by Predicate Modification, apply EC at the ⟨v,t⟩ node, then Predicate Abstraction lets the object quantifier bind.",
       "items": [
         {
           "sentence": "Frodo loves every elf.",
@@ -394,7 +394,7 @@
     },
     {
       "title": "F. Two quantifiers",
-      "instructions": "With quantifiers in both positions, raise both DPs. The order of raising fixes the scope; EC stays lowest, so the event closes under both quantifiers. Derive each target reading.",
+      "instructions": "With quantifiers in both positions, raise both DPs. The order of raising fixes the scope, and EC stays lowest, so the event closes under both quantifiers. Derive each target reading.",
       "items": [
         {
           "sentence": "Every hobbit loves some elf.",
@@ -423,8 +423,8 @@
       ]
     },
     {
-      "title": "G. Locative modifiers & complex arguments",
-      "instructions": "A locative PP is just one more event predicate ⟨v,t⟩: \"in Mordor\" = λe.in(e,o), conjoined by Predicate Modification. A possessive object (type e) enters through the Theme head. EC closes the event last.",
+      "title": "G. Locative modifiers and complex arguments",
+      "instructions": "A locative PP is one more event predicate ⟨v,t⟩: \"in Mordor\" is λe.in(e,o), conjoined by Predicate Modification. A possessive object of type e enters through the Theme head. EC closes the event last.",
       "items": [
         {
           "sentence": "Frodo runs in Mordor.",

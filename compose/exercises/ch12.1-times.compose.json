@@ -277,7 +277,7 @@
   "exercises": [
     {
       "title": "A. Past tense",
-      "instructions": "PAST takes the AspP (a predicate of times ⟨i,t⟩) and returns another ⟨i,t⟩. Its lexical entry is λPλt.[t=t1 ∧ ∂(t1<now) ∧ P(t1)]. Crucially, the pastness condition t1<now sits under the ∂ (‘presupposing that’) operator: PAST does not assert that the reference time is past, it PRESUPPOSES it — just like a gender feature on a pronoun. (If it were asserted, negation could target it, wrongly making ‘Frodo didn’t forge the sword’ true merely because some non-past time exists.) Apply EC at the TenseP root to bind the open time t.",
+      "instructions": "PAST takes the AspP, a predicate of times ⟨i,t⟩, and returns another ⟨i,t⟩. Its lexical entry is λPλt.[t=t1 ∧ ∂(t1<now) ∧ P(t1)]. The pastness condition t1<now sits under the ∂ (\"presupposing that\") operator, so PAST presupposes that the reference time is past, as a gender feature on a pronoun does. Apply EC at the TenseP root to bind the open time t.",
       "items": [
         {
           "sentence": "Frodo forged the sword.",
@@ -297,7 +297,7 @@
     },
     {
       "title": "B. Present tense",
-      "instructions": "PRES anchors the reference time to the speech time now. With progressive aspect, the event time properly includes now, so the event is in progress at the moment of speech. Close the open time with EC.",
+      "instructions": "PRES anchors the reference time to the speech time now. With progressive aspect the event time properly includes now, so the event is in progress at the moment of speech. Close the open time with EC.",
       "items": [
         {
           "sentence": "Frodo is forging the sword.",
@@ -317,7 +317,7 @@
     },
     {
       "title": "C. Temporal modifiers",
-      "instructions": "A modifier \"at dawn\" denotes a time (dawn, type i); \"at\" = λt.t lets it compose. It saturates the TenseP's open time slot directly by Function Application — so the result is already type t and NO Existential Closure is needed. The free variable t1 is identified with the named time.",
+      "instructions": "A modifier \"at dawn\" denotes a time (dawn, type i), and \"at\" = λt.t lets it compose. It saturates the TenseP's open time slot directly by Function Application, so the result is already type t and no Existential Closure is needed. The free variable t1 is identified with the named time.",
       "items": [
         {
           "sentence": "At dawn, Frodo forged the sword.",
@@ -337,7 +337,7 @@
     },
     {
       "title": "D. Past progressive (no completion inference)",
-      "instructions": "Swap PFV for PROG under the past tense. PROG ⇝ λPλt.∃t'[t⊆t' ∧ P(t')] makes the reference time t fall INSIDE the event time t', so the event need not have finished by the reference time. With ‘at dawn’ fixing t1, the result is type t (no EC). Compare with C: the perfective there put the event time inside the reference time (completion); here the reference time is inside the event time (in progress) — so this carries no completion inference. (Textbook Exercise 4.)",
+      "instructions": "Swap PFV for PROG under the past tense. PROG ⇝ λPλt.∃t'[t⊆t' ∧ P(t')] places the reference time t inside the event time t', so the event need not have finished by the reference time. With \"at dawn\" fixing t1 the result is type t, with no EC. In C the perfective put the event time inside the reference time, giving completion; here the reference time is inside the event time, so the sentence carries no completion inference. (Textbook Exercise 4.)",
       "items": [
         {
           "sentence": "At dawn, Frodo was forging the sword.",
@@ -357,7 +357,7 @@
     },
     {
       "title": "E. Simple present with perfective",
-      "instructions": "The simple present of a dynamic verb combines PRES with PFV. PRES sets t=now; PFV requires an event time t' contained in now. Since the speech time now is treated as a mere instant, the event must fit entirely within an instant — which is why the English simple present is odd for an event happening right now (‘#Frodo forges the sword’ as a play-by-play) and instead gets a habitual reading. Close the open time with EC. (Textbook Exercise 6.)",
+      "instructions": "The simple present of a dynamic verb combines PRES with PFV. PRES sets t=now and PFV requires an event time t' contained in now. The speech time now is treated as an instant, so the event must fit entirely within an instant, and the English simple present is therefore odd as play-by-play for an event happening now (\"#Frodo forges the sword\"), taking a habitual reading instead. Close the open time with EC. (Textbook Exercise 6.)",
       "items": [
         {
           "sentence": "Frodo forges the sword. (simple present)",
