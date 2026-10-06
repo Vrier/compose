@@ -286,7 +286,7 @@
   "exercises": [
     {
       "title": "A. Simple quantifiers",
-      "instructions": "\"Everything\", \"something\" and \"nothing\" are complete generalized quantifiers of type ⟨⟨e,t⟩,t⟩. They apply directly to the predicate — the first uses a copular predicate, the second a transitive verb, the third adds negation.",
+      "instructions": "The quantifiers \"everything\", \"something\" and \"nothing\" are complete generalised quantifiers of type ⟨⟨e,t⟩,t⟩ and apply to the predicate directly. The items use a copular predicate, a transitive verb, and negation in turn.",
       "items": [
         {
           "sentence": "Everything is beautiful.",
@@ -312,8 +312,8 @@
       ]
     },
     {
-      "title": "B. Generalized quantifiers",
-      "instructions": "A determiner combines with a noun to form a generalized quantifier ⟨⟨e,t⟩,t⟩, which takes the VP as its argument. The third example layers in VP negation.",
+      "title": "B. Generalised quantifiers",
+      "instructions": "A determiner combines with a noun to form a generalised quantifier ⟨⟨e,t⟩,t⟩, which takes the VP as its argument. The third item adds VP negation.",
       "items": [
         {
           "sentence": "Every hobbit drinks.",
@@ -340,7 +340,7 @@
     },
     {
       "title": "C. Quantifiers with transitive verbs",
-      "instructions": "A subject quantifier scopes over the clause. The later items fold in tools from earlier sections: VP negation, and a copular predicate nominal.",
+      "instructions": "A subject quantifier scopes over the clause. The later items add VP negation and a copular predicate nominal.",
       "items": [
         {
           "sentence": "Every dwarf trusts Aragorn.",
@@ -367,11 +367,11 @@
     },
     {
       "title": "D. Scope ambiguity",
-      "instructions": "Negation and a universal quantifier can interact in two ways. Sentential (wide-scope) negation ¬∀ says the universal statement is false; VP (narrow-scope) negation ∀¬ says every individual fails. Derive the reading shown.",
+      "instructions": "Sentential negation gives ¬∀; VP negation gives ∀¬. Derive the reading the item names.",
       "items": [
         {
           "sentence": "Not every hobbit loves Gandalf.",
-          "instructions": "Surface-scope reading only: negation takes wide scope.\n∀x[hobbit(x) → love(x,g)]",
+          "instructions": "Surface-scope reading only: negation takes wide scope.",
           "tree": "[.S [.NegP [.Neg not ] [.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.V loves ] [.DP Gandalf ] ] ] ] ]",
           "targets": [
             "wide scope: ¬∀x[hobbit(x) → love(x, g)]"
@@ -382,7 +382,7 @@
         },
         {
           "sentence": "Every hobbit doesn't love Gandalf.",
-          "instructions": "Two scope readings are possible. Derive each using the tree provided for that reading.",
+          "instructions": "Two scope readings are possible. Derive each on the tree provided for it.",
           "tree": "[.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.Neg doesnt ] [.VP [.V love ] [.DP Gandalf ] ] ] ]",
           "targets": [
             "surface scope (∀ > ¬): ∀x[hobbit(x) → ¬love(x, g)]",
@@ -417,6 +417,6 @@
   ],
   "reading": {
     "format": "latex",
-    "markdown": "# Chapter 6 · Quantifiers\n\nA name denotes an individual — type $e$. But *everyone* does not pick out any single individual: no one person *is* everyone. Quantifiers therefore live one type up, as functions over predicates.\n\n## 6.4 Generalized quantifiers\n\nA quantifier is a **property of properties**: type $<<e,t>,t>$. It takes a verb-phrase meaning of type $<e,t>$ and returns a truth value.\n\n\\begin{derivation}\n[[everything]] = lambda P.forall x[P(x)]  : <<e,t>,t>\n[[something]]  = lambda P.exists x[P(x)]  : <<e,t>,t>\n[[nothing]]    = lambda P.~exists x[P(x)] : <<e,t>,t>\n\\end{derivation}\n\nBecause it is already a complete quantifier, it applies **directly** to the predicate by Function Application:\n\n\\begin{forest}\n[S{forall x[beautiful(x)]}\n  [DP{lambda P.forall x[P(x)]} everything]\n  [VP{lambda x.beautiful(x)} is beautiful]]\n\\end{forest}\n\nSo the sentences in (\\ref{simple}) come out as $forall x[beautiful(x)]$ and $~exists x[love(x,n)]$ respectively — exactly the truth conditions we want.\n\n\\ex<simple> Everything is beautiful.\n\\xe\n\n\\ex Nothing loves Sauron.\n\\xe\n\n\\ex Something is not beautiful.\n\\xe\n\n## 6.4.2 Quantificational determiners\n\nA determiner like *every*, *some*, or *no* builds a quantifier out of a noun. It is type $<<e,t>,<<e,t>,t>>$: it takes the **restrictor** noun first, then the **scope** verb phrase.\n\n\\begin{derivation}\n[[every]] = lambda X.lambda Y.forall x[X(x) -> Y(x)] : <<e,t>,<<e,t>,t>>\n[[some]]  = lambda X.lambda Y.exists x[X(x) & Y(x)]  : <<e,t>,<<e,t>,t>>\n[[no]]    = lambda X.lambda Y.~exists x[X(x) & Y(x)] : <<e,t>,<<e,t>,t>>\n\\end{derivation}\n\nNote the connective: *every* joins restrictor and scope with the conditional $->$, while *some* and *no* use conjunction $&$.[^donkey] The determiner first combines with the noun to form a generalized quantifier of type $<<e,t>,t>$, which then takes the VP:\n\n\\begin{forest}\n[S{forall x[hobbit(x) -> drink(x)]}\n  [DP{lambda Y.forall x[hobbit(x) -> Y(x)]}\n    [D{lambda X.lambda Y.forall x[X(x) -> Y(x)]} every]\n    [NP{lambda x.hobbit(x)} hobbit]]\n  [VP{lambda x.drink(x)} drinks]]\n\\end{forest}\n\nThe same recipe scales to transitive verbs and to predicate nominals, as in (\\ref{det}) — only the VP that the quantifier consumes changes.\n\n\\ex<det> Every hobbit drinks.\n\\xe\n\n\\ex No elf fears Sauron.\n\\xe\n\n\\ex No orc is a ranger.\n\\xe\n\n[^donkey]: This restrictor–scope split is the heart of *generalized quantifier theory*: a determiner is a relation between two sets, the noun's denotation and the VP's.\n\n## 6.6 Negation and scope ambiguity\n\nWhen negation meets a quantifier, two readings can arise, depending on which element scopes over the other.[^scope] *Every hobbit doesn't love Gandalf* can mean either of (\\ref{scope}):\n\n\\ex<scope> Surface, $forall > ~$ : $forall x[hobbit(x) -> ~love(x,g)]$ — every hobbit fails to love him.\n\\xe\n\n\\ex Inverse, $~ > forall$ : $~forall x[hobbit(x) -> love(x,g)]$ — not all hobbits do.\n\\xe\n\nSentential negation sits **above** the clause — $not [S ...]$ — giving the wide-scope $~forall$ reading; VP negation sits **inside** the clause, giving $forall~$. COMPOSE supplies a separate tree for each reading, so derive the one named in the exercise.\n\n[^scope]: A *scope ambiguity* is one string with two distinct logical forms. The surface tree fixes one reading; the other requires negation to take scope it does not have on the surface."
+    "markdown": "# Chapter 6 · Quantifiers\n\nA name denotes an individual, type `e`. No single individual is *everyone*, so\nquantifiers live one type up, as functions over predicates.\n\n## 6.4 Generalised quantifiers\n\nA quantifier is a property of properties, type `⟨⟨e,t⟩,t⟩`: it takes a\nverb-phrase meaning `⟨e,t⟩` and returns a truth value. *everything* ↝\n`λP . ∀x[P(x)]`, *something* ↝ `λP . ∃x[P(x)]`, *nothing* ↝ `λP . ¬∃x[P(x)]`.\n\nGroup A: these are complete quantifiers, so each applies to the predicate\ndirectly by FA.\n\n## 6.4.2 Quantificational determiners\n\nA determiner builds a quantifier out of a noun, type `⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩`,\ntaking the restrictor noun first and the scope predicate second: *every* ↝\n`λX . λY . ∀x[X(x) → Y(x)]`, *some* ↝ `λX . λY . ∃x[X(x) ∧ Y(x)]`, *no* ↝\n`λX . λY . ¬∃x[X(x) ∧ Y(x)]`. *every* joins restrictor to scope with →, *some*\nand *no* with ∧. The restrictor-scope split is the core of generalised\nquantifier theory: a determiner relates two sets.\n\nGroup B: the determiner combines with the noun to give a `⟨⟨e,t⟩,t⟩`\nquantifier, which then takes the VP.\n\nGroup C: the same recipe with a transitive verb and with a predicate nominal.\nOnly the consumed VP changes.\n\n## 6.6 Negation and scope ambiguity\n\nA quantifier and negation can stand in either scope relation. Sentential\nnegation sits above the clause and gives `¬∀`; VP negation sits inside it and\ngives `∀¬`. A scope ambiguity is one string with two logical forms.\n\nGroup D: COMPOSE supplies a separate tree per reading, so derive the one the\nitem names.\n"
   }
 }

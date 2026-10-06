@@ -335,7 +335,7 @@
         "exercises": [
           {
             "title": "A. Intransitive verbs",
-            "instructions": "A subject of type e combines with an intransitive verb of type ⟨e,t⟩ by Function Application, yielding a proposition of type t.",
+            "instructions": "A subject of type e combines with an intransitive verb of type ⟨e,t⟩ by Function Application, giving type t.",
             "items": [
               {
                 "sentence": "Frodo runs.",
@@ -387,7 +387,7 @@
           },
           {
             "title": "B. Transitive and ditransitive verbs",
-            "instructions": "A transitive verb ⟨e,⟨e,t⟩⟩ takes its object first, then its subject. A ditransitive verb takes three arguments in turn; here \"the ring\" is treated as a single individual of type e (definite descriptions come in §8).",
+            "instructions": "A transitive verb ⟨e,⟨e,t⟩⟩ takes its object first, then its subject. A ditransitive verb takes three arguments in turn. Here \"the ring\" is a single individual of type e; definite descriptions come in §8.",
             "items": [
               {
                 "sentence": "Bilbo loves Frodo.",
@@ -439,7 +439,7 @@
           },
           {
             "title": "C. The copula",
-            "instructions": "The copula \"is\" and the article \"a\" are the identity function λX.X. They pass the predicate up unchanged, and the predicate applies to the subject.",
+            "instructions": "The copula \"is\" and the article \"a\" are both the identity function λX.X. They pass the predicate up unchanged, and it applies to the subject.",
             "items": [
               {
                 "sentence": "Frodo is a hobbit.",
@@ -491,7 +491,7 @@
           },
           {
             "title": "D. Prepositions",
-            "instructions": "A preposition is a relation of type ⟨e,⟨e,t⟩⟩, like a transitive verb. It combines with its complement to form a predicate ⟨e,t⟩, which the copula passes up to the subject.",
+            "instructions": "A preposition is a relation of type ⟨e,⟨e,t⟩⟩, like a transitive verb. It combines with its complement to form a predicate ⟨e,t⟩, which the copula relays to the subject.",
             "items": [
               {
                 "sentence": "Sam is with Frodo.",
@@ -543,7 +543,7 @@
           },
           {
             "title": "E. Negation",
-            "instructions": "Negation is type ⟨⟨e,t⟩,⟨e,t⟩⟩: it takes a predicate and returns its complement. \"doesn't\" negates a verb phrase; \"not\" after the copula negates the predicate nominal.",
+            "instructions": "Predicate negation is type ⟨⟨e,t⟩,⟨e,t⟩⟩ and returns the complement of its predicate. The word \"doesn't\" negates a verb phrase; \"not\" after the copula negates the predicate nominal.",
             "items": [
               {
                 "sentence": "Frodo doesn't fight.",
@@ -596,7 +596,7 @@
         ],
         "reading": {
           "format": "latex",
-          "markdown": "# Chapter 6 · Function Application\n\nFrege's insight is that a verb phrase is *unsaturated*: `loves Frodo` is a meaning with a hole in it, waiting for a subject. The guiding hypothesis of this chapter is that meanings combine in essentially **one** way — a function meets its argument and fills the hole.\n\nWe translate each English word into the typed lambda calculus, give every node in the tree a semantic **type**, and let two composition rules do all the work.\n\n## 6.1 Function Application\n\nThere are two basic types: $e$ for individuals and $t$ for truth values. A one-place predicate is a function from individuals to truth values, written $<e,t>$.\n\n**Function Application (FA).** If a branching node has two daughters — one of type $<s,t>$ and the other of type $s$ — the mother denotes the result of applying the first to the second, and has type $t$.[^order]\n\n**Non-branching Nodes (NN).** A node with a single daughter simply inherits that daughter's denotation.\n\nAn intransitive verb is type $<e,t>$ and a subject name is type $e$, so the two meet directly by FA:\n\n\\begin{derivation}\n[[runs]]       = lambda x.run(x)  : <e,t>\n[[Frodo]]      = f                : e\n[[Frodo runs]] = run(f)           : t\n\\end{derivation}\n\n\\begin{forest}\n[S{run(f)}\n  [DP{f} Frodo]\n  [VP{lambda x.run(x)} runs]]\n\\end{forest}\n\nSo *Frodo runs* is true exactly when $f$ belongs to the set of runners. Every sentence in (\\ref{intrans}) has this same shape.\n\n\\ex<intrans> Frodo runs.\n\\xe\n\n\\ex Strider hikes.\n\\xe\n\n\\ex * Runs Frodo.\n\\xe\n\n[^order]: $s$ and $t$ here are *any* types, not just the truth-value type — they range over whatever the two daughters happen to be. FA only cares that one daughter's input type matches the other daughter's type.\n\n## 6.2 Transitive and ditransitive verbs\n\nA transitive verb wants two arguments, so it is type $<e,<e,t>>$ — a function that takes the **object** first and returns a one-place predicate:\n\n\\begin{derivation}\n[[loves]]              = lambda y.lambda x.love(x,y) : <e,<e,t>>\n[[loves Frodo]]        = lambda x.love(x,f)          : <e,t>\n[[Bilbo loves Frodo]]  = love(bi,f)                  : t\n\\end{derivation}\n\n\\begin{forest}\n[S{love(bi,f)}\n  [DP{bi} Bilbo]\n  [VP{lambda x.love(x,f)}\n    [V{lambda y.lambda x.love(x,y)} loves]\n    [DP{f} Frodo]]]\n\\end{forest}\n\nThe object saturates the inner $lambda y$; the subject saturates the outer $lambda x$ at the top node. A ditransitive verb such as *gives* is type $<e,<e,<e,t>>>$ and peels off three arguments in turn, innermost first.\n\n## 6.2.2 The copula and predication\n\nWords like *is* and the article *a* carry no content of their own: each is the identity function $lambda X.X$, of type $<<e,t>,<e,t>>$. They pass a predicate up the tree untouched, so the predicate ends up applying to the subject:\n\n\\begin{derivation}\n[[is]] = [[a]]         = lambda X.X         : <<e,t>,<e,t>>\n[[hobbit]]             = lambda x.hobbit(x) : <e,t>\n[[Frodo is a hobbit]]  = hobbit(f)          : t\n\\end{derivation}\n\nA predicate adjective behaves the same way: *Sam is brave* reduces all the way to $brave(s)$.\n\n## 6.2.3 Prepositions\n\nA preposition is a relation between two individuals, type $<e,<e,t>>$ — structurally just like a transitive verb. It combines with its complement to form a predicate, which the copula then relays to the subject:\n\n\\begin{derivation}\n[[with]]               = lambda y.lambda x.with(x,y) : <e,<e,t>>\n[[with Frodo]]         = lambda x.with(x,f)          : <e,t>\n[[Sam is with Frodo]]  = with(s,f)                   : t\n\\end{derivation}\n\n## 6.3 Negation\n\nPredicate negation is type $<<e,t>,<e,t>>$: it takes a predicate and returns its **complement** — the set of everything the predicate is false of.\n\n\\begin{derivation}\n[[doesnt]] = [[not]]      = lambda P.lambda x.~P(x) : <<e,t>,<e,t>>\n[[doesnt fight]]          = lambda x.~fight(x)      : <e,t>\n[[Frodo doesnt fight]]    = ~fight(f)               : t\n\\end{derivation}\n\n*doesn't* negates a verb phrase; *not* after the copula negates a predicate nominal or PP, as in (\\ref{neg}). Either way the result is the complement of the predicate it applies to.\n\n\\ex<neg> Frodo doesn't fight.\n\\xe\n\n\\ex Sauron is not a hobbit.\n\\xe\n\n\\ex Sauron is not in Rivendell.\n\\xe"
+          "markdown": "# Chapter 6 · Function Application\n\nMeanings combine in one way: a function meets its argument. Each word\ntranslates into the typed lambda calculus, every node carries a type, and two\ncomposition rules do the rest.\n\n## 6.1 Function Application\n\nTwo basic types: `e` for individuals, `t` for truth values. A one-place\npredicate is `⟨e,t⟩`.\n\n**FA** (§6.1): a branching node whose daughters are of type `⟨a,b⟩` and `a`\ndenotes the result of applying the first to the second, type `b`. **NN**: a\nnode with a single daughter inherits that daughter's denotation.\n\nGroup A: an intransitive verb `⟨e,t⟩` meets a subject name `e` directly.\n\n## 6.2 Transitive and ditransitive verbs\n\nA transitive verb is `⟨e,⟨e,t⟩⟩` and takes its object first. The object\nsaturates the inner λ, the subject the outer one. A ditransitive verb is\n`⟨e,⟨e,⟨e,t⟩⟩⟩` and peels off three arguments in turn, innermost first.\n\nGroup B: *the ring* is treated as a single individual of type `e`; definite\ndescriptions arrive in §8.\n\n## 6.2.2 The copula and predication\n\n*is* and the article *a* are each `λX . X`, type `⟨⟨e,t⟩,⟨e,t⟩⟩`. They pass a\npredicate up the tree untouched, so the predicate applies to the subject.\n\nGroup C: a predicate adjective composes the same way.\n\n## 6.2.3 Prepositions\n\nA preposition is a relation between individuals, `⟨e,⟨e,t⟩⟩`, like a transitive\nverb. It combines with its complement to form a predicate, which the copula\nrelays to the subject.\n\nGroup D: the group B shape with the copula on top.\n\n## 6.3 Negation\n\nPredicate negation is `⟨⟨e,t⟩,⟨e,t⟩⟩`: `λP . λx . ¬P(x)`, the complement of the\npredicate it applies to.\n\nGroup E: *doesn't* negates a verb phrase; *not* after the copula negates a\npredicate nominal or a PP.\n"
         }
       }
     },
@@ -891,7 +891,7 @@
         "exercises": [
           {
             "title": "A. Simple quantifiers",
-            "instructions": "\"Everything\", \"something\" and \"nothing\" are complete generalized quantifiers of type ⟨⟨e,t⟩,t⟩. They apply directly to the predicate — the first uses a copular predicate, the second a transitive verb, the third adds negation.",
+            "instructions": "The quantifiers \"everything\", \"something\" and \"nothing\" are complete generalised quantifiers of type ⟨⟨e,t⟩,t⟩ and apply to the predicate directly. The items use a copular predicate, a transitive verb, and negation in turn.",
             "items": [
               {
                 "sentence": "Everything is beautiful.",
@@ -917,8 +917,8 @@
             ]
           },
           {
-            "title": "B. Generalized quantifiers",
-            "instructions": "A determiner combines with a noun to form a generalized quantifier ⟨⟨e,t⟩,t⟩, which takes the VP as its argument. The third example layers in VP negation.",
+            "title": "B. Generalised quantifiers",
+            "instructions": "A determiner combines with a noun to form a generalised quantifier ⟨⟨e,t⟩,t⟩, which takes the VP as its argument. The third item adds VP negation.",
             "items": [
               {
                 "sentence": "Every hobbit drinks.",
@@ -945,7 +945,7 @@
           },
           {
             "title": "C. Quantifiers with transitive verbs",
-            "instructions": "A subject quantifier scopes over the clause. The later items fold in tools from earlier sections: VP negation, and a copular predicate nominal.",
+            "instructions": "A subject quantifier scopes over the clause. The later items add VP negation and a copular predicate nominal.",
             "items": [
               {
                 "sentence": "Every dwarf trusts Aragorn.",
@@ -972,11 +972,11 @@
           },
           {
             "title": "D. Scope ambiguity",
-            "instructions": "Negation and a universal quantifier can interact in two ways. Sentential (wide-scope) negation ¬∀ says the universal statement is false; VP (narrow-scope) negation ∀¬ says every individual fails. Derive the reading shown.",
+            "instructions": "Sentential negation gives ¬∀; VP negation gives ∀¬. Derive the reading the item names.",
             "items": [
               {
                 "sentence": "Not every hobbit loves Gandalf.",
-                "instructions": "Surface-scope reading only: negation takes wide scope.\n∀x[hobbit(x) → love(x,g)]",
+                "instructions": "Surface-scope reading only: negation takes wide scope.",
                 "tree": "[.S [.NegP [.Neg not ] [.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.V loves ] [.DP Gandalf ] ] ] ] ]",
                 "targets": [
                   "wide scope: ¬∀x[hobbit(x) → love(x, g)]"
@@ -987,7 +987,7 @@
               },
               {
                 "sentence": "Every hobbit doesn't love Gandalf.",
-                "instructions": "Two scope readings are possible. Derive each using the tree provided for that reading.",
+                "instructions": "Two scope readings are possible. Derive each on the tree provided for it.",
                 "tree": "[.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.Neg doesnt ] [.VP [.V love ] [.DP Gandalf ] ] ] ]",
                 "targets": [
                   "surface scope (∀ > ¬): ∀x[hobbit(x) → ¬love(x, g)]",
@@ -1022,7 +1022,7 @@
         ],
         "reading": {
           "format": "latex",
-          "markdown": "# Chapter 6 · Quantifiers\n\nA name denotes an individual — type $e$. But *everyone* does not pick out any single individual: no one person *is* everyone. Quantifiers therefore live one type up, as functions over predicates.\n\n## 6.4 Generalized quantifiers\n\nA quantifier is a **property of properties**: type $<<e,t>,t>$. It takes a verb-phrase meaning of type $<e,t>$ and returns a truth value.\n\n\\begin{derivation}\n[[everything]] = lambda P.forall x[P(x)]  : <<e,t>,t>\n[[something]]  = lambda P.exists x[P(x)]  : <<e,t>,t>\n[[nothing]]    = lambda P.~exists x[P(x)] : <<e,t>,t>\n\\end{derivation}\n\nBecause it is already a complete quantifier, it applies **directly** to the predicate by Function Application:\n\n\\begin{forest}\n[S{forall x[beautiful(x)]}\n  [DP{lambda P.forall x[P(x)]} everything]\n  [VP{lambda x.beautiful(x)} is beautiful]]\n\\end{forest}\n\nSo the sentences in (\\ref{simple}) come out as $forall x[beautiful(x)]$ and $~exists x[love(x,n)]$ respectively — exactly the truth conditions we want.\n\n\\ex<simple> Everything is beautiful.\n\\xe\n\n\\ex Nothing loves Sauron.\n\\xe\n\n\\ex Something is not beautiful.\n\\xe\n\n## 6.4.2 Quantificational determiners\n\nA determiner like *every*, *some*, or *no* builds a quantifier out of a noun. It is type $<<e,t>,<<e,t>,t>>$: it takes the **restrictor** noun first, then the **scope** verb phrase.\n\n\\begin{derivation}\n[[every]] = lambda X.lambda Y.forall x[X(x) -> Y(x)] : <<e,t>,<<e,t>,t>>\n[[some]]  = lambda X.lambda Y.exists x[X(x) & Y(x)]  : <<e,t>,<<e,t>,t>>\n[[no]]    = lambda X.lambda Y.~exists x[X(x) & Y(x)] : <<e,t>,<<e,t>,t>>\n\\end{derivation}\n\nNote the connective: *every* joins restrictor and scope with the conditional $->$, while *some* and *no* use conjunction $&$.[^donkey] The determiner first combines with the noun to form a generalized quantifier of type $<<e,t>,t>$, which then takes the VP:\n\n\\begin{forest}\n[S{forall x[hobbit(x) -> drink(x)]}\n  [DP{lambda Y.forall x[hobbit(x) -> Y(x)]}\n    [D{lambda X.lambda Y.forall x[X(x) -> Y(x)]} every]\n    [NP{lambda x.hobbit(x)} hobbit]]\n  [VP{lambda x.drink(x)} drinks]]\n\\end{forest}\n\nThe same recipe scales to transitive verbs and to predicate nominals, as in (\\ref{det}) — only the VP that the quantifier consumes changes.\n\n\\ex<det> Every hobbit drinks.\n\\xe\n\n\\ex No elf fears Sauron.\n\\xe\n\n\\ex No orc is a ranger.\n\\xe\n\n[^donkey]: This restrictor–scope split is the heart of *generalized quantifier theory*: a determiner is a relation between two sets, the noun's denotation and the VP's.\n\n## 6.6 Negation and scope ambiguity\n\nWhen negation meets a quantifier, two readings can arise, depending on which element scopes over the other.[^scope] *Every hobbit doesn't love Gandalf* can mean either of (\\ref{scope}):\n\n\\ex<scope> Surface, $forall > ~$ : $forall x[hobbit(x) -> ~love(x,g)]$ — every hobbit fails to love him.\n\\xe\n\n\\ex Inverse, $~ > forall$ : $~forall x[hobbit(x) -> love(x,g)]$ — not all hobbits do.\n\\xe\n\nSentential negation sits **above** the clause — $not [S ...]$ — giving the wide-scope $~forall$ reading; VP negation sits **inside** the clause, giving $forall~$. COMPOSE supplies a separate tree for each reading, so derive the one named in the exercise.\n\n[^scope]: A *scope ambiguity* is one string with two distinct logical forms. The surface tree fixes one reading; the other requires negation to take scope it does not have on the surface."
+          "markdown": "# Chapter 6 · Quantifiers\n\nA name denotes an individual, type `e`. No single individual is *everyone*, so\nquantifiers live one type up, as functions over predicates.\n\n## 6.4 Generalised quantifiers\n\nA quantifier is a property of properties, type `⟨⟨e,t⟩,t⟩`: it takes a\nverb-phrase meaning `⟨e,t⟩` and returns a truth value. *everything* ↝\n`λP . ∀x[P(x)]`, *something* ↝ `λP . ∃x[P(x)]`, *nothing* ↝ `λP . ¬∃x[P(x)]`.\n\nGroup A: these are complete quantifiers, so each applies to the predicate\ndirectly by FA.\n\n## 6.4.2 Quantificational determiners\n\nA determiner builds a quantifier out of a noun, type `⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩`,\ntaking the restrictor noun first and the scope predicate second: *every* ↝\n`λX . λY . ∀x[X(x) → Y(x)]`, *some* ↝ `λX . λY . ∃x[X(x) ∧ Y(x)]`, *no* ↝\n`λX . λY . ¬∃x[X(x) ∧ Y(x)]`. *every* joins restrictor to scope with →, *some*\nand *no* with ∧. The restrictor-scope split is the core of generalised\nquantifier theory: a determiner relates two sets.\n\nGroup B: the determiner combines with the noun to give a `⟨⟨e,t⟩,t⟩`\nquantifier, which then takes the VP.\n\nGroup C: the same recipe with a transitive verb and with a predicate nominal.\nOnly the consumed VP changes.\n\n## 6.6 Negation and scope ambiguity\n\nA quantifier and negation can stand in either scope relation. Sentential\nnegation sits above the clause and gives `¬∀`; VP negation sits inside it and\ngives `∀¬`. A scope ambiguity is one string with two logical forms.\n\nGroup D: COMPOSE supplies a separate tree per reading, so derive the one the\nitem names.\n"
         }
       }
     },
@@ -1297,7 +1297,7 @@
         "exercises": [
           {
             "title": "A. Intersective adjectives with copula",
-            "instructions": "An intersective adjective is a predicate ⟨e,t⟩. Two predicates sisters in NP combine by Predicate Modification: λx.[F(x) ∧ G(x)]. The copula passes the result up unchanged. The third adds a quantifier as complication.",
+            "instructions": "An intersective adjective is a predicate ⟨e,t⟩. Two ⟨e,t⟩ sisters in NP combine by Predicate Modification: λx.[F(x) ∧ G(x)]. The copula passes the result up unchanged. The third item adds a quantifier.",
             "items": [
               {
                 "sentence": "Pippin is a mischievous hobbit.",
@@ -1349,7 +1349,7 @@
           },
           {
             "title": "B. Stacked adjectives",
-            "instructions": "Multiple intersective adjectives stack by repeated Predicate Modification. Each AP adds its predicate conjunctively. The third example adds sentential negation.",
+            "instructions": "Intersective adjectives stack by repeated Predicate Modification, each AP adding one conjunct. The third item adds sentential negation.",
             "items": [
               {
                 "sentence": "Tom is a mischievous magical creature.",
@@ -1401,13 +1401,13 @@
           },
           {
             "title": "C. Non-intersective adjectives",
-            "instructions": "Non-intersective adjectives like \"alleged\" and \"former\" are predicate modifiers ⟨⟨e,t⟩,⟨e,t⟩⟩ — they take a property and return a property, without entailing the base noun. They combine by Function Application, not PM.",
+            "instructions": "The adjectives \"alleged\" and \"former\" are predicate modifiers of type ⟨⟨e,t⟩,⟨e,t⟩⟩, taking a property and returning a property with no entailment to the base noun. They combine by Function Application.",
             "items": [
               {
                 "sentence": "Strider is an alleged king.",
                 "tree": "[.S [.DP Strider ] [.VP [.V is ] [.NP [.D an ] [.NP [.AP alleged ] [.NP king ] ] ] ] ]",
                 "reading": {
-                  "section": "7.2.1"
+                  "section": "7.1"
                 },
                 "targets": [
                   "alleged(λx.king(x), st)"
@@ -1422,7 +1422,7 @@
                 "sentence": "Bilbo is a former traveling hobbit.",
                 "tree": "[.S [.DP Bilbo ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP former ] [.NP [.AP traveling ] [.NP hobbit ] ] ] ] ] ]",
                 "reading": {
-                  "section": "7.2.1"
+                  "section": "7.1"
                 },
                 "targets": [
                   "former(λx.traveling(x) ∧ hobbit(x), bi)"
@@ -1437,7 +1437,7 @@
                 "sentence": "Some alleged wise wizard sees Sauron.",
                 "tree": "[.S [.DP [.D some ] [.NP [.AP alleged ] [.NP [.AP wise ] [.NP wizard ] ] ] ] [.VP [.V sees ] [.DP Sauron ] ] ]",
                 "reading": {
-                  "section": "7.2.1"
+                  "section": "7.1"
                 },
                 "targets": [
                   "∃x.alleged(λx.wise(x) ∧ wizard(x), x) ∧ see(x, n)"
@@ -1454,7 +1454,7 @@
         ],
         "reading": {
           "format": "latex",
-          "markdown": "# Chapter 7 · Predicate Modification\n\nChapter 6 established **Function Application** as the core composition rule. Chapter 7 adds a second rule — **Predicate Modification** — for adjective–noun combinations, and widens the type inventory to include predicate modifiers ⟨⟨e,t⟩,⟨e,t⟩⟩.\n\n## 7.2 Predicate Modification\n\n**Predicate Modification (PM).** If two sisters α and β are both type ⟨e,t⟩, their mother denotes λx.[α(x) ∧ β(x)].\n\nAn *intersective* adjective is a plain one-place predicate. It shares type ⟨e,t⟩ with the noun, so the two sisters combine by PM. The determiner *a/an* and copula *is/are* are identity functions that pass their sister's denotation straight up.\n\n\\ex<pm-ex> Pippin is a mischievous hobbit.\n\\xe\n\n\\ex Tom is not a mundane creature.\n\\xe\n\n\\ex Every traveling hobbit is a brave creature.\n\\xe\n\n\\begin{derivation}\n[[mischievous]]                     = lambda x.mischievous(x)                      : <e,t>\n[[hobbit]]                          = lambda x.hobbit(x)                           : <e,t>\n[[mischievous hobbit]]              = lambda x.mischievous(x) /\\ hobbit(x)         : <e,t>\n[[a]]                               = lambda X.X                                   : <<e,t>,<e,t>>\n[[a mischievous hobbit]]            = lambda x.mischievous(x) /\\ hobbit(x)         : <e,t>\n[[is]]                              = lambda X.X                                   : <<e,t>,<e,t>>\n[[is a mischievous hobbit]]         = lambda x.mischievous(x) /\\ hobbit(x)         : <e,t>\n[[Pippin is a mischievous hobbit]]  = mischievous(pi) /\\ hobbit(pi)                : t\n\\end{derivation}\n\n\\begin{forest}\n[S{mischievous(pi) /\\ hobbit(pi)}\n  [DP{pi} Pippin]\n  [VP{lambda x.mischievous(x) /\\ hobbit(x)}\n    [V{lambda X.X} is]\n    [NP{lambda x.mischievous(x) /\\ hobbit(x)}\n      [D{lambda X.X} a]\n      [NP{lambda x.mischievous(x) /\\ hobbit(x)}\n        [AP{lambda x.mischievous(x)} mischievous]\n        [NP{lambda x.hobbit(x)} hobbit]]]]]\n\\end{forest}\n\nNegation applies after the VP is assembled: `⟦not⟧` = λP.λx.¬P(x), so *is not a mundane creature* = λx.¬[mundane(x) ∧ creature(x)].\n\nMultiple intersective adjectives stack by repeated PM. Each AP sister adds one conjunct (\\ref{stack}):\n\n\\ex<stack> Tom is a mischievous magical creature.\n\\xe\n\n\\ex Strider is not a human ranger.\n\\xe\n\n\\ex No traveling hobbit is a mischievous brave creature.\n\\xe\n\n\\begin{derivation}\n[[mischievous magical creature]] = lambda x.mischievous(x) /\\ magical(x) /\\ creature(x) : <e,t>\n\\end{derivation}\n\nWhen the subject is a quantifier, PM assembles the predicate first; then the determiner applies by FA:\n\n\\begin{derivation}\n[[every]]                               = lambda X.lambda Y.forall x[X(x) -> Y(x)]              : <<e,t>,<<e,t>,t>>\n[[traveling hobbit]]                    = lambda x.traveling(x) /\\ hobbit(x)                    : <e,t>\n[[every traveling hobbit]]              = lambda Y.forall x[(traveling(x) /\\ hobbit(x)) -> Y(x)] : <<e,t>,t>\n[[brave creature]]                      = lambda x.brave(x) /\\ creature(x)                      : <e,t>\n[[Every traveling hobbit is a brave creature]] = forall x[(traveling(x) /\\ hobbit(x)) -> (brave(x) /\\ creature(x))] : t\n\\end{derivation}\n\n## 7.2.1 Non-intersective adjectives\n\n*Alleged* and *former* are not intersective: an alleged king need not be a king; a former hobbit is no longer one. These adjectives are **predicate modifiers** of type ⟨⟨e,t⟩,⟨e,t⟩⟩ — they take a property and return a (possibly weaker) property. Because one daughter is ⟨⟨e,t⟩,⟨e,t⟩⟩ and the other ⟨e,t⟩, they combine by **FA** — PM would fail since the daughters are not the same type.\n\n\\ex<nonintersect> Strider is an alleged king.\n\\xe\n\n\\ex Bilbo is a former traveling hobbit.\n\\xe\n\n\\ex Some alleged wise wizard sees Sauron.\n\\xe\n\n\\begin{derivation}\n[[alleged]]                    = lambda F.lambda x.alleged(F)(x)    : <<e,t>,<e,t>>\n[[king]]                       = lambda x.king(x)                   : <e,t>\n[[alleged king]]               = lambda x.alleged(king)(x)          : <e,t>\n[[Strider is an alleged king]] = alleged(king)(st)                  : t\n\n[[former]]                           = lambda F.lambda x.former(F)(x)               : <<e,t>,<e,t>>\n[[traveling hobbit]]                 = lambda x.traveling(x) /\\ hobbit(x)           : <e,t>\n[[former traveling hobbit]]          = lambda x.former(lambda x.traveling(x) /\\ hobbit(x))(x) : <e,t>\n[[Bilbo is a former traveling hobbit]] = former(lambda x.traveling(x) /\\ hobbit(x))(bi) : t\n\\end{derivation}\n\nThe notation `alleged(king)(x)` treats *alleged* as mapping the property `king` to a new property, then applying to an individual. No entailment that the individual satisfies `king` is triggered.[^nonintersect]\n\n[^nonintersect]: *Former* works the same way but adds a temporal flavour: `former(P)(x)` means x once had property P but no longer does. Both predicates are opaque to their nominal argument."
+          "markdown": "# Chapter 7 · Predicate Modification\n\nChapter 7 extends the chapter 6 fragment with three composition rules:\nPredicate Modification, Predicate Abstraction, and Pronouns and Traces. This\nset uses the first. §7.1 sorts adjectives by their entailments, §7.2 states the\nrule.\n\n## 7.2 Predicate Modification\n\nAn adjective and a noun are both `⟨e,t⟩`, which no chapter 6 rule combines.\n\n**PM** (§7.2): if a node's only two subtrees translate as `α′` and `β′`, both\nof type `⟨e,t⟩`, the node denotes `λu.[α′(u) ∧ β′(u)]`, for `u` a type-`e`\nvariable free in neither. The book notes that Intersective Modification would\nbe a more fitting name.\n\nAn intersective adjective is a plain `⟨e,t⟩` predicate, and the modified noun\ndenotes the intersection of the two sets. The copula and article are identity\nfunctions, `λP . P`, so the conjoined predicate passes up unchanged. Negation\nis the fragment's predicate negation, `λP . λx . ¬P(x)`.\n\nGroup A: *mischievous hobbit* composes by PM; the copula and *a* relay it to\nthe subject. The third item adds a quantifier.\n\nGroup B: stacked adjectives iterate PM, each AP sister adding one conjunct.\nThe third item adds sentential negation.\n\n## 7.1 Non-intersective adjectives\n\n§7.1 classifies adjectives by entailment pattern. Subsective adjectives fail\nthe cross-predicate inference: *outstanding physicist* picks out a subset of\nthe physicists, with no appeal to a fixed set of outstanding things. Adjectives like *alleged*, *former*, *counterfeit* and *fake* are\nneither intersective nor subsective: *an alleged murderer* does not entail *a\nmurderer*. A subclass of these is privative, mapping sets to disjoint sets, so\nthat no fake gun is a real gun.\n\nThe book gives such adjectives type `⟨⟨e,t⟩,⟨e,t⟩⟩`, composing by FA, with the\nsubsectivity entailment left to a meaning postulate. This set spells that type\nout: *alleged* ↝ `λF . λx . alleged(F)(x)`.\n\nGroup C: PM cannot apply, since the daughters are not both `⟨e,t⟩`. FA maps the\nproperty to a new property, and no entailment to the base noun follows.\n"
         }
       }
     },
@@ -1725,7 +1725,7 @@
         "exercises": [
           {
             "title": "A. MOD: predicative to attributive",
-            "instructions": "An intersective adjective ⟨e,t⟩ can be shifted to a modifier ⟨⟨e,t⟩,⟨e,t⟩⟩ by MOD, then combined with the noun by Function Application. Apply MOD to the adjective, then use FA to combine with the noun.",
+            "instructions": "MOD shifts an intersective adjective ⟨e,t⟩ to a modifier ⟨⟨e,t⟩,⟨e,t⟩⟩. Apply MOD to the adjective, then combine with the noun by Function Application.",
             "items": [
               {
                 "sentence": "Pippin is a mischievous hobbit.",
@@ -1765,13 +1765,13 @@
           },
           {
             "title": "B. Stacked MOD",
-            "instructions": "Stack two adjective shifts: apply MOD to each adjective in turn, combine each with the noun by FA. The third adds negation.",
+            "instructions": "Apply MOD to each adjective in turn and combine each with the noun by FA. The third item adds negation.",
             "items": [
               {
                 "sentence": "Tom is a mischievous magical creature.",
                 "tree": "[.S [.DP Tom ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP mischievous ] [.NP [.AP magical ] [.NP creature ] ] ] ] ] ]",
                 "reading": {
-                  "section": "7.2.1"
+                  "section": "7.2"
                 },
                 "targets": [
                   "mischievous(tm) ∧ magical(tm) ∧ creature(tm)"
@@ -1782,7 +1782,7 @@
                 "sentence": "Strider is not a human ranger.",
                 "tree": "[.S [.DP Strider ] [.VP [.Neg not ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP human ] [.NP ranger ] ] ] ] ] ]",
                 "reading": {
-                  "section": "7.2.1"
+                  "section": "7.2"
                 },
                 "targets": [
                   "¬(human(st) ∧ ranger(st))"
@@ -1793,7 +1793,7 @@
                 "sentence": "No traveling hobbit is a mischievous brave creature.",
                 "tree": "[.S [.DP [.D no ] [.NP [.AP traveling ] [.NP hobbit ] ] ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP mischievous ] [.NP [.AP brave ] [.NP creature ] ] ] ] ] ]",
                 "reading": {
-                  "section": "7.2.1"
+                  "section": "7.2"
                 },
                 "targets": [
                   "¬(∃x.traveling(x) ∧ hobbit(x) ∧ mischievous(x) ∧ brave(x) ∧ creature(x))"
@@ -1805,13 +1805,13 @@
           },
           {
             "title": "C. Non-intersective adjectives via FA",
-            "instructions": "Non-intersective adjectives are already modifiers ⟨⟨e,t⟩,⟨e,t⟩⟩ — no MOD shift needed. They take the nominal predicate directly by FA.",
+            "instructions": "The adjectives \"alleged\" and \"former\" are already modifiers of type ⟨⟨e,t⟩,⟨e,t⟩⟩, so no MOD shift applies. They take the nominal predicate directly by FA.",
             "items": [
               {
                 "sentence": "Strider is an alleged king.",
                 "tree": "[.S [.DP Strider ] [.VP [.V is ] [.NP [.D an ] [.NP [.AP alleged ] [.NP king ] ] ] ] ]",
                 "reading": {
-                  "section": "7.2.2"
+                  "section": "7.1"
                 },
                 "targets": [
                   "alleged(λx.king(x), st)"
@@ -1822,7 +1822,7 @@
                 "sentence": "Bilbo is a former traveling hobbit.",
                 "tree": "[.S [.DP Bilbo ] [.VP [.V is ] [.NP [.D a ] [.NP [.AP former ] [.NP [.AP traveling ] [.NP hobbit ] ] ] ] ] ]",
                 "reading": {
-                  "section": "7.2.2"
+                  "section": "7.1"
                 },
                 "targets": [
                   "former(λx.traveling(x) ∧ hobbit(x), bi)"
@@ -1833,7 +1833,7 @@
                 "sentence": "Some alleged wise wizard sees Sauron.",
                 "tree": "[.S [.DP [.D some ] [.NP [.AP alleged ] [.NP [.AP wise ] [.NP wizard ] ] ] ] [.VP [.V sees ] [.DP Sauron ] ] ]",
                 "reading": {
-                  "section": "7.2.2"
+                  "section": "7.1"
                 },
                 "targets": [
                   "∃x.alleged(λx.wise(x) ∧ wizard(x), x) ∧ see(x, n)"
@@ -1846,17 +1846,17 @@
         ],
         "reading": {
           "format": "latex",
-          "markdown": "# Chapter 7 · Adjective Type-Shifting (MOD)\n\nThe same adjective–noun denotation can be reached by two routes. **Predicate Modification** treats both sisters as ⟨e,t⟩ and conjoins them directly. The **MOD type-shift** instead raises an intersective adjective to type ⟨⟨e,t⟩,⟨e,t⟩⟩, letting it combine with the noun by ordinary **Function Application**.\n\n## 7.2 The MOD shift\n\n**Type-Shifting Rule — MOD.** If α has type ⟨e,t⟩, it also has a derived translation of type ⟨⟨e,t⟩,⟨e,t⟩⟩:\n\n$$\\text{MOD}(\\alpha) = \\lambda P.\\lambda x.[\\alpha(x) \\wedge P(x)]$$\n\nThe shifted adjective takes the noun as its FA argument, returning the intersective conjunction. The result is identical to applying PM directly.\n\n\\ex<mod-ex> Pippin is a mischievous hobbit.\n\\xe\n\n\\ex Tom is not a mundane creature.\n\\xe\n\n\\ex Every traveling hobbit is a brave creature.\n\\xe\n\n\\begin{derivation}\n[[mischievous]]                    = lambda x.mischievous(x)                              : <e,t>\nMOD([[mischievous]])               = lambda P.lambda x.mischievous(x) /\\ P(x)             : <<e,t>,<e,t>>\n[[hobbit]]                         = lambda x.hobbit(x)                                   : <e,t>\n[[mischievous hobbit]]             = lambda x.mischievous(x) /\\ hobbit(x)                 : <e,t>\n[[Pippin is a mischievous hobbit]] = mischievous(pi) /\\ hobbit(pi)                        : t\n\\end{derivation}\n\nThe derivation produces exactly the same truth conditions as the PM route. MOD is a **silent operator** — it has no phonological form but a definite semantic effect, lifting the adjective's type so FA can apply.\n\n## 7.2.1 Stacking via MOD\n\nMultiple adjectives each undergo MOD in turn, applying to the growing nominal predicate one at a time.\n\n\\ex<stack-mod> Tom is a mischievous magical creature.\n\\xe\n\n\\ex Strider is not a human ranger.\n\\xe\n\n\\begin{derivation}\nMOD([[mischievous]])           = lambda P.lambda x.mischievous(x) /\\ P(x)         : <<e,t>,<e,t>>\nMOD([[magical]])               = lambda P.lambda x.magical(x) /\\ P(x)              : <<e,t>,<e,t>>\n[[creature]]                   = lambda x.creature(x)                              : <e,t>\n[[magical creature]]           = lambda x.magical(x) /\\ creature(x)               : <e,t>\n[[mischievous magical creature]] = lambda x.mischievous(x) /\\ magical(x) /\\ creature(x) : <e,t>\n\\end{derivation}\n\nThe innermost adjective applies first (its MOD-shifted form takes the bare noun), then the outer MOD-shifted adjective takes the result — each step is FA.\n\nWhen the subject is a quantifier, the MOD-derived predicate serves as the VP restriction exactly as in PM:\n\n\\begin{derivation}\n[[every]]                               = lambda X.lambda Y.forall x[X(x) -> Y(x)]              : <<e,t>,<<e,t>,t>>\n[[traveling hobbit]]                    = lambda x.traveling(x) /\\ hobbit(x)                    : <e,t>\n[[every traveling hobbit]]              = lambda Y.forall x[(traveling(x) /\\ hobbit(x)) -> Y(x)] : <<e,t>,t>\n[[brave creature]]                      = lambda x.brave(x) /\\ creature(x)                      : <e,t>\n[[Every traveling hobbit is a brave creature]] = forall x[(traveling(x) /\\ hobbit(x)) -> (brave(x) /\\ creature(x))] : t\n\\end{derivation}\n\n## 7.2.2 Non-intersective adjectives\n\nNon-intersective adjectives like *alleged* and *former* are **lexically** type ⟨⟨e,t⟩,⟨e,t⟩⟩ — they do not start as ⟨e,t⟩ and therefore do not undergo MOD. They take the nominal predicate directly by FA, exactly as in the PM set.\n\n\\ex<nonintersect-ts> Strider is an alleged king.\n\\xe\n\n\\ex Bilbo is a former traveling hobbit.\n\\xe\n\n\\ex Some alleged wise wizard sees Sauron.\n\\xe\n\n\\begin{derivation}\n[[alleged]]       = lambda F.lambda x.alleged(F)(x)    : <<e,t>,<e,t>>\n[[former]]        = lambda F.lambda x.former(F)(x)     : <<e,t>,<e,t>>\n[[alleged king]]  = lambda x.alleged(king)(x)          : <e,t>  (FA — no MOD)\n\\end{derivation}\n\nThe diagnostic: an adjective open to MOD is one that can appear *predicatively* (*Pippin is mischievous*); non-intersective adjectives resist purely predicative uses with their opaque reading.[^diag]\n\n[^diag]: *The king is former* is at best odd; *former* needs a nominal complement to make sense. This correlates with its lexical type: it is a modifier, not a predicate."
+          "markdown": "# Chapter 7 · Adjective type-shifting (MOD)\n\nThe chapter 7 adjective denotations by a second route. §7.2 gives it in a\nfootnote: an equivalent result is achievable without a new composition rule,\nvia a type-shifting rule. Type-shifting is taken up in earnest at §7.4.1.\n\n## 7.2 The MOD type-shift\n\n**MOD** (§7.2): maps an adjective `α′` of type `⟨e,t⟩` to\n`λP . λx . [α′(x) ∧ P(x)]`, type `⟨⟨e,t⟩,⟨e,t⟩⟩`, so that it combines with the\nnoun by FA. The truth conditions match the PM route, and the book states that\nnothing in what follows depends on choosing one over the other.\n\nEngine note: the book writes ⇑NAME on a node where a type-shift has applied;\nhere MOD applies at the AP node and the bracketing does not change.\n\nGroup A: apply MOD to the adjective, then FA with the noun.\n\nGroup B: each adjective undergoes MOD in turn and every step is FA. The\ninnermost shifted adjective takes the bare noun, the outer one takes the\nresult. The third item adds negation.\n\n## 7.1 Non-intersective adjectives\n\n*alleged* and *former* are neither intersective nor subsective, and the book\ngives them type `⟨⟨e,t⟩,⟨e,t⟩⟩` composing by FA. In this set they are lexically\nthat type, so they never start at `⟨e,t⟩` and MOD has nothing to apply to.\n\nMOD's inputs are the adjectives that also work predicatively, as in *Pippin is\nmischievous*. The non-subsective ones resist that frame: *a former millionaire*\nentails neither *a millionaire* nor *\\*Frida is former* (§7.1, Exercise 1).\n\nGroup C: take the nominal predicate directly by FA, with no shift.\n"
         }
       }
     },
     {
       "key": "ch7.3-relcl",
-      "title": "Relative Clauses (§7.3)",
+      "title": "Relative Clauses (§7.3.1)",
       "content": {
         "compose": 1,
         "id": "ch7-relcl",
-        "title": "Relative Clauses (§7.3)",
+        "title": "Relative Clauses (§7.3.1)",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -2120,7 +2120,7 @@
         "exercises": [
           {
             "title": "A. Subject gap relative clauses",
-            "instructions": "A relative clause with a subject gap: \"who drinks\" is λx.drink(x), combining with the head noun by PM. Items 2 and 3 add copular predicates and negation.",
+            "instructions": "The clause \"who drinks\" is λx.drink(x) and combines with the head noun by PM. Items 2 and 3 add copular predicates and negation.",
             "items": [
               {
                 "sentence": "wizard who drinks.",
@@ -2160,13 +2160,13 @@
           },
           {
             "title": "B. Object gap relative clauses",
-            "instructions": "A relative clause with an object gap uses Predicate Abstraction over the trace. Items 2 and 3 fold in negation and a prepositional phrase.",
+            "instructions": "An object-gap relative clause needs Predicate Abstraction over the trace. Items 2 and 3 add negation and a prepositional phrase.",
             "items": [
               {
                 "sentence": "hobbit who Gandalf loves.",
                 "tree": "[.NP [.NP hobbit ] [.CP [.C who ] [.LP 1 [.S [.DP Gandalf ] [.VP [.V loves ] [.DP t1 ] ] ] ] ] ]",
                 "reading": {
-                  "section": "7.3.2"
+                  "section": "7.3.1"
                 },
                 "targets": [
                   "λx.hobbit(x) ∧ love(g, x)"
@@ -2177,7 +2177,7 @@
                 "sentence": "human who Strider doesn't trust.",
                 "tree": "[.NP [.NP human ] [.CP [.C who ] [.LP 1 [.S [.DP Strider ] [.VP [.Neg doesnt ] [.VP [.V trusts ] [.DP t1 ] ] ] ] ] ] ]",
                 "reading": {
-                  "section": "7.3.2"
+                  "section": "7.3.1"
                 },
                 "targets": [
                   "λx.human(x) ∧ ¬trust(st, x)"
@@ -2188,7 +2188,7 @@
                 "sentence": "ranger who Frodo is with.",
                 "tree": "[.NP [.NP ranger ] [.CP [.C who ] [.LP 1 [.S [.DP Frodo ] [.VP [.V is ] [.PP [.P with ] [.DP t1 ] ] ] ] ] ] ]",
                 "reading": {
-                  "section": "7.3.2"
+                  "section": "7.3.1"
                 },
                 "targets": [
                   "λx.ranger(x) ∧ with(f, x)"
@@ -2200,13 +2200,13 @@
           },
           {
             "title": "C. Full sentences with relative clauses",
-            "instructions": "A relative clause restricts the domain of a quantifier or identifies an individual via the copula. Items 2 and 3 introduce quantifiers.",
+            "instructions": "A relative clause restricts a quantifier's domain or identifies an individual through the copula. Items 2 and 3 add quantifiers.",
             "items": [
               {
                 "sentence": "Gandalf is a wizard who is wise.",
                 "tree": "[.S [.DP Gandalf ] [.VP [.V is ] [.NP [.D a ] [.NP [.NP wizard ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.V is ] [.AP wise ] ] ] ] ] ] ] ] ]",
                 "reading": {
-                  "section": "7.3.2"
+                  "section": "7.3.1"
                 },
                 "targets": [
                   "wizard(g) ∧ wise(g)"
@@ -2217,7 +2217,7 @@
                 "sentence": "Every hobbit who drinks sings.",
                 "tree": "[.S [.DP [.D every ] [.NP [.NP hobbit ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP drinks ] ] ] ] ] ] [.VP sings ] ]",
                 "reading": {
-                  "section": "7.3.2"
+                  "section": "7.3.1"
                 },
                 "targets": [
                   "∀x.hobbit(x) ∧ drink(x) → sing(x)"
@@ -2228,7 +2228,7 @@
                 "sentence": "Some wise wizard who fears Sauron visits Saruman.",
                 "tree": "[.S [.DP [.D some ] [.NP [.AP wise ] [.NP [.NP wizard ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.V fears ] [.DP Sauron ] ] ] ] ] ] ] ] [.VP [.V visits ] [.DP Saruman ] ] ]",
                 "reading": {
-                  "section": "7.3.2"
+                  "section": "7.3.1"
                 },
                 "targets": [
                   "∃x.wise(x) ∧ wizard(x) ∧ fear(x, n) ∧ visit(x, sr)"
@@ -2241,17 +2241,17 @@
         ],
         "reading": {
           "format": "latex",
-          "markdown": "# Chapter 7 · Relative Clauses\n\nA relative clause like *who drinks* restricts the set of individuals denoted by the head noun. Compositionally, the clause must produce a predicate of type ⟨e,t⟩ so it can combine with the noun by **Predicate Modification**. The mechanism is **Predicate Abstraction**, which turns a clause containing a gap into a lambda-abstract.\n\n## 7.3 Predicate Abstraction\n\nA relative clause leaves a **trace** — a silent pronoun — in the gap position. The trace is co-indexed with the relative pronoun. A **λ-phrase node** (LP) abstracts over the index, turning the full clause denotation into a function:\n\n**Predicate Abstraction (PA).** ⟦[LP n φ]⟧ = λx. ⟦φ⟧ where every free occurrence of trace t_n in φ is replaced by x.\n\nThe relative pronoun *who* is an identity function λX.X — it passes the LP denotation up unchanged.\n\n## 7.3.1 Subject gap relative clauses\n\nWhen the trace is in subject position, the S-internal predicate is already a one-place property once PA is applied. The resulting CP combines with the head noun by PM.\n\n\\ex<subj-gap> wizard who drinks\n\\xe\n\n\\ex hobbit who is brave\n\\xe\n\n\\ex wizard who doesn't fear Sauron\n\\xe\n\n\\begin{derivation}\n[[drinks]]               = lambda x.drink(x)                        : <e,t>\n[[LP 1 [S t1 drinks]]]   = lambda x.drink(x)                        : <e,t>   (PA)\n[[who]]                  = lambda X.X                                : <<e,t>,<e,t>>\n[[who drinks]]           = lambda x.drink(x)                        : <e,t>\n[[wizard]]               = lambda x.wizard(x)                       : <e,t>\n[[wizard who drinks]]    = lambda x.wizard(x) /\\ drink(x)           : <e,t>   (PM)\n\\end{derivation}\n\n## 7.3.2 Object gap relative clauses\n\nWhen the trace is in **object position**, the clause contains a complete subject and a VP with the trace filling the object slot. PA abstracts over the trace index, producing a predicate that identifies which individuals stand in the relevant relation to the subject.\n\n\\ex<obj-gap> hobbit who Gandalf loves\n\\xe\n\n\\ex human who Strider doesn't trust\n\\xe\n\n\\ex ranger who Frodo is with\n\\xe\n\n\\begin{derivation}\n[[loves]]                         = lambda y.lambda x.love(x,y)          : <e,<e,t>>\n[[loves t1]]                      = lambda x.love(x,t_1)                 : <e,t>\n[[Gandalf loves t1]]              = love(g,t_1)                          : t\n[[LP 1 [S Gandalf loves t1]]]     = lambda x.love(g,x)                   : <e,t>   (PA)\n[[who [LP 1 ...]]]                = lambda x.love(g,x)                   : <e,t>\n[[hobbit]]                        = lambda x.hobbit(x)                   : <e,t>\n[[hobbit who Gandalf loves]]      = lambda x.hobbit(x) /\\ love(g,x)      : <e,t>   (PM)\n\\end{derivation}\n\n\\begin{forest}\n[NP{lambda x.hobbit(x) /\\ love(g,x)}\n  [NP{lambda x.hobbit(x)} hobbit]\n  [CP{lambda x.love(g,x)}\n    [C{lambda X.X} who]\n    [LP{lambda x.love(g,x)} 1\n      [S{love(g,t_1)}\n        [DP{g} Gandalf]\n        [VP{lambda x.love(x,t_1)}\n          [V{lambda y.lambda x.love(x,y)} loves]\n          [DP{t_1} t_1]]]]]]\n\\end{forest}\n\nThe full-sentence exercises in Group C embed relative clauses inside DPs. A restricted quantifier like *every hobbit who drinks* has the restrictor λx.[hobbit(x) ∧ drink(x)] built by PM inside the NP, then the determiner *every* applies as usual:\n\n\\begin{derivation}\n[[hobbit who drinks]]          = lambda x.hobbit(x) /\\ drink(x)                 : <e,t>\n[[every hobbit who drinks]]    = lambda Y.forall x[(hobbit(x) /\\ drink(x)) -> Y(x)] : <<e,t>,t>\n[[every hobbit who drinks sings]] = forall x[(hobbit(x) /\\ drink(x)) -> sing(x)] : t\n\\end{derivation}"
+          "markdown": "# Chapter 7 · Relative Clauses\n\nA relative clause denotes an `⟨e,t⟩` predicate and joins its head noun by PM\n(§7.2).\n\n## 7.3 Variable binding at LF\n\nThree assumptions (§7.3): traces and pronouns are variables, interpreted\nrelative to an assignment; syntax supplies the co-indexation; a binder node\ntriggers abstraction. Traces: `tᵢ` denotes `xᵢ` (§7.3.1). **PA**: a node\n`[i β]` denotes the function taking `x` to `⟦β⟧` with `xᵢ` set to `x`.\n\nEngine note: the LP node in the trees is the book's λᵢ binder; *who/which* are\nvacuous (`λX . X`) and *that* is `λp . p`, so the abstract passes up unchanged.\n\n## 7.3.1 Relative clauses\n\nSubject gaps (Group A): the trace sits in subject position, so the movement is\nstring-vacuous, and PA turns the clause into the predicate the noun needs.\n\nObject gaps (Group B): the subject composes with the verb first and the trace\nfills the object slot; PA over the index yields the predicate, and PM conjoins\nit with the head noun.\n\nFull sentences (Group C): with *the*, the description presupposes a unique\nsatisfier of noun-plus-clause; compose clause → PM → article → sentence.\n"
         }
       }
     },
     {
       "key": "ch7.4-objraise",
-      "title": "Quantifiers in Object Position (§7.4)",
+      "title": "Quantifiers in Object Position (§7.3.2)",
       "content": {
         "compose": 1,
         "id": "ch7-objraise",
-        "title": "Quantifiers in Object Position (§7.4)",
+        "title": "Quantifiers in Object Position (§7.3.2)",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -2521,7 +2521,7 @@
                   "∀x[hobbit(x) → love(g,x)]"
                 ],
                 "reading": {
-                  "section": "7.4"
+                  "section": "7.3.2"
                 }
               },
               {
@@ -2531,7 +2531,7 @@
                   "∀x[good(x) ∧ wise(x) ∧ creature(x) → summon(el,x)]"
                 ],
                 "reading": {
-                  "section": "7.4"
+                  "section": "7.3.2"
                 }
               },
               {
@@ -2541,14 +2541,14 @@
                   "∃x[brave(x) ∧ dwarf(x) ∧ ¬trust(l,x)]"
                 ],
                 "reading": {
-                  "section": "7.4"
+                  "section": "7.3.2"
                 }
               }
             ]
           },
           {
             "title": "B. Object quantifiers with subject quantifiers",
-            "instructions": "Both subject and object are quantifiers. Try both scope orders and derive the readings.",
+            "instructions": "Both subject and object are quantifiers. Derive each scope order.",
             "items": [
               {
                 "sentence": "No elf trusts every human.",
@@ -2560,7 +2560,7 @@
                   "every > no: ∀y[human(y) → ¬∃x[elf(x) ∧ trust(x,y)]]"
                 ],
                 "reading": {
-                  "section": "7.4.1"
+                  "section": "7.3.2"
                 }
               },
               {
@@ -2571,7 +2571,7 @@
                   "every > some (inverse): ∀y[good(y) ∧ wise(y) ∧ creature(y) → ∃x[elf(x) ∧ council(x,y)]]"
                 ],
                 "reading": {
-                  "section": "7.4.1"
+                  "section": "7.3.2"
                 }
               },
               {
@@ -2582,7 +2582,7 @@
                   "some > every (inverse): ∃y[evil(y) ∧ creature(y) ∧ ∀x[hobbit(x) ∧ travel(x) → fear(x,y)]]"
                 ],
                 "reading": {
-                  "section": "7.4.1"
+                  "section": "7.3.2"
                 }
               }
             ]
@@ -2590,17 +2590,17 @@
         ],
         "reading": {
           "format": "latex",
-          "markdown": "# Chapter 7 · Quantifiers in Object Position\n\nWhen a transitive verb takes an individual (type e) as its object, FA applies cleanly. But a quantifier phrase like *every hobbit* has type ⟨⟨e,t⟩,t⟩ — it cannot serve as the direct argument of a verb expecting type e. **Quantifier Raising (QR)** resolves the mismatch by moving the quantifier out of its base position.\n\n## 7.4 Quantifier Raising\n\n**Quantifier Raising (QR).** The object DP moves covertly to adjoin at S-level, leaving a trace t_n of type e. A λ-phrase node (LP) hosts Predicate Abstraction over n, creating the ⟨e,t⟩ argument the quantifier needs.\n\n\\ex<qr-ex> Gandalf loves every hobbit.\n\\xe\n\n\\ex Elrond summons every good wise creature.\n\\xe\n\n\\ex Legolas doesn't trust some brave dwarf.\n\\xe\n\n\\begin{derivation}\n[[loves]]                        = lambda y.lambda x.love(x,y)                  : <e,<e,t>>\n[[loves t1]]                     = lambda x.love(x,t_1)                         : <e,t>\n[[Gandalf loves t1]]             = love(g,t_1)                                  : t\n[[LP 1 [S Gandalf loves t1]]]    = lambda y.love(g,y)                           : <e,t>   (PA)\n[[every hobbit]]                 = lambda Y.forall x[hobbit(x) -> Y(x)]         : <<e,t>,t>\n[[every hobbit loves Gandalf]]   = forall x[hobbit(x) -> love(g,x)]             : t\n\\end{derivation}\n\n\\begin{forest}\n[S{forall x[hobbit(x) -> love(g,x)]}\n  [DP{lambda Y.forall x[hobbit(x) -> Y(x)]}\n    [D{lambda X.lambda Y.forall x[X(x) -> Y(x)]} every]\n    [NP{lambda x.hobbit(x)} hobbit]]\n  [LP{lambda y.love(g,y)} 1\n    [S{love(g,t_1)}\n      [DP{g} Gandalf]\n      [VP{lambda x.love(x,t_1)}\n        [V{lambda y.lambda x.love(x,y)} loves]\n        [DP{t_1} t_1]]]]]\n\\end{forest}\n\n## 7.4.1 Two quantifiers and scope\n\nWhen both subject and object are quantifiers, QR can apply to either or both, generating different **scope orderings**. Raising the object above the subject yields object-wide scope; the base order (subject above raised object) yields subject-wide scope.\n\n\\ex<scope-ex> No elf trusts every human.\n\\xe\n\n\\ex Some elf councils every good wise creature.\n\\xe\n\n\\ex Every hobbit who travels fears some evil creature.\n\\xe\n\n**Subject wide scope** (no > every): the object is QR'd, the subject remains in situ.\n\n\\begin{derivation}\n[[LP 1 [S no-elf [VP trusts t1]]]] = lambda y.~exists x[elf(x) /\\ trust(x,y)] : <e,t>   (PA)\n[[every human applied]]            = forall y[human(y) -> ~exists x[elf(x) /\\ trust(x,y)]] : t\n\\end{derivation}\n\n**Object wide scope** (every > no): the object LP is embedded *within* a second LP that abstracts over the subject trace.\n\nThe two readings differ in truth conditions when the quantifiers are *some* and *every*: the subject-wide reading requires one witness to stand in the relation to all objects, while the object-wide reading only requires that for each object some (possibly different) subject qualifies.[^scope]\n\n[^scope]: For *no* and *every* the two readings are logically equivalent. The asymmetry becomes vivid with *some*: *some elf councils every creature* (∃-wide) entails a single elf does the counselling; the inverse (∀-wide) only requires each creature to be counselled by some elf, possibly different ones."
+          "markdown": "# Chapter 7 · Quantifiers in object position\n\nA quantifier phrase is `⟨⟨e,t⟩,t⟩` and a transitive verb wants type `e`. In\nobject position neither can take the other as an argument. §7.3.2 repairs this\nby movement; the in-situ type-shifting repair is the RaiseO/RaiseS set.\n\n## 7.3.2 Quantifier raising\n\n**QR** (§7.3.2): a syntactic transformation moving a `⟨⟨e,t⟩,t⟩` expression to a\nposition where it can be interpreted, leaving a DP trace in its previous\nposition. It maps Surface Structure to Logical Form, the level at which\neach constituent sits in the position where the semantics interprets it.\nPronunciation is fixed at Surface Structure, so the movement is covert.\n\nAt the landing site the quantifier's sister is a binder node, and it triggers\nPredicate Abstraction, playing the role a relative pronoun plays in a relative\nclause.\n\nEngine note: the book's λS node with its λ1 binder appears here as the LP node\nwith a numeral leaf, and PA resolves it as in the relative-clause set.\n\nGroup A: raise the object DP, leaving a type-`e` trace. PA at the LP node gives\nan `⟨e,t⟩` predicate, which the quantifier then takes.\n\nGroup B: with quantifiers in both positions the order of raising fixes the\nscope, and each QR step adds its own LP node. Raising the object alone, subject\nin situ, puts the object on top and yields inverse scope; raising the subject\nabove the landed object yields surface scope. The book records a preference for\nsurface scope when both arguments are quantificational, while QR generates both\norders (§7.3.2, Exercise 8).\n"
         }
       }
     },
     {
       "key": "ch7.5-objts",
-      "title": "Object Type-Shifting: RaiseO/S (§7.4.2)",
+      "title": "Object Type-Shifting: RaiseO/S (§6.6.4, §7.4.1)",
       "content": {
         "compose": 1,
         "id": "ch7-objts",
-        "title": "Object Type-Shifting: RaiseO/S (§7.4.2)",
+        "title": "Object Type-Shifting: RaiseO/S (§6.6.4, §7.4.1)",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -2855,7 +2855,7 @@
         "exercises": [
           {
             "title": "A. Simple object quantifiers via RaiseO",
-            "instructions": "Apply RaiseO to shift the transitive verb, allowing the object GQ to apply directly by FA.",
+            "instructions": "Apply RaiseO to the transitive verb so the object quantifier applies directly by FA.",
             "items": [
               {
                 "sentence": "Gandalf loves every hobbit.",
@@ -2864,7 +2864,7 @@
                   "∀x[hobbit(x) → love(g,x)]"
                 ],
                 "reading": {
-                  "section": "7.4.2"
+                  "section": "6.6.4"
                 }
               },
               {
@@ -2874,7 +2874,7 @@
                   "∀x[good(x) ∧ wise(x) ∧ creature(x) → summon(el,x)]"
                 ],
                 "reading": {
-                  "section": "7.4.2"
+                  "section": "6.6.4"
                 }
               },
               {
@@ -2884,14 +2884,14 @@
                   "∃x[brave(x) ∧ dwarf(x) ∧ ¬trust(l,x)]"
                 ],
                 "reading": {
-                  "section": "7.4.2"
+                  "section": "6.6.4"
                 }
               }
             ]
           },
           {
             "title": "B. Two quantifiers via RaiseO + RaiseS",
-            "instructions": "Apply RaiseO to the verb for the object GQ, then RaiseS to allow the subject GQ to take scope. Try both scope orders.",
+            "instructions": "Apply RaiseO to the verb for the object quantifier, then RaiseS for the subject quantifier. Derive each scope order.",
             "items": [
               {
                 "sentence": "No elf trusts every human.",
@@ -2903,7 +2903,7 @@
                   "every > no: ∀y[human(y) → ¬∃x[elf(x) ∧ trust(x,y)]]"
                 ],
                 "reading": {
-                  "section": "7.4.3"
+                  "section": "7.4.1"
                 }
               },
               {
@@ -2914,7 +2914,7 @@
                   "every > some (inverse): ∀y[good(y) ∧ wise(y) ∧ creature(y) → ∃x[elf(x) ∧ council(x,y)]]"
                 ],
                 "reading": {
-                  "section": "7.4.3"
+                  "section": "7.4.1"
                 }
               },
               {
@@ -2925,7 +2925,7 @@
                   "some > every (inverse): ∃y[evil(y) ∧ creature(y) ∧ ∀x[hobbit(x) ∧ travel(x) → fear(x,y)]]"
                 ],
                 "reading": {
-                  "section": "7.4.3"
+                  "section": "7.4.1"
                 }
               }
             ]
@@ -2933,17 +2933,17 @@
         ],
         "reading": {
           "format": "latex",
-          "markdown": "# Chapter 7 · Object and Subject Type-Shifting\n\nAn alternative to Quantifier Raising handles object quantifiers without syntactic movement: two **type-shifting rules**, RaiseO and RaiseS, lift the transitive verb so it can combine directly with a generalized quantifier in its base position.\n\n## 7.4.2 RaiseO: object type-shifting\n\n**RaiseO** takes a transitive verb of type ⟨e,⟨e,t⟩⟩ and returns a function that expects a generalized quantifier as its object:\n\n$$\\text{RaiseO} = \\lambda H.\\lambda Q.\\lambda x.\\, Q(\\lambda y.\\, H(y)(x))$$\n\nRaiseO appears as an explicit node in the syntactic tree, sistering the verb. The shifted verb–phrase then takes the object GQ directly by FA, and the subject individual applies to the result.\n\n\\ex<raiseo-ex> Gandalf loves every hobbit.\n\\xe\n\n\\ex Elrond summons every good wise creature.\n\\xe\n\n\\ex Legolas doesn't trust some brave dwarf.\n\\xe\n\n\\begin{derivation}\n[[loves]]                  = lambda y.lambda x.love(x,y)                    : <e,<e,t>>\n[[RaiseO loves]]           = lambda Q.lambda x.Q(lambda y.love(x,y))        : <<<e,t>,t>,<e,t>>\n[[every hobbit]]           = lambda Y.forall x[hobbit(x) -> Y(x)]           : <<e,t>,t>\n[[RaiseO loves every hobbit]] = lambda x.forall y[hobbit(y) -> love(x,y)]   : <e,t>\n[[Gandalf loves every hobbit]] = forall y[hobbit(y) -> love(g,y)]            : t\n\\end{derivation}\n\n\\begin{forest}\n[S{forall y[hobbit(y) -> love(g,y)]}\n  [DP{g} Gandalf]\n  [VP{lambda x.forall y[hobbit(y) -> love(x,y)]}\n    [V'{lambda Q.lambda x.Q(lambda y.love(x,y))}\n      [V{RaiseO} RaiseO]\n      [V{lambda y.lambda x.love(x,y)} loves]]\n    [DP{lambda Y.forall x[hobbit(x) -> Y(x)]}\n      [D{lambda X.lambda Y.forall x[X(x) -> Y(x)]} every]\n      [NP{lambda x.hobbit(x)} hobbit]]]]\n\\end{forest}\n\n## 7.4.3 RaiseS: subject type-shifting\n\nWhen **both** subject and object are quantifiers, a second rule handles the subject. **RaiseS** shifts the transitive verb so it can absorb the *subject* GQ, with the object remaining as an individual argument:\n\n$$\\text{RaiseS} = \\lambda H.\\lambda Q.\\lambda y.\\, Q(\\lambda x.\\, H(y)(x))$$\n\nThe RaiseS-shifted verb takes the **subject GQ** as its first argument and the object individual as its second, yielding the *inverse scope* reading (object GQ takes wide scope; subject GQ is bound inside).\n\n\\ex<raises-ex> No elf trusts every human.\n\\xe\n\n\\ex Some elf councils every good wise creature.\n\\xe\n\n\\ex Every hobbit who travels fears some evil creature.\n\\xe\n\n\\begin{derivation}\n[[trusts]]                      = lambda y.lambda x.trust(x,y)                    : <e,<e,t>>\n[[RaiseO trusts]]               = lambda Q.lambda x.Q(lambda y.trust(x,y))        : <<<e,t>,t>,<e,t>>\n[[RaiseO trusts every human]]   = lambda x.forall y[human(y) -> trust(x,y)]       : <e,t>\n[[no elf]] applied to VP        = ~exists x[elf(x) /\\ forall y[human(y) -> trust(x,y)]] : t\n\n[[RaiseS trusts]]               = lambda Q.lambda y.Q(lambda x.trust(x,y))        : <<<e,t>,t>,<e,t>>\n[[RaiseS trusts no elf]]        = lambda y.~exists x[elf(x) /\\ trust(x,y)]        : <e,t>\n[[every human]] applied to VP   = forall y[human(y) -> ~exists x[elf(x) /\\ trust(x,y)]] : t\n\\end{derivation}\n\nThe two trees yield logically equivalent results for *no*/*every*; the difference is vivid for *some*/*every* — the RaiseO tree gives ∃ > ∀ scope and the RaiseS tree gives ∀ > ∃ scope.[^raiseSvsO]\n\n[^raiseSvsO]: RaiseO and RaiseS have the same type ⟨⟨e,⟨e,t⟩⟩, ⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩⟩ but differ in *which* argument position the quantifier binds: RaiseO binds the y-position (the lexical object argument); RaiseS binds the x-position (the lexical subject argument)."
+          "markdown": "# Chapter 7 · Object and subject type-shifting\n\nThe in-situ alternative to QR: interpret the quantifier phrase where it is\npronounced and shift the type of the verb instead. This is the flexible-types\nroute associated with Direct Compositionality (§7.4.1). RaiseO and RaiseS\ninstantiate Hendriks's (1993) Argument Raising schema.\n\n## 6.6.4 RaiseO: object raising\n\n**RaiseO** (§6.6.4, restated at §7.4.1): if `α` translates as `α′` of type\n`⟨e,⟨a,t⟩⟩`, for any type `a`, then `α` also has a translation of type\n`⟨⟨⟨e,t⟩,t⟩,⟨a,t⟩⟩`, namely `λQ . λx . Q(λy . α′(y)(x))`.\n\nThe shifted verb takes the object quantifier directly by FA, and the subject\napplies to the result.\n\nEngine note: the shift applies at the V node and the bracketing does not\nchange.\n\nGroup A: apply RaiseO to the verb, then FA with the object quantifier.\n\n## 7.4.1 RaiseS and inverse scope\n\n**RaiseS** (§7.4.1): if `α` translates as `α′` of type `⟨a,⟨e,t⟩⟩`, for any type\n`a`, then `α` also has a translation of type `⟨a,⟨⟨⟨e,t⟩,t⟩,t⟩⟩`, namely\n`λy . λQ . Q(λx . α′(y)(x))`.\n\nRaiseO alone gives surface scope when both arguments are quantificational.\nApplying RaiseS first and RaiseO second produces a doubly lifted verb that\ncombines with a quantificational subject and a quantificational object, and\nyields inverse scope. The two shifts lift different argument positions: RaiseO\nthe object slot, RaiseS the subject slot.\n\nGroup B: RaiseO alone derives surface scope; RaiseS then RaiseO derives inverse\nscope. Shifting in the other order hands the object in first but leaves the\nsubject on top, reproducing surface scope (§7.4.1, Exercise 13).\n"
         }
       }
     },
     {
       "key": "ch7.6-pron",
-      "title": "Pronouns & Binding (§7.5)",
+      "title": "Pronouns & Binding (§7.3.3)",
       "content": {
         "compose": 1,
         "id": "ch7-pron",
-        "title": "Pronouns & Binding (§7.5)",
+        "title": "Pronouns & Binding (§7.3.3)",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -3230,34 +3230,34 @@
         "exercises": [
           {
             "title": "A. Free pronouns",
-            "instructions": "A free pronoun denotes a contextually-supplied individual (type e). Its value is given by the assignment function. Derive the proposition.",
+            "instructions": "A free pronoun denotes a contextually supplied individual of type e, its value given by the assignment function.",
             "items": [
               {
                 "sentence": "He is a king.",
                 "tree": "[.S [.DP he1 ] [.VP [.V is ] [.NP [.D a ] [.NP king ] ] ] ]",
                 "reading": {
-                  "section": "7.5"
+                  "section": "7.3.3.1"
                 }
               },
               {
                 "sentence": "He loves Arwen.",
                 "tree": "[.S [.DP he1 ] [.VP [.V loves ] [.DP Aragorn ] ] ]",
                 "reading": {
-                  "section": "7.5"
+                  "section": "7.3.3.1"
                 }
               },
               {
                 "sentence": "He fears no evil creature.",
                 "tree": "[.S [.DP he1 ] [.VP [.V fears ] [.DP [.D no ] [.NP [.AP evil ] [.NP creature ] ] ] ] ]",
                 "reading": {
-                  "section": "7.5"
+                  "section": "7.3.3.1"
                 }
               }
             ]
           },
           {
-            "title": "B. Reflexive Pronouns",
-            "instructions": "Reflexive pronouns are bound by the subject via Quantifier Raising + Predicate Abstraction. Raise the subject DP (or the pronoun's antecedent) and abstract over the co-indexed trace.",
+            "title": "B. Reflexive pronouns",
+            "instructions": "A reflexive pronoun is bound by its antecedent through Quantifier Raising and Predicate Abstraction. Raise the antecedent DP and abstract over the co-indexed trace.",
             "items": [
               {
                 "sentence": "Every dwarf trusts themself.",
@@ -3266,7 +3266,7 @@
                   "∀x[dwarf(x) → trust(x,x)]"
                 ],
                 "reading": {
-                  "section": "7.5.1"
+                  "section": "7.3.3.2"
                 }
               },
               {
@@ -3276,7 +3276,7 @@
                   "ranger(st) ∧ ¬trust(st,st)"
                 ],
                 "reading": {
-                  "section": "7.5.1"
+                  "section": "7.3.3.2"
                 }
               },
               {
@@ -3286,7 +3286,7 @@
                   "∃x[wizard(x) ∧ love(x,f) ∧ fear(x,x)]"
                 ],
                 "reading": {
-                  "section": "7.5.1"
+                  "section": "7.3.3.2"
                 }
               }
             ]
@@ -3294,17 +3294,17 @@
         ],
         "reading": {
           "format": "latex",
-          "markdown": "# Chapter 7 · Pronouns and Binding\n\nA pronoun can get its value in two ways: *freely*, from the context of utterance, or *bound*, via a quantifier antecedent. Both are handled compositionally once pronouns are treated as **indexed** expressions.\n\n## 7.5 Free pronouns\n\nA **free pronoun** denotes a contextually supplied individual of type e. Its denotation is given directly by the assignment: *he₁* denotes x₁, the value assigned to index 1. Free pronouns are ordinary type-e terms; they compose by Function Application just like proper names.\n\n\\ex<free-pron> He is a king.\n\\xe\n\n\\ex He loves Arwen.\n\\xe\n\n\\ex He fears no evil creature.\n\\xe\n\n\\begin{derivation}\n[[he_1]]              = x_1                            : e\n[[king]]              = lambda x.king(x)               : <e,t>\n[[is a king]]         = lambda x.king(x)               : <e,t>\n[[He_1 is a king]]    = king(x_1)                      : t\n\\end{derivation}\n\nThe proposition *king(x₁)* is true or false depending on who x₁ is assigned to — the pronoun is a free variable whose value is fixed by context, not by the grammar.\n\nTwo pronouns with different indices are always disjoint in interpretation. *He₁* and *he₂* can never corefer within a single assignment.\n\n## 7.5.1 Bound pronouns\n\nA **bound pronoun** is co-indexed with a quantifier. The binding is established by **Predicate Abstraction** over the shared index: the quantifier raises (or is interpreted as raising) via QR, and the LP node at its landing site abstracts over the index that the pronoun also carries.\n\n\\ex<bound-pron> Every dwarf trusts themself.\n\\xe\n\n\\ex Strider is a ranger who doesn't trust himself.\n\\xe\n\n\\ex Some wizard who loves Frodo fears himself.\n\\xe\n\nFor *Every dwarf trusts themself*, the subject QP and the reflexive *themselves₁* both carry index 1. QR raises the subject, leaving a trace t₁; the reflexive in object position is also x₁. PA over index 1 binds both simultaneously:\n\n\\begin{derivation}\n[[trusts themselves_1]]     = lambda x.trust(x,x_1)         : <e,t>\n[[t_1 trusts themselves_1]] = trust(x_1,x_1)                : t\n[[LP 1 [S t_1 trusts themselves_1]]] = lambda x.trust(x,x)  : <e,t>   (PA)\n[[every dwarf]]             = lambda Y.forall x[dwarf(x) -> Y(x)] : <<e,t>,t>\n[[every dwarf trusts themself]] = forall x[dwarf(x) -> trust(x,x)] : t\n\\end{derivation}\n\nAfter PA, the pronoun index is **bound**: every individual that falls in the restrictor is related to itself. The reflexive reading follows without any extra axiom — it is just co-indexation made compositional.\n\n\\begin{forest}\n[S{forall x[dwarf(x) -> trust(x,x)]}\n  [DP{lambda Y.forall x[dwarf(x) -> Y(x)]}\n    [D{lambda X.lambda Y.forall x[X(x) -> Y(x)]} every]\n    [NP{lambda x.dwarf(x)} dwarf]]\n  [LP{lambda x.trust(x,x)} 1\n    [S{trust(x_1,x_1)}\n      [DP{x_1} t_1]\n      [VP{lambda x.trust(x,x_1)}\n        [V{lambda y.lambda x.trust(x,y)} trusts]\n        [DP{x_1} themselves_1]]]]]\n\\end{forest}\n\nBound pronouns in relative clauses work the same way. *A ranger who doesn't trust himself* embeds a relative clause whose object gap and reflexive share an index; PA inside the relative CP produces λx.¬trust(x,x).[^refl]\n\n[^refl]: In this system *himself₁* and trace t₁ are both x₁ — the same individual constant abstracted over by LP. The PA rule therefore captures coreference and binding in a single step."
+          "markdown": "# Chapter 7 · Pronouns and binding\n\n**Pronouns and Traces** (§7.3): if `α` is an indexed trace or pronoun, `αᵢ` ↝\n`xᵢ`. §7.3.3 gives the two ways that variable is interpreted: free, with a\nvalue supplied by the discourse context, or bound by a lambda operator.\n\n## 7.3.3.1 Referential uses of pronouns\n\nPointing at someone and saying *She is suspicious* makes *she* refer to that\nperson, a deictic use; with a linguistic antecedent instead, the use is\nanaphoric. Either way the pronoun is a free variable whose value the discourse\ncontext supplies, by pointing, visual salience or prior mention, and it\ncomposes by FA like a name.\n\nGroup A: the variable stays free, so the truth of the result depends on what\nthe assignment supplies.\n\n## 7.3.3.2 Bound pronouns\n\n*No woman blamed herself* has no answer to the question which individual the\npronoun refers to, and calling *no woman* and *herself* coreferential misuses\nthe term, since coreference implies reference. The pronoun is a bound variable\ninstead, and the sentence translates as `¬∃x.[woman(x) ∧ blamed(x,x)]`.\n\nThe mechanism is QR plus PA. A reflexive carries an index like any other\npronoun; its antecedent undergoes QR, and the trace left behind is co-indexed\nwith the reflexive. Trace and reflexive both translate as `xᵢ` by Pronouns and\nTraces, so a single PA step binds both occurrences at once.\n\nGroup B: raise the subject QP, whose trace shares its index with the reflexive,\nand apply PA once. Reflexives inside relative clauses work the same way, with\nPA applying inside the CP.\n"
         }
       }
     },
     {
       "key": "ch8.1-defn",
-      "title": "Definite Descriptions (§8.1–8.2)",
+      "title": "Definite Descriptions (§8.3.1, §8.3.3)",
       "content": {
         "compose": 1,
         "id": "ch8-defn",
-        "title": "Definite Descriptions (§8.1–8.2)",
+        "title": "Definite Descriptions (§8.3.1, §8.3.3)",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -3769,21 +3769,21 @@
                 "sentence": "Frodo carries the ring.",
                 "tree": "[.S [.DP Frodo ] [.VP [.V carries ] [.DP [.D the ] [.NP ring ] ] ] ]",
                 "reading": {
-                  "section": "8.1"
+                  "section": "8.3.1"
                 }
               },
               {
                 "sentence": "Legolas trusts the rightful king.",
                 "tree": "[.S [.DP Legolas ] [.VP [.V trusts ] [.DP [.D the ] [.NP [.AP rightful ] [.NP king ] ] ] ] ]",
                 "reading": {
-                  "section": "8.1"
+                  "section": "8.3.1"
                 }
               },
               {
                 "sentence": "The elf who trusts Gimli is in Moria.",
                 "tree": "[.S [.DP [.D the ] [.NP [.NP elf ] [.CP [.C who ] [.LP 1 [.S [.DP t1 ] [.VP [.V trusts ] [.DP Gimli ] ] ] ] ] ] ] [.VP [.V is ] [.PP [.P in ] [.DP Moria ] ] ] ]",
                 "reading": {
-                  "section": "8.1"
+                  "section": "8.3.1"
                 }
               }
             ]
@@ -3796,48 +3796,48 @@
                 "sentence": "Boromir's sword.",
                 "tree": "[.NP [.DP Boromir ] [.NP [.Poss 's ] [.NP sword ] ] ]",
                 "reading": {
-                  "section": "8.2"
+                  "section": "8.3.3"
                 }
               },
               {
                 "sentence": "his bow.",
                 "tree": "[.NP [.DP he1 ] [.NP [.Poss 's ] [.NP bow ] ] ]",
                 "reading": {
-                  "section": "8.2"
+                  "section": "8.3.3"
                 }
               },
               {
                 "sentence": "my axe.",
                 "tree": "[.NP [.DP my1 ] [.NP [.Poss 's ] [.NP axe ] ] ]",
                 "reading": {
-                  "section": "8.2"
+                  "section": "8.3.3"
                 }
               }
             ]
           },
           {
             "title": "C. Definites in context",
-            "instructions": "The definite article interacts with other tools: \"shall\" is the identity function here (tense/aspect come in §12). The last item folds in a possessive definite DP.",
+            "instructions": "The definite article interacts with other tools: \"shall\" is the identity function here (tense/aspect come in Chapter 11). The last item folds in a possessive definite DP.",
             "items": [
               {
                 "sentence": "The Balrog shall not pass.",
                 "tree": "[.S [.DP [.D the ] [.NP Balrog ] ] [.VP [.V shall ] [.VP [.Neg not ] [.VP pass ] ] ] ]",
                 "reading": {
-                  "section": "8.2"
+                  "section": "8.3.1"
                 }
               },
               {
                 "sentence": "The Balrog slays our wise wizard.",
                 "tree": "[.S [.DP [.D the ] [.NP Balrog ] ] [.VP [.V slays ] [.DP [.D the ] [.NP [.AP wise ] [.NP wizard ] ] ] ] ]",
                 "reading": {
-                  "section": "8.2"
+                  "section": "8.3.1"
                 }
               },
               {
                 "sentence": "The fellowship flees to Galadriel's kingdom.",
                 "tree": "[.S [.DP [.D the ] [.NP fellowship ] ] [.VP [.V flees-to ] [.DP [.DP Galadriel ] [.NP [.Poss 's ] [.NP kingdom ] ] ] ] ]",
                 "reading": {
-                  "section": "8.2"
+                  "section": "8.3.3"
                 }
               }
             ]
@@ -3854,7 +3854,7 @@
                   "bound: ∀x[noble(x) → admire(x, ιy.poss(x,y) ∧ hair(y))]"
                 ],
                 "reading": {
-                  "section": "8.2.1"
+                  "section": "8.3.3"
                 }
               },
               {
@@ -3865,7 +3865,7 @@
                   "Boromir kills every Uruk who hunts himself (bound): ∀x[uruk(x) ∧ hunt(x,x) → kill(b,x)]"
                 ],
                 "reading": {
-                  "section": "8.2.1"
+                  "section": "8.3.3"
                 }
               },
               {
@@ -3878,7 +3878,7 @@
                   "him = the king, he = the king: love(ιy.poss(b,y) ∧ king(y), ιy.poss(b,y) ∧ king(y)) ∧ until(die(ιy.poss(b,y) ∧ king(y)))"
                 ],
                 "reading": {
-                  "section": "8.2.1"
+                  "section": "8.3.3"
                 }
               }
             ]
@@ -3886,17 +3886,17 @@
         ],
         "reading": {
           "format": "latex",
-          "markdown": "# Chapter 8 · Definite Descriptions\n\nChapter 7 showed how to build complex predicates. Chapter 8 introduces a new kind of DP: the **definite description**, built with the **iota operator** ι, which picks out a unique individual satisfying a predicate.\n\n## 8.1 The iota operator\n\n**The definite article.** `⟦the⟧` = λX.ιx.X(x) : ⟨⟨e,t⟩,e⟩. It takes a predicate and returns the unique individual satisfying it; the result is type e, just like a proper name.\n\nThe uniqueness condition is a **presupposition**: *the ring* is only defined if exactly one thing is a ring in the context.\n\n\\ex<defn-ex> Frodo carries the ring.\n\\xe\n\n\\ex Legolas trusts the rightful king.\n\\xe\n\n\\ex The elf who trusts Gimli is in Moria.\n\\xe\n\n\\begin{derivation}\n[[the]]              = lambda X.iota x.X(x)                          : <<e,t>,e>\n[[ring]]             = lambda x.ring(x)                              : <e,t>\n[[the ring]]         = iota x.ring(x)                                : e\n[[carries]]          = lambda y.lambda x.carry(x,y)                  : <e,<e,t>>\n[[carries the ring]] = lambda x.carry(x,iota y.ring(y))              : <e,t>\n[[Frodo carries the ring]] = carry(f,iota y.ring(y))                 : t\n\\end{derivation}\n\n\\begin{forest}\n[S{carry(f,iota y.ring(y))}\n  [DP{f} Frodo]\n  [VP{lambda x.carry(x,iota y.ring(y))}\n    [V{lambda y.lambda x.carry(x,y)} carries]\n    [DP{iota x.ring(x)}\n      [D{lambda X.iota x.X(x)} the]\n      [NP{lambda x.ring(x)} ring]]]]\n\\end{forest}\n\nA non-intersective adjective like *rightful* combines with the noun by FA before iota applies (\\ref{defn-ex}):\n\n\\begin{derivation}\n[[rightful]]              = lambda F.lambda x.rightful(F)(x)               : <<e,t>,<e,t>>\n[[king]]                  = lambda x.king(x)                               : <e,t>\n[[rightful king]]         = lambda x.rightful(king)(x)                     : <e,t>\n[[the rightful king]]     = iota x.rightful(king)(x)                       : e\n[[trusts the rightful king]] = lambda x.trust(x,iota y.rightful(king)(y))  : <e,t>\n[[Legolas trusts the rightful king]] = trust(l,iota y.rightful(king)(y))   : t\n\\end{derivation}\n\nA definite DP can embed a relative clause. The NP assembles its full predicate (by PM + PA) before *the* applies (\\ref{defn-ex}):\n\n\\begin{derivation}\n[[trusts Gimli]]                  = lambda x.trust(x,m)                    : <e,t>\n[[elf who trusts Gimli]]          = lambda x.elf(x) /\\ trust(x,m)          : <e,t>\n[[the elf who trusts Gimli]]      = iota x.(elf(x) /\\ trust(x,m))          : e\n[[in Moria]]                      = lambda x.in(x,mr)                      : <e,t>\n[[The elf who trusts Gimli is in Moria]] = in(iota x.(elf(x) /\\ trust(x,m)),mr) : t\n\\end{derivation}\n\n## 8.2 Possessives\n\nThe clitic **'s** builds a definite description relative to a possessor: `⟦'s⟧` = λP.λx.ιy.[poss(x,y) ∧ P(y)] : ⟨⟨e,t⟩,⟨e,e⟩⟩. It takes the possessed noun and the possessor individual and returns the unique object standing in the possession relation to that possessor.\n\n\\ex<poss-ex> Boromir's sword.\n\\xe\n\n\\ex his₁ bow.\n\\xe\n\n\\ex my₁ axe.\n\\xe\n\n\\begin{derivation}\n[['s]]                    = lambda P.lambda x.iota y.poss(x,y) /\\ P(y)    : <<e,t>,<e,e>>\n[[sword]]                 = lambda x.sword(x)                              : <e,t>\n[['s sword]]              = lambda x.iota y.poss(x,y) /\\ sword(y)         : <e,e>\n[[Boromir's sword]]       = iota y.poss(b,y) /\\ sword(y)                  : e\n\n[[his_1]]                 = x_1                                            : e\n[['s bow]]                = lambda x.iota y.poss(x,y) /\\ bow(y)           : <e,e>\n[[his_1 bow]]             = iota y.poss(x_1,y) /\\ bow(y)                  : e\n\n[[my_1 axe]]              = iota y.poss(x_1,y) /\\ axe(y)                  : e\n\\end{derivation}\n\nThe possessor `x_1` in *his/my* is supplied by context — a free variable assigned to whoever is the contextually salient referent. This parallels the free reading of a pronoun.\n\nIn more complex DPs, 'the' need not appear: a possessive NP already delivers type e, so *Galadriel's kingdom* is directly an individual without a separate definite article (\\ref{poss-ex}).\n\n## 8.2.1 Free and bound readings\n\nA pronoun inside a possessive can be **free** (its index is assigned by context) or **bound** (its index is abstracted over by a higher quantifier). The two readings differ in their truth conditions.\n\n\\ex<bound-ex> Galadriel admires her₁ hair.\n\\xe\n\n\\ex Boromir's sword kills every Uruk-hai who hunts him-B.\n\\xe\n\n\\ex Boromir's king will love him until he dies.\n\\xe\n\n**Free reading** — the possessor index is set by context (\\ref{bound-ex}):\n\n\\begin{derivation}\n[['s hair]]                         = lambda x.iota y.poss(x,y) /\\ hair(y)      : <e,e>\n[[her_1 hair]]                      = iota y.poss(x_1,y) /\\ hair(y)             : e\n[[admires her_1 hair]]              = lambda x.admire(x,iota y.poss(x_1,y) /\\ hair(y)) : <e,t>\n[[Galadriel admires her_1 hair]]    = admire(w,iota y.poss(x_1,y) /\\ hair(y))   : t\n\\end{derivation}\n\nWhen x₁ is assigned to Galadriel (w), this gives the reflexive reading: Galadriel admires her own hair. When x₁ is assigned to another contextually prominent individual, it is a non-reflexive free reading.\n\n**Definite-pronoun reading** — *him-K* abbreviates the complex definite ιy.[poss(b,y) ∧ king(y)] (Boromir's king), giving the anaphoric referent as a definite description rather than a free variable:\n\n\\begin{derivation}\n[[boromirs-king]]     = iota y.poss(b,y) /\\ king(y)                      : e\n[[him-B]]             = b                                                  : e\n[[him-K]]             = iota y.poss(b,y) /\\ king(y)                      : e\n[[will]]              = lambda X.X                                         : <<e,t>,<e,t>>\n[[until]]             = lambda q.lambda p.p /\\ until(q)                   : <t,<t,t>>\n[[dies]]              = lambda x.die(x)                                   : <e,t>\n[[he-B dies]]         = die(b)                                             : t\n[[until he-B dies]]   = lambda p.p /\\ until(die(b))                       : <t,t>\n[[love him-B]]        = lambda x.love(x,b)                                : <e,t>\n[[will love him-B until he-B dies]] = lambda x.love(x,b) /\\ until(die(b)) : <e,t>\n[[Boromir's king will love him-B until he-B dies]] = love(iota y.poss(b,y) /\\ king(y),b) /\\ until(die(b)) : t\n\\end{derivation}\n\nThe *him-K* variant replaces the object `b` with `ιy.[poss(b,y) ∧ king(y)]`, making the pronoun co-refer with the subject definite description — a **bridging** inference made explicit in the denotation.[^bridge]\n\n[^bridge]: *will* and *shall* are both identity functions here — tense and modality are analysed properly in Chapters 12–13. The *until* operator introduces a second conjunct that the temporal connective holds."
+          "markdown": "# Chapter 8 · Presupposition: Definites and Possessives\n\nChapter 7 built complex predicates with Predicate Modification (p. 279) and Predicate Abstraction (p. 288). Chapter 8 (\"Presupposition\") extends undefinedness past type t: §8.3 asks \"can non-propositional expressions—expressions of type e, for example—also be undefined?\" and argues \"that they can, examining the definite determiner and possessives as the primary cases\" (p. 352).\n\n## 8.3.1 The definite determiner\n\nDefinite descriptions convey \"EXISTENCE\" and \"UNIQUENESS (that there is at most one)\" (p. 352). Russell (1905) makes both entailed content: *The princess smokes* means 'There is exactly one princess and she smokes', $\\exists x.[princess(x) \\wedge \\forall y.[princess(y) \\rightarrow x = y] \\wedge smokes(x)]$ ((28), p. 353). Strawson (1950), building on Frege, replies that with no king of France \"the question of whether his statement was true or false simply did not arise\" (p. 355); for Frege, forming a proper name with the definite article \"is at any rate permissible when one and only one object falls under the concept\" (p. 355). The book formalizes the Frege/Strawson view by \"treating *the* as denoting a function of type ⟨⟨e,t⟩,e⟩ that returns the unique satisfier of its input predicate if there is exactly one, and a special 'undefined' value otherwise\" (p. 356).\n\nThe formal tool is the **iota operator**: ιx.P(x) is an expression of type e that \"denotes the unique individual satisfying P if there is exactly one such individual, otherwise it denotes m_e\", the undefined individual (p. 356). The entry is \"the ↝ λP.ιx.P(x)\" ((29), p. 358); the book's specimen derivation computes ιx.moon(x) for *the moon* ((30), p. 358). A successful description, \"like a proper name, denotes an individual\" (p. 355) — it is simply type e. Our counterpart is *the ring* (\\ref{defn-ex}):\n\n\\ex<defn-ex> Frodo carries the ring.\n\\xe\n\n\\ex Legolas trusts the rightful king.\n\\xe\n\n\\ex The elf who trusts Gimli is in Moria.\n\\xe\n\n\\begin{derivation}\n[[the]]              = lambda X.iota x.X(x)                          : <<e,t>,e>\n[[ring]]             = lambda x.ring(x)                              : <e,t>\n[[the ring]]         = iota x.ring(x)                                : e\n[[carries]]          = lambda y.lambda x.carry(x,y)                  : <e,<e,t>>\n[[carries the ring]] = lambda x.carry(x,iota y.ring(y))              : <e,t>\n[[Frodo carries the ring]] = carry(f,iota y.ring(y))                 : t\n\\end{derivation}\n\n\\begin{forest}\n[S{carry(f,iota y.ring(y))}\n  [DP{f} Frodo]\n  [VP{lambda x.carry(x,iota y.ring(y))}\n    [V{lambda y.lambda x.carry(x,y)} carries]\n    [DP{iota x.ring(x)}\n      [D{lambda X.iota x.X(x)} the]\n      [NP{lambda x.ring(x)} ring]]]]\n\\end{forest}\n\n*Rightful* is not intersective. The book gives subsective and non-subsective adjectives \"translations of type ⟨⟨e,t⟩,⟨e,t⟩⟩\" that are \"analyzed via Function Application rather than Predicate Modification\" (p. 280); our constant rightful follows that recipe, composing with the noun by FA before ι applies:\n\n\\begin{derivation}\n[[rightful]]              = lambda F.lambda x.rightful(F)(x)               : <<e,t>,<e,t>>\n[[king]]                  = lambda x.king(x)                               : <e,t>\n[[rightful king]]         = lambda x.rightful(king)(x)                     : <e,t>\n[[the rightful king]]     = iota x.rightful(king)(x)                       : e\n[[trusts the rightful king]] = lambda x.trust(x,iota y.rightful(king)(y))  : <e,t>\n[[Legolas trusts the rightful king]] = trust(l,iota y.rightful(king)(y))   : t\n\\end{derivation}\n\nA relative clause denotes a type ⟨e,t⟩ predicate — *who Blake loves* ↝ λx.loves(b,x) (p. 281), by Predicate Abstraction (p. 288) — and combines with the noun by Predicate Modification; *the* then applies to the assembled predicate:\n\n\\begin{derivation}\n[[trusts Gimli]]                  = lambda x.trust(x,m)                    : <e,t>\n[[elf who trusts Gimli]]          = lambda x.elf(x) /\\ trust(x,m)          : <e,t>\n[[the elf who trusts Gimli]]      = iota x.(elf(x) /\\ trust(x,m))          : e\n[[in Moria]]                      = lambda x.in(x,mr)                      : <e,t>\n[[The elf who trusts Gimli is in Moria]] = in(iota x.(elf(x) /\\ trust(x,m)),mr) : t\n\\end{derivation}\n\n## 8.3.3 Possessives\n\n\"possessives trigger presuppositions\": (32) *Blake loves Alex's sister* ≫ *Alex has a sister*, and the inference is presuppositional \"via the projection test; for example, Blake doesn't love Alex's sister also implies that Alex has a sister\" (p. 363).\n\nThe book's route treats *sister* as a relational noun of type ⟨e,⟨e,t⟩⟩ (following the appendix to Chapter 6) with \"'s ↝ λyλR.λx.R(y)(x)\" ((33), p. 363); a possessive in argument position is then shifted by the silent iota type-shift — \"If α has a translation α′ of type ⟨e,t⟩, then α also has a translation of type e: ιx.α′(x)\" (p. 364) — so \"the uniqueness presupposition of (32) … arises not from the lexical entry of 's but from the iota type-shift\" (p. 364). Engine note: this set compresses that route into one lexical step, `⟦'s⟧` = λP.λx.ιy.[poss(x,y) ∧ P(y)] : ⟨⟨e,t⟩,⟨e,e⟩⟩ — a sortal noun plus an unanalysed possession relation poss (ours, not the book's), with the ι built in. The ⟨e,e⟩ possessive applies directly to the possessor, so the whole DP is type e with no article, like *Blake's sister* in the book's (35) (p. 364) (\\ref{poss-ex}).\n\n\\ex<poss-ex> Boromir's sword.\n\\xe\n\n\\ex his₁ bow.\n\\xe\n\n\\ex my₁ axe.\n\\xe\n\n\\begin{derivation}\n[['s]]                    = lambda P.lambda x.iota y.poss(x,y) /\\ P(y)    : <<e,t>,<e,e>>\n[[sword]]                 = lambda x.sword(x)                              : <e,t>\n[['s sword]]              = lambda x.iota y.poss(x,y) /\\ sword(y)         : <e,e>\n[[Boromir's sword]]       = iota y.poss(b,y) /\\ sword(y)                  : e\n\n[[his_1]]                 = x_1                                            : e\n[['s bow]]                = lambda x.iota y.poss(x,y) /\\ bow(y)           : <e,e>\n[[his_1 bow]]             = iota y.poss(x_1,y) /\\ bow(y)                  : e\n\n[[my_1 axe]]              = iota y.poss(x_1,y) /\\ axe(y)                  : e\n\\end{derivation}\n\nA pronominal possessor is a free variable: the book's Exercise 13 derives *Blake loves his teacher* from \"he₃ ↝ v₃, where v₃ is a variable of type e\" (pp. 361, 365–366); our his₁/my₁ translate as x₁. In such uses \"the pronoun functions as a free variable whose value is supplied by the discourse context — by pointing, visual salience, or prior mention\" (p. 307).\n\n### Free and bound readings\n\n\"pronouns, like logical variables, can be either free or bound\" (p. 311). *Every boy loves his mother* is among the book's bound-variable cases (p. 307), and its Exercise 14 asks for an LF of *everyone loves her teacher* \"capturing a reading where everyone binds her\" (p. 366). The two readings differ in truth conditions (\\ref{bound-ex}):\n\n\\ex<bound-ex> Galadriel admires her₁ hair.\n\\xe\n\n\\ex Boromir's sword kills every Uruk-hai who hunts him-B.\n\\xe\n\n\\ex Boromir's king will love him until he dies.\n\\xe\n\nFree reading — the possessor index is supplied by the assignment:\n\n\\begin{derivation}\n[['s hair]]                         = lambda x.iota y.poss(x,y) /\\ hair(y)      : <e,e>\n[[her_1 hair]]                      = iota y.poss(x_1,y) /\\ hair(y)             : e\n[[admires her_1 hair]]              = lambda x.admire(x,iota y.poss(x_1,y) /\\ hair(y)) : <e,t>\n[[Galadriel admires her_1 hair]]    = admire(w,iota y.poss(x_1,y) /\\ hair(y))   : t\n\\end{derivation}\n\nWith x₁ assigned to Galadriel (w) this is the reflexive reading; assigned to some other salient individual, the non-reflexive free reading.\n\nFor *Boromir's king will love him until he dies*, the set fixes each pronoun's referent lexically (our device — the book has no counterpart): him-B/he-B translate as the constant b, and him-K/he-K as the description ιy.[poss(b,y) ∧ king(y)], so the four target readings are the four ways of resolving the two pronouns.[^aux]\n\n\\begin{derivation}\n[[boromirs-king]]     = iota y.poss(b,y) /\\ king(y)                      : e\n[[him-B]]             = b                                                  : e\n[[him-K]]             = iota y.poss(b,y) /\\ king(y)                      : e\n[[will]]              = lambda X.X                                         : <<e,t>,<e,t>>\n[[until]]             = lambda q.lambda p.p /\\ until(q)                   : <t,<t,t>>\n[[dies]]              = lambda x.die(x)                                   : <e,t>\n[[he-B dies]]         = die(b)                                             : t\n[[until he-B dies]]   = lambda p.p /\\ until(die(b))                       : <t,t>\n[[love him-B]]        = lambda x.love(x,b)                                : <e,t>\n[[will love him-B until he-B dies]] = lambda x.love(x,b) /\\ until(die(b)) : <e,t>\n[[Boromir's king will love him-B until he-B dies]] = love(iota y.poss(b,y) /\\ king(y),b) /\\ until(die(b)) : t\n\\end{derivation}\n\nThe him-K variant replaces the object b with ιy.[poss(b,y) ∧ king(y)], making the pronoun co-refer with the subject description.\n\n[^aux]: *will* and *shall* are identity functions in this set and *until* adds a conjunct until(q) — placeholders only; tense and aspect are the subject of Chapter 11, intensionality of Chapter 12."
         }
       }
     },
     {
       "key": "ch8.4-definedness",
-      "title": "Definedness Conditions: the ∂ operator (§8.4)",
+      "title": "Definedness Conditions: the ∂ operator (§8.1.1, §8.2.2)",
       "content": {
         "compose": 1,
         "id": "ch8-definedness",
-        "title": "Definedness Conditions: the ∂ operator (§8.4)",
+        "title": "Definedness Conditions: the ∂ operator (§8.1.1, §8.2.2)",
         "subtitle": "Presuppositional determiners — neither and every — with Beaver & Krahmer's partial operator",
         "domain": {
           "multiLetterNames": true,
@@ -4034,7 +4034,7 @@
                   "∂(card2(λx.tower(x))) ∧ ¬∃x[tower(x) ∧ white(x)]"
                 ],
                 "reading": {
-                  "section": "8.4"
+                  "section": "8.2.2"
                 }
               },
               {
@@ -4044,14 +4044,14 @@
                   "∂(card2(λx.tree(x))) ∧ ¬∃x[tree(x) ∧ dark(x)]"
                 ],
                 "reading": {
-                  "section": "8.4"
+                  "section": "8.2.2"
                 }
               }
             ]
           },
           {
             "title": "B. Presuppositional every (an existence presupposition)",
-            "instructions": "The quantifier every can also be given an existence presupposition with ∂: every ↝ λXλY.[∂(∃x.X(x)) ∧ ∀x[X(x) → Y(x)]]. This predicts that 'Every dubstep album by Frege is brilliant' is neither true nor false when Frege made no dubstep albums — capturing the intuition that the sentence presupposes there are such albums.",
+            "instructions": "The quantifier every can also be given an existence presupposition with ∂: every ↝ λXλY.[∂(∃x.X(x)) ∧ ∀x[X(x) → Y(x)]]. This predicts that 'Every dubstep album by Frege is famous' is neither true nor false when Frege made no dubstep albums — capturing the intuition that the sentence presupposes there are such albums.",
             "items": [
               {
                 "sentence": "Every ring is golden.",
@@ -4060,7 +4060,7 @@
                   "∂(∃x.ring(x)) ∧ ∀x[ring(x) → golden(x)]"
                 ],
                 "reading": {
-                  "section": "8.4.1"
+                  "section": "8.2.2"
                 }
               },
               {
@@ -4070,7 +4070,7 @@
                   "∂(∃x.wizard(x)) ∧ ∀x[wizard(x) → wise(x)]"
                 ],
                 "reading": {
-                  "section": "8.4.1"
+                  "section": "8.2.2"
                 }
               }
             ]
@@ -4086,7 +4086,7 @@
                   "¬[∂(∃x.ring(x)) ∧ ∀x[ring(x) → golden(x)]]"
                 ],
                 "reading": {
-                  "section": "8.4.2"
+                  "section": "8.2.2"
                 }
               }
             ]
@@ -4102,7 +4102,7 @@
                   "∃x[ring(x) ∧ golden(x)]"
                 ],
                 "reading": {
-                  "section": "8.4.3"
+                  "section": "8.1.1"
                 }
               }
             ]
@@ -4110,7 +4110,7 @@
         ],
         "reading": {
           "format": "latex",
-          "markdown": "# Chapter 8 · Definedness Conditions\n\nQuantifiers like *every* and *neither* do more than assert: they **presuppose** something about their domain. Chapter 8 formalises this with the **∂ operator**, which marks a condition as presupposed rather than asserted.\n\n## 8.4 The ∂ operator and *neither*\n\n**∂(φ)** (read: *presupposing φ*) marks its propositional argument as a **presupposition** — a condition that must be true for the sentence to be felicitous. Unlike an assertion, a presupposition projects out of negation and other entailment-cancelling contexts: if the presupposition fails, the sentence is neither true nor false.\n\n**Neither.** `⟦neither⟧` = λX.λY.[∂(card₂(X)) ∧ ¬∃x[X(x) ∧ Y(x)]] : ⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩.\n\n*Neither* asserts what *no* asserts — the restrictor and scope-predicate have empty intersection — but additionally **presupposes** that the restrictor has exactly two satisfiers (`card₂(X)`). If the restrictor doesn't contain exactly two individuals, the sentence is infelicitous.[^neither]\n\n\\ex<neither-ex> Neither tower is white.\n\\xe\n\n\\ex Neither tree is dark.\n\\xe\n\n\\begin{derivation}\n[[neither]]              = lambda X.lambda Y.[∂(card2(X)) /\\ ~Ex[X(x) /\\ Y(x)]]   : <<e,t>,<<e,t>,t>>\n[[tower]]                = lambda x.tower(x)                                        : <e,t>\n[[neither tower]]        = lambda Y.[∂(card2(lambda x.tower(x))) /\\ ~Ex[tower(x) /\\ Y(x)]] : <<e,t>,t>\n[[white]]                = lambda x.white(x)                                        : <e,t>\n[[Neither tower is white]] = ∂(card2(lambda x.tower(x))) /\\ ~Ex[tower(x) /\\ white(x)]  : t\n\\end{derivation}\n\nThe presupposed component `∂(card₂(λx.tower(x)))` fires first: a speaker who utters *Neither tower is white* is committed to there being exactly two towers in the domain (\\ref{neither-ex}).\n\n## 8.4.1 Presuppositional *every*\n\n**Every.** `⟦every⟧` = λX.λY.[∂(∃x.X(x)) ∧ ∀x[X(x) → Y(x)]] : ⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩.\n\nThe bare assertion of *every* is universal quantification. The ∂ conjunct adds an **existence presupposition**: the sentence is only felicitous if the restrictor is non-empty. *Every Balrog is benevolent* is neither true nor false if there are no Balrogs — the presupposition that at least one Balrog exists has failed.\n\n\\ex<every-ex> Every ring is golden.\n\\xe\n\n\\ex Every wizard is wise.\n\\xe\n\n\\begin{derivation}\n[[every]]               = lambda X.lambda Y.[∂(Ex.X(x)) /\\ Ax[X(x) -> Y(x)]]     : <<e,t>,<<e,t>,t>>\n[[ring]]                = lambda x.ring(x)                                          : <e,t>\n[[every ring]]          = lambda Y.[∂(Ex.ring(x)) /\\ Ax[ring(x) -> Y(x)]]         : <<e,t>,t>\n[[golden]]              = lambda x.golden(x)                                        : <e,t>\n[[Every ring is golden]] = ∂(Ex.ring(x)) /\\ Ax[ring(x) -> golden(x)]              : t\n\\end{derivation}\n\n\\begin{forest}\n[S{∂(Ex.ring(x)) /\\ Ax[ring(x) -> golden(x)]}\n  [DP{lambda Y.[∂(Ex.ring(x)) /\\ Ax[ring(x) -> Y(x)]]}\n    [D{lambda X.lambda Y.[∂(Ex.X(x)) /\\ Ax[X(x) -> Y(x)]]} every]\n    [NP{lambda x.ring(x)} ring]]\n  [VP{lambda x.golden(x)}\n    [V{lambda X.X} is]\n    [AP{lambda x.golden(x)} golden]]]\n\\end{forest}\n\n## 8.4.2 Projection through negation\n\nPresuppositions **project** out of the scope of negation: negating a sentence does not cancel its presuppositions.\n\n`⟦not⟧` = λQ⟨⟨e,t⟩,t⟩.λP⟨e,t⟩.¬Q(P). This *not* takes a GQ and a predicate and negates the whole quantificational claim — but the ∂ inside the GQ is not negated.\n\n\\ex<proj-ex> Not every ring is golden.\n\\xe\n\n\\begin{derivation}\n[[not]]                           = lambda Q.lambda P.~Q(P)                              : <<<e,t>,t>,<<e,t>,t>>\n[[every ring]]                    = lambda Y.[∂(Ex.ring(x)) /\\ Ax[ring(x) -> Y(x)]]     : <<e,t>,t>\n[[not [every ring]]]              = lambda P.~[∂(Ex.ring(x)) /\\ Ax[ring(x) -> P(x)]]   : <<e,t>,t>\n[[golden]]                        = lambda x.golden(x)                                   : <e,t>\n[[Not every ring is golden]]      = ~[∂(Ex.ring(x)) /\\ Ax[ring(x) -> golden(x)]]        : t\n\\end{derivation}\n\nThe result asserts the negation of the ∀-claim, but the existence presupposition ∂(∃x.ring(x)) remains — even *Not every ring is golden* presupposes that there is at least one ring. This is the projection behaviour that ∂ is designed to capture.[^proj]\n\n## 8.4.3 *some* — assertion without presupposition\n\nBy contrast, *some* makes no use of ∂: `⟦some⟧` = λX.λY.∃x[X(x) ∧ Y(x)] : ⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩. It simply asserts that the restrictor and nuclear scope have a common satisfier.\n\n\\ex<some-ex> Some ring is golden.\n\\xe\n\n\\begin{derivation}\n[[some]]                = lambda X.lambda Y.Ex[X(x) /\\ Y(x)]                       : <<e,t>,<<e,t>,t>>\n[[ring]]                = lambda x.ring(x)                                          : <e,t>\n[[some ring]]           = lambda Y.Ex[ring(x) /\\ Y(x)]                             : <<e,t>,t>\n[[golden]]              = lambda x.golden(x)                                        : <e,t>\n[[Some ring is golden]] = Ex[ring(x) /\\ golden(x)]                                 : t\n\\end{derivation}\n\nNo ∂ conjunct appears. *Some ring is golden* is straightforwardly **false** (not infelicitous) if there are no rings — because it merely asserts existence. The contrast between *every* (presupposes existence, ∂) and *some* (asserts existence, no ∂) captures the classic observation that existential bare plurals feel more informative than universal claims about empty sets.[^contrast]\n\n[^neither]: *card₂(X)* is a two-place cardinality predicate that holds of X when exactly two individuals satisfy X. *Neither* is thus the two-element counterpart of *no* — semantically equivalent to *no* but felicitous only over a two-member domain.\n[^proj]: The projection here is technically not about the ∂ escaping negation — it is inside the QP which is itself not negated. *not* combines with the QP externally, so the ∂ inside the QP's denotation never falls within the negation's scope.\n[^contrast]: *Every F is G* is odd when the speaker knows there are no Fs (the vacuous truth problem); *Some F is G* is simply false in that case. ∂ formalises this asymmetry: existential import is a presupposition for *every*, an assertion for *some*."
+          "markdown": "# Chapter 8 · Presupposition: Definedness Conditions\n\nChapter 8 builds a three-valued logic — T, F, and a third value m for presupposition failure — and introduces the ∂ operator for writing definedness conditions into lexical entries.\n\n## 8.1.1 Back to the square of opposition\n\n*There are dubstep albums by Frege* \"is not true\"; \"Its negation, naturally, is true\" (p. 331). But (3) *Every dubstep album by Frege is famous* \"is not felt to be true\", and \"few would assent to its negation\", (4) *Not every dubstep album by Frege is famous* (p. 331). The book's hypothesis: \"(3) is neither true nor false: it has a PRESUPPOSITION FAILURE, because its presupposed content—that there exist dubstep albums by Frege—is false\" (pp. 331–332). The semantic definition: \"A presupposes B when B must be true for A to have any truth value at all\"; on it, \"the determiner every carries a PRESUPPOSITION of existence: Every S is P presupposes that there is at least one S\" (p. 332).\n\n*Some* keeps its Chapter 6 entry, \"some ↝ λPλP′.∃x.[P(x) ∧ P′(x)]\" (§6.6.2, p. 241): existence is asserted rather than presupposed, no ∂ appears, and with an empty restrictor the formula is false rather than undefined. (The book adds that the medieval square's relations are restored when the presuppositional treatment is applied \"uniformly to all four corners\" — Exercise 1, p. 334.)\n\n\\ex<some-ex> Some ring is golden.\n\\xe\n\n\\begin{derivation}\n[[some]]                = lambda X.lambda Y.Ex[X(x) /\\ Y(x)]                       : <<e,t>,<<e,t>,t>>\n[[ring]]                = lambda x.ring(x)                                          : <e,t>\n[[some ring]]           = lambda Y.Ex[ring(x) /\\ Y(x)]                             : <<e,t>,t>\n[[golden]]              = lambda x.golden(x)                                        : <e,t>\n[[Some ring is golden]] = Ex[ring(x) /\\ golden(x)]                                 : t\n\\end{derivation}\n\nNo ∂ conjunct appears — contrast the entries for *every* and *neither* below.\n\n## 8.2.2 Definedness conditions\n\n\"The PARTIAL OPERATOR (∂) is a general formal tool for representing definedness conditions\" (p. 342). \"The ∂ operator comes from Beaver & Krahmer (2001) and is pronounced 'presupposing that'. It is of type ⟨t,t⟩: it maps a formula to another formula\" (p. 343); ∂(∃x.P(x)) \"can be read as 'presupposing that there is at least one P'\" (p. 343). The book's rules (both p. 344):\n\n**Syntax Rule: Definedness conditions.** \"If φ is an expression of type t, then ∂(φ) is an expression of type t.\"\n\n**Semantic Rule: Definedness conditions.** ⟦∂(φ)⟧ = T if ⟦φ⟧ = T, and m otherwise.\n\nThe existence presupposition of *every* is then lexical: \"every ↝ λPλQ.[∂(∃x.P(x)) ∧ ∀x.[P(x) → Q(x)]]\" ((21), p. 343). \"This treatment gives rise to an undefined value for Every dubstep album by Frege in models where there are no dubstep albums by Frege\", \"capturing the intuition that the sentence is neither true nor false. The prediction depends on conjunction being Weak Kleene\" — a conjunction with an undefined conjunct is undefined (p. 343; Table 8.2, p. 342).\n\n\\ex<every-ex> Every ring is golden.\n\\xe\n\n\\ex Every wizard is wise.\n\\xe\n\n\\begin{derivation}\n[[every]]               = lambda X.lambda Y.[∂(Ex.X(x)) /\\ Ax[X(x) -> Y(x)]]     : <<e,t>,<<e,t>,t>>\n[[ring]]                = lambda x.ring(x)                                          : <e,t>\n[[every ring]]          = lambda Y.[∂(Ex.ring(x)) /\\ Ax[ring(x) -> Y(x)]]         : <<e,t>,t>\n[[golden]]              = lambda x.golden(x)                                        : <e,t>\n[[Every ring is golden]] = ∂(Ex.ring(x)) /\\ Ax[ring(x) -> golden(x)]              : t\n\\end{derivation}\n\n\\begin{forest}\n[S{∂(Ex.ring(x)) /\\ Ax[ring(x) -> golden(x)]}\n  [DP{lambda Y.[∂(Ex.ring(x)) /\\ Ax[ring(x) -> Y(x)]]}\n    [D{lambda X.lambda Y.[∂(Ex.X(x)) /\\ Ax[X(x) -> Y(x)]]} every]\n    [NP{lambda x.ring(x)} ring]]\n  [VP{lambda x.golden(x)}\n    [V{lambda X.X} is]\n    [AP{lambda x.golden(x)} golden]]]\n\\end{forest}\n\n*Both* and *neither* are \"PRESUPPOSITIONAL DETERMINERS\" (p. 344). With three candidates for a job, *Both candidates are qualified* and *Neither candidate is qualified* are odd, and the oddness survives embedding under negation, *maybe*, and conditionals: \"All of these imply that there are two candidates\" (pp. 344–345). Hence ((26), p. 345):\n\n$$ neither ↝ λPλQ.[∂(|P| = 2) ∧ ¬∃x.[P(x) ∧ Q(x)]] $$\n\n\"This says that neither is basically a synonym of no, carrying an extra presupposition: that there are exactly two Ps\" (p. 345).[^card]\n\n\\ex<neither-ex> Neither tower is white.\n\\xe\n\n\\ex Neither tree is dark.\n\\xe\n\n\\begin{derivation}\n[[neither]]              = lambda X.lambda Y.[∂(card2(X)) /\\ ~Ex[X(x) /\\ Y(x)]]   : <<e,t>,<<e,t>,t>>\n[[tower]]                = lambda x.tower(x)                                        : <e,t>\n[[neither tower]]        = lambda Y.[∂(card2(lambda x.tower(x))) /\\ ~Ex[tower(x) /\\ Y(x)]] : <<e,t>,t>\n[[white]]                = lambda x.white(x)                                        : <e,t>\n[[Neither tower is white]] = ∂(card2(lambda x.tower(x))) /\\ ~Ex[tower(x) /\\ white(x)]  : t\n\\end{derivation}\n\nIn the book's parallel derivation for *Neither candidate is qualified*, the translation \"should have a defined value in a model if\" the cardinality condition \"is true in the model. If it has a defined value, then its value is equal to that of\" the plain no-claim (p. 345). Read tower and white for candidate and qualified in (\\ref{neither-ex}).\n\nProjection through negation is the book's Exercise 4 (p. 346), which derives *Not every elevator is new* with \"λQ⟨⟨e,t⟩,t⟩λP⟨e,t⟩.¬Q(P)\" as the translation for *not* — this set's entry is the same. The ∂ conjunct ends up under ¬, and in Weak Kleene \"the negation of an undefined formula is also presumably undefined\" (p. 342): with no rings, (\\ref{proj-ex}) is m rather than true, so the existence presupposition survives — matching the diagnostic data, where (5) *Not every dubstep album by Frege is famous* still implies \"that Frege made at least one dubstep album\" (p. 336).\n\n\\ex<proj-ex> Not every ring is golden.\n\\xe\n\n\\begin{derivation}\n[[not]]                           = lambda Q.lambda P.~Q(P)                              : <<<e,t>,t>,<<e,t>,t>>\n[[every ring]]                    = lambda Y.[∂(Ex.ring(x)) /\\ Ax[ring(x) -> Y(x)]]     : <<e,t>,t>\n[[not [every ring]]]              = lambda P.~[∂(Ex.ring(x)) /\\ Ax[ring(x) -> P(x)]]   : <<e,t>,t>\n[[golden]]                        = lambda x.golden(x)                                   : <e,t>\n[[Not every ring is golden]]      = ~[∂(Ex.ring(x)) /\\ Ax[ring(x) -> golden(x)]]        : t\n\\end{derivation}\n\n## 8.2.3 Comparison with the colon-dot notation\n\nIn Heim & Kratzer-style notation \"the presupposition of a lambda expression is written at the beginning of the value description of that term, in between a colon and a dot\": (26) becomes λPλQ : |P| = 2 . ¬∃x[P(x) ∧ Q(x)], \"without any ∂ operator\" (p. 350). The two styles are \"more or less interchangeable\", and colon-dot can be taken as syntactic sugar: \"': φ . ψ' abbreviates ∂(φ) ∧ ψ for type t\" (p. 350). Engine note: the engine writes partial functions in the book's ∂-conjunct style throughout, with card2(X) as its rendering of the book's cardinality shorthand |P| = 2.\n\n[^card]: \"|P| = 2 is short for ∃x∃y[¬(x = y) ∧ P(x) ∧ P(y) ∧ ¬∃z[¬(z = x) ∧ ¬(z = y) ∧ P(z)]]\" (p. 345, fn. 4). The engine spells it card2(X)."
         }
       }
     },

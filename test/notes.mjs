@@ -88,7 +88,11 @@ for (const f of fs.readdirSync(readingDir).filter((x) => x.endsWith('.md')).sort
   ok(f + ': no fences', !md.includes('```'));
   ok(f + ': no [[derivation:', !md.includes('[[derivation:'));
   const parts = L.parseDoc(md);
-  ok(f + ': parses to blocks', parts.length > 1, 'got ' + parts.length);
+  ok(f + ': parses', parts.length >= 1, 'got ' + parts.length);
+  // S67: readings are definitions + brief guidance, with no derivation/forest/ex
+  // environments, so a note legitimately parses to a single prose block. What must
+  // hold is that the `##` anchors the exercises point at are present.
+  ok(f + ': has ## anchors', /^## /m.test(md));
 }
 let latexCount = 0, readingCount = 0;
 for (const f of fs.readdirSync(exDir).filter((x) => x.endsWith('.compose.json')).sort()) {
