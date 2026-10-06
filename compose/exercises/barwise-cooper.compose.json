@@ -146,7 +146,7 @@
   "exercises": [
     {
       "id": "g1",
-      "title": "A. NPs as generalized quantifiers",
+      "title": "A. NPs as generalised quantifiers",
       "instructions": "Every NP denotes a set of sets, type ⟨⟨e,t⟩,t⟩; the determiner applies to the CN and the resulting quantifier applies to the VP. The determiner entries are the ones given in Partee (2008, §2).",
       "derivations": [
         {
@@ -256,7 +256,7 @@
     {
       "id": "g4",
       "title": "D. Existential sentences",
-      "instructions": "B&C interpret \"There be Det CN\" as D(A)(E), where E is the universe. We render membership in E by the predicate exist (see the notes for this rendering choice). Compute a weak and a strong case; the strong case comes out tautologous.",
+      "instructions": "B&C interpret \"There be Det CN\" as D(A)(E), where E is the universe. Membership in E is rendered by the predicate exist (see the notes for this rendering choice). Compute a weak and a strong case; the strong case comes out tautologous.",
       "derivations": [
         {
           "id": "d1",

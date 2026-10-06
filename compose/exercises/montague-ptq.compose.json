@@ -2,7 +2,7 @@
   "compose": 1,
   "id": "montague-ptq",
   "title": "Montague's PTQ · A — The Extensional Core",
-  "subtitle": "Montague 1973 — quantifier NPs, raised verbs, quantifying-in",
+  "subtitle": "Montague 1973: quantifier NPs, raised verbs, quantifying-in",
   "domain": {
     "multiLetterNames": true,
     "constants": {
@@ -169,7 +169,7 @@
   "exercises": [
     {
       "title": "A. Every noun phrase is a quantifier",
-      "instructions": "A determiner + noun is a quantifier ⟨⟨e,t⟩,t⟩ that takes the VP as its argument by FA. A name may either combine directly (e + ⟨e,t⟩) or, in Montague's uniform style, lift to a quantifier first — either way the result is the same.",
+      "instructions": "A determiner with a noun is a quantifier ⟨⟨e,t⟩,t⟩ that takes the VP as its argument by FA. A name may combine directly (e with ⟨e,t⟩) or, in Montague's uniform style, lift to a quantifier first; the result is the same either way.",
       "items": [
         {
           "id": "d1",
@@ -199,7 +199,7 @@
     },
     {
       "title": "B. Transitive verbs take quantifier objects",
-      "instructions": "A PTQ transitive verb is type ⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩ — it combines with a quantifier object. A name object must lift first; a determiner object is already a quantifier and takes narrow scope in situ.",
+      "instructions": "A PTQ transitive verb is type ⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩ and combines with a quantifier object. A name object must lift first; a determiner object is already a quantifier and takes narrow scope in situ.",
       "items": [
         {
           "sentence": "John loves Mary.",
@@ -234,8 +234,8 @@
       ]
     },
     {
-      "title": "C. The verb be — identity and predication",
-      "instructions": "One entry, be = λT.λx.T(λy.x=y), takes a quantifier object. With a (lifted) name it gives identity; with an indefinite it reduces, by the one-point law, to a predication.",
+      "title": "C. The verb be: identity and predication",
+      "instructions": "One entry, be = λT.λx.T(λy.x=y), takes a quantifier object. With a lifted name it gives identity; with an indefinite it reduces, by the one-point law, to a predication.",
       "items": [
         {
           "sentence": "Bill is Mary.",
@@ -277,7 +277,7 @@
     },
     {
       "title": "E. Quantifying-in and scope",
-      "instructions": "An in-situ object quantifier takes narrow scope. For the inverse reading, raise the object quantifier over the clause (QR) and bind the trace — Montague's quantifying-in. \"Every man loves a woman\" is scope-ambiguous: derive both readings.",
+      "instructions": "An in-situ object quantifier takes narrow scope. For the inverse reading, raise the object quantifier over the clause (QR) and bind the trace, which is Montague's quantifying-in. \"Every man loves a woman\" is scope-ambiguous: derive both readings.",
       "items": [
         {
           "sentence": "Every man loves a woman.",

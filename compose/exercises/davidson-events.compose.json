@@ -110,7 +110,7 @@
     {
       "id": "g1",
       "title": "A. The event argument",
-      "instructions": "Davidson: an action sentence quantifies over an event. The verb takes its usual arguments plus an event; Existential Closure binds it at the top.",
+      "instructions": "Davidson: an action sentence quantifies over an event. The verb takes its usual arguments plus an event, and Existential Closure binds it at the top.",
       "derivations": [
         {
           "id": "d1",
@@ -143,7 +143,7 @@
     {
       "id": "g2",
       "title": "B. Adverbial modification is predication of events",
-      "instructions": "Modifiers are predicates of the event, conjoined by Predicate Modification with the clause’s event description (above the subject — the whole clause describes the event). Each PP adds one conjunct, and drops by ∧-elimination: the entailment diamond.",
+      "instructions": "Modifiers are predicates of the event, conjoined by Predicate Modification with the clause's event description, above the subject, since the whole clause describes the event. Each PP adds one conjunct and drops by ∧-elimination, giving the entailment diamond.",
       "derivations": [
         {
           "id": "d1",

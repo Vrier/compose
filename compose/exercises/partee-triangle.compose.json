@@ -195,8 +195,8 @@
     },
     {
       "id": "g2",
-      "title": "B. BE — predicative NPs (defs. 14–16)",
-      "instructions": "English be means apply-predicate, λP.λx.P(x) (Williams 1983; Partee’s (16)). When its complement is a quantifier, the BE shift lowers it to ⟨e,t⟩: BE(P) = λx.P(λy.y = x).",
+      "title": "B. BE: predicative NPs (defs. 14–16)",
+      "instructions": "English be means apply-predicate, λP.λx.P(x) (Williams 1983; Partee's (16)). When its complement is a quantifier, the BE shift lowers it to ⟨e,t⟩: BE(P) = λx.P(λy.y = x).",
       "derivations": [
         {
           "id": "d1",
@@ -229,7 +229,7 @@
     {
       "id": "g3",
       "title": "C. THE and iota (def. 14, Diagram 2)",
-      "instructions": "THE is the generalized-quantifier definite; iota is its e-type cousin. When uniqueness holds, lift(iota(king)) = THE(king).",
+      "instructions": "THE is the generalised-quantifier definite; iota is its e-type cousin. When uniqueness holds, lift(iota(king)) = THE(king).",
       "derivations": [
         {
           "id": "d1",
@@ -257,7 +257,7 @@
     },
     {
       "id": "g4",
-      "title": "D. ident — equatives",
+      "title": "D. ident: equatives",
       "instructions": "ident maps j to λx[x = j]: a name in predicate position.",
       "derivations": [
         {
@@ -276,7 +276,7 @@
     {
       "id": "g5",
       "title": "E. Coercion by conjunction (§1.2; Partee & Rooth 1983)",
-      "instructions": "Unlike-type conjunctions force shifts: the e-type definite LIFTs to conjoin with a quantifier; a predicative AP conjoins with a BE-shifted NP.",
+      "instructions": "Unlike-type conjunctions force shifts: the e-type definite LIFTs to conjoin with a quantifier, and a predicative AP conjoins with a BE-shifted NP.",
       "derivations": [
         {
           "id": "d1",

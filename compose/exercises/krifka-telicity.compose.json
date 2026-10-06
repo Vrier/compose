@@ -130,7 +130,7 @@
     {
       "id": "g1",
       "title": "A. Cumulative and quantized reference (defs. 3–4)",
-      "instructions": "CUM and QUA are properties of predicates, not of things (Krifka: one entity can fall under apples and under two apples). Unfold the definitions by composing.",
+      "instructions": "CUM and QUA are properties of predicates: one entity can fall under apples and under two apples (Krifka). Unfold the definitions by composing.",
       "derivations": [
         {
           "id": "d1",
@@ -192,7 +192,7 @@
     {
       "id": "g3",
       "title": "C. Aspectual composition (§3): the object shapes the VP",
-      "instructions": "Same verb, different objects, different telicity. The formulas differ only in the object conjuncts — the telicity difference is proved from them in the notes via TEL (37) and incrementality SINC (51).",
+      "instructions": "Same verb, different objects, different telicity. The formulas differ only in the object conjuncts, and the telicity difference is proved from them in the notes via TEL (37) and incrementality SINC (51).",
       "derivations": [
         {
           "id": "d1",

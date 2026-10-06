@@ -181,7 +181,7 @@
     {
       "id": "g2",
       "title": "B. Plurals as algebraic closure",
-      "instructions": "The plural morpheme denotes the star operator: ∗P contains everything in P together with all sums of things in P. Two definite articles: theSUP picks the supremum of a set; theSUM forms the sum of a set.",
+      "instructions": "The plural morpheme denotes the star operator: ∗P contains everything in P together with all sums of things in P. Two definite articles: theSUP picks the supremum of a set, and theSUM forms the sum of a set.",
       "derivations": [
         {
           "id": "d1",

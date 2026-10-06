@@ -20,7 +20,8 @@ const keys = args.filter((a) => !a.startsWith('--'));
 const OK_CAPS = new Set(`FA PM PA NN IFA EC QR LF PL DP VP NP AP PP CP NegP ConjP ModP AspP TenseP
 GQ GQs MOD CUM QUA TEL SINC BE THE PRES PAST PROG PFV WOLL PERFECT MP MP2 MP3 MP4 MP9 TY2 PTQ
 RaiseO RaiseS SUPR SUM LP CN CNs NP NPs S9 T1 T1b T1c T2 T5 S5 S7 S8 ACD SEP OK ASCII JSON HTML
-B C D E F G A I II III IV V N P Q R S T U X Y Z COMPOSE NAME LATEX`.split(/\s+/).filter(Boolean));
+B C D E F G A I II III IV V N P Q R S T U X Y Z COMPOSE NAME LATEX
+RGGU OUP CUP MIT OCR AGENT PATIENT THEME INI FIN MSE MSO SINC S14 S15 S16 S17 MP1 LIFT IL`.split(/\s+/).filter(Boolean));
 
 const RULES = [
   ['em-dash',            /—/g],
@@ -29,6 +30,8 @@ const RULES = [
   ['evaluative',         /\b(?:disastrously|wrongly|merely|simply|obviously|clearly|of course|exactly what|the whole point|the key evidence|far-too|near-contradiction)\b/g],
   ['first person',       /\b(?:we|our|ours|us|let's|We|Our|Us)\b/g],
   ['payoff line',        /\b(?:This is exactly why|which is why|falls out of|the upshot|in other words|turns out)\b/gi],
+  // -ize/-yze and the usual American forms. QUA_TERMS below are the papers' own
+  // defined vocabulary (Krifka's quantized reference) and are left alone.
   ['American spelling',  /\b\w*(?:ize|izes|ized|izing|ization|izations|yze|yzed|yzes)\b|\b(?:flavor|flavors|behavior|behaviors|color|colors|neighbor|center|centers|modeled|labeled)\b/g],
   ['rhetorical question', /\?/g],
 ];
@@ -53,8 +56,11 @@ const report = (file, field, label, hits) => {
  * their wording and punctuation is the source's and not ours. Blank quoted
  * spans out before checking, and count them so the exemption stays visible. */
 let quotedSkipped = 0;
+const QUA_TERMS = /\b(?:quantized|quantization|quantizes)\b/g;
 function deQuote(text) {
-  return text.replace(/"[^"]{3,}"|“[^”]{3,}”/g, (m) => { quotedSkipped++; return ' '.repeat(m.length); });
+  return text
+    .replace(/"[^"]{3,}"|“[^”]{3,}”/g, (m) => { quotedSkipped++; return ' '.repeat(m.length); })
+    .replace(QUA_TERMS, (m) => ' '.repeat(m.length));
 }
 
 function scan(file, field, text) {

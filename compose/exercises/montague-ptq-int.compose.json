@@ -149,7 +149,7 @@
     {
       "id": "g1",
       "title": "A. Necessity (S9, T1c)",
-      "instructions": "necessarily is λp□ˇp in IL — in TY2 dress: λp.∀w′[p(w′)]. IFA hands it the intension of the embedded sentence.",
+      "instructions": "necessarily is λp□ˇp in IL, or in TY2 dress λp.∀w′[p(w′)]. IFA hands it the intension of the embedded sentence.",
       "derivations": [
         {
           "id": "d1",
@@ -171,7 +171,7 @@
     {
       "id": "g2",
       "title": "B. An intensional transitive: seek (S5, T5; MP4 exceptions)",
-      "instructions": "seek takes the INTENSION of its object — that is the whole point of the paper. In situ composition gives de dicto; Quantifier Raising the object gives de re. Derive both.",
+      "instructions": "seek takes the intension of its object, which is the paper's central claim. In situ composition gives de dicto; Quantifier Raising the object gives de re. Derive both.",
       "derivations": [
         {
           "id": "d1",
@@ -213,7 +213,7 @@
     {
       "id": "g4",
       "title": "D. believe that (S7; MPs 5–7)",
-      "instructions": "believe-that takes a proposition. Unlike the ch13 worksheets, PTQ leaves believe′ unanalysed — no quantification over doxastic alternatives.",
+      "instructions": "believe-that takes a proposition. PTQ leaves believe′ unanalysed, with no quantification over doxastic alternatives, where the ch13 worksheets decompose it.",
       "derivations": [
         {
           "id": "d1",
