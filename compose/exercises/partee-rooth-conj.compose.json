@@ -144,8 +144,8 @@
   "exercises": [
     {
       "id": "g1",
-      "title": "A. ⊓ at ⟨e,t⟩ — the base of the recursion",
-      "instructions": "Generalized conjunction: at conjoinable types ⟨a,b⟩, f ⊓ g = λx[f(x) ⊓ g(x)], bottoming out in ∧ at t.",
+      "title": "A. ⊓ at ⟨e,t⟩: the base of the recursion",
+      "instructions": "Generalised conjunction: at conjoinable types ⟨a,b⟩, f ⊓ g = λx[f(x) ⊓ g(x)], bottoming out in ∧ at t.",
       "derivations": [
         {
           "id": "d1",
@@ -162,8 +162,8 @@
     },
     {
       "id": "g2",
-      "title": "B. Conjoining unlike NPs — lift as coercion",
-      "instructions": "P&R's processing strategy: use the simplest types, shift only under coercion. To conjoin an e-type NP with a quantifier, LIFT it.",
+      "title": "B. Conjoining unlike NPs: lift as coercion",
+      "instructions": "P&R's processing strategy: use the simplest types, and shift only under coercion. To conjoin an e-type NP with a quantifier, apply Lift.",
       "derivations": [
         {
           "id": "d1",
