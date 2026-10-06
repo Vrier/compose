@@ -1,7 +1,7 @@
 {
   "compose": 1,
   "id": "barwise-cooper",
-  "title": "Barwise & Cooper 1981 — Generalized Quantifiers and Natural Language",
+  "title": "Barwise & Cooper 1981: Generalized Quantifiers and Natural Language",
   "notation": "cc",
   "domain": {
     "multiLetterNames": true,

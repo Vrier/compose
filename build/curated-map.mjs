@@ -30,18 +30,18 @@ export const HK_CHAPTERS = [
 export const PAPERS_PREFIXES = ['partee', 'montague', 'krifka', 'davidson', 'barwise-cooper', 'link-plurals'];
 
 export const PAPER_PAGES = [
-  ['papers/partee', 'Partee 1986 — The Type-Shifting Triangle', ['partee-triangle']],
-  ['papers/ptq', 'Montague 1973 — PTQ', ['montague']],
-  ['papers/krifka', 'Krifka 1998 — The Origins of Telicity', ['krifka']],
-  ['papers/davidson', 'Davidson 1967 — Action Sentences', ['davidson']],
-  ['papers/partee-rooth', 'Partee & Rooth 1983 — Generalized Conjunction', ['partee-rooth']],
-  ['papers/barwise-cooper', 'Barwise & Cooper 1981 — Generalized Quantifiers', ['barwise-cooper']],
-  ['papers/link', 'Link 1983 — Plurals and Mass Terms', ['link-plurals']],
+  ['papers/partee', 'Partee 1986: The Type-Shifting Triangle', ['partee-triangle']],
+  ['papers/ptq', 'Montague 1973: PTQ', ['montague']],
+  ['papers/krifka', 'Krifka 1998: The Origins of Telicity', ['krifka']],
+  ['papers/davidson', 'Davidson 1967: Action Sentences', ['davidson']],
+  ['papers/partee-rooth', 'Partee & Rooth 1983: Generalized Conjunction', ['partee-rooth']],
+  ['papers/barwise-cooper', 'Barwise & Cooper 1981: Generalized Quantifiers', ['barwise-cooper']],
+  ['papers/link', 'Link 1983: Plurals and Mass Terms', ['link-plurals']],
 ];
 
 export const FAMILY_TITLES = {
-  cc: 'Coppock & Champollion — Invitation to Formal Semantics',
-  hk: 'Heim & Kratzer — Semantics in Generative Grammar',
+  cc: 'Coppock & Champollion: Invitation to Formal Semantics',
+  hk: 'Heim & Kratzer: Semantics in Generative Grammar',
   papers: 'Classic Papers',
 };
 

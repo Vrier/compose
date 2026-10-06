@@ -5,7 +5,7 @@
       "code": "VRAQC9",
       "kind": "worksheet",
       "key": "barwise-cooper",
-      "title": "Barwise & Cooper 1981 — Generalized Quantifiers and Natural Language",
+      "title": "Barwise & Cooper 1981: Generalized Quantifiers and Natural Language",
       "url": "/?code=VRAQC9"
     },
     {
@@ -103,7 +103,7 @@
       "code": "JYHINY",
       "kind": "worksheet",
       "key": "ch10-mereology",
-      "title": "10.2 Mereology — Sums and Parthood",
+      "title": "10.2 Mereology: Sums and Parthood",
       "url": "/?code=JYHINY"
     },
     {
@@ -138,7 +138,7 @@
       "code": "M8IYND",
       "kind": "worksheet",
       "key": "ch11.4-continuation",
-      "title": "Event Quantifiers — the Continuation Approach (§11.4–11.6)",
+      "title": "Event Quantifiers: the Continuation Approach (§11.4–11.6)",
       "url": "/?code=M8IYND"
     },
     {
@@ -201,7 +201,7 @@
       "code": "IESWEU",
       "kind": "worksheet",
       "key": "ch13.5-dere",
-      "title": "De dicto vs. De re (§13.6)",
+      "title": "De dicto and de re (§13.6)",
       "url": "/?code=IESWEU"
     },
     {
@@ -222,7 +222,7 @@
       "code": "KSVNS2",
       "kind": "worksheet",
       "key": "davidson-events",
-      "title": "Davidson 1967 — The Logical Form of Action Sentences",
+      "title": "Davidson 1967: The Logical Form of Action Sentences",
       "url": "/?code=KSVNS2"
     },
     {
@@ -285,42 +285,42 @@
       "code": "XVCBZZ",
       "kind": "worksheet",
       "key": "krifka-telicity",
-      "title": "Krifka 1998 — The Origins of Telicity",
+      "title": "Krifka 1998: The Origins of Telicity",
       "url": "/?code=XVCBZZ"
     },
     {
       "code": "UNGUKK",
       "kind": "worksheet",
       "key": "link-plurals",
-      "title": "Link 1983 — The Logical Analysis of Plurals and Mass Terms",
+      "title": "Link 1983: The Logical Analysis of Plurals and Mass Terms",
       "url": "/?code=UNGUKK"
     },
     {
       "code": "2HUWTH",
       "kind": "worksheet",
       "key": "montague-ptq",
-      "title": "Montague's PTQ · A — The Extensional Core",
+      "title": "Montague's PTQ · A: The Extensional Core",
       "url": "/?code=2HUWTH"
     },
     {
       "code": "K8PCPI",
       "kind": "worksheet",
       "key": "montague-ptq-int",
-      "title": "Montague's PTQ · B — The Intensional Fragment (TY2)",
+      "title": "Montague's PTQ · B: The Intensional Fragment (TY2)",
       "url": "/?code=K8PCPI"
     },
     {
       "code": "KRAW8V",
       "kind": "worksheet",
       "key": "partee-rooth-conj",
-      "title": "Partee & Rooth 1983 — Generalized Conjunction",
+      "title": "Partee & Rooth 1983: Generalized Conjunction",
       "url": "/?code=KRAW8V"
     },
     {
       "code": "6GEFQ4",
       "kind": "worksheet",
       "key": "partee-triangle",
-      "title": "Partee 1986 — The Type-Shifting Triangle",
+      "title": "Partee 1986: The Type-Shifting Triangle",
       "url": "/?code=6GEFQ4"
     },
     {
@@ -447,63 +447,63 @@
       "code": "4UV9HE",
       "kind": "chapter",
       "key": "papers/partee",
-      "title": "Partee 1986 — The Type-Shifting Triangle",
+      "title": "Partee 1986: The Type-Shifting Triangle",
       "url": "/?code=4UV9HE"
     },
     {
       "code": "JKTYCU",
       "kind": "chapter",
       "key": "papers/ptq",
-      "title": "Montague 1973 — PTQ",
+      "title": "Montague 1973: PTQ",
       "url": "/?code=JKTYCU"
     },
     {
       "code": "QGAWIZ",
       "kind": "chapter",
       "key": "papers/krifka",
-      "title": "Krifka 1998 — The Origins of Telicity",
+      "title": "Krifka 1998: The Origins of Telicity",
       "url": "/?code=QGAWIZ"
     },
     {
       "code": "TRGU6C",
       "kind": "chapter",
       "key": "papers/davidson",
-      "title": "Davidson 1967 — Action Sentences",
+      "title": "Davidson 1967: Action Sentences",
       "url": "/?code=TRGU6C"
     },
     {
       "code": "3IKHNW",
       "kind": "chapter",
       "key": "papers/partee-rooth",
-      "title": "Partee & Rooth 1983 — Generalized Conjunction",
+      "title": "Partee & Rooth 1983: Generalized Conjunction",
       "url": "/?code=3IKHNW"
     },
     {
       "code": "Y97C9T",
       "kind": "chapter",
       "key": "papers/barwise-cooper",
-      "title": "Barwise & Cooper 1981 — Generalized Quantifiers",
+      "title": "Barwise & Cooper 1981: Generalized Quantifiers",
       "url": "/?code=Y97C9T"
     },
     {
       "code": "SBG4MN",
       "kind": "chapter",
       "key": "papers/link",
-      "title": "Link 1983 — Plurals and Mass Terms",
+      "title": "Link 1983: Plurals and Mass Terms",
       "url": "/?code=SBG4MN"
     },
     {
       "code": "KT6WF4",
       "kind": "family",
       "key": "cc",
-      "title": "Coppock & Champollion — Invitation to Formal Semantics",
+      "title": "Coppock & Champollion: Invitation to Formal Semantics",
       "url": "/?code=KT6WF4"
     },
     {
       "code": "CETGZ4",
       "kind": "family",
       "key": "hk",
-      "title": "Heim & Kratzer — Semantics in Generative Grammar",
+      "title": "Heim & Kratzer: Semantics in Generative Grammar",
       "url": "/?code=CETGZ4"
     },
     {

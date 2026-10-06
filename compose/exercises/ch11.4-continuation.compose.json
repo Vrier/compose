@@ -1,7 +1,7 @@
 {
   "compose": 1,
   "id": "ch11-cont",
-  "title": "Event Quantifiers — the Continuation Approach (§11.4–11.6)",
+  "title": "Event Quantifiers: the Continuation Approach (§11.4–11.6)",
   "subtitle": "Champollion's verbs-as-event-quantifiers fragment: Quantifier Closure, in-situ quantifiers, conjunction and negation",
   "domain": {
     "multiLetterNames": true,

@@ -37,7 +37,7 @@ const exercises = chKeys.map((key) => {
 
 const bundle = {
   compose_bundle: 1,
-  title: 'Coppock & Champollion — Invitation to Formal Semantics',
+  title: 'Coppock & Champollion: Invitation to Formal Semantics',
   authors: 'Elizabeth Coppock & Lucas Champollion',
   chapters: CHAPTERS,
   exercises,
