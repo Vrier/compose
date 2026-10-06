@@ -2,7 +2,7 @@
   "compose": 1,
   "id": "hk7-quantification",
   "title": "Quantification & Grammar (§7.1–7.3, §7.5)",
-  "subtitle": "Heim & Kratzer — object quantifiers in situ (RaiseO) vs. by movement (QR+PA), scope, binding",
+  "subtitle": "Heim & Kratzer: object quantifiers in situ (RaiseO) and by movement (QR with PA), scope, binding",
   "notation": "hk",
   "domain": {
     "multiLetterNames": true,
@@ -121,8 +121,8 @@
   },
   "exercises": [
     {
-      "title": "A. Object quantifiers in situ (RaiseO) — §7.1–7.2",
-      "instructions": "The verb wants an individual object (⟨e,⟨e,t⟩⟩) but a quantifier is ⟨⟨e,t⟩,t⟩, so FA fails. RaiseO lifts the verb's type ⟨e,⟨e,t⟩⟩ → ⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩ so the quantifier fits in situ — no movement. (This is the book's own endnote-7 exercise, p. 205 — the Montague-style verb entry H&K invite you to define; their illustrated §7.2.1 variant retypes the quantifier instead.)",
+      "title": "A. Object quantifiers in situ via RaiseO (§7.1–7.2)",
+      "instructions": "The verb wants an individual object (⟨e,⟨e,t⟩⟩) but a quantifier is ⟨⟨e,t⟩,t⟩, so FA fails. RaiseO lifts the verb's type ⟨e,⟨e,t⟩⟩ → ⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩ so the quantifier fits in situ, with no movement. This is the book's own endnote-7 exercise, the Montague-style verb entry H&K invite you to define; their illustrated §7.2 variant retypes the quantifier instead.",
       "items": [
         {
           "sentence": "John offended every linguist.",
@@ -157,8 +157,8 @@
       ]
     },
     {
-      "title": "B. Object quantifiers by movement (QR + PA) — §7.3",
-      "instructions": "The alternative repair MOVES the object quantifier, adjoining it above the clause with a co-indexed trace. Predicate Abstraction over the trace makes the remnant a ⟨e,t⟩ property — a fit argument for the raised quantifier. Same truth conditions as RaiseO.",
+      "title": "B. Object quantifiers by movement, QR and PA (§7.3)",
+      "instructions": "The other repair moves the object quantifier, adjoining it above the clause with a co-indexed trace. Predicate Abstraction over the trace makes the remnant an ⟨e,t⟩ property, a fit argument for the raised quantifier. The truth conditions match RaiseO.",
       "items": [
         {
           "sentence": "John offended every linguist.",
@@ -183,8 +183,8 @@
       ]
     },
     {
-      "title": "C. Scope ambiguity & inverse scope — §7.5.1",
-      "instructions": "With two quantifiers, movement derives BOTH scope orders; the in-situ proposals the book considers predict only the linear one (p. 194; richer in-situ type regimes exist, n. 24). Raise the quantifiers in either order; PA gives two non-equivalent LFs. Build the LF for each reading.",
+      "title": "C. Scope ambiguity and inverse scope (§7.5.1)",
+      "instructions": "With two quantifiers, movement derives both scope orders, while the in-situ proposals the book considers predict only the linear one; richer in-situ type regimes exist (n. 24). Raise the quantifiers in either order, and PA gives two non-equivalent LFs. Build the LF for each reading.",
       "items": [
         {
           "sentence": "Somebody offended everybody. (linear: ∃ > ∀)",
@@ -219,8 +219,8 @@
       ]
     },
     {
-      "title": "D. Quantifiers that bind pronouns — §7.5.3",
-      "instructions": "When the raised subject's trace and a pronoun share an index, PA abstracts over both, binding the pronoun as a variable. Raise the subject (index 1) over a clause whose object pronoun is himself₁.",
+      "title": "D. Quantifiers that bind pronouns (§7.5.3)",
+      "instructions": "When the raised subject's trace and a pronoun share an index, PA abstracts over both and binds the pronoun as a variable. Raise the subject (index 1) over a clause whose object pronoun is himself₁.",
       "items": [
         {
           "sentence": "Every publisher offended himself.",
@@ -247,6 +247,6 @@
   ],
   "reading": {
     "format": "latex",
-    "markdown": "# Chapter 7 · Quantification and Grammar\n\nSubject quantifiers compose by FA. Object quantifiers do not: a type mismatch.\nCh. 7 gives two repairs and weighs them (§7.5).\n\n## 7.1 The problem of quantifiers in object position\n\nIn (\\ref{obj}) the verb is `⟨e,⟨e,t⟩⟩`, the object `⟨⟨e,t⟩,t⟩`: neither sister has\nthe other in its domain, FA yields no value for the VP (p. 179).\n\n\\begin{derivation}\n[[offended]]        = λy . λx . offend(x,y)=1    : <e,<e,t>>\n[[every linguist]]  = λg . ∀x[linguist(x)=1 → g(x)=1]   : <<e,t>,t>\n\\end{derivation}\n\n\\ex<obj> John offended every linguist.\n\\xe\n\n## 7.2 Repair in situ: flexible types (RaiseO)\n\nLeave the quantifier in place; retype. The book's illustrated variant retypes the\nquantifier — \"We will illustrate the first possibility here. You are invited to try\nout the second on your own\" (p. 180; the \"type-shifted homonym of *every*\", p. 187).\nThe second, verb-retyping variant is endnote 7's exercise, credited to Montague\n(p. 205) — and is what RaiseO implements: `⟨e,⟨e,t⟩⟩ → ⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩`, then FA\ntwice, no movement.\n\n\\begin{derivation}\n[[John offended every linguist]]  = ∀x[linguist(x)=1 → offend(j,x)=1]   : t\n\\end{derivation}\n\n## 7.3 Repair by movement: Quantifier Raising + PA\n\nMove the object, adjoin it above the clause, leave a co-indexed trace; PA (ch. 5)\nturns the remnant into `⟨e,t⟩`, and the quantifier applies. LF: *[every linguist]\n1 [John offended t₁]* (p. 186).\n\n\\begin{derivation}\n[[John offended t1]]      = offend(j,x)=1            : t\n[[1 [John offended t1]]]  = λx . offend(j,x)=1       : <e,t>   (PA)\n[[(QR) every linguist …]] = ∀x[linguist(x)=1 → offend(j,x)=1]   : t   (FA)\n\\end{derivation}\n\n\"We have obtained the correct result… without resorting to a type-shifted homonym\nof 'every'\" (p. 187). Same truth conditions either way — so why movement?\n\n## 7.5.1 Scope ambiguity and inverse scope\n\n*Somebody offended everybody* (\\ref{scope}) \"has two readings, not just one\"\n(p. 194): linear (one offender for all) and inverse (each was offended, offenders\npossibly different). Raising the quantifiers in either order gives both LFs; the\nin-situ proposals the book considers predict only the linear reading (p. 194).\n\n\\begin{derivation}\n[[Somebody offended everybody]]  (linear)   = ∃x . ∀y . offend(x,y)=1   : t\n[[Somebody offended everybody]]  (inverse)  = ∀y . ∃x . offend(x,y)=1   : t\n\\end{derivation}\n\nH&K stop short of calling this decisive: richer type regimes derive inverse scope\nin situ (n. 24: Hendriks; Cooper storage); the §7.5 arguments' \"ultimate force is\nvery difficult to assess\"; \"we could not possibly purport here to give decisive\nevidence in favor of a pure movement approach\" (p. 194); pending independent\nmotivation, \"the choice seems to be just a matter of taste\" (p. 193).\n\nEngine note: the book's ⟦everybody⟧/⟦somebody⟧ quantify over persons (p. 180); our\nentries range over all of Dₑ.\n\n\\ex<scope> Somebody offended everybody.\n\\xe\n\n\\ex Some publisher offended every linguist.\n\\xe\n\n## 7.5.3 Quantifiers that bind pronouns\n\nA raised quantifier binds a co-indexed pronoun: PA abstracts over trace and pronoun\nat once. *[every publisher] 1 [t₁ offended himself₁]* (\\ref{bound}):\n\n\\begin{derivation}\n[[t1 offended himself1]]      = offend(x,x)=1            : t\n[[1 [t1 offended himself1]]]  = λx . offend(x,x)=1       : <e,t>   (PA)\n[[Every publisher … himself]] = ∀x[publisher(x)=1 → offend(x,x)=1]   : t\n\\end{derivation}\n\n\\ex<bound> Every publisher offended himself.\n\\xe\n\n> **Beyond this chapter.** Antecedent-contained deletion needs an ellipsis\n> mechanism we do not model; see §7.5.2 (p. 198)."
+    "markdown": "# Chapter 7 · Quantification and grammar\n\nSubject quantifiers compose by FA. Object quantifiers do not, and chapter 7\ngives two repairs, weighing them at §7.5.\n\n## 7.1 The problem of quantifiers in object position\n\nThe verb is `⟨e,⟨e,t⟩⟩` and the object `⟨⟨e,t⟩,t⟩`. Neither sister has the other\nin its domain, so FA yields no value for the VP.\n\n## 7.2 Repair in situ: flexible types (RaiseO)\n\nLeave the quantifier in place and retype. The book's illustrated variant retypes\nthe quantifier, giving a \"type-shifted homonym\" of *every*, and invites the\nreader to try the other possibility. That other, verb-retyping variant is\nendnote 7's exercise, credited to Montague, and is what RaiseO implements:\n`⟨e,⟨e,t⟩⟩ → ⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩`, then FA twice, with no movement.\n\nGroup A: apply RaiseO to the verb so the quantifier fits in situ.\n\n## 7.3 Repair by movement: Quantifier Raising and PA\n\nMove the object, adjoin it above the clause and leave a co-indexed trace; PA\n(ch. 5) turns the remnant into `⟨e,t⟩`, and the quantifier applies. The book's\nLF is *[every linguist] 1 [John offended t₁]*, obtaining the correct result\nwithout a type-shifted homonym of *every*. The truth conditions match RaiseO.\n\nGroup B: raise the quantifier, then let PA supply the predicate it needs.\n\n## 7.5.1 Scope ambiguity and inverse scope\n\n*Somebody offended everybody* \"has two readings, not just one\": linear, with one\noffender for all, and inverse, where each was offended and the offenders may\ndiffer. Raising the quantifiers in either order gives both LFs, while the\nin-situ proposals the book considers predict only the linear reading.\n\nH&K stop short of calling this decisive. Richer type regimes derive inverse\nscope in situ (n. 24: Hendriks; Cooper storage), the §7.5 arguments' \"ultimate\nforce is very difficult to assess\", and pending independent motivation \"the\nchoice seems to be just a matter of taste\".\n\nEngine note: the book's `⟦everybody⟧` and `⟦somebody⟧` quantify over persons;\nthese entries range over all of `Dₑ`.\n\nGroup C: raise the quantifiers in either order and build the LF for each\nreading.\n\n## 7.5.3 Quantifiers that bind pronouns\n\nA raised quantifier binds a co-indexed pronoun, with PA abstracting over trace\nand pronoun at once, as in *[every publisher] 1 [t₁ offended himself₁]*.\n\nGroup D: raise the subject over a clause whose object pronoun carries the same\nindex.\n"
   }
 }

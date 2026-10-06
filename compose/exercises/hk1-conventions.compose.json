@@ -2,7 +2,7 @@
   "compose": 1,
   "id": "hk1-conventions",
   "title": "Conventions: Types, ⟦·⟧, and =1 (§§1–2)",
-  "subtitle": "Heim & Kratzer — the notation key for the whole bundle (reading-focused)",
+  "subtitle": "Heim & Kratzer: the notation key for the whole bundle (reading-focused)",
   "notation": "hk",
   "domain": {
     "multiLetterNames": true,
@@ -50,8 +50,8 @@
   },
   "exercises": [
     {
-      "title": "A. Warm-up: individuals and characteristic functions",
-      "instructions": "Before any composition rules: a name denotes an individual (type e); a predicate denotes a characteristic function (type ⟨e,t⟩), written with =1. These two leaf denotations are the atoms everything else is built from. (See the reading for the full notation key.)",
+      "title": "A. Individuals and characteristic functions",
+      "instructions": "Before any composition rules: a name denotes an individual (type e), and a predicate denotes a characteristic function (type ⟨e,t⟩), written with =1. These two leaf denotations are the atoms everything else is built from. The reading carries the full notation key.",
       "items": [
         {
           "sentence": "Ann",
@@ -88,6 +88,6 @@
   ],
   "reading": {
     "format": "latex",
-    "markdown": "# Chapter 1 · Truth-Conditional Semantics and the Fregean Program\n\n*Notation key for the H&K bundle. No trees to compose yet.*\n\nA semantic theory pairs each sentence with its truth conditions, composed from the\nmeanings of the parts (Frege's program, §1.1–1.2).\n\n## 1.3 Sets and characteristic functions\n\nA set can be listed (`{a, b, c}`) or abstracted: `{x : x is a cat}`. Every set has a\ncharacteristic function — `1` for members, `0` otherwise — and sets and their\ncharacteristic functions are interchangeable. The bundle uses functions throughout:\n\n\\begin{derivation}\n[[cat]] = λx . cat(x)=1\n\\end{derivation}\n\n`cat(x)=1` says: the value of the characteristic function at `x` is `1`.\n\n## 2 Notation key for the bundle\n\nEach convention debuts in Chapter 2: ⟦·⟧ and *=1 iff* (p. 15), characteristic\nfunctions (§2.2), the types (§2.3), λ (§2.5; deferred at p. 11).\n\n- `⟦α⟧` — the denotation of `α`. `⟦α⟧^g` adds an assignment (ch. 5, 9), `⟦α⟧^w` a\n  world (ch. 12).\n- Types: `e` individuals, `t` truth values; `⟨σ,τ⟩` functions from `σ` to `τ`. So\n  `⟨e,t⟩` one-place predicate, `⟨e,⟨e,t⟩⟩` transitive verb, `⟨⟨e,t⟩,t⟩` generalized\n  quantifier.\n- `D_σ` — the domain of type `σ`.\n- `=1` — predicates are characteristic functions, so conditions read `P(x)=1`,\n  `∀x[P(x)=1 → Q(x)=1]`. The engine treats `P(x)=1` and `P(x)` as the same.\n- λ-notation — `λx . φ` is the function mapping each `x` to `φ`. A partial function\n  carries a domain condition after the colon: `λx : ψ . φ`, defined only when `ψ`\n  holds. The colon is part of H&K's λ-notation from its introduction (§2.5, p. 34),\n  usually suppressed; ch. 4 puts it to work for presuppositions.\n\n## The plan\n\nOne fragment, built incrementally: FA and the basic types (ch. 2), PM and the\npartial definite article (ch. 4), PA and relative clauses (ch. 5), generalized\nquantifiers (ch. 6), quantifier movement (ch. 7), pronouns and binding (ch. 9),\nintensions (ch. 12)."
+    "markdown": "# Chapter 1 · Truth-conditional semantics and the Fregean programme\n\nNotation key for the H&K bundle. No trees to compose yet.\n\nA semantic theory pairs each sentence with its truth conditions, composed from\nthe meanings of its parts (§1.1–1.2).\n\n## 1.3 Sets and characteristic functions\n\nA set can be listed (`{a, b, c}`) or abstracted (`{x : x is a cat}`). Every set\nhas a characteristic function, `1` for members and `0` otherwise, and a set and\nits characteristic function are interchangeable. The bundle uses functions\nthroughout, so `⟦cat⟧` is `λx . cat(x)=1`, where `cat(x)=1` says that the value\nof the characteristic function at `x` is `1`.\n\n## 2 Notation key for the bundle\n\nEach convention debuts in chapter 2: `⟦·⟧` and *=1 iff* (§2.1), characteristic\nfunctions (§2.2), the types (§2.3), λ (§2.5).\n\n- `⟦α⟧` is the denotation of `α`. `⟦α⟧^g` adds an assignment (chs. 5, 9),\n  `⟦α⟧^w` a world (ch. 12).\n- Types: `e` individuals, `t` truth values, `⟨σ,τ⟩` functions from `σ` to `τ`.\n  So `⟨e,t⟩` is a one-place predicate, `⟨e,⟨e,t⟩⟩` a transitive verb, and\n  `⟨⟨e,t⟩,t⟩` a generalised quantifier.\n- `D_σ` is the domain of type `σ`.\n- `=1`: predicates are characteristic functions, so conditions read `P(x)=1`\n  and `∀x[P(x)=1 → Q(x)=1]`. The engine treats `P(x)=1` and `P(x)` alike.\n- λ-notation: `λx . φ` is the function mapping each `x` to `φ`. A partial\n  function carries a domain condition after the colon, `λx : ψ . φ`, defined\n  only where `ψ` holds. The colon belongs to H&K's λ-notation from its\n  introduction (§2.5) and is usually suppressed; ch. 4 puts it to work for\n  presuppositions.\n\n## The plan\n\nOne fragment, built incrementally: FA and the basic types (ch. 2), PM and the\npartial definite article (ch. 4), PA and relative clauses (ch. 5), generalised\nquantifiers (ch. 6), quantifier movement (ch. 7), pronouns and binding (ch. 9),\nintensions (ch. 12).\n\nGroup A: a name denotes an individual, type `e`; a predicate denotes a\ncharacteristic function, type `⟨e,t⟩`, written with `=1`. These two leaf\ndenotations are the atoms everything else is built from.\n"
   }
 }

@@ -2,7 +2,7 @@
   "compose": 1,
   "id": "hk5-relatives",
   "title": "Relative Clauses & Predicate Abstraction (§5.1–5.3)",
-  "subtitle": "Heim & Kratzer — traces, variable binding, and the third composition rule",
+  "subtitle": "Heim & Kratzer: traces, variable binding, and the third composition rule",
   "notation": "hk",
   "domain": {
     "multiLetterNames": true,
@@ -161,7 +161,7 @@
   "exercises": [
     {
       "title": "A. Subject-gap relatives (§5.1–5.2)",
-      "instructions": "A relative clause is an intersective modifier of type ⟨e,t⟩, combining with the head noun by Predicate Modification. The trace t₁ denotes a variable; Predicate Abstraction over its index turns the clause into a property. The relative pronoun is vacuous (λX.X).",
+      "instructions": "A relative clause is an intersective modifier of type ⟨e,t⟩ and combines with the head noun by Predicate Modification. The trace t₁ denotes a variable, and Predicate Abstraction over its index turns the clause into a property. The relative pronoun is vacuous (λX.X).",
       "items": [
         {
           "sentence": "which is empty",
@@ -196,8 +196,8 @@
       ]
     },
     {
-      "title": "B. Object-gap relatives & Predicate Abstraction (§5.2.3)",
-      "instructions": "When the trace is in OBJECT position, the desired value λx. John abandoned x is not the value of any subtree — Predicate Abstraction is essential. PA abstracts over the trace index after the subject and verb have composed around the trace.",
+      "title": "B. Object-gap relatives and Predicate Abstraction (§5.2.3)",
+      "instructions": "With the trace in object position, the value λx. John abandoned x is that of no subtree, so Predicate Abstraction is essential. PA abstracts over the trace index once the subject and verb have composed around the trace.",
       "items": [
         {
           "sentence": "which John abandoned t",
@@ -233,7 +233,7 @@
     },
     {
       "title": "C. Relatives in full DPs (§5.1, §5.3)",
-      "instructions": "The modified noun feeds a determiner. With the (Chapter 4's partial function), the uniqueness presupposition is now about the relative-clause-restricted set. With a quantifier, the relative clause restricts the quantifier's domain.",
+      "instructions": "The modified noun feeds a determiner. With \"the\" (chapter 4's partial function) the uniqueness presupposition now concerns the relative-clause-restricted set. With a quantifier, the relative clause restricts the quantifier's domain.",
       "items": [
         {
           "sentence": "The house which is empty is available.",
@@ -270,6 +270,6 @@
   ],
   "reading": {
     "format": "latex",
-    "markdown": "# Chapter 5 · Relative Clauses, Variables, and Variable Binding\n\nA restrictive relative clause is an intersective modifier: following Quine, *which\nis empty* denotes the same `⟨e,t⟩` property as *empty*, and combines with the head\nnoun by PM. The chapter's problem is how a clause containing a gap comes to denote a\nproperty at all.\n\n## 5.1 Relative clauses as predicates\n\nIn (\\ref{empty}), PM gives *house which is empty* the value \"λx ∈ Dₑ . x is a house\nand x is empty\" (p. 88), and ch. 4's partial *the* applies to that: defined iff\nexactly one empty house.\n\n\\ex<empty> The house which is empty is available.\n\\xe\n\nRestrictive vs non-restrictive: *The house, which is empty, is available*\npresupposes a unique **house**. Set aside (p. 88).\n\n## 5.2 Inside the relative clause: traces and variables\n\nAn object gap is the hard case: the target is \"λx ∈ D . John abandoned x\" (p. 90),\nand that is not the value of any subtree. The trace cannot pick up a referent\n(§5.2.1) — no individual-denoting constituent is available, and using the containing\nDP is circular. §5.2.2: the trace is a **variable**, interpreted relative to an\nassignment.\n\n**Traces and Pronouns.** Relative to an assignment `g`, a trace `t_i` (or pronoun)\ndenotes `g(i)` — type `e` (p. 111).\n\n\\ex<abandon> the picture which John abandoned t\n\\xe\n\n\\ex the movie which Mary saw t\n\\xe\n\n## 5.2.3 Predicate Abstraction\n\n**Predicate Abstraction (PA).** If α is a branching node whose daughters are an\nindex `i` and a node β, then `⟦α⟧^g = λx . ⟦β⟧^{g[i→x]}`.\n\n\\begin{derivation}\n[[John abandoned t1]]              = abandon(j,x)=1            : t\n[[1 [John abandoned t1]]]          = λx . abandon(j,x)=1       : <e,t>   (PA)\n[[which John abandoned t1]]        = λx . abandon(j,x)=1       : <e,t>\n[[picture]]                        = λx . picture(x)=1         : <e,t>\n[[picture which John abandoned]]   = λx . picture(x)=1 and abandon(j,x)=1   : <e,t>   (PM)\n\\end{derivation}\n\nThe relative pronoun passes the abstract up unchanged. Seam: in §5.2.3 itself the\npronoun is syncategorematic — \"not simply vacuous\" (pp. 96–98); the vacuous-pronoun\ntreatment implemented here is the ch. 7 revision (p. 186), back-applied so one rule\nset serves both chapters. The rule as stated above is likewise the book's final\nform (pp. 111–112, 186); §5.2.3's debut version abstracts directly over the\npronoun's index.\n\nSubject gaps compose the same way:\n\n\\begin{derivation}\n[[t1 is empty]]                = empty(x)=1            : t\n[[1 [t1 is empty]]]            = λx . empty(x)=1       : <e,t>   (PA)\n[[which is empty]]             = λx . empty(x)=1       : <e,t>\n[[house which is empty]]       = λx . house(x)=1 and empty(x)=1   : <e,t>   (PM)\n\\end{derivation}\n\n## 5.3 Multiple variables and such-that relatives\n\nPA scales to multiple variables and to *such that* relatives — *such* binds the\nclause-internal index (\"the book such that Joe bought it\", p. 107). Once indices\ndrive PA, the rule serves every binder in the grammar; ch. 7 reuses it for\nquantifier raising. Group C's quantified heads borrow ⟦every⟧/⟦no⟧ from §6.4\n(p. 146) — ch. 5 itself stops at definite heads.\n\n\\ex<such> the picture such that Mary saw it *(our example, after pp. 90/107)*\n\\xe"
+    "markdown": "# Chapter 5 · Relative clauses, variables, and variable binding\n\nA restrictive relative clause is an intersective modifier: following Quine,\n*which is empty* denotes the same `⟨e,t⟩` property as *empty* and combines with\nthe head noun by PM. The chapter's problem is how a clause containing a gap\ncomes to denote a property at all.\n\n## 5.1 Relative clauses as predicates\n\nPM gives *house which is empty* the value true of anything that is a house and\nis empty, and ch. 4's partial *the* applies to that, defined iff there is\nexactly one empty house. Non-restrictive relatives, as in *The house, which is\nempty, is available*, presuppose a unique house and are set aside (§5.1).\n\n## 5.2 Inside the relative clause: traces and variables\n\nAn object gap is the hard case: the target is the property true of `x` iff John\nabandoned `x`, and that is the value of no subtree. The trace cannot pick up a\nreferent (§5.2.1), since no individual-denoting constituent is available and\nusing the containing DP is circular. §5.2.2 makes the trace a variable,\ninterpreted relative to an assignment.\n\n**Pronouns and Traces** (§5.2.2): relative to an assignment `g`, a trace `tᵢ` or\npronoun denotes `g(i)`, type `e`.\n\n## 5.2.3 Predicate Abstraction\n\n**PA** (§5.2.3): if α is a branching node whose daughters are an index `i` and a\nnode β, then `⟦α⟧^g = λx . ⟦β⟧^{g[i→x]}`.\n\nThe relative pronoun passes the abstract up unchanged. Seam: in §5.2.3 the\npronoun is syncategorematic, \"not simply vacuous\"; the vacuous-pronoun treatment\nimplemented here is the ch. 7 revision, back-applied so that one rule set serves\nboth chapters. The rule as stated above is likewise the book's final form, while\n§5.2.3's debut version abstracts directly over the pronoun's index.\n\nGroup A: subject gaps compose the same way, with PA over the trace index.\n\nGroup B: the subject and verb compose around the trace, and PA abstracts over\nthe index afterwards.\n\n## 5.3 Multiple variables and such-that relatives\n\nPA scales to multiple variables and to *such that* relatives, where *such* binds\nthe clause-internal index. Once indices drive PA the rule serves every binder in\nthe grammar, and ch. 7 reuses it for quantifier raising.\n\nGroup C: the quantified heads borrow `⟦every⟧` and `⟦no⟧` from §6.4; ch. 5\nitself stops at definite heads.\n"
   }
 }

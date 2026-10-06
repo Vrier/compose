@@ -2,7 +2,7 @@
   "compose": 1,
   "id": "hk9-pronouns",
   "title": "Bound & Referential Pronouns (§9.1–9.2)",
-  "subtitle": "Heim & Kratzer — pronouns as variables, and the co-reference vs. binding contrast",
+  "subtitle": "Heim & Kratzer: pronouns as variables, and the co-reference and binding contrast",
   "notation": "hk",
   "domain": {
     "multiLetterNames": true,
@@ -124,7 +124,7 @@
   "exercises": [
     {
       "title": "A. Referential pronouns as free variables (§9.1)",
-      "instructions": "A pronoun she₁ denotes g(1) — the individual the assignment maps its index to. With a FREE index, the denotation is an OPEN term (a free variable x₁ = g(1)), made definite only by the utterance context.",
+      "instructions": "A pronoun she₁ denotes g(1), the individual the assignment maps its index to. With a free index the denotation is an open term, a free variable x₁ = g(1), made definite only by the utterance context.",
       "items": [
         {
           "sentence": "She smokes.",
@@ -160,7 +160,7 @@
     },
     {
       "title": "B. Co-reference: a free pronoun with a name (§9.2)",
-      "instructions": "On the CO-REFERENCE LF, the reflexive is composed as a free pronoun himself₁; with no movement, the denotation is the open term blame(j,x₁), true iff John blamed g(1). The context maps 1 to John. (H&K run §9.2 on “John hates his father” — both LFs are fine there; our reflexive is a fragment-friendly stand-in, and ch. 10's Condition A, which we bracket here, demands the bound LF.)",
+      "instructions": "On the co-reference LF the reflexive is composed as a free pronoun himself₁; with no movement the denotation is the open term blame(j,x₁), true iff John blamed g(1). The context maps 1 to John. H&K run §9.2 on \"John hates his father\", where both LFs are fine; the reflexive here is a fragment-friendly stand-in, and chapter 10's Condition A, bracketed here, demands the bound LF.",
       "items": [
         {
           "sentence": "John blamed himself. (co-reference LF)",
@@ -175,8 +175,8 @@
       ]
     },
     {
-      "title": "C. Binding: movement + Predicate Abstraction (§9.2)",
-      "instructions": "On the BINDING LF, the antecedent raises, leaving a trace co-indexed with the pronoun; PA binds both. The denotation is the CLOSED term blame(j,j) — no dependence on the assignment. A quantifier antecedent allows ONLY this LF.",
+      "title": "C. Binding: movement and Predicate Abstraction (§9.2)",
+      "instructions": "On the binding LF the antecedent raises, leaving a trace co-indexed with the pronoun, and PA binds both. The denotation is the closed term blame(j,j), with no dependence on the assignment. A quantifier antecedent allows only this LF.",
       "items": [
         {
           "sentence": "John blamed himself. (binding LF)",
@@ -213,6 +213,6 @@
   ],
   "reading": {
     "format": "latex",
-    "markdown": "# Chapter 9 · Bound and Referential Pronouns\n\nReferential pronouns pick up an individual from context; bound pronouns are\nvariables bound by a quantifier. One mechanism covers both: pronouns are variables,\ninterpreted relative to an assignment `g`. Officially every bracket here is\n`⟦·⟧^g` (p. 243); the superscript is suppressed where no confusion arises.\n\n## 9.1 Referential pronouns as free variables\n\nPronouns and Traces Rule: relative to `g`, an indexed pronoun `α_i` denotes `g(i)`\n(p. 241). A free index leaves the denotation open — the utterance context supplies\n`g` (§9.1.2, appropriateness condition, p. 243):\n\n\\begin{derivation}\n[[she1]]        = g(1)            : e\n[[She smokes]]  = smoke(g(1))=1   : t\n\\end{derivation}\n\nWriting `x` for `g(1)`: the open term `smoke(x)=1`, definite once context fixes `g`.\n\n\\ex<ref> She smokes.\n\\xe\n\n\\ex He left.\n\\xe\n\n## 9.2 Co-reference or binding?\n\nH&K run §9.2 on *John hates his father* (pp. 246–248): the possessive pronoun can\nbe bound by *John*, or free and co-referential with him (context c₃,\n`g = [1→John]`, p. 248) — both LFs fine English. Our fragment has no possessives;\nthe exercises substitute *John blamed himself* (\\ref{cb}) to run the same two\nderivations. Seam: ch. 10's Condition A (p. 261) requires reflexives to be bound —\nbracketed here; the reflexive is a compositional stand-in.\n\nCo-reference — no movement; the pronoun is free; open term, true given `g(1)=j`:\n\n\\begin{derivation}\n[[John blamed himself1]]   = blame(j,g(1))=1    : t      (co-reference: g(1)=j)\n\\end{derivation}\n\nBinding — *John* raises, PA binds trace and pronoun; closed term, no dependence\non `g`:\n\n\\begin{derivation}\n[[1 [t1 blamed himself1]]]   = λx . blame(x,x)=1    : <e,t>   (PA)\n[[John 1 [t1 blamed himself1]]] = blame(j,j)=1      : t       (binding)\n\\end{derivation}\n\nWith a name antecedent the LFs are truth-conditionally equivalent. A quantifier\ndenotes no individual, so it cannot co-refer: (\\ref{ewb}) has only the binding LF —\nthe diagnostic for binding.\n\n\\begin{derivation}\n[[Every woman blamed herself]]  = ∀x[woman(x)=1 → blame(x,x)=1]    : t\n\\end{derivation}\n\n\\ex<cb> John blamed himself.\n\\xe\n\n\\ex<ewb> Every woman blamed herself.\n\\xe\n\n> **Beyond this chapter (§9.3, \"Pronouns in the theory of ellipsis\").** Under\n> VP-ellipsis the co-reference/binding distinction resurfaces as the\n> strict/sloppy ambiguity (*John blamed himself, and Bill did too* — our example;\n> the book's runs on Philipp and Marcel, pp. 252–255). Ellipsis resolution needs\n> an LF-identity condition (p. 250) we do not model; see the book."
+    "markdown": "# Chapter 9 · Bound and referential pronouns\n\nReferential pronouns pick up an individual from context; bound pronouns are\nvariables bound by a quantifier. One mechanism covers both: pronouns are\nvariables, interpreted relative to an assignment `g`. Officially every bracket\nhere is `⟦·⟧^g`, with the superscript suppressed where no confusion arises.\n\n## 9.1 Referential pronouns as free variables\n\n**Pronouns and Traces** (§9.1): relative to `g`, an indexed pronoun `αᵢ` denotes\n`g(i)`. A free index leaves the denotation open, and the utterance context\nsupplies `g` (§9.1.2, the appropriateness condition).\n\nGroup A: writing `x` for `g(1)`, the result is the open term `smoke(x)=1`, made\ndefinite once context fixes `g`.\n\n## 9.2 Co-reference and binding\n\nH&K run §9.2 on *John hates his father*: the possessive pronoun can be bound by\n*John*, or free and co-referential with him under a context fixing `g = [1→John]`,\nand both LFs are fine English. This fragment has no possessives, so the exercises\nsubstitute *John blamed himself* to run the same two derivations. Seam: ch. 10's\nCondition A requires reflexives to be bound, which is bracketed here, and the\nreflexive serves as a compositional stand-in.\n\nOn the co-reference LF there is no movement and the pronoun is free, giving the\nopen term `blame(j,g(1))=1`, true given `g(1)=j`. On the binding LF *John*\nraises and PA binds trace and pronoun together, giving the closed term\n`blame(j,j)=1`, with no dependence on `g`.\n\nGroup B: compose the reflexive as a free pronoun, with the context mapping its\nindex to John.\n\nGroup C: with a name antecedent the two LFs are truth-conditionally equivalent.\nA quantifier denotes no individual, so it cannot co-refer, and *Every woman\nblamed herself* has only the binding LF. That is the diagnostic for binding.\n\nEngine note: under VP-ellipsis the co-reference and binding distinction\nresurfaces as the strict/sloppy ambiguity, which needs an LF-identity condition\nthis engine does not model (§9.3).\n"
   }
 }
