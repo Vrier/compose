@@ -49,10 +49,19 @@ const report = (file, field, label, hits) => {
   console.log(`  ${file}  ${field}  [${label}] ${hits.length}×  ${uniq}`);
 };
 
+/* Verbatim quotes must be reproduced exactly (the S22 sourcing standard), so
+ * their wording and punctuation is the source's and not ours. Blank quoted
+ * spans out before checking, and count them so the exemption stays visible. */
+let quotedSkipped = 0;
+function deQuote(text) {
+  return text.replace(/"[^"]{3,}"|“[^”]{3,}”/g, (m) => { quotedSkipped++; return ' '.repeat(m.length); });
+}
+
 function scan(file, field, text) {
   if (!text) return;
-  for (const [label, re] of RULES) report(file, field, label, text.match(re) || []);
-  report(file, field, 'caps-emphasis', capsHits(text));
+  const t = deQuote(text);
+  for (const [label, re] of RULES) report(file, field, label, t.match(re) || []);
+  report(file, field, 'caps-emphasis', capsHits(t));
 }
 
 const exDir = path.join(SRC, 'exercises');
@@ -81,4 +90,5 @@ if (withReadings) {
   }
 }
 
-console.log(total ? `\n${total} hits to review.` : '\nclean — no hits.');
+console.log(`\n${quotedSkipped} quoted span(s) exempt (verbatim source wording).`);
+console.log(total ? `${total} hits to review.` : 'clean — no hits.');

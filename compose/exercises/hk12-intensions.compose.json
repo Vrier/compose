@@ -2,7 +2,7 @@
   "compose": 1,
   "id": "hk12-intensions",
   "title": "First Steps Towards an Intensional Semantics (§12.1–12.3)",
-  "subtitle": "Heim & Kratzer — opacity, intensions, and Intensional Functional Application",
+  "subtitle": "Heim & Kratzer: opacity, intensions, and Intensional Functional Application",
   "notation": "hk",
   "domain": {
     "multiLetterNames": true,
@@ -94,8 +94,8 @@
   },
   "exercises": [
     {
-      "title": "A. Extensional clauses (FA) — §12.1",
-      "instructions": "Each embedded sentence is, by itself, extensional: it denotes a truth value (type t) at the evaluation world w. Compose by Function Application. Predicates carry the world: ⟦loyal⟧^w = λx.loyal(w,x).",
+      "title": "A. Extensional clauses (FA) (§12.1)",
+      "instructions": "Each embedded sentence is extensional by itself, denoting a truth value (type t) at the evaluation world w. Compose by Function Application. Predicates carry the world: ⟦loyal⟧^w = λx.loyal(w,x).",
       "items": [
         {
           "sentence": "Jan is loyal.",
@@ -120,8 +120,8 @@
       ]
     },
     {
-      "title": "B. Attitude reports via IFA — §12.3",
-      "instructions": "An attitude verb wants a PROPOSITION ⟨s,t⟩, but the embedded clause supplies only a truth value t — FA is stuck. Intensional Functional Application (IFA) feeds the verb the clause's INTENSION λw'.⟦clause⟧^w'. The embedded clause is then evaluated at the belief-worlds w'.",
+      "title": "B. Attitude reports via IFA (§12.3)",
+      "instructions": "An attitude verb wants a proposition ⟨s,t⟩, but the embedded clause supplies only a truth value t, so FA is stuck. Intensional Functional Application feeds the verb the clause's intension λw'.⟦clause⟧^w'. The embedded clause is then evaluated at the belief-worlds w'.",
       "items": [
         {
           "sentence": "Mary believes Jan is loyal.",
@@ -156,8 +156,8 @@
       ]
     },
     {
-      "title": "C. Other attitude verbs — §12.3",
-      "instructions": "The same IFA mechanism handles every attitude verb; only the accessibility relation changes. Each quantifies over the worlds compatible with the subject's attitude in w. (H&K's ch. 12 triple is believe/know/hope, p. 306; think is our addition on the same pattern.)",
+      "title": "C. Other attitude verbs (§12.3)",
+      "instructions": "The same IFA mechanism handles every attitude verb, with only the accessibility relation changing. Each quantifies over the worlds compatible with the subject's attitude in w. H&K's ch. 12 triple is believe/know/hope; \"think\" is this set's addition on the same pattern.",
       "items": [
         {
           "sentence": "Mary hopes Jan is happy.",
@@ -184,6 +184,6 @@
   ],
   "reading": {
     "format": "latex",
-    "markdown": "# Chapter 12 · First Steps Towards an Intensional Semantics\n\nSo far every denotation has been an extension. Ch. 12 shows where that breaks and\nrelativises interpretation to a possible world: `⟦α⟧^w`.\n\n## 12.1 Where the extensional semantics breaks down\n\nIf composition sees only extensions, co-extensional parts are interchangeable.\nInside *believe* they are not. H&K's pair (\\ref{break}): with Jan loyal and Dick\ndeceitful in the actual world, `⟦Jan is loyal⟧^w = ⟦Dick is deceitful⟧^w = 1`, yet\nMary can believe one report and not the other (pp. 299–300). *Believe* is an opaque\ncontext: what matters is which worlds the complement is true in.\n\n\\ex<break> Mary believes Jan is loyal.\n\\xe\n\n\\ex Mary believes Dick is deceitful.\n\\xe\n\n## 12.2 What to do: intensions\n\nThe intension of `α` is `λw . ⟦α⟧^w`; for a sentence, a **proposition**, type\n`⟨s,t⟩` (p. 307). Names are rigid: `⟦Jan⟧^w = Jan` at every `w` (p. 304). Temporal\ndependence is set aside (p. 302).\n\nEngine notes: H&K's official types only build ⟨s,a⟩ (p. 303 (1d)) — no bare `Dₛ`;\nwe treat `s` as a type so worlds can be arguments, writing the world inside the\npredicate: `loyal(w,x)` for `⟦loyal⟧^w = λx . x is loyal in w` (p. 307). The matrix\nworld prints as `w`, shifted worlds as `w'`.\n\n\\begin{derivation}\n[[Jan is loyal]]^w   = loyal(w,jn)=1            : t\n(its intension)      = λw' . loyal(w',jn)=1     : <s,t>\n\\end{derivation}\n\n## 12.3 An intensional semantics\n\nFollowing Hintikka, ⟦believe⟧ quantifies over the subject's belief-worlds — the\nbook's entry: \"λp ∈ D⟨s,t⟩ . [λx ∈ D . for all w′ compatible with what x believes\nin w, p(w′) = 1]\" (p. 306 (7)); type `⟨⟨s,t⟩,⟨e,t⟩⟩`. In the bundle:\n`λp . λx . ∀w'[Dox(w)(x)(w') → p(w')=1]`.\n\nThe verb wants a proposition; the embedded clause supplies `t`. One new rule\n(p. 308 (9)):\n\n**Intensional Functional Application (IFA).** If α is a branching node with\ndaughters β and γ, and `⟦β⟧^w` is a function whose domain contains\n`λw' . ⟦γ⟧^w'`, then `⟦α⟧^w = ⟦β⟧^w(λw' . ⟦γ⟧^w')`.\n\nA composition rule, not an operator in the tree — H&K's endnote credits a rule of\nBittner's as an analogue; Montague is credited for the type system (p. 303).\n\n\\begin{derivation}\n[[believes [Jan is loyal]]]^w  = [[believes]]^w(λw' . loyal(w',jn)=1)            (IFA)\n[[Mary believes Jan is loyal]]^w = ∀w'[Dox(w)(m)(w') → loyal(w',jn)=1]           : t\n\\end{derivation}\n\nTrue at `w` iff Jan is loyal in every world compatible with Mary's beliefs in `w`.\nThe complement is evaluated at the belief-worlds `w'`, not at `w` — swapping in\n*Dick is deceitful* changes the result. Opacity captured (pp. 308–309).\n\n\\begin{derivation}\n[[Mary believes Dick is deceitful]]^w = ∀w'[Dox(w)(m)(w') → deceitful(w',d)=1]   : t\n\\end{derivation}\n\n> **Beyond these first steps (§12.4, \"Limitations and prospects\").** Carnap's\n> objection: propositions-as-world-sets are too coarse for attitudes — Bigelow's\n> pair, true in exactly the same worlds yet not believed together (p. 310);\n> structured meanings beckon. De re vs de dicto is the book's Exercise 1 of §12.3\n> (\"Mary hopes that a plumber is available\", p. 309). We stop where H&K do."
+    "markdown": "# Chapter 12 · First steps towards an intensional semantics\n\nEvery denotation so far has been an extension. Chapter 12 shows where that\nbreaks down and relativises interpretation to a possible world, `⟦α⟧^w`.\n\n## 12.1 Where the extensional semantics breaks down\n\nIf composition sees only extensions, co-extensional parts are interchangeable.\nInside *believe* they are not. With Jan loyal and Dick deceitful in the actual\nworld, `⟦Jan is loyal⟧^w` and `⟦Dick is deceitful⟧^w` are both 1, yet Mary can\nbelieve one report and not the other. *Believe* is an opaque context: what\nmatters is which worlds the complement is true in.\n\nGroup A: each embedded sentence is extensional by itself, denoting a truth value\nat the evaluation world. Compose by FA, with predicates carrying the world:\n`⟦loyal⟧^w = λx . loyal(w,x)`.\n\n## 12.2 What to do: intensions\n\nThe intension of `α` is `λw . ⟦α⟧^w`; for a sentence this is a proposition, type\n`⟨s,t⟩`. Names are rigid, so `⟦Jan⟧^w` is Jan at every `w`. Temporal dependence\nis set aside.\n\nEngine note: H&K's official types build only `⟨s,a⟩`, with no bare `Dₛ`; this\nbundle treats `s` as a type so that worlds can be arguments, and writes the world\ninside the predicate, `loyal(w,x)`. The matrix world prints as `w` and shifted\nworlds as `w'`.\n\n## 12.3 An intensional semantics\n\nFollowing Hintikka, `⟦believe⟧` quantifies over the subject's belief-worlds,\ntype `⟨⟨s,t⟩,⟨e,t⟩⟩`: `λp . λx . ∀w'[Dox(w)(x)(w') → p(w')=1]`. The verb wants a\nproposition and the embedded clause supplies `t`, so one new rule is needed.\n\n**IFA** (§12.3): if α is a branching node with daughters β and γ, and `⟦β⟧^w` is\na function whose domain contains `λw' . ⟦γ⟧^w'`, then\n`⟦α⟧^w = ⟦β⟧^w(λw' . ⟦γ⟧^w')`.\n\nIFA is a composition rule, with no operator in the tree. H&K's endnote credits a\nrule of Bittner's as an analogue, and Montague for the type system.\n\nGroup B: IFA feeds the verb the clause's intension, and the embedded clause is\nevaluated at the belief-worlds `w'`. Swapping in *Dick is deceitful* changes the\nresult, which is how opacity is captured.\n\nGroup C: the same mechanism handles every attitude verb, with only the\naccessibility relation changing. Each quantifies over the worlds compatible with\nthe subject's attitude in `w`. H&K's ch. 12 triple is believe/know/hope; *think*\nis this set's addition on the same pattern.\n"
   }
 }

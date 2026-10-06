@@ -1,83 +1,41 @@
-# Chapter 2 · Executing the Fregean Program
+# Chapter 2 · Executing the Fregean programme
 
-A lexicon assigns each word a denotation; composition rules combine them up the
-tree. Ch. 2's fragment: proper names and (in)transitive verbs (p. 13).
+A lexicon assigns each word a denotation, and composition rules combine them up
+the tree. The chapter 2 fragment covers proper names and (in)transitive verbs.
 
 ## 2.1 Denotations and semantic types
 
-Names denote individuals (type `e`); sentences denote truth values (type `t`); an
-intransitive verb denotes the characteristic function of a set, type `⟨e,t⟩`:
+Names denote individuals (type `e`), sentences denote truth values (type `t`),
+and an intransitive verb denotes the characteristic function of a set, type
+`⟨e,t⟩`: `⟦smokes⟧` is `λx . smoke(x)=1`.
 
-\begin{derivation}
-[[Ann]]      = a                       : e
-[[smokes]]   = λx . x smokes  =  λx . smoke(x)=1    : <e,t>
-\end{derivation}
+**FA** (§2.1): if α is a branching node with daughters β and γ, and `⟦β⟧` is a
+function whose domain contains `⟦γ⟧`, then `⟦α⟧ = ⟦β⟧(⟦γ⟧)`. **NN**: if α has a
+single daughter β, then `⟦α⟧ = ⟦β⟧`.
 
-**Functional Application (FA).** "If α is a branching node with daughters β and γ,
-and ⟦β⟧ is a function whose domain contains ⟦γ⟧, then ⟦α⟧ = ⟦β⟧(⟦γ⟧)."
-
-**Non-branching Nodes (NN).** If α has a single daughter β, then `⟦α⟧ = ⟦β⟧`.
-
-Ch. 2 states these only as the anonymous rules (S1)–(S6); the names FA/NN, the
-general statements, and the type labels are §3.1's (p. 44). The bundle uses them
+Chapter 2 states these only as the anonymous rules (S1)–(S6); the names FA and
+NN, the general statements and the type labels are §3.1's. The bundle uses them
 from the start.
 
-\begin{derivation}
-[[Ann smokes]]  = [[smokes]]([[Ann]])  =  smoke(a)=1    : t
-\end{derivation}
+Group A: the subject feeds the verb by FA. *Ann is boring* looks ahead, since
+the chapter 2 fragment has no adjectives; the vacuous copula `⟦is⟧ = λf . f` is
+§4.1's entry, previewed here.
 
-\ex<smokes> Ann smokes.
-\xe
+## 2.3 Transitive verbs and Schönfinkelisation
 
-*Ann is boring* looks ahead: the ch. 2 fragment has no adjectives (p. 13); the
-vacuous copula `⟦is⟧ = λf . f` is §4.1's entry (p. 62), previewed here.
+A transitive verb takes its two arguments one at a time, Schönfinkelised and
+object first: `⟦likes⟧` is `λy . λx . like(x,y)=1`, type `⟨e,⟨e,t⟩⟩`.
 
-\ex Ann is boring.
-\xe
-
-## 2.3 Transitive verbs and Schönfinkelization
-
-A transitive verb takes its two arguments one at a time — Schönfinkelized (§2.4),
-object first:
-
-\begin{derivation}
-[[likes]]      = λy . λx . x likes y           : <e,<e,t>>
-[[likes Jan]]  = λx . x likes Jan  =  λx . like(x,jn)=1    : <e,t>   (FA)
-\end{derivation}
-
-In *Ann likes Jan* (\ref{likes}) FA applies twice: object into the verb, subject
-into the VP.
-
-\begin{derivation}
-[[Ann likes Jan]]  = like(a,jn)=1    : t
-\end{derivation}
-
-\ex<likes> Ann likes Jan.
-\xe
+Group B: FA applies twice, object into the verb, then subject into the VP.
 
 ## 2.4 Sentential connectives
 
-The entries solve the book's own exercises — the p. 32 sentence is Exercise 2
-verbatim, the `⟨t,⟨t,t⟩⟩` *and* is Exercise 3 (p. 40); H&K call the task "the
-exercise on connectives in section 2.1" (p. 45).
+`⟦it is not the case that⟧` is `λp . ¬p`, type `⟨t,t⟩`; sentential `⟦and⟧` is
+`λp . λq . q ∧ p`, type `⟨t,⟨t,t⟩⟩`. Both take whole sentences as arguments.
 
-\begin{derivation}
-[[it is not the case that]]  = λp . p = 0   =  λp . ¬p    : <t,t>
-[[and]]                      = λp . λq . q = 1 and p = 1  =  λp . λq . q ∧ p    : <t,<t,t>>
-\end{derivation}
+Group C: the entries answer the book's own exercises, §2.1's exercise on
+connectives (Exercises 2 and 3).
 
-\begin{derivation}
-[[it is not the case that Jan smokes]]  = ¬smoke(jn)=1    : t
-[[Jan works and ... Jan smokes]]        = work(jn)=1 and ¬smoke(jn)=1    : t
-\end{derivation}
-
-\ex<conj> Jan works, and it is not the case that Jan smokes.
-\xe
-
----
-
-### A note on Chapter 3: type-driven interpretation
-
-Ch. 3 recasts composition as type-driven: the types decide which rule applies —
-FA fires when one sister is a function defined on the other's denotation. The
-engine works the same way.
+Engine note: chapter 3 recasts composition as type-driven, with the types
+deciding which rule applies, and FA firing where one sister is a function
+defined on the other's denotation. The engine works the same way.

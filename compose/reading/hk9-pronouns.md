@@ -1,68 +1,40 @@
-# Chapter 9 · Bound and Referential Pronouns
+# Chapter 9 · Bound and referential pronouns
 
 Referential pronouns pick up an individual from context; bound pronouns are
-variables bound by a quantifier. One mechanism covers both: pronouns are variables,
-interpreted relative to an assignment `g`. Officially every bracket here is
-`⟦·⟧^g` (p. 243); the superscript is suppressed where no confusion arises.
+variables bound by a quantifier. One mechanism covers both: pronouns are
+variables, interpreted relative to an assignment `g`. Officially every bracket
+here is `⟦·⟧^g`, with the superscript suppressed where no confusion arises.
 
 ## 9.1 Referential pronouns as free variables
 
-Pronouns and Traces Rule: relative to `g`, an indexed pronoun `α_i` denotes `g(i)`
-(p. 241). A free index leaves the denotation open — the utterance context supplies
-`g` (§9.1.2, appropriateness condition, p. 243):
+**Pronouns and Traces** (§9.1): relative to `g`, an indexed pronoun `αᵢ` denotes
+`g(i)`. A free index leaves the denotation open, and the utterance context
+supplies `g` (§9.1.2, the appropriateness condition).
 
-\begin{derivation}
-[[she1]]        = g(1)            : e
-[[She smokes]]  = smoke(g(1))=1   : t
-\end{derivation}
+Group A: writing `x` for `g(1)`, the result is the open term `smoke(x)=1`, made
+definite once context fixes `g`.
 
-Writing `x` for `g(1)`: the open term `smoke(x)=1`, definite once context fixes `g`.
+## 9.2 Co-reference and binding
 
-\ex<ref> She smokes.
-\xe
+H&K run §9.2 on *John hates his father*: the possessive pronoun can be bound by
+*John*, or free and co-referential with him under a context fixing `g = [1→John]`,
+and both LFs are fine English. This fragment has no possessives, so the exercises
+substitute *John blamed himself* to run the same two derivations. Seam: ch. 10's
+Condition A requires reflexives to be bound, which is bracketed here, and the
+reflexive serves as a compositional stand-in.
 
-\ex He left.
-\xe
+On the co-reference LF there is no movement and the pronoun is free, giving the
+open term `blame(j,g(1))=1`, true given `g(1)=j`. On the binding LF *John*
+raises and PA binds trace and pronoun together, giving the closed term
+`blame(j,j)=1`, with no dependence on `g`.
 
-## 9.2 Co-reference or binding?
+Group B: compose the reflexive as a free pronoun, with the context mapping its
+index to John.
 
-H&K run §9.2 on *John hates his father* (pp. 246–248): the possessive pronoun can
-be bound by *John*, or free and co-referential with him (context c₃,
-`g = [1→John]`, p. 248) — both LFs fine English. Our fragment has no possessives;
-the exercises substitute *John blamed himself* (\ref{cb}) to run the same two
-derivations. Seam: ch. 10's Condition A (p. 261) requires reflexives to be bound —
-bracketed here; the reflexive is a compositional stand-in.
+Group C: with a name antecedent the two LFs are truth-conditionally equivalent.
+A quantifier denotes no individual, so it cannot co-refer, and *Every woman
+blamed herself* has only the binding LF. That is the diagnostic for binding.
 
-Co-reference — no movement; the pronoun is free; open term, true given `g(1)=j`:
-
-\begin{derivation}
-[[John blamed himself1]]   = blame(j,g(1))=1    : t      (co-reference: g(1)=j)
-\end{derivation}
-
-Binding — *John* raises, PA binds trace and pronoun; closed term, no dependence
-on `g`:
-
-\begin{derivation}
-[[1 [t1 blamed himself1]]]   = λx . blame(x,x)=1    : <e,t>   (PA)
-[[John 1 [t1 blamed himself1]]] = blame(j,j)=1      : t       (binding)
-\end{derivation}
-
-With a name antecedent the LFs are truth-conditionally equivalent. A quantifier
-denotes no individual, so it cannot co-refer: (\ref{ewb}) has only the binding LF —
-the diagnostic for binding.
-
-\begin{derivation}
-[[Every woman blamed herself]]  = ∀x[woman(x)=1 → blame(x,x)=1]    : t
-\end{derivation}
-
-\ex<cb> John blamed himself.
-\xe
-
-\ex<ewb> Every woman blamed herself.
-\xe
-
-> **Beyond this chapter (§9.3, "Pronouns in the theory of ellipsis").** Under
-> VP-ellipsis the co-reference/binding distinction resurfaces as the
-> strict/sloppy ambiguity (*John blamed himself, and Bill did too* — our example;
-> the book's runs on Philipp and Marcel, pp. 252–255). Ellipsis resolution needs
-> an LF-identity condition (p. 250) we do not model; see the book.
+Engine note: under VP-ellipsis the co-reference and binding distinction
+resurfaces as the strict/sloppy ambiguity, which needs an LF-identity condition
+this engine does not model (§9.3).

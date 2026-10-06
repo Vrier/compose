@@ -2,7 +2,7 @@
   "compose": 1,
   "id": "hk4-definites",
   "title": "Predicates, Modifiers & the Definite Article (§4.3–4.5)",
-  "subtitle": "Heim & Kratzer — Predicate Modification and Frege's partial 'the'",
+  "subtitle": "Heim & Kratzer: Predicate Modification and Frege's partial 'the'",
   "notation": "hk",
   "domain": {
     "multiLetterNames": true,
@@ -132,7 +132,7 @@
   "exercises": [
     {
       "title": "A. Predicate Modification (§4.3)",
-      "instructions": "Two ⟨e,t⟩ sisters cannot combine by Functional Application. Predicate Modification (PM) conjoins them: ⟦gray cat⟧ = λx. gray(x)=1 ∧ cat(x)=1. The copula is and the article a are vacuous (λX.X).",
+      "instructions": "Two ⟨e,t⟩ sisters cannot combine by Functional Application. Predicate Modification conjoins them: ⟦gray cat⟧ = λx. gray(x)=1 ∧ cat(x)=1. The copula \"is\" and the article \"a\" are vacuous (λX.X).",
       "items": [
         {
           "sentence": "gray cat",
@@ -165,7 +165,7 @@
     },
     {
       "title": "B. The definite article (§4.4)",
-      "instructions": "Following Frege, the is a PARTIAL function: ⟦the⟧ = λf : ∃!x[f(x)=1] . ιx[f(x)=1]. The condition after the colon (before the dot) is presupposed — a unique satisfier; the value after the dot is the unique individual. In a sentence, the presupposition projects to the top.",
+      "instructions": "Following Frege, \"the\" is a partial function: ⟦the⟧ = λf : ∃!x[f(x)=1] . ιx[f(x)=1]. The condition after the colon is presupposed, a unique satisfier; the value after the dot is that individual. In a sentence the presupposition projects to the top.",
       "items": [
         {
           "sentence": "the cat",
@@ -191,7 +191,7 @@
     },
     {
       "title": "C. Modifiers in definite descriptions (§4.5)",
-      "instructions": "PM builds the modified predicate first; then the takes it as argument, so the uniqueness presupposition is about gray cats. Embedding the description as an argument projects the presupposition through the predicate.",
+      "instructions": "PM builds the modified predicate first, and \"the\" then takes it as argument, so the uniqueness presupposition concerns gray cats. Embedding the description as an argument projects the presupposition through the predicate.",
       "items": [
         {
           "sentence": "the gray cat",
@@ -218,6 +218,6 @@
   ],
   "reading": {
     "format": "latex",
-    "markdown": "# Chapter 4 · Nonverbal Predicates, Modifiers, and the Definite Article\n\n§4.1, \"Semantically vacuous words\": the copula *is* and the indefinite *a* carry no\ncontent — both are the identity `λX . X` (p. 62). *Is a cat* does the work of *cat*.\n\n## 4.3 Predicate Modification\n\n*Gray* and *cat* are both `⟨e,t⟩`; neither can take the other as argument, so FA\nfails. H&K's new rule (§4.3.1, p. 65):\n\n**Predicate Modification (PM).** If α is a branching node whose daughters β and γ\nare both of type `⟨e,t⟩`, then \"⟦α⟧ = λx ∈ Dₑ . ⟦β⟧(x) = ⟦γ⟧(x) = 1\" — equivalently\n(the book's own (7)): `λx . ⟦β⟧(x)=1 and ⟦γ⟧(x)=1`.\n\n\\begin{derivation}\n[[gray]]      = λx . gray(x)=1                : <e,t>\n[[cat]]       = λx . cat(x)=1                 : <e,t>\n[[gray cat]]  = λx . gray(x)=1 and cat(x)=1   : <e,t>   (PM)\n\\end{derivation}\n\n\\begin{forest}\n[S{gray(j)=1 and cat(j)=1}\n  [DP{j} Julius]\n  [VP{λx . gray(x)=1 and cat(x)=1}\n    [V{λX.X} is]\n    [DP{λx . gray(x)=1 and cat(x)=1}\n      [D{λX.X} a]\n      [NP{λx . gray(x)=1 and cat(x)=1}\n        [AP{λx . gray(x)=1} gray]\n        [NP{λx . cat(x)=1} cat]]]]]\n\\end{forest}\n\nPrepositional modifiers compose the same way: `⟦in⟧ = λy . λx . in(x,y)=1`, and\n*in Texas* combines with *cat* by PM.\n\n\\ex<gc> Julius is a gray cat.\n\\xe\n\n\\ex Kaline is a cat in Texas.\n\\xe\n\n§4.3.3 (p. 68): nonintersective adjectives — *former*, *alleged* — resist this\nanalysis. PM is for the intersective core.\n\n## 4.4 The definite article\n\n\"A lexical entry inspired by Frege\" (§4.4.1): *the* is a partial function of type\n`⟨⟨e,t⟩,e⟩`, defined only for a predicate with exactly one satisfier — the book's\nentry is \"λf : f ∈ D⟨e,t⟩ and there is exactly one x such that f(x) = 1 . the unique\ny such that f(y) = 1\" (p. 75). In the bundle's notation:\n\n\\begin{derivation}\n[[the]] = λf : ∃!x[f(x)=1] . ιx[f(x)=1]   : <<e,t>,e>\n\\end{derivation}\n\n\\begin{derivation}\n[[the cat]] = ∃!x[cat(x)=1] : ιx[cat(x)=1]   : e\n\\end{derivation}\n\nThe condition after the colon is presupposed; the value after the dot is asserted\n(§4.4.2). When the presupposition fails, a sentence containing the description is\n\"neither true nor false\" (pp. 75–76). With the vacuous copula, the condition rides\nto the top:\n\n\\begin{derivation}\n[[The cat is gray]] = ∃!x[cat(x)=1] : gray(ιx[cat(x)=1])=1   : t\n\\end{derivation}\n\n§4.4.4: presupposition failure is not uninterpretability — a type mismatch is\nvisible from the types alone; failure depends on the actual denotations.\n\n\\ex<thecat> the cat\n\\xe\n\n\\ex The cat is gray.\n\\xe\n\n## 4.5 Modifiers in definite descriptions\n\nCompose the modifier first (PM), then the article: the presupposition of *the gray\ncat* is uniqueness of *gray cats* (\\ref{tgc}).\n\n\\begin{derivation}\n[[gray cat]]      = λx . gray(x)=1 and cat(x)=1                        : <e,t>\n[[the gray cat]]  = ∃!x[gray(x)=1 and cat(x)=1] : ιx[gray(x)=1 and cat(x)=1]  : e\n\\end{derivation}\n\n\\begin{derivation}\n[[the gray cat is fond of Joe]]\n   = ∃!x[gray(x)=1 and cat(x)=1] : fond(ιx[gray(x)=1 and cat(x)=1], o)=1   : t\n\\end{derivation}\n\nDescriptions also take relative-clause restrictors — *the house which is empty*.\nHow a gapped clause comes to denote an `⟨e,t⟩` property is ch. 5's Predicate\nAbstraction.\n\n\\ex<tgc> the gray cat\n\\xe\n\n\\ex The gray cat is fond of Joe.\n\\xe\n\n\\ex the house which is empty\n\\xe"
+    "markdown": "# Chapter 4 · Nonverbal predicates, modifiers, and the definite article\n\n*Is* and *a* are vacuous, `λX . X` (§4.1). *Is a cat* does the work of *cat*.\n\n## 4.3 Predicate Modification\n\n**PM** (§4.3.1): if both daughters are type `⟨e,t⟩`, the node denotes the\npredicate true of `x` iff both daughters are, their intersection. FA handles\neverything else.\n\nGroup A: *gray cat* and *cat in Texas* compose by PM; `⟦in⟧` saturates its\nobject first, then the PP joins the noun by PM. Nonintersective adjectives\n(*former*, *alleged*) fall outside PM (§4.3.3).\n\n## 4.4 The definite article\n\n**the** (§4.4.1): partial, type `⟨⟨e,t⟩,e⟩`, defined only if the predicate has\nexactly one satisfier, and returning that individual. In\n`λf : ∃!x[f(x)=1] . ιx[f(x)=1]`, the condition after the colon is presupposed\nand the value after the dot asserted (§4.4.2). Failure leaves the sentence\nneither true nor false, whereas a type mismatch is visible from the types alone\n(§4.4.4).\n\nGroup B: the presupposition rides up through the vacuous copula to the whole\nsentence.\n\n## 4.5 Modifiers in definite descriptions\n\nCompose the modifier first (PM), then the article, so *the gray cat*\npresupposes uniqueness among the gray cats.\n\nGroup C: the same pipeline with *fond of Joe* and a relative-clause restrictor;\nhow the clause gets its `⟨e,t⟩` meaning is ch. 5 (PA).\n"
   }
 }

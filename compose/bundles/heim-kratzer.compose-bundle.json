@@ -47,12 +47,12 @@
   "exercises": [
     {
       "key": "hk1-conventions",
-      "title": "Conventions: Types, ⟦·⟧, and =1 (§1)",
+      "title": "Conventions: Types, ⟦·⟧, and =1 (§§1–2)",
       "content": {
         "compose": 1,
         "id": "hk1-conventions",
-        "title": "Conventions: Types, ⟦·⟧, and =1 (§1)",
-        "subtitle": "Heim & Kratzer — the notation key for the whole bundle (reading-focused)",
+        "title": "Conventions: Types, ⟦·⟧, and =1 (§§1–2)",
+        "subtitle": "Heim & Kratzer: the notation key for the whole bundle (reading-focused)",
         "notation": "hk",
         "domain": {
           "multiLetterNames": true,
@@ -100,8 +100,8 @@
         },
         "exercises": [
           {
-            "title": "A. Warm-up: individuals and characteristic functions",
-            "instructions": "Before any composition rules: a name denotes an individual (type e); a predicate denotes a characteristic function (type ⟨e,t⟩), written with =1. These two leaf denotations are the atoms everything else is built from. (See the reading for the full notation key.)",
+            "title": "A. Individuals and characteristic functions",
+            "instructions": "Before any composition rules: a name denotes an individual (type e), and a predicate denotes a characteristic function (type ⟨e,t⟩), written with =1. These two leaf denotations are the atoms everything else is built from. The reading carries the full notation key.",
             "items": [
               {
                 "sentence": "Ann",
@@ -110,7 +110,7 @@
                   "a"
                 ],
                 "reading": {
-                  "section": "1"
+                  "section": "2"
                 }
               },
               {
@@ -120,7 +120,7 @@
                   "λx.cat(x)"
                 ],
                 "reading": {
-                  "section": "1"
+                  "section": "2"
                 }
               },
               {
@@ -130,7 +130,7 @@
                   "smoke(a)"
                 ],
                 "reading": {
-                  "section": "1"
+                  "section": "2"
                 }
               }
             ]
@@ -138,7 +138,7 @@
         ],
         "reading": {
           "format": "latex",
-          "markdown": "# Chapter 1 · Truth-Conditional Semantics and the Fregean Program\n\n*This chapter sets the conventions every later H&K set uses. There are no trees to\ncompose yet — read it as the notation key for the bundle.*\n\nTo know the meaning of a sentence is, in large part, to know its **truth\nconditions** — the circumstances under which it is true. A semantic theory pairs\neach sentence with its truth conditions and shows how they are **composed** from the\nmeanings of the parts (Frege's Principle of Compositionality).\n\n## Sets and characteristic functions\n\nA set `A` can be given by listing (`{a, b, c}`) or by **abstraction** — a condition\nits members satisfy: `{x : x is a cat}`, \"the set of all `x` such that `x` is a cat.\"\n\nEvery set has a **characteristic function**: the function mapping an object to `1`\nif it is in the set, and to `0` otherwise. Sets and their characteristic functions\nare interchangeable, and **we use functions throughout**. So the meaning of *cat* is\nthe function\n\n\\begin{derivation}\n[[cat]] = λx . cat(x)=1\n\\end{derivation}\n\n— *the function mapping each `x` to `1` if `x` is a cat, and to `0` otherwise.* This\nis why, in every H&K set, a one-place predicate is written with the **`=1`**\nconvention: the value is a truth value, and `cat(x)=1` says that value is `1`.\n\n## Notation key for the bundle\n\n- **`⟦α⟧`** — the denotation (extension) of expression `α`. Later, `⟦α⟧^g` adds a\n  variable assignment (Ch 5, 9) and `⟦α⟧^w` a world (Ch 12).\n- **Semantic types.** `e` is the type of **individuals**; `t` the type of **truth\n  values** (`{0,1}`). If `σ` and `τ` are types, `⟨σ,τ⟩` is the type of functions from\n  `σ` to `τ`. So `⟨e,t⟩` is a one-place predicate, `⟨e,⟨e,t⟩⟩` a transitive verb,\n  `⟨⟨e,t⟩,t⟩` a generalized quantifier.\n- **`D_σ`** — the **domain** of type `σ`: `D_e` the individuals, `D_t = {0,1}`,\n  `D_{⟨e,t⟩}` the one-place predicates, and so on.\n- **`=1`** — predicates are characteristic functions, so conditions are written\n  `P(x)=1`, `∀x[P(x)=1 → Q(x)=1]`, etc. (This is the bundle-wide convention; the\n  engine treats `P(x)=1` and `P(x)` as the same proposition.)\n- **λ-notation** — `λx . φ` names *the function mapping each `x` to `φ`*. A partial\n  function adds a **definedness condition** after a colon, `λx : ψ . φ` — defined\n  only when `ψ` holds (Frege's *the*, Ch 4; *both*/*neither*, Ch 6).\n\n## The plan\n\nThe chapters build one fragment incrementally: **Function Application** and the\nbasic types (Ch 2), **Predicate Modification** and the partial definite article\n(Ch 4), **Predicate Abstraction** and relative clauses (Ch 5), **generalized\nquantifiers** (Ch 6), **quantifier movement** and scope (Ch 7), **pronouns and\nbinding** (Ch 9). Each adds the smallest machinery needed for the next range of\ndata — the methodology is as much the point as the results."
+          "markdown": "# Chapter 1 · Truth-conditional semantics and the Fregean programme\n\nNotation key for the H&K bundle. No trees to compose yet.\n\nA semantic theory pairs each sentence with its truth conditions, composed from\nthe meanings of its parts (§1.1–1.2).\n\n## 1.3 Sets and characteristic functions\n\nA set can be listed (`{a, b, c}`) or abstracted (`{x : x is a cat}`). Every set\nhas a characteristic function, `1` for members and `0` otherwise, and a set and\nits characteristic function are interchangeable. The bundle uses functions\nthroughout, so `⟦cat⟧` is `λx . cat(x)=1`, where `cat(x)=1` says that the value\nof the characteristic function at `x` is `1`.\n\n## 2 Notation key for the bundle\n\nEach convention debuts in chapter 2: `⟦·⟧` and *=1 iff* (§2.1), characteristic\nfunctions (§2.2), the types (§2.3), λ (§2.5).\n\n- `⟦α⟧` is the denotation of `α`. `⟦α⟧^g` adds an assignment (chs. 5, 9),\n  `⟦α⟧^w` a world (ch. 12).\n- Types: `e` individuals, `t` truth values, `⟨σ,τ⟩` functions from `σ` to `τ`.\n  So `⟨e,t⟩` is a one-place predicate, `⟨e,⟨e,t⟩⟩` a transitive verb, and\n  `⟨⟨e,t⟩,t⟩` a generalised quantifier.\n- `D_σ` is the domain of type `σ`.\n- `=1`: predicates are characteristic functions, so conditions read `P(x)=1`\n  and `∀x[P(x)=1 → Q(x)=1]`. The engine treats `P(x)=1` and `P(x)` alike.\n- λ-notation: `λx . φ` is the function mapping each `x` to `φ`. A partial\n  function carries a domain condition after the colon, `λx : ψ . φ`, defined\n  only where `ψ` holds. The colon belongs to H&K's λ-notation from its\n  introduction (§2.5) and is usually suppressed; ch. 4 puts it to work for\n  presuppositions.\n\n## The plan\n\nOne fragment, built incrementally: FA and the basic types (ch. 2), PM and the\npartial definite article (ch. 4), PA and relative clauses (ch. 5), generalised\nquantifiers (ch. 6), quantifier movement (ch. 7), pronouns and binding (ch. 9),\nintensions (ch. 12).\n\nGroup A: a name denotes an individual, type `e`; a predicate denotes a\ncharacteristic function, type `⟨e,t⟩`, written with `=1`. These two leaf\ndenotations are the atoms everything else is built from.\n"
         }
       }
     },
@@ -149,7 +149,7 @@
         "compose": 1,
         "id": "hk2-fa",
         "title": "Function Application & Semantic Types (§2.1–2.4)",
-        "subtitle": "Heim & Kratzer — the first Fregean fragment: FA, types e/t, transitive verbs, connectives",
+        "subtitle": "Heim & Kratzer: the first Fregean fragment, with FA, types e and t, transitive verbs and connectives",
         "notation": "hk",
         "domain": {
           "multiLetterNames": true,
@@ -246,7 +246,7 @@
         "exercises": [
           {
             "title": "A. Intransitive verbs: FA, types e and ⟨e,t⟩ (§2.1)",
-            "instructions": "A name denotes an individual (type e); an intransitive verb denotes a characteristic function (type ⟨e,t⟩). Functional Application feeds the subject to the verb. The copula is is vacuous (λX.X).",
+            "instructions": "A name denotes an individual (type e); an intransitive verb denotes a characteristic function (type ⟨e,t⟩). Functional Application feeds the subject to the verb. The copula \"is\" is vacuous (λX.X), strictly §4.1's entry and previewed here; chapter 2's own fragment stops at names and (in)transitive verbs.",
             "items": [
               {
                 "sentence": "Ann smokes.",
@@ -281,8 +281,8 @@
             ]
           },
           {
-            "title": "B. Transitive verbs: Schönfinkelization (§2.3)",
-            "instructions": "A transitive verb is a Schönfinkeled (curried) function of type ⟨e,⟨e,t⟩⟩ that takes its OBJECT first, then its subject. FA applies twice: verb + object, then VP + subject.",
+            "title": "B. Transitive verbs: Schönfinkelisation (§2.3)",
+            "instructions": "A transitive verb is a Schönfinkelised (curried) function of type ⟨e,⟨e,t⟩⟩ that takes its object first, then its subject. FA applies twice: verb with object, then VP with subject.",
             "items": [
               {
                 "sentence": "Ann likes Jan.",
@@ -318,7 +318,7 @@
           },
           {
             "title": "C. Sentential connectives (§2.4)",
-            "instructions": "Negation (it is not the case that) is type ⟨t,t⟩; sentential and is type ⟨t,⟨t,t⟩⟩. They take whole sentences (type t) as arguments.",
+            "instructions": "Negation (\"it is not the case that\") is type ⟨t,t⟩ and sentential \"and\" is type ⟨t,⟨t,t⟩⟩. They take whole sentences (type t) as arguments.",
             "items": [
               {
                 "sentence": "It is not the case that Jan smokes.",
@@ -355,7 +355,7 @@
         ],
         "reading": {
           "format": "latex",
-          "markdown": "# Chapter 2 · Executing the Fregean Program\n\nThis chapter builds the first working fragment. Every node in a syntax tree gets a\n**denotation** (its extension), and the denotation of a branching node is computed\nfrom the denotations of its daughters. We need just two things: a **lexicon** giving\nthe denotation of each word, and **composition rules** that combine them.\n\n## 2.1 Denotations and semantic types\n\nA proper name like *Ann* denotes an **individual** — H&K's type `e` (for *entity*).\nA sentence denotes a **truth value**, `1` or `0` — type `t`. An intransitive verb\nlike *smokes* is *unsaturated*: it denotes the **characteristic function** of the set\nof smokers, a function from individuals to truth values, type `⟨e,t⟩`:\n\n\\begin{derivation}\n[[Ann]]      = a                       : e\n[[smokes]]   = λx . x smokes  =  λx . smoke(x)=1    : <e,t>\n\\end{derivation}\n\nWe abbreviate *the function mapping each x to 1 iff x smokes* as `λx . smoke(x)=1`.\n\n**Functional Application (FA).** If α is a branching node with daughters β and γ,\nand `⟦β⟧` is a function whose domain contains `⟦γ⟧`, then `⟦α⟧ = ⟦β⟧(⟦γ⟧)`.\n\nPlus a rule for the vacuous N/V/VP layers:\n\n**Non-branching Nodes (NN).** If α has a single daughter β, then `⟦α⟧ = ⟦β⟧`.\n\nSo *Ann smokes* (\\ref{smokes}) composes by feeding the subject to the verb's\ncharacteristic function — the sentence is `1` iff Ann smokes.\n\n\\begin{derivation}\n[[Ann smokes]]  = [[smokes]]([[Ann]])  =  smoke(a)=1    : t\n\\end{derivation}\n\n\\ex<smokes> Ann smokes.\n\\xe\n\n\\ex Ann is boring.\n\\xe\n\n## 2.3 Transitive verbs and Schönfinkelization\n\nA transitive verb like *likes* relates two individuals. Rather than a function of a\npair, H&K use a **Schönfinkeled** (curried) function — one that takes its arguments\none at a time. `⟦likes⟧` takes the **object** first, returning a `⟨e,t⟩` function\nthat still wants the subject:\n\n\\begin{derivation}\n[[likes]]      = λy . λx . x likes y           : <e,<e,t>>\n[[likes Jan]]  = λx . x likes Jan  =  λx . like(x,jn)=1    : <e,t>   (FA)\n\\end{derivation}\n\nSo in *Ann likes Jan* (\\ref{likes}), FA applies twice: *likes* combines with the object\n*Jan*, and the resulting VP combines with the subject *Ann*.\n\n\\begin{derivation}\n[[Ann likes Jan]]  = like(a,jn)=1    : t\n\\end{derivation}\n\n\\ex<likes> Ann likes Jan.\n\\xe\n\n## 2.4 Sentential connectives\n\nNegation and conjunction operate on truth values. *It is not the case that* is a\nfunction of type `⟨t,t⟩`, and sentential *and* is of type `⟨t,⟨t,t⟩⟩`:\n\n\\begin{derivation}\n[[it is not the case that]]  = λp . p = 0   =  λp . ¬p    : <t,t>\n[[and]]                      = λp . λq . q = 1 and p = 1  =  λp . λq . q ∧ p    : <t,<t,t>>\n\\end{derivation}\n\nThese compose with whole sentences, so *Jan works, and it is not the case that Jan\nsmokes* (\\ref{conj}) is true iff Jan works and Jan does not smoke.\n\n\\begin{derivation}\n[[it is not the case that Jan smokes]]  = ¬smoke(jn)=1    : t\n[[Jan works and ... Jan smokes]]        = work(jn)=1 and ¬smoke(jn)=1    : t\n\\end{derivation}\n\n\\ex<conj> Jan works, and it is not the case that Jan smokes.\n\\xe\n\n---\n\n### A note on Chapter 3: type-driven interpretation\n\nChapter 3 reframes what we just did. Notice we never had to *stipulate* which rule\napplies where — FA fires precisely when one sister is a function defined on the\nother. Interpretation is **type-driven**: the types decide the composition. A\ncorollary is that a tree can be **uninterpretable** purely on type grounds — if no\nrule's input condition is met at some node, the tree simply has no denotation. (This\nis different from a *presupposition failure*, Chapter 4, which depends on the actual\ndenotations, not just the types.) H&K also impose the **θ-Criterion** — each\nargument position filled exactly once — but in a type-driven system much of its work\nis already done by the requirement that every node compose."
+          "markdown": "# Chapter 2 · Executing the Fregean programme\n\nA lexicon assigns each word a denotation, and composition rules combine them up\nthe tree. The chapter 2 fragment covers proper names and (in)transitive verbs.\n\n## 2.1 Denotations and semantic types\n\nNames denote individuals (type `e`), sentences denote truth values (type `t`),\nand an intransitive verb denotes the characteristic function of a set, type\n`⟨e,t⟩`: `⟦smokes⟧` is `λx . smoke(x)=1`.\n\n**FA** (§2.1): if α is a branching node with daughters β and γ, and `⟦β⟧` is a\nfunction whose domain contains `⟦γ⟧`, then `⟦α⟧ = ⟦β⟧(⟦γ⟧)`. **NN**: if α has a\nsingle daughter β, then `⟦α⟧ = ⟦β⟧`.\n\nChapter 2 states these only as the anonymous rules (S1)–(S6); the names FA and\nNN, the general statements and the type labels are §3.1's. The bundle uses them\nfrom the start.\n\nGroup A: the subject feeds the verb by FA. *Ann is boring* looks ahead, since\nthe chapter 2 fragment has no adjectives; the vacuous copula `⟦is⟧ = λf . f` is\n§4.1's entry, previewed here.\n\n## 2.3 Transitive verbs and Schönfinkelisation\n\nA transitive verb takes its two arguments one at a time, Schönfinkelised and\nobject first: `⟦likes⟧` is `λy . λx . like(x,y)=1`, type `⟨e,⟨e,t⟩⟩`.\n\nGroup B: FA applies twice, object into the verb, then subject into the VP.\n\n## 2.4 Sentential connectives\n\n`⟦it is not the case that⟧` is `λp . ¬p`, type `⟨t,t⟩`; sentential `⟦and⟧` is\n`λp . λq . q ∧ p`, type `⟨t,⟨t,t⟩⟩`. Both take whole sentences as arguments.\n\nGroup C: the entries answer the book's own exercises, §2.1's exercise on\nconnectives (Exercises 2 and 3).\n\nEngine note: chapter 3 recasts composition as type-driven, with the types\ndeciding which rule applies, and FA firing where one sister is a function\ndefined on the other's denotation. The engine works the same way.\n"
         }
       }
     },
@@ -366,7 +366,7 @@
         "compose": 1,
         "id": "hk4-definites",
         "title": "Predicates, Modifiers & the Definite Article (§4.3–4.5)",
-        "subtitle": "Heim & Kratzer — Predicate Modification and Frege's partial 'the'",
+        "subtitle": "Heim & Kratzer: Predicate Modification and Frege's partial 'the'",
         "notation": "hk",
         "domain": {
           "multiLetterNames": true,
@@ -496,7 +496,7 @@
         "exercises": [
           {
             "title": "A. Predicate Modification (§4.3)",
-            "instructions": "Two ⟨e,t⟩ sisters cannot combine by Functional Application. Predicate Modification (PM) conjoins them: ⟦gray cat⟧ = λx. gray(x)=1 ∧ cat(x)=1. The copula is and the article a are vacuous (λX.X).",
+            "instructions": "Two ⟨e,t⟩ sisters cannot combine by Functional Application. Predicate Modification conjoins them: ⟦gray cat⟧ = λx. gray(x)=1 ∧ cat(x)=1. The copula \"is\" and the article \"a\" are vacuous (λX.X).",
             "items": [
               {
                 "sentence": "gray cat",
@@ -529,7 +529,7 @@
           },
           {
             "title": "B. The definite article (§4.4)",
-            "instructions": "Following Frege, the is a PARTIAL function: ⟦the⟧ = λf : ∃!x[f(x)=1] . ιx[f(x)=1]. The condition before the colon is presupposed (a unique satisfier); the value after is the unique individual. In a sentence, the presupposition projects to the top.",
+            "instructions": "Following Frege, \"the\" is a partial function: ⟦the⟧ = λf : ∃!x[f(x)=1] . ιx[f(x)=1]. The condition after the colon is presupposed, a unique satisfier; the value after the dot is that individual. In a sentence the presupposition projects to the top.",
             "items": [
               {
                 "sentence": "the cat",
@@ -555,7 +555,7 @@
           },
           {
             "title": "C. Modifiers in definite descriptions (§4.5)",
-            "instructions": "PM builds the modified predicate first; then the takes it as argument, so the uniqueness presupposition is about gray cats. Embedding the description as an argument projects the presupposition through the predicate.",
+            "instructions": "PM builds the modified predicate first, and \"the\" then takes it as argument, so the uniqueness presupposition concerns gray cats. Embedding the description as an argument projects the presupposition through the predicate.",
             "items": [
               {
                 "sentence": "the gray cat",
@@ -582,7 +582,7 @@
         ],
         "reading": {
           "format": "latex",
-          "markdown": "# Chapter 4 · Nonverbal Predicates, Modifiers, and the Definite Article\n\nA sentence denotes a **truth value** (type `t`, either `1` or `0`); a one-place\npredicate denotes its **characteristic function**, so `⟦cat⟧ = λx . cat(x)=1` — the\nfunction mapping an individual to `1` just in case it is a cat. We write the value\nout as `=1` throughout. Two little words carry no content of their own: the copula\n*is* and the indefinite *a* are both the identity `λX . X`, so the work of a\nnonverbal predicate like *is a cat* is done entirely by its complement.\n\n## 4.3 Predicate Modification\n\n*Gray cat* is a noun modified by an adjective. Both *gray* and *cat* are of type\n`⟨e,t⟩`, so neither can take the other as an argument — Functional Application\ncannot apply. H&K add a second composition rule:\n\n**Predicate Modification (PM).** If α is a branching node whose daughters β and γ\nare both of type `⟨e,t⟩`, then `⟦α⟧ = λx . ⟦β⟧(x)=1 and ⟦γ⟧(x)=1`.\n\n\\begin{derivation}\n[[gray]]      = λx . gray(x)=1                : <e,t>\n[[cat]]       = λx . cat(x)=1                 : <e,t>\n[[gray cat]]  = λx . gray(x)=1 and cat(x)=1   : <e,t>   (PM)\n\\end{derivation}\n\nSo *Julius is a gray cat* (\\ref{gc}) is true iff Julius is both gray and a cat — *is*\nand *a* drop out, and PM conjoins the two predicates before Functional Application\nfeeds the subject in.\n\n\\begin{forest}\n[S{gray(j)=1 and cat(j)=1}\n  [DP{j} Julius]\n  [VP{λx . gray(x)=1 and cat(x)=1}\n    [V{λX.X} is]\n    [DP{λx . gray(x)=1 and cat(x)=1}\n      [D{λX.X} a]\n      [NP{λx . gray(x)=1 and cat(x)=1}\n        [AP{λx . gray(x)=1} gray]\n        [NP{λx . cat(x)=1} cat]]]]]\n\\end{forest}\n\nA prepositional modifier works the same way: *in* is `λy . λx . in(x,y)=1`, so\n*in Texas* is the property `λx . in(x,tx)=1`, which combines with *cat* by PM.\n\n\\ex<gc> Julius is a gray cat.\n\\xe\n\n\\ex Kaline is a cat in Texas.\n\\xe\n\n## 4.4 The definite article\n\nFollowing Frege, *the* denotes a **partial function** of type `⟨⟨e,t⟩,e⟩`. It is\ndefined only for a predicate satisfied by **exactly one** individual, and then\nreturns that individual. The definedness condition is written after the colon:\n\n\\begin{derivation}\n[[the]] = λf : ∃!x[f(x)=1] . ιx[f(x)=1]   : <<e,t>,e>\n\\end{derivation}\n\nwhere `∃!x[f(x)=1]` abbreviates *there is exactly one x such that f(x)=1* and\n`ιx[f(x)=1]` the *unique such x*. Applying it to *cat* gives a value only if there\nis exactly one cat (\\ref{thecat}):\n\n\\begin{derivation}\n[[the cat]] = ∃!x[cat(x)=1] : ιx[cat(x)=1]   : e\n\\end{derivation}\n\nThe part **before** the colon is **presupposed**, the part after is **asserted**.\nThis is the distinction H&K draw in §4.4.2: when the presupposition fails — no cat,\nor several — the description simply has no value, and any sentence containing it is\nneither true nor false but a **presupposition failure**. In *The cat is gray*, the\ncopula is vacuous, so the uniqueness condition rides up to the whole sentence: it is\ndefined iff there is a unique cat, and where defined it is `1` iff that cat is gray.\n\n\\begin{derivation}\n[[The cat is gray]] = ∃!x[cat(x)=1] : gray(ιx[cat(x)=1])=1   : t\n\\end{derivation}\n\nH&K (§4.4.4) stress that this is **not** the same as uninterpretability: a type\nmismatch makes a tree uninterpretable from its types alone, whereas a presupposition\nfailure is detectable only once we know the *denotations* of the parts.\n\n\\ex<thecat> the cat\n\\xe\n\n\\ex The cat is gray.\n\\xe\n\n## 4.5 Modifiers in definite descriptions\n\nModification and definiteness compose freely. *The gray cat* first builds the\nmodified predicate by PM, then feeds it to *the* (\\ref{tgc}); the uniqueness\npresupposition is now about *gray cats*.\n\n\\begin{derivation}\n[[gray cat]]      = λx . gray(x)=1 and cat(x)=1                        : <e,t>\n[[the gray cat]]  = ∃!x[gray(x)=1 and cat(x)=1] : ιx[gray(x)=1 and cat(x)=1]  : e\n\\end{derivation}\n\nEmbedding the description as an argument lets the presupposition project through a\npredicate: *The gray cat is fond of Joe* is defined iff there is a unique gray cat,\nand asserts that it is fond of Joe.\n\n\\begin{derivation}\n[[the gray cat is fond of Joe]]\n   = ∃!x[gray(x)=1 and cat(x)=1] : fond(ιx[gray(x)=1 and cat(x)=1], o)=1   : t\n\\end{derivation}\n\nH&K also build descriptions over **relative clauses** — *the house which is empty*\nis defined iff there is exactly one empty house. The relative clause must denote a\nproperty `⟨e,t⟩` so it can combine with *house* by PM; how a clause containing a gap\ncomes to denote a property is the business of Predicate Abstraction in Chapter 5.\n\n\\ex<tgc> the gray cat\n\\xe\n\n\\ex The gray cat is fond of Joe.\n\\xe\n\n\\ex the house which is empty\n\\xe"
+          "markdown": "# Chapter 4 · Nonverbal predicates, modifiers, and the definite article\n\n*Is* and *a* are vacuous, `λX . X` (§4.1). *Is a cat* does the work of *cat*.\n\n## 4.3 Predicate Modification\n\n**PM** (§4.3.1): if both daughters are type `⟨e,t⟩`, the node denotes the\npredicate true of `x` iff both daughters are, their intersection. FA handles\neverything else.\n\nGroup A: *gray cat* and *cat in Texas* compose by PM; `⟦in⟧` saturates its\nobject first, then the PP joins the noun by PM. Nonintersective adjectives\n(*former*, *alleged*) fall outside PM (§4.3.3).\n\n## 4.4 The definite article\n\n**the** (§4.4.1): partial, type `⟨⟨e,t⟩,e⟩`, defined only if the predicate has\nexactly one satisfier, and returning that individual. In\n`λf : ∃!x[f(x)=1] . ιx[f(x)=1]`, the condition after the colon is presupposed\nand the value after the dot asserted (§4.4.2). Failure leaves the sentence\nneither true nor false, whereas a type mismatch is visible from the types alone\n(§4.4.4).\n\nGroup B: the presupposition rides up through the vacuous copula to the whole\nsentence.\n\n## 4.5 Modifiers in definite descriptions\n\nCompose the modifier first (PM), then the article, so *the gray cat*\npresupposes uniqueness among the gray cats.\n\nGroup C: the same pipeline with *fond of Joe* and a relative-clause restrictor;\nhow the clause gets its `⟨e,t⟩` meaning is ch. 5 (PA).\n"
         }
       }
     },
@@ -593,7 +593,7 @@
         "compose": 1,
         "id": "hk5-relatives",
         "title": "Relative Clauses & Predicate Abstraction (§5.1–5.3)",
-        "subtitle": "Heim & Kratzer — traces, variable binding, and the third composition rule",
+        "subtitle": "Heim & Kratzer: traces, variable binding, and the third composition rule",
         "notation": "hk",
         "domain": {
           "multiLetterNames": true,
@@ -752,7 +752,7 @@
         "exercises": [
           {
             "title": "A. Subject-gap relatives (§5.1–5.2)",
-            "instructions": "A relative clause is an intersective modifier of type ⟨e,t⟩, combining with the head noun by Predicate Modification. The trace t₁ denotes a variable; Predicate Abstraction over its index turns the clause into a property. The relative pronoun is vacuous (λX.X).",
+            "instructions": "A relative clause is an intersective modifier of type ⟨e,t⟩ and combines with the head noun by Predicate Modification. The trace t₁ denotes a variable, and Predicate Abstraction over its index turns the clause into a property. The relative pronoun is vacuous (λX.X).",
             "items": [
               {
                 "sentence": "which is empty",
@@ -787,8 +787,8 @@
             ]
           },
           {
-            "title": "B. Object-gap relatives & Predicate Abstraction (§5.2.3)",
-            "instructions": "When the trace is in OBJECT position, the desired value λx. John abandoned x is not the value of any subtree — Predicate Abstraction is essential. PA abstracts over the trace index after the subject and verb have composed around the trace.",
+            "title": "B. Object-gap relatives and Predicate Abstraction (§5.2.3)",
+            "instructions": "With the trace in object position, the value λx. John abandoned x is that of no subtree, so Predicate Abstraction is essential. PA abstracts over the trace index once the subject and verb have composed around the trace.",
             "items": [
               {
                 "sentence": "which John abandoned t",
@@ -824,7 +824,7 @@
           },
           {
             "title": "C. Relatives in full DPs (§5.1, §5.3)",
-            "instructions": "The modified noun feeds a determiner. With the (Chapter 4's partial function), the uniqueness presupposition is now about the relative-clause-restricted set. With a quantifier, the relative clause restricts the quantifier's domain.",
+            "instructions": "The modified noun feeds a determiner. With \"the\" (chapter 4's partial function) the uniqueness presupposition now concerns the relative-clause-restricted set. With a quantifier, the relative clause restricts the quantifier's domain.",
             "items": [
               {
                 "sentence": "The house which is empty is available.",
@@ -861,18 +861,18 @@
         ],
         "reading": {
           "format": "latex",
-          "markdown": "# Chapter 5 · Relative Clauses, Variables, and Variable Binding\n\nA restrictive relative clause is **just another intersective modifier**. Following\nQuine, *which is empty* denotes the very same property as the adjective *empty* — a\ncharacteristic function of type `⟨e,t⟩` — and so combines with the head noun by\n**Predicate Modification**, exactly as a PP or AP does. The whole point of this\nchapter is to show how a clause *containing a gap* comes to denote such a property.\n\n## 5.1 Relative clauses as predicates\n\nTake H&K's opening example (\\ref{empty}). The DP *the house which is empty* has a head\nnoun *house*, a relative clause *which is empty*, and the determiner *the*. If\n*which is empty* denotes `λx . empty(x)=1`, then PM gives *house which is empty* the\nvalue `λx . house(x)=1 and empty(x)=1`, and Functional Application feeds that to the\npartial *the* from Chapter 4. So *the house which is empty* is defined iff there is\nexactly one empty house, and denotes it; the whole sentence is then true iff that\nhouse is available.\n\n\\ex<empty> The house which is empty is available.\n\\xe\n\nThis already distinguishes restrictives from non-restrictives: *The house, which is\nempty, is available* presupposes a **unique house** (the *the* applies to *house*\nalone), whereas the restrictive only requires a unique empty house. We set\nnon-restrictives aside.\n\n## 5.2 Inside the relative clause: traces and variables\n\nA relative clause has a relative pronoun at the top and a **trace** in the gap.\nA subject-gap clause *which `t` is empty* is easy; the hard case, already noted by\nQuine, is an **object** gap (\\ref{abandon}), where the desired value is `λx . John\nabandoned x` — and that is **not** the value of any subtree.\n\n\\ex<abandon> the picture which John abandoned t\n\\xe\n\n\\ex the movie which Mary saw t\n\\xe\n\nThe trace cannot simply pick up a referent (§5.2.1): there is no smaller\nindividual-denoting constituent for it to inherit from, and trying to use the whole\ncontaining DP is viciously circular. The resolution (§5.2.2) is the **variable**.\n\n**Traces and Pronouns.** A trace `t_i` (and likewise a pronoun) denotes, relative to\nan assignment `g`, the individual `g(i)`. So `⟦t_1⟧^g = g(1)`, an individual of type\n`e` — a fine argument for the verb.\n\nWith this, the clause body has a value *relative to an assignment*: writing `x` for\n`g(1)`, *John abandoned `t_1`* denotes `abandon(j,x)=1`.\n\n## 5.2.3 Predicate Abstraction\n\nTo turn that open clause into a property, H&K add a third composition rule. The\nmoved relative pronoun (and its index) is **syncategorematic** — it has no value of\nits own but triggers abstraction over the indexed variable.\n\n**Predicate Abstraction (PA).** If α is a branching node whose daughters are a\nrelative pronoun (or index) `i` and a node β, then `⟦α⟧^g = λx . ⟦β⟧^{g[i→x]}` — the\nfunction mapping each `x` to the value β has when `i` is assigned `x`.\n\nSo PA over the object-gap clause gives `λx . abandon(j,x)=1`, type `⟨e,t⟩`, just what\nPM needs (\\ref{abandon-deriv}). The relative pronoun *which* / *who* is then semantically\nvacuous, passing the abstract up unchanged.\n\n\\begin{derivation}\n[[John abandoned t1]]              = abandon(j,x)=1            : t\n[[1 [John abandoned t1]]]          = λx . abandon(j,x)=1       : <e,t>   (PA)\n[[which John abandoned t1]]        = λx . abandon(j,x)=1       : <e,t>\n[[picture]]                        = λx . picture(x)=1         : <e,t>\n[[picture which John abandoned]]   = λx . picture(x)=1 and abandon(j,x)=1   : <e,t>   (PM)\n\\end{derivation}\n\nA subject gap works the same way; PA simply abstracts over a trace that happens to\nsit in subject position (\\ref{subj-deriv}).\n\n\\begin{derivation}\n[[t1 is empty]]                = empty(x)=1            : t\n[[1 [t1 is empty]]]            = λx . empty(x)=1       : <e,t>   (PA)\n[[which is empty]]             = λx . empty(x)=1       : <e,t>\n[[house which is empty]]       = λx . house(x)=1 and empty(x)=1   : <e,t>   (PM)\n\\end{derivation}\n\n## 5.3 Multiple variables and such-that relatives\n\nThe same rule scales to **multiple variables** and to *such that* relatives, where\n*such* (like the relative pronoun) is a vacuous binder of the clause-internal index.\nOnce indices, not particular words, drive PA, the rule generalizes to every variable\nbinder in the grammar — the engine that Chapter 7 will reuse for quantifier raising.\n\n\\ex<such> the picture such that Mary saw it\n\\xe"
+          "markdown": "# Chapter 5 · Relative clauses, variables, and variable binding\n\nA restrictive relative clause is an intersective modifier: following Quine,\n*which is empty* denotes the same `⟨e,t⟩` property as *empty* and combines with\nthe head noun by PM. The chapter's problem is how a clause containing a gap\ncomes to denote a property at all.\n\n## 5.1 Relative clauses as predicates\n\nPM gives *house which is empty* the value true of anything that is a house and\nis empty, and ch. 4's partial *the* applies to that, defined iff there is\nexactly one empty house. Non-restrictive relatives, as in *The house, which is\nempty, is available*, presuppose a unique house and are set aside (§5.1).\n\n## 5.2 Inside the relative clause: traces and variables\n\nAn object gap is the hard case: the target is the property true of `x` iff John\nabandoned `x`, and that is the value of no subtree. The trace cannot pick up a\nreferent (§5.2.1), since no individual-denoting constituent is available and\nusing the containing DP is circular. §5.2.2 makes the trace a variable,\ninterpreted relative to an assignment.\n\n**Pronouns and Traces** (§5.2.2): relative to an assignment `g`, a trace `tᵢ` or\npronoun denotes `g(i)`, type `e`.\n\n## 5.2.3 Predicate Abstraction\n\n**PA** (§5.2.3): if α is a branching node whose daughters are an index `i` and a\nnode β, then `⟦α⟧^g = λx . ⟦β⟧^{g[i→x]}`.\n\nThe relative pronoun passes the abstract up unchanged. Seam: in §5.2.3 the\npronoun is syncategorematic, \"not simply vacuous\"; the vacuous-pronoun treatment\nimplemented here is the ch. 7 revision, back-applied so that one rule set serves\nboth chapters. The rule as stated above is likewise the book's final form, while\n§5.2.3's debut version abstracts directly over the pronoun's index.\n\nGroup A: subject gaps compose the same way, with PA over the trace index.\n\nGroup B: the subject and verb compose around the trace, and PA abstracts over\nthe index afterwards.\n\n## 5.3 Multiple variables and such-that relatives\n\nPA scales to multiple variables and to *such that* relatives, where *such* binds\nthe clause-internal index. Once indices drive PA the rule serves every binder in\nthe grammar, and ch. 7 reuses it for quantifier raising.\n\nGroup C: the quantified heads borrow `⟦every⟧` and `⟦no⟧` from §6.4; ch. 5\nitself stops at definite heads.\n"
         }
       }
     },
     {
       "key": "hk6-quantifiers",
-      "title": "Quantifiers: Their Semantic Type (§6.3–6.7)",
+      "title": "Quantifiers: Their Semantic Type (§6.3–6.4, §6.7)",
       "content": {
         "compose": 1,
         "id": "hk6-quantifiers",
-        "title": "Quantifiers: Their Semantic Type (§6.3–6.7)",
-        "subtitle": "Heim & Kratzer — generalized quantifiers, quantifying determiners, and presuppositional both/neither",
+        "title": "Quantifiers: Their Semantic Type (§6.3–6.4, §6.7)",
+        "subtitle": "Heim & Kratzer: generalised quantifiers, quantifying determiners, and presuppositional both/neither",
         "notation": "hk",
         "domain": {
           "multiLetterNames": true,
@@ -1000,8 +1000,8 @@
         },
         "exercises": [
           {
-            "title": "A. Generalized quantifiers (§6.3)",
-            "instructions": "A quantificational DP is neither an individual (e) nor a set (⟨e,t⟩): it is a SECOND-ORDER property of type ⟨⟨e,t⟩,t⟩, taking the VP predicate as argument.",
+            "title": "A. Generalised quantifiers (§6.3)",
+            "instructions": "A quantificational DP is neither an individual (e) nor a set (⟨e,t⟩). It is a second-order property of type ⟨⟨e,t⟩,t⟩, taking the VP predicate as its argument.",
             "items": [
               {
                 "sentence": "Something vanished.",
@@ -1072,8 +1072,8 @@
             ]
           },
           {
-            "title": "C. Presuppositional both & neither (§6.7)",
-            "instructions": "Both and neither PRESUPPOSE that the restrictor has exactly two members — a partial function (Chapter 4's colon), presupposing |f|=2. The presupposition projects up to the whole sentence. They cannot be captured by a purely relational (total) theory.",
+            "title": "C. Presuppositional both and neither (§6.7)",
+            "instructions": "\"Both\" and \"neither\" presuppose that the restrictor has exactly two members, through a partial function carrying chapter 4's colon condition |f|=2. The presupposition projects up to the whole sentence. A purely relational (total) theory cannot capture them.",
             "items": [
               {
                 "sentence": "neither cat",
@@ -1110,18 +1110,18 @@
         ],
         "reading": {
           "format": "latex",
-          "markdown": "# Chapter 6 · Quantifiers: Their Semantic Type\n\nA proper name denotes an individual (type `e`), but a quantificational DP like\n*nothing* does not. *No one person is everything*; and *nothing* is not a set of\nindividuals either. So what type is it? Fregean reasoning gives a clear answer.\n\n## 6.3 Generalized quantifiers\n\nIn *Nothing vanished*, our rules make the VP *vanished* denote a characteristic\nfunction of type `⟨e,t⟩`, and the whole sentence must denote a truth value `t`. If\ncomposition is Functional Application, the subject *nothing* must be a function\n**from** `⟨e,t⟩` **to** `t` — type `⟨⟨e,t⟩,t⟩`. These are **generalized quantifiers**:\nsecond-order properties that take a first-order property as argument (\\ref{gq}).\n\n\\begin{derivation}\n[[something]]   = λf . ∃x[f(x)=1]    : <<e,t>,t>\n[[nothing]]     = λf . ¬∃x[f(x)=1]   : <<e,t>,t>\n[[everything]]  = λf . ∀x[f(x)=1]    : <<e,t>,t>\n\\end{derivation}\n\nSo *Nothing vanished* says the predicate *vanished* is true of no individual:\n\n\\begin{derivation}\n[[Nothing vanished]]  = ¬∃x[vanish(x)=1]    : t\n\\end{derivation}\n\n\\ex<gq> Something vanished.\n\\xe\n\n\\ex Nothing vanished.\n\\xe\n\n\\ex Everything vanished.\n\\xe\n\n## 6.4 Quantifying determiners\n\nA determiner combines with a noun (a `⟨e,t⟩` restrictor) to build a quantificational\nDP. So a determiner is type `⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩` — it takes the noun, then the\npredicate, and returns a truth value (\\ref{det}).\n\n\\begin{derivation}\n[[every]]  = λf . λg . ∀x[f(x)=1 → g(x)=1]    : <<e,t>,<<e,t>,t>>\n[[no]]     = λf . λg . ¬∃x[f(x)=1 and g(x)=1]  : <<e,t>,<<e,t>,t>>\n[[some]]   = λf . λg . ∃x[f(x)=1 and g(x)=1]   : <<e,t>,<<e,t>,t>>\n\\end{derivation}\n\n*Every cat vanished* feeds *cat* to *every*, then *vanished* to the result:\n\n\\begin{derivation}\n[[every cat]]           = λg . ∀x[cat(x)=1 → g(x)=1]    : <<e,t>,t>\n[[Every cat vanished]]  = ∀x[cat(x)=1 → vanish(x)=1]    : t\n\\end{derivation}\n\n\\ex<det> Every cat vanished.\n\\xe\n\n\\ex No cat vanished.\n\\xe\n\n## 6.7 Presuppositional quantifier phrases: *both* and *neither*\n\n*Neither cat has stripes* is clearly true if there are exactly two cats and neither\nis striped, and false if there are two cats and one or both is. But if there **aren't\nexactly two cats** — say only one, or three — we are reluctant to call it true *or*\nfalse: it seems inappropriate, just like *the cat* when there is no unique cat. So\n*both* and *neither* **presuppose** that the restrictor has exactly two members. We\ncapture this with a **partial function** (Chapter 4's colon), presupposing `|f|=2`:\n\n\\begin{derivation}\n[[neither]]  = λf : |f|=2 . λg . ¬∃x[f(x)=1 and g(x)=1]   : <<e,t>,<<e,t>,t>>\n[[both]]     = λf : |f|=2 . λg . ∀x[f(x)=1 → g(x)=1]      : <<e,t>,<<e,t>,t>>\n\\end{derivation}\n\nThe presupposition `|f|=2` rides up: *neither cat* is defined only if there are\nexactly two cats, and *Neither cat has stripes* (\\ref{both}) inherits that condition while\nasserting that no cat is striped.\n\n\\begin{derivation}\n[[neither cat]]              = |cat|=2 : λg . ¬∃x[cat(x)=1 and g(x)=1]   : <<e,t>,t>\n[[Neither cat has stripes]]  = |cat|=2 : ¬∃x[cat(x)=1 and striped(x)=1]  : t\n\\end{derivation}\n\nThis is why *both* and *neither* resist a purely **relational** treatment (§6.7.2): a\nrelation is a set of pairs, so it can only ever be total — it cannot leave the\ntwo-cats case truth-valueless. Partiality is essential.\n\n\\ex<both> Neither cat has stripes.\n\\xe\n\n\\ex Both cats have stripes.\n\\xe\n\n> **Beyond this chapter (§6.8).** Whether *every*, *the*, and the weak determiners\n> (*a*, *two*, *most*) are likewise presuppositional is contested; *most* in\n> particular is not first-order, and we leave these cases to the reading."
+          "markdown": "# Chapter 6 · Quantifiers: their semantic type\n\nQuantificational DPs denote neither individuals (§6.1, where the entailment\npatterns of *no man* and *only John* diverge from those of names) nor sets of\nindividuals (§6.2). §6.3 gives the Fregean answer.\n\n## 6.3 Generalised quantifiers\n\nIn *Nothing vanished* the VP is `⟨e,t⟩` and the sentence must be `t`, so under\nFA the subject is a function from `⟨e,t⟩` to `t`, type `⟨⟨e,t⟩,t⟩`: a\ngeneralised quantifier. The entries are `⟦something⟧ = λf . ∃x[f(x)=1]`,\n`⟦nothing⟧ = λf . ¬∃x[f(x)=1]` and `⟦everything⟧ = λf . ∀x[f(x)=1]`.\n\nGroup A: a quantificational DP is a second-order property of type `⟨⟨e,t⟩,t⟩`\nand takes the VP predicate as its argument.\n\n## 6.4 Quantifying determiners\n\nA determiner takes the noun restrictor first, type `⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩`:\n`⟦every⟧ = λf . λg . ∀x[f(x)=1 → g(x)=1]`,\n`⟦no⟧ = λf . λg . ¬∃x[f(x)=1 ∧ g(x)=1]`,\n`⟦some⟧ = λf . λg . ∃x[f(x)=1 ∧ g(x)=1]`. In each case the two nodes compose by\nFA.\n\nGroup B: FA applies twice, restrictor first, then scope.\n\n## 6.7 Presuppositional quantifier phrases: both and neither\n\nWith one cat or three, *Neither cat has stripes* is neither true nor false.\nH&K's entry is partial, defined only where the restrictor has exactly two\nmembers, and it predicts that the sentence presupposes there to be exactly two\ncats: `⟦neither⟧ = λf : |f|=2 . λg . ¬∃x[f(x)=1 ∧ g(x)=1]`, and `⟦both⟧` the\nsame condition with `∀x[f(x)=1 → g(x)=1]`.\n\n§6.7.2: such presupposition is incompatible with a strictly relational theory,\nsince a relation between sets is total and cannot leave the\nnot-exactly-two-cats case truth-valueless. Partiality is essential.\n\nEngine note: `card2(f)` and `|f|=2` are the same condition on the\ncharacteristic function.\n\nGroup C: the presupposition projects up to the whole sentence.\n"
         }
       }
     },
     {
       "key": "hk7-quantification",
-      "title": "Quantification & Grammar (§7.1–7.5)",
+      "title": "Quantification & Grammar (§7.1–7.3, §7.5)",
       "content": {
         "compose": 1,
         "id": "hk7-quantification",
-        "title": "Quantification & Grammar (§7.1–7.5)",
-        "subtitle": "Heim & Kratzer — object quantifiers in situ (RaiseO) vs. by movement (QR+PA), scope, binding",
+        "title": "Quantification & Grammar (§7.1–7.3, §7.5)",
+        "subtitle": "Heim & Kratzer: object quantifiers in situ (RaiseO) and by movement (QR with PA), scope, binding",
         "notation": "hk",
         "domain": {
           "multiLetterNames": true,
@@ -1240,8 +1240,8 @@
         },
         "exercises": [
           {
-            "title": "A. Object quantifiers in situ (RaiseO) — §7.1–7.2",
-            "instructions": "The verb wants an individual object (⟨e,⟨e,t⟩⟩) but a quantifier is ⟨⟨e,t⟩,t⟩, so FA fails. RaiseO lifts the verb's type ⟨e,⟨e,t⟩⟩ → ⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩ so the quantifier fits in situ — no movement.",
+            "title": "A. Object quantifiers in situ via RaiseO (§7.1–7.2)",
+            "instructions": "The verb wants an individual object (⟨e,⟨e,t⟩⟩) but a quantifier is ⟨⟨e,t⟩,t⟩, so FA fails. RaiseO lifts the verb's type ⟨e,⟨e,t⟩⟩ → ⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩ so the quantifier fits in situ, with no movement. This is the book's own endnote-7 exercise, the Montague-style verb entry H&K invite you to define; their illustrated §7.2 variant retypes the quantifier instead.",
             "items": [
               {
                 "sentence": "John offended every linguist.",
@@ -1276,8 +1276,8 @@
             ]
           },
           {
-            "title": "B. Object quantifiers by movement (QR + PA) — §7.3",
-            "instructions": "The alternative repair MOVES the object quantifier, adjoining it above the clause with a co-indexed trace. Predicate Abstraction over the trace makes the remnant a ⟨e,t⟩ property — a fit argument for the raised quantifier. Same truth conditions as RaiseO.",
+            "title": "B. Object quantifiers by movement, QR and PA (§7.3)",
+            "instructions": "The other repair moves the object quantifier, adjoining it above the clause with a co-indexed trace. Predicate Abstraction over the trace makes the remnant an ⟨e,t⟩ property, a fit argument for the raised quantifier. The truth conditions match RaiseO.",
             "items": [
               {
                 "sentence": "John offended every linguist.",
@@ -1302,8 +1302,8 @@
             ]
           },
           {
-            "title": "C. Scope ambiguity & inverse scope — §7.5.1",
-            "instructions": "With two quantifiers, movement derives BOTH scope orders (in-situ derives only the linear one). Raise the quantifiers in either order; PA gives two non-equivalent LFs. Build the LF for each reading.",
+            "title": "C. Scope ambiguity and inverse scope (§7.5.1)",
+            "instructions": "With two quantifiers, movement derives both scope orders, while the in-situ proposals the book considers predict only the linear one; richer in-situ type regimes exist (n. 24). Raise the quantifiers in either order, and PA gives two non-equivalent LFs. Build the LF for each reading.",
             "items": [
               {
                 "sentence": "Somebody offended everybody. (linear: ∃ > ∀)",
@@ -1338,8 +1338,8 @@
             ]
           },
           {
-            "title": "D. Quantifiers that bind pronouns — §7.5.3",
-            "instructions": "When the raised subject's trace and a pronoun share an index, PA abstracts over both, binding the pronoun as a variable. Raise the subject (index 1) over a clause whose object pronoun is himself₁.",
+            "title": "D. Quantifiers that bind pronouns (§7.5.3)",
+            "instructions": "When the raised subject's trace and a pronoun share an index, PA abstracts over both and binds the pronoun as a variable. Raise the subject (index 1) over a clause whose object pronoun is himself₁.",
             "items": [
               {
                 "sentence": "Every publisher offended himself.",
@@ -1366,7 +1366,7 @@
         ],
         "reading": {
           "format": "latex",
-          "markdown": "# Chapter 7 · Quantification and Grammar\n\nQuantifiers in **subject** position composed cleanly: a generalized quantifier of\ntype `⟨⟨e,t⟩,t⟩` takes the VP predicate as argument. But quantifiers also appear in\n**object** position, and there a type mismatch arises. This chapter gives H&K's two\nrepairs — and shows they are not mere alternatives, because movement does strictly\nmore.\n\n## 7.1 The problem of quantifiers in object position\n\nIn *John offended every linguist* (\\ref{obj}), the verb *offended* is type\n`⟨e,⟨e,t⟩⟩` — it wants an **individual** object. But *every linguist* is a\ngeneralized quantifier, type `⟨⟨e,t⟩,t⟩`. Neither sister has the other in its\ndomain, so Functional Application cannot apply, and the VP has no denotation.\n\n\\begin{derivation}\n[[offended]]        = λy . λx . offend(x,y)=1    : <e,<e,t>>\n[[every linguist]]  = λg . ∀x[linguist(x)=1 → g(x)=1]   : <<e,t>,t>\n\\end{derivation}\n\n\\ex<obj> John offended every linguist.\n\\xe\n\n## 7.2 Repair in situ: flexible types (RaiseO)\n\nOne repair leaves the quantifier where it is and **raises the verb's type** so the\nobject slot can host a generalized quantifier. The type-shift **RaiseO** turns\n`⟨e,⟨e,t⟩⟩` into `⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩`, after which FA applies twice with no movement.\nThe result is exactly the desired truth conditions:\n\n\\begin{derivation}\n[[John offended every linguist]]  = ∀x[linguist(x)=1 → offend(j,x)=1]   : t\n\\end{derivation}\n\n## 7.3 Repair by movement: Quantifier Raising + PA\n\nThe other repair **moves** the object quantifier, adjoining it above the clause and\nleaving a co-indexed **trace**. **Predicate Abstraction** (Chapter 5) over that trace\nmakes the remnant clause a property of type `⟨e,t⟩` — a fit argument for the raised\nquantifier. The LF is *[every linguist] 1 [John offended t₁]*:\n\n\\begin{derivation}\n[[John offended t1]]      = offend(j,x)=1            : t\n[[1 [John offended t1]]]  = λx . offend(j,x)=1       : <e,t>   (PA)\n[[(QR) every linguist …]] = ∀x[linguist(x)=1 → offend(j,x)=1]   : t   (FA)\n\\end{derivation}\n\nBoth routes give the same truth conditions here. So why prefer movement?\n\n## 7.5.1 Scope ambiguity and inverse scope\n\nA sentence with **two** quantifiers, *Somebody offended everybody* (\\ref{scope}), has\n**two** readings: a *linear* one (there is one person who offended everyone) and an\n*inverse* one (everyone was offended, by possibly different people). In-situ\ninterpretation predicts **only** the linear reading. Movement predicts **both**:\nraise the quantifiers in either order and PA delivers two non-equivalent LFs.\n\n\\begin{derivation}\n[[Somebody offended everybody]]  (linear)   = ∃x . ∀y . offend(x,y)=1   : t\n[[Somebody offended everybody]]  (inverse)  = ∀y . ∃x . offend(x,y)=1   : t\n\\end{derivation}\n\nThis is the decisive argument for movement: it generates inverse scope, which the\nflexible-types approach cannot.\n\n\\ex<scope> Somebody offended everybody.\n\\xe\n\n\\ex Some publisher offended every linguist.\n\\xe\n\n## 7.5.3 Quantifiers that bind pronouns\n\nMovement also lets a quantifier **bind a pronoun**. When the raised subject leaves a\ntrace and a pronoun elsewhere carries the **same index**, PA abstracts over both at\nonce, so the pronoun is read as a bound variable. *Every publisher offended himself*\n(\\ref{bound}) is *[every publisher] 1 [t₁ offended himself₁]*:\n\n\\begin{derivation}\n[[t1 offended himself1]]      = offend(x,x)=1            : t\n[[1 [t1 offended himself1]]]  = λx . offend(x,x)=1       : <e,t>   (PA)\n[[Every publisher … himself]] = ∀x[publisher(x)=1 → offend(x,x)=1]   : t\n\\end{derivation}\n\n\\ex<bound> Every publisher offended himself.\n\\xe\n\n> **Beyond this chapter.** Antecedent-contained deletion (§7.5.2) needs an ellipsis\n> resolution mechanism we do not model here; it is discussed in the reading only."
+          "markdown": "# Chapter 7 · Quantification and grammar\n\nSubject quantifiers compose by FA. Object quantifiers do not, and chapter 7\ngives two repairs, weighing them at §7.5.\n\n## 7.1 The problem of quantifiers in object position\n\nThe verb is `⟨e,⟨e,t⟩⟩` and the object `⟨⟨e,t⟩,t⟩`. Neither sister has the other\nin its domain, so FA yields no value for the VP.\n\n## 7.2 Repair in situ: flexible types (RaiseO)\n\nLeave the quantifier in place and retype. The book's illustrated variant retypes\nthe quantifier, giving a \"type-shifted homonym\" of *every*, and invites the\nreader to try the other possibility. That other, verb-retyping variant is\nendnote 7's exercise, credited to Montague, and is what RaiseO implements:\n`⟨e,⟨e,t⟩⟩ → ⟨⟨⟨e,t⟩,t⟩,⟨e,t⟩⟩`, then FA twice, with no movement.\n\nGroup A: apply RaiseO to the verb so the quantifier fits in situ.\n\n## 7.3 Repair by movement: Quantifier Raising and PA\n\nMove the object, adjoin it above the clause and leave a co-indexed trace; PA\n(ch. 5) turns the remnant into `⟨e,t⟩`, and the quantifier applies. The book's\nLF is *[every linguist] 1 [John offended t₁]*, obtaining the correct result\nwithout a type-shifted homonym of *every*. The truth conditions match RaiseO.\n\nGroup B: raise the quantifier, then let PA supply the predicate it needs.\n\n## 7.5.1 Scope ambiguity and inverse scope\n\n*Somebody offended everybody* \"has two readings, not just one\": linear, with one\noffender for all, and inverse, where each was offended and the offenders may\ndiffer. Raising the quantifiers in either order gives both LFs, while the\nin-situ proposals the book considers predict only the linear reading.\n\nH&K stop short of calling this decisive. Richer type regimes derive inverse\nscope in situ (n. 24: Hendriks; Cooper storage), the §7.5 arguments' \"ultimate\nforce is very difficult to assess\", and pending independent motivation \"the\nchoice seems to be just a matter of taste\".\n\nEngine note: the book's `⟦everybody⟧` and `⟦somebody⟧` quantify over persons;\nthese entries range over all of `Dₑ`.\n\nGroup C: raise the quantifiers in either order and build the LF for each\nreading.\n\n## 7.5.3 Quantifiers that bind pronouns\n\nA raised quantifier binds a co-indexed pronoun, with PA abstracting over trace\nand pronoun at once, as in *[every publisher] 1 [t₁ offended himself₁]*.\n\nGroup D: raise the subject over a clause whose object pronoun carries the same\nindex.\n"
         }
       }
     },
@@ -1377,7 +1377,7 @@
         "compose": 1,
         "id": "hk9-pronouns",
         "title": "Bound & Referential Pronouns (§9.1–9.2)",
-        "subtitle": "Heim & Kratzer — pronouns as variables, and the co-reference vs. binding contrast",
+        "subtitle": "Heim & Kratzer: pronouns as variables, and the co-reference and binding contrast",
         "notation": "hk",
         "domain": {
           "multiLetterNames": true,
@@ -1499,7 +1499,7 @@
         "exercises": [
           {
             "title": "A. Referential pronouns as free variables (§9.1)",
-            "instructions": "A pronoun she₁ denotes g(1) — the individual the assignment maps its index to. With a FREE index, the denotation is an OPEN term (a free variable x₁ = g(1)), made definite only by the utterance context.",
+            "instructions": "A pronoun she₁ denotes g(1), the individual the assignment maps its index to. With a free index the denotation is an open term, a free variable x₁ = g(1), made definite only by the utterance context.",
             "items": [
               {
                 "sentence": "She smokes.",
@@ -1535,7 +1535,7 @@
           },
           {
             "title": "B. Co-reference: a free pronoun with a name (§9.2)",
-            "instructions": "On the CO-REFERENCE LF, the reflexive is just a free pronoun himself₁; with no movement, the denotation is the open term blame(j,x₁), true iff John blamed g(1). The context maps 1 to John.",
+            "instructions": "On the co-reference LF the reflexive is composed as a free pronoun himself₁; with no movement the denotation is the open term blame(j,x₁), true iff John blamed g(1). The context maps 1 to John. H&K run §9.2 on \"John hates his father\", where both LFs are fine; the reflexive here is a fragment-friendly stand-in, and chapter 10's Condition A, bracketed here, demands the bound LF.",
             "items": [
               {
                 "sentence": "John blamed himself. (co-reference LF)",
@@ -1550,8 +1550,8 @@
             ]
           },
           {
-            "title": "C. Binding: movement + Predicate Abstraction (§9.2)",
-            "instructions": "On the BINDING LF, the antecedent raises, leaving a trace co-indexed with the pronoun; PA binds both. The denotation is the CLOSED term blame(j,j) — no dependence on the assignment. A quantifier antecedent allows ONLY this LF.",
+            "title": "C. Binding: movement and Predicate Abstraction (§9.2)",
+            "instructions": "On the binding LF the antecedent raises, leaving a trace co-indexed with the pronoun, and PA binds both. The denotation is the closed term blame(j,j), with no dependence on the assignment. A quantifier antecedent allows only this LF.",
             "items": [
               {
                 "sentence": "John blamed himself. (binding LF)",
@@ -1588,7 +1588,7 @@
         ],
         "reading": {
           "format": "latex",
-          "markdown": "# Chapter 9 · Bound and Referential Pronouns\n\nA pronoun gets its value in one of two ways. A **referential** pronoun (deictic or\nanaphoric to a referring antecedent) picks up an individual from the context. A\n**bound** pronoun is a variable bound by a quantifier. Both fall out of one\nmechanism: pronouns are variables, interpreted relative to an **assignment** `g`.\n\n## 9.1 Referential pronouns as free variables\n\nAn indexed pronoun `she_i` denotes, relative to `g`, the individual `g(i)`. When the\nindex is **free** — not bound by anything in the sentence — the denotation depends\nentirely on `g`, which the utterance context supplies. So *She smokes* (\\ref{ref}) has the\n**open** denotation `smoke(g(1))=1`: relative to an assignment mapping 1 to some\nsalient woman, it is true iff that woman smokes.\n\n\\begin{derivation}\n[[she1]]        = g(1)            : e\n[[She smokes]]  = smoke(g(1))=1   : t\n\\end{derivation}\n\nWriting `x` for `g(1)`, the value is the open term `smoke(x)=1` — a proposition with\na free variable, made definite only once the context fixes `g`.\n\n\\ex<ref> She smokes.\n\\xe\n\n\\ex He left.\n\\xe\n\n## 9.2 Co-reference or binding?\n\nNow consider *John blamed himself* (\\ref{cb}). There are **two** LFs that yield the same\ntruth conditions, and the difference matters.\n\n**Co-reference.** *himself* is a referential pronoun `himself_1` whose index the\ncontext maps to John. No movement; the denotation is the open term `blame(j,g(1))=1`,\nwhich is true (given `g(1)=j`) iff John blamed John.\n\n\\begin{derivation}\n[[John blamed himself1]]   = blame(j,g(1))=1    : t      (co-reference: g(1)=j)\n\\end{derivation}\n\n**Binding.** *John* raises, leaving a trace co-indexed with the pronoun; Predicate\nAbstraction binds both. The denotation is the **closed** term `blame(j,j)=1`, with no\ndependence on `g`.\n\n\\begin{derivation}\n[[1 [t1 blamed himself1]]]   = λx . blame(x,x)=1    : <e,t>   (PA)\n[[John 1 [t1 blamed himself1]]] = blame(j,j)=1      : t       (binding)\n\\end{derivation}\n\nFor a **name** antecedent the two LFs are truth-conditionally equivalent, so either\nis available. But a **quantifier** cannot co-refer — it denotes no individual — so\n*Every woman blamed herself* (\\ref{cb}) has **only** the binding LF, giving the bound\nreading `∀x[woman(x)=1 → blame(x,x)=1]`. This asymmetry is the diagnostic for\nbinding.\n\n\\begin{derivation}\n[[Every woman blamed herself]]  = ∀x[woman(x)=1 → blame(x,x)=1]    : t\n\\end{derivation}\n\n\\ex<cb> John blamed himself.\n\\xe\n\n\\ex Every woman blamed herself.\n\\xe\n\n> **Beyond this chapter (§9.3).** When elided material contains a pronoun, the\n> co-reference/binding distinction resurfaces as the **strict/sloppy** ambiguity of\n> VP-ellipsis (*John blamed himself, and Bill did too*). Resolving ellipsis needs an\n> LF-identity mechanism we do not model; it is discussed in the reading only."
+          "markdown": "# Chapter 9 · Bound and referential pronouns\n\nReferential pronouns pick up an individual from context; bound pronouns are\nvariables bound by a quantifier. One mechanism covers both: pronouns are\nvariables, interpreted relative to an assignment `g`. Officially every bracket\nhere is `⟦·⟧^g`, with the superscript suppressed where no confusion arises.\n\n## 9.1 Referential pronouns as free variables\n\n**Pronouns and Traces** (§9.1): relative to `g`, an indexed pronoun `αᵢ` denotes\n`g(i)`. A free index leaves the denotation open, and the utterance context\nsupplies `g` (§9.1.2, the appropriateness condition).\n\nGroup A: writing `x` for `g(1)`, the result is the open term `smoke(x)=1`, made\ndefinite once context fixes `g`.\n\n## 9.2 Co-reference and binding\n\nH&K run §9.2 on *John hates his father*: the possessive pronoun can be bound by\n*John*, or free and co-referential with him under a context fixing `g = [1→John]`,\nand both LFs are fine English. This fragment has no possessives, so the exercises\nsubstitute *John blamed himself* to run the same two derivations. Seam: ch. 10's\nCondition A requires reflexives to be bound, which is bracketed here, and the\nreflexive serves as a compositional stand-in.\n\nOn the co-reference LF there is no movement and the pronoun is free, giving the\nopen term `blame(j,g(1))=1`, true given `g(1)=j`. On the binding LF *John*\nraises and PA binds trace and pronoun together, giving the closed term\n`blame(j,j)=1`, with no dependence on `g`.\n\nGroup B: compose the reflexive as a free pronoun, with the context mapping its\nindex to John.\n\nGroup C: with a name antecedent the two LFs are truth-conditionally equivalent.\nA quantifier denotes no individual, so it cannot co-refer, and *Every woman\nblamed herself* has only the binding LF. That is the diagnostic for binding.\n\nEngine note: under VP-ellipsis the co-reference and binding distinction\nresurfaces as the strict/sloppy ambiguity, which needs an LF-identity condition\nthis engine does not model (§9.3).\n"
         }
       }
     },
@@ -1599,7 +1599,7 @@
         "compose": 1,
         "id": "hk12-intensions",
         "title": "First Steps Towards an Intensional Semantics (§12.1–12.3)",
-        "subtitle": "Heim & Kratzer — opacity, intensions, and Intensional Functional Application",
+        "subtitle": "Heim & Kratzer: opacity, intensions, and Intensional Functional Application",
         "notation": "hk",
         "domain": {
           "multiLetterNames": true,
@@ -1691,8 +1691,8 @@
         },
         "exercises": [
           {
-            "title": "A. Extensional clauses (FA) — §12.1",
-            "instructions": "Each embedded sentence is, by itself, extensional: it denotes a truth value (type t) at the evaluation world w. Compose by Function Application. Predicates carry the world: ⟦loyal⟧^w = λx.loyal(w,x).",
+            "title": "A. Extensional clauses (FA) (§12.1)",
+            "instructions": "Each embedded sentence is extensional by itself, denoting a truth value (type t) at the evaluation world w. Compose by Function Application. Predicates carry the world: ⟦loyal⟧^w = λx.loyal(w,x).",
             "items": [
               {
                 "sentence": "Jan is loyal.",
@@ -1717,8 +1717,8 @@
             ]
           },
           {
-            "title": "B. Attitude reports via IFA — §12.3",
-            "instructions": "An attitude verb wants a PROPOSITION ⟨s,t⟩, but the embedded clause supplies only a truth value t — FA is stuck. Intensional Functional Application (IFA) feeds the verb the clause's INTENSION λw'.⟦clause⟧^w'. The embedded clause is then evaluated at the belief-worlds w'.",
+            "title": "B. Attitude reports via IFA (§12.3)",
+            "instructions": "An attitude verb wants a proposition ⟨s,t⟩, but the embedded clause supplies only a truth value t, so FA is stuck. Intensional Functional Application feeds the verb the clause's intension λw'.⟦clause⟧^w'. The embedded clause is then evaluated at the belief-worlds w'.",
             "items": [
               {
                 "sentence": "Mary believes Jan is loyal.",
@@ -1753,8 +1753,8 @@
             ]
           },
           {
-            "title": "C. Other attitude verbs — §12.3",
-            "instructions": "The same IFA mechanism handles every attitude verb; only the accessibility relation changes (belief, thought, hope). Each quantifies over the worlds compatible with the subject's attitude in w.",
+            "title": "C. Other attitude verbs (§12.3)",
+            "instructions": "The same IFA mechanism handles every attitude verb, with only the accessibility relation changing. Each quantifies over the worlds compatible with the subject's attitude in w. H&K's ch. 12 triple is believe/know/hope; \"think\" is this set's addition on the same pattern.",
             "items": [
               {
                 "sentence": "Mary hopes Jan is happy.",
@@ -1781,7 +1781,7 @@
         ],
         "reading": {
           "format": "latex",
-          "markdown": "# Chapter 12 · First Steps Towards an Intensional Semantics\n\nEverything so far has been **extensional**: a node's denotation is its extension —\nan individual, a truth value, a set. This chapter shows where that breaks down, and\ntakes the first step into **intensions**, relativising interpretation to a possible\nworld `w`. We write `⟦α⟧^w` for the extension of `α` **at `w`**.\n\n## 12.1 Where the extensional semantics breaks down\n\nA core assumption has been that the denotation of a complex node depends only on the\n**extensions** of its parts — so two parts with the same extension are\ninterchangeable. That assumption fails inside *believe*. Take H&K's pair (\\ref{break}):\n\n\\ex<break> Mary believes Jan is loyal.\n\\xe\n\n\\ex Mary believes Dick is deceitful.\n\\xe\n\nSuppose in the actual world Jan is loyal and Dick is deceitful, so `⟦Jan is\nloyal⟧^w = ⟦Dick is deceitful⟧^w = 1` — the two embedded sentences have the **same\nextension**. Extensional FA would then predict the two belief reports have the same\ntruth value. But Mary can believe one without the other: *believe* creates a\n**non-extensional** (opaque) context. What the verb cares about is not the embedded\nclause's truth value but **which worlds it is true in** — its *intension*.\n\n## 12.2 Intensions\n\nThe **intension** of `α` is the function from worlds to its extension at each\nworld: `λw . ⟦α⟧^w`. For a sentence, that is a **proposition** — type `⟨s,t⟩`, a\nfunction from worlds (type `s`) to truth values. The extension stays world-relative,\nso every predicate now carries the evaluation world; in our metalanguage we write it\nas an argument, `loyal(w,x)`, the formalisation of `⟦loyal⟧^w = λx . x is loyal in w`.\n\n\\begin{derivation}\n[[Jan is loyal]]^w   = loyal(w,jn)=1            : t\n(its intension)      = λw' . loyal(w',jn)=1     : <s,t>\n\\end{derivation}\n\n## 12.3 An intensional semantics\n\n**Attitude verbs** denote functions on propositions. Following Hintikka, *believe*\nquantifies over the worlds **compatible with what the subject believes** in `w`\n(the subject's *doxastic alternatives*, `Dox`):\n\n\\begin{derivation}\n[[believes]]^w = λp . λx . ∀w'[ x's belief-worlds in w include w' → p(w')=1 ]   : <<s,t>,<e,t>>\n\\end{derivation}\n\nwritten `λp . λx . ∀w'[Dox(w)(x)(w') → p(w')=1]`. The verb wants a **proposition**\n`⟨s,t⟩`, but the embedded clause supplies only a truth value `⟨t⟩` — so FA is stuck.\nH&K add **one** composition rule to bridge the gap:\n\n**Intensional Functional Application (IFA).** If α is a branching node with daughters\nβ and γ, and `⟦β⟧^w` is a function whose domain contains `λw' . ⟦γ⟧^w'`, then\n`⟦α⟧^w = ⟦β⟧^w(λw' . ⟦γ⟧^w')`.\n\nIFA feeds the verb the **intension** of its complement — formed on the spot by\nabstracting the embedded clause over the world `w'`. Note that this is a *composition\nrule*, not an operator in the tree: H&K deliberately avoid Montague's `^`/`˅` and\nbuild intension-formation into the rule itself. Applying it to *Mary believes Jan is\nloyal* (\\ref{break}):\n\n\\begin{derivation}\n[[believes [Jan is loyal]]]^w  = [[believes]]^w(λw' . loyal(w',jn)=1)            (IFA)\n[[Mary believes Jan is loyal]]^w = ∀w'[Dox(w)(m)(w') → loyal(w',jn)=1]           : t\n\\end{derivation}\n\nThe report is true at `w` iff Jan is loyal in **every** world compatible with what\nMary believes in `w`. Because the embedded clause is now evaluated at the belief\nworlds `w'`, swapping in *Dick is deceitful* — true at the actual `w` but not\nnecessarily at Mary's belief worlds — gives a **different** result. The opacity is\ncaptured.\n\n\\begin{derivation}\n[[Mary believes Dick is deceitful]]^w = ∀w'[Dox(w)(m)(w') → deceitful(w',d)=1]   : t\n\\end{derivation}\n\n> **Notation note.** H&K write the world as a **superscript on the bracket**,\n> `⟦α⟧^w`, and keep the metalanguage extensional. COMPOSE threads the same world as\n> an explicit parameter `w` inside predicates (`loyal(w,x)` for `⟦loyal⟧^w(x)`), and\n> composes intensions with IFA — H&K's actual rule, *not* Montague's `^`/`˅`\n> operators. The matrix world prints as `w`, shifted worlds as `w'`.\n\n> **Beyond these first steps (§12.4).** A full intensional semantics also relativises\n> to **times** and handles intensional transitives (*seek*), de re/de dicto, and more;\n> H&K take only the first step here, and so do we."
+          "markdown": "# Chapter 12 · First steps towards an intensional semantics\n\nEvery denotation so far has been an extension. Chapter 12 shows where that\nbreaks down and relativises interpretation to a possible world, `⟦α⟧^w`.\n\n## 12.1 Where the extensional semantics breaks down\n\nIf composition sees only extensions, co-extensional parts are interchangeable.\nInside *believe* they are not. With Jan loyal and Dick deceitful in the actual\nworld, `⟦Jan is loyal⟧^w` and `⟦Dick is deceitful⟧^w` are both 1, yet Mary can\nbelieve one report and not the other. *Believe* is an opaque context: what\nmatters is which worlds the complement is true in.\n\nGroup A: each embedded sentence is extensional by itself, denoting a truth value\nat the evaluation world. Compose by FA, with predicates carrying the world:\n`⟦loyal⟧^w = λx . loyal(w,x)`.\n\n## 12.2 What to do: intensions\n\nThe intension of `α` is `λw . ⟦α⟧^w`; for a sentence this is a proposition, type\n`⟨s,t⟩`. Names are rigid, so `⟦Jan⟧^w` is Jan at every `w`. Temporal dependence\nis set aside.\n\nEngine note: H&K's official types build only `⟨s,a⟩`, with no bare `Dₛ`; this\nbundle treats `s` as a type so that worlds can be arguments, and writes the world\ninside the predicate, `loyal(w,x)`. The matrix world prints as `w` and shifted\nworlds as `w'`.\n\n## 12.3 An intensional semantics\n\nFollowing Hintikka, `⟦believe⟧` quantifies over the subject's belief-worlds,\ntype `⟨⟨s,t⟩,⟨e,t⟩⟩`: `λp . λx . ∀w'[Dox(w)(x)(w') → p(w')=1]`. The verb wants a\nproposition and the embedded clause supplies `t`, so one new rule is needed.\n\n**IFA** (§12.3): if α is a branching node with daughters β and γ, and `⟦β⟧^w` is\na function whose domain contains `λw' . ⟦γ⟧^w'`, then\n`⟦α⟧^w = ⟦β⟧^w(λw' . ⟦γ⟧^w')`.\n\nIFA is a composition rule, with no operator in the tree. H&K's endnote credits a\nrule of Bittner's as an analogue, and Montague for the type system.\n\nGroup B: IFA feeds the verb the clause's intension, and the embedded clause is\nevaluated at the belief-worlds `w'`. Swapping in *Dick is deceitful* changes the\nresult, which is how opacity is captured.\n\nGroup C: the same mechanism handles every attitude verb, with only the\naccessibility relation changing. Each quantifies over the worlds compatible with\nthe subject's attitude in `w`. H&K's ch. 12 triple is believe/know/hope; *think*\nis this set's addition on the same pattern.\n"
         }
       }
     }
