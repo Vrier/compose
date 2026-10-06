@@ -304,7 +304,7 @@
   "exercises": [
     {
       "title": "A. Believes (IFA)",
-      "instructions": "believes ↝ λp⟨s,t⟩.λx.∀w′[dox(w0)(x,w′) → p(w′)] type ⟨⟨s,t⟩,⟨e,t⟩⟩. The embedded clause has type t (with w0 free); IFA wraps it as λw0.φ to form the ⟨s,t⟩ proposition argument, then FA with the subject. The truth conditions say that the proposition holds across all of the subject's belief worlds.",
+      "instructions": "believes ↝ λp⟨s,t⟩.λx.∀w′[dox(w0)(x,w′) → p(w′)], type ⟨⟨s,t⟩,⟨e,t⟩⟩. The embedded clause has type t, with w0 free; IFA wraps it as λw0.φ to form the ⟨s,t⟩ proposition argument, then FA with the subject. The truth conditions say the proposition holds across all of the subject's belief worlds.",
       "items": [
         {
           "sentence": "Gandalf believes Frodo rides.",
@@ -331,7 +331,7 @@
     },
     {
       "title": "B. Wants (IFA)",
-      "instructions": "wants ↝ λp⟨s,t⟩.λx.∀w′[boul(w0)(x,w′) → p(w′)]. The derivation is identical to believes; only the accessibility relation changes (boul for bouletic/desire instead of dox for doxastic/belief). The proposition holds in all worlds where the agent's desires are fulfilled.",
+      "instructions": "wants ↝ λp⟨s,t⟩.λx.∀w′[boul(w0)(x,w′) → p(w′)]. The derivation is identical to believes, with only the accessibility relation changing (boul for bouletic desire in place of dox for doxastic belief). The proposition holds in all worlds where the agent's desires are fulfilled.",
       "items": [
         {
           "sentence": "Frodo wants Sam to sing.",
@@ -351,7 +351,7 @@
     },
     {
       "title": "C. Stacked intensional operators",
-      "instructions": "Modal adverbs and attitude verbs can nest. \"Necessarily Gandalf believes φ\" applies IFA twice — once for necessarily and once for believes — with the embedded clause's world variable successively abstracted. Notice how the final formula contains two distinct accessible-world quantifiers.",
+      "instructions": "Modal adverbs and attitude verbs nest. \"Necessarily Gandalf believes φ\" applies IFA twice, once for necessarily and once for believes, with the embedded clause's world variable abstracted in turn. The final formula contains two distinct accessible-world quantifiers.",
       "items": [
         {
           "sentence": "Necessarily, Gandalf believes Frodo rides.",

@@ -304,7 +304,7 @@
   "exercises": [
     {
       "title": "A. Intransitive predicates",
-      "instructions": "All predicates now carry the evaluation world w0 as a free parameter. An intransitive sentence \"Frodo rides\" yields ride(w0,f): true in the current world just if Frodo rides in it. Compose by the familiar Function Application.",
+      "instructions": "All predicates now carry the evaluation world w0 as a free parameter. An intransitive sentence \"Frodo rides\" yields ride(w0,f), true in the current world just if Frodo rides in it. Compose by the familiar Function Application.",
       "items": [
         {
           "sentence": "Frodo rides.",
@@ -331,7 +331,7 @@
     },
     {
       "title": "B. Transitive predicates",
-      "instructions": "A two-place verb takes the world w0 as first argument. The object is a definite description \"the ring\" = ιz[ring(w0,z)] — its referent is computed relative to the evaluation world. Compose by FA.",
+      "instructions": "A two-place verb takes the world w0 as first argument. The object is a definite description, \"the ring\" = ιz[ring(w0,z)], whose referent is computed relative to the evaluation world. Compose by FA.",
       "items": [
         {
           "sentence": "Frodo finds the ring.",
@@ -358,7 +358,7 @@
     },
     {
       "title": "C. Quantified subjects",
-      "instructions": "A quantified DP cannot fill the e-type subject slot directly. Raise it to S level (QR), leaving a type-e trace; apply Predicate Abstraction; then FA with the quantifier. The resulting truth conditions universally/existentially quantify over individuals in the evaluation world w0.",
+      "instructions": "A quantified DP cannot fill the e-type subject slot directly. Raise it to S level (QR), leaving a type-e trace; apply Predicate Abstraction, then FA with the quantifier. The resulting truth conditions quantify universally or existentially over individuals in the evaluation world w0.",
       "items": [
         {
           "sentence": "Every hobbit rides.",

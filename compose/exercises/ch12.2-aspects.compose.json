@@ -283,7 +283,7 @@
   "exercises": [
     {
       "title": "A. Past perfect",
-      "instructions": "Stack Tense > Perfect > Asp > vP. PFV builds the event time, PERFECT shifts it before the reference time t1, and PAST fixes t1 before now. \"At dawn\" anchors t1, so the result is type t — no EC. Read it as: before dawn, the sword-forging was already complete.",
+      "instructions": "Stack Tense > Perfect > Asp > vP. PFV builds the event time, PERFECT shifts it before the reference time t1, and PAST fixes t1 before now. \"At dawn\" anchors t1, so the result is type t with no EC. Read it as: before dawn, the sword-forging was already complete.",
       "items": [
         {
           "sentence": "At dawn, Frodo had forged the sword.",
@@ -296,7 +296,7 @@
     },
     {
       "title": "B. Present perfect",
-      "instructions": "Present perfect anchors the reference time to now: the event lies before the moment of speech, but is viewed from now. Close the open time with EC.",
+      "instructions": "Present perfect anchors the reference time to now: the event lies before the moment of speech and is viewed from now. Close the open time with EC.",
       "items": [
         {
           "sentence": "Frodo has forged the sword.",
@@ -309,7 +309,7 @@
     },
     {
       "title": "C. Perfect progressive",
-      "instructions": "The perfect can stack over the progressive: \"has been reading\". PROG makes the event time properly include its reference time t′, PERFECT puts t′ before now, and PRES anchors to now. Close with EC.",
+      "instructions": "The perfect can stack over the progressive, as in \"has been reading\". PROG makes the event time properly include its reference time t′, PERFECT puts t′ before now, and PRES anchors to now. Close with EC.",
       "items": [
         {
           "sentence": "Gandalf has been reading the map.",

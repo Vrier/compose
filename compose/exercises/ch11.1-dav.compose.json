@@ -236,7 +236,7 @@
   "exercises": [
     {
       "title": "A. Intransitive verbs",
-      "instructions": "The subject saturates the individual argument, leaving an event predicate ⟨v,t⟩. Apply EC at the root to existentially bind the event and reach type t.",
+      "instructions": "The subject saturates the individual argument, leaving an event predicate ⟨v,t⟩. Apply EC at the root to bind the event existentially and reach type t.",
       "items": [
         {
           "sentence": "Frodo runs.",
@@ -290,7 +290,7 @@
     },
     {
       "title": "C. Quantified subjects",
-      "instructions": "A quantified subject can't fill the verb's ⟨e,…⟩ slot directly. Quantifier-raise the subject DP, leaving a type-e trace; the trace saturates the verb, then apply EC LOW (at the ⟨v,t⟩ node) so the event closes below the quantifier. Predicate Abstraction over the trace gives an ⟨e,t⟩ predicate the quantifier binds — yielding the narrow-event reading where each individual has its own event.",
+      "instructions": "A quantified subject cannot fill the verb's ⟨e,…⟩ slot directly. Quantifier-raise the subject DP, leaving a type-e trace; the trace saturates the verb, then apply EC at the ⟨v,t⟩ node so the event closes below the quantifier. Predicate Abstraction over the trace gives an ⟨e,t⟩ predicate for the quantifier to bind, which yields the narrow-event reading on which each individual has its own event.",
       "items": [
         {
           "sentence": "Every hobbit runs.",
@@ -317,7 +317,7 @@
     },
     {
       "title": "D. Quantified objects",
-      "instructions": "A quantified object can't fill the verb's object slot directly either. Quantifier-raise the object DP, leaving a type-e trace; the subject and trace saturate the verb, apply EC LOW at the ⟨v,t⟩ node, then Predicate Abstraction lets the object quantifier bind.",
+      "instructions": "A quantified object cannot fill the verb's object slot directly. Quantifier-raise the object DP, leaving a type-e trace; the subject and trace saturate the verb, apply EC at the ⟨v,t⟩ node, then Predicate Abstraction lets the object quantifier bind.",
       "items": [
         {
           "sentence": "Frodo loves every elf.",
@@ -344,7 +344,7 @@
     },
     {
       "title": "E. Two quantifiers",
-      "instructions": "With quantifiers in both positions, raise both DPs. The order of raising fixes the scope; EC stays lowest, so the event always closes under both quantifiers. Derive each target reading.",
+      "instructions": "With quantifiers in both positions, raise both DPs. The order of raising fixes the scope, and EC stays lowest, so the event always closes under both quantifiers. Derive each target reading.",
       "items": [
         {
           "sentence": "Every hobbit loves some elf.",
@@ -374,7 +374,7 @@
     },
     {
       "title": "F. Complex arguments",
-      "instructions": "A definite, possessive or relative-clause DP is type e, so it slots straight into the verb's individual argument. \"the orc\" = ιx[orc(x)]; \"Sam's horse\" = ιy[poss(s,y) ∧ horse(y)]; in the relative clause the trace's event closes by EC and Predicate Abstraction feeds the ι operator. The matrix event closes last.",
+      "instructions": "A definite, possessive or relative-clause DP is type e and slots straight into the verb's individual argument: \"the orc\" is ιx[orc(x)] and \"Sam's horse\" is ιy[poss(s,y) ∧ horse(y)]. In the relative clause the trace's event closes by EC and Predicate Abstraction feeds the ι operator. The matrix event closes last.",
       "items": [
         {
           "sentence": "Aragorn fears the orc.",

@@ -304,7 +304,7 @@
   "exercises": [
     {
       "title": "A. Necessarily (IFA)",
-      "instructions": "necessarily ↝ λp⟨s,t⟩.∀w′[acc(w0)(w′) → p(w′)] has type ⟨⟨s,t⟩,t⟩. Its sister has type t (with w0 free). IFA wraps the sister as λw0.φ before applying necessarily — this is the intension of the embedded clause, a proposition (function from worlds to truth values).",
+      "instructions": "necessarily ↝ λp⟨s,t⟩.∀w′[acc(w0)(w′) → p(w′)] has type ⟨⟨s,t⟩,t⟩. Its sister has type t, with w0 free. IFA wraps the sister as λw0.φ before applying necessarily; this is the intension of the embedded clause, a proposition from worlds to truth values.",
       "items": [
         {
           "sentence": "Necessarily, Frodo rides.",
@@ -331,7 +331,7 @@
     },
     {
       "title": "B. Possibly (IFA)",
-      "instructions": "possibly ↝ λp⟨s,t⟩.∃w′[acc(w0)(w′) ∧ p(w′)] is the existential dual of necessarily. Apply IFA in the same way — the two derivations are identical in structure, only the truth conditions differ: ∃ instead of ∀. Note how possibly does NOT entail the truth of its argument in the actual world.",
+      "instructions": "possibly ↝ λp⟨s,t⟩.∃w′[acc(w0)(w′) ∧ p(w′)] is the existential dual of necessarily. Apply IFA in the same way: the two derivations are identical in structure, and only the truth conditions differ, with ∃ in place of ∀. possibly carries no commitment to the truth of its argument in the actual world.",
       "items": [
         {
           "sentence": "Possibly, Aragorn rests.",
@@ -350,8 +350,8 @@
       ]
     },
     {
-      "title": "C. Modal flavor",
-      "instructions": "Different accessibility relations capture different modal flavors. Deontic accessibility (deon_acc) ranges over worlds compatible with the prevailing rules; metaphysical (meta_acc) ranges over worlds metaphysically possible from here; epistemic (epist_acc) ranges over worlds compatible with what is known. The derivation is identical across flavors; only the accessibility constant changes.",
+      "title": "C. Modal flavour",
+      "instructions": "Different accessibility relations capture different modal flavours. Deontic accessibility (deon_acc) ranges over worlds compatible with the prevailing rules, metaphysical (meta_acc) over worlds metaphysically possible from here, and epistemic (epist_acc) over worlds compatible with what is known. The derivation is identical across flavours, and only the accessibility constant changes.",
       "items": [
         {
           "sentence": "It is obligatory that Frodo guards the gate. (deontic)",

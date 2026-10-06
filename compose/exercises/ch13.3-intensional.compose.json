@@ -324,7 +324,7 @@
     },
     {
       "title": "B. Intensional verb (IFA)",
-      "instructions": "seeks takes a property INTENSION ⟨s,⟨e,t⟩⟩, not an individual. The bare NP \"dragon\" has extension ⟨e,t⟩; IFA wraps it as λw0.λz.dragon(w0,z) before applying seeks. The result seek(w0,f,λw.λz.dragon(w,z)) is true even if no dragon exists in w0 — Frodo merely seeks relief from dragon-lessness (cf. Quine 1956 on unicornlessness).",
+      "instructions": "seeks takes a property intension ⟨s,⟨e,t⟩⟩. The bare NP \"dragon\" has extension ⟨e,t⟩; IFA wraps it as λw0.λz.dragon(w0,z) before applying seeks. The result, seek(w0,f,λw.λz.dragon(w,z)), is true even if no dragon exists in w0 (Quine 1956).",
       "items": [
         {
           "sentence": "Frodo seeks a dragon.",
@@ -343,8 +343,8 @@
       ]
     },
     {
-      "title": "C. Existential import — finds vs. seeks",
-      "instructions": "Compare the two verbs directly. \"Frodo finds a dragon\" requires an actual dragon (QR the DP to get existential quantification over w0-individuals). \"Frodo seeks a dragon\" (IFA) carries no such commitment. Note the different shapes of the truth conditions: existential quantification ∃x vs. application to a property intension seek(w0,f,λw.…).",
+      "title": "C. Existential import: finds and seeks",
+      "instructions": "Compare the two verbs directly. \"Frodo finds a dragon\" requires an actual dragon, so QR the DP to get existential quantification over w0-individuals. \"Frodo seeks a dragon\" (IFA) carries no such commitment. The truth conditions take different shapes: existential quantification ∃x against application to a property intension seek(w0,f,λw.…).",
       "items": [
         {
           "sentence": "Frodo finds a dragon. (existential import — QR the object DP)",

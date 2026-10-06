@@ -2,7 +2,7 @@
   "compose": 1,
   "id": "ch11-conjneg",
   "title": "Conjunction & Negation in Event Semantics (§11.5–11.6)",
-  "subtitle": "The event-predicate fragment of §11.3, applied to VP coordination and sentential negation — and the diagnostics that motivate the continuation approach.",
+  "subtitle": "The event-predicate fragment of §11.3, applied to VP coordination and sentential negation, with the diagnostics that motivate the continuation approach.",
   "domain": {
     "multiLetterNames": true,
     "constants": {
@@ -16,34 +16,151 @@
     }
   },
   "lexicon": [
-    { "words": ["Frodo"], "denotation": "f" },
-    { "words": ["Sam"], "denotation": "s" },
-    { "words": ["Gandalf"], "denotation": "g" },
-    { "words": ["Sauron"], "denotation": "n" },
-    { "words": ["Aragorn"], "denotation": "a" },
-    { "words": ["Boromir"], "denotation": "b" },
-    { "words": ["Spot"], "denotation": "sp" },
-
-    { "words": ["runE"], "denotation": "Le.run(e)" },
-    { "words": ["singE"], "denotation": "Le.sing(e)" },
-    { "words": ["sleepE"], "denotation": "Le.sleep(e)" },
-    { "words": ["smokeE"], "denotation": "Le.smoke(e)" },
-    { "words": ["drinkE"], "denotation": "Le.drink(e)" },
-    { "words": ["barkE"], "denotation": "Le.bark(e)" },
-    { "words": ["loveE"], "denotation": "Le.love(e)" },
-    { "words": ["helpE"], "denotation": "Le.help(e)" },
-    { "words": ["fearE"], "denotation": "Le.fear(e)" },
-
-    { "words": ["Agent"], "denotation": "Lx.Le.agent(e,x)" },
-    { "words": ["Theme"], "denotation": "Lx.Le.theme(e,x)" },
-
-    { "words": ["slowly"], "denotation": "Le.slow(e)" },
-    { "words": ["quickly"], "denotation": "Le.quick(e)" },
-    { "words": ["loudly"], "denotation": "Le.loud(e)" },
-
-    { "words": ["andVP", "and"], "denotation": "LQ.LP.Le.[P(e) & Q(e)]" },
-    { "words": ["notVP"], "denotation": "LP.Le.~P(e)" },
-    { "words": ["not"], "denotation": "Lp.~p" }
+    {
+      "words": [
+        "Frodo"
+      ],
+      "denotation": "f"
+    },
+    {
+      "words": [
+        "Sam"
+      ],
+      "denotation": "s"
+    },
+    {
+      "words": [
+        "Gandalf"
+      ],
+      "denotation": "g"
+    },
+    {
+      "words": [
+        "Sauron"
+      ],
+      "denotation": "n"
+    },
+    {
+      "words": [
+        "Aragorn"
+      ],
+      "denotation": "a"
+    },
+    {
+      "words": [
+        "Boromir"
+      ],
+      "denotation": "b"
+    },
+    {
+      "words": [
+        "Spot"
+      ],
+      "denotation": "sp"
+    },
+    {
+      "words": [
+        "runE"
+      ],
+      "denotation": "Le.run(e)"
+    },
+    {
+      "words": [
+        "singE"
+      ],
+      "denotation": "Le.sing(e)"
+    },
+    {
+      "words": [
+        "sleepE"
+      ],
+      "denotation": "Le.sleep(e)"
+    },
+    {
+      "words": [
+        "smokeE"
+      ],
+      "denotation": "Le.smoke(e)"
+    },
+    {
+      "words": [
+        "drinkE"
+      ],
+      "denotation": "Le.drink(e)"
+    },
+    {
+      "words": [
+        "barkE"
+      ],
+      "denotation": "Le.bark(e)"
+    },
+    {
+      "words": [
+        "loveE"
+      ],
+      "denotation": "Le.love(e)"
+    },
+    {
+      "words": [
+        "helpE"
+      ],
+      "denotation": "Le.help(e)"
+    },
+    {
+      "words": [
+        "fearE"
+      ],
+      "denotation": "Le.fear(e)"
+    },
+    {
+      "words": [
+        "Agent"
+      ],
+      "denotation": "Lx.Le.agent(e,x)"
+    },
+    {
+      "words": [
+        "Theme"
+      ],
+      "denotation": "Lx.Le.theme(e,x)"
+    },
+    {
+      "words": [
+        "slowly"
+      ],
+      "denotation": "Le.slow(e)"
+    },
+    {
+      "words": [
+        "quickly"
+      ],
+      "denotation": "Le.quick(e)"
+    },
+    {
+      "words": [
+        "loudly"
+      ],
+      "denotation": "Le.loud(e)"
+    },
+    {
+      "words": [
+        "andVP",
+        "and"
+      ],
+      "denotation": "LQ.LP.Le.[P(e) & Q(e)]"
+    },
+    {
+      "words": [
+        "notVP"
+      ],
+      "denotation": "LP.Le.~P(e)"
+    },
+    {
+      "words": [
+        "not"
+      ],
+      "denotation": "Lp.~p"
+    }
   ],
   "rules": {
     "composition": {
@@ -52,13 +169,15 @@
       "predicateModification": true,
       "predicateAbstraction": false
     },
-    "typeShifts": ["ec-v"],
+    "typeShifts": [
+      "ec-v"
+    ],
     "quantifierRaising": false
   },
   "exercises": [
     {
-      "title": "A. VP conjunction — one shared event",
-      "instructions": "On the event-predicate approach (§11.3) a VP is a set of events ⟨v,t⟩. Conjunction follows the Partee & Rooth schema instantiated at that type: andVP ↝ λQ.λP.λe.[P(e) ∧ Q(e)], type ⟨⟨v,t⟩,⟨⟨v,t⟩,⟨v,t⟩⟩⟩. The Coord head applies to the right conjunct by FA, then to the left conjunct by FA, giving one event predicate. The Agent head joins by Predicate Modification and Existential Closure binds the single event. Note what this predicts: ONE event that is both a smoking and a drinking.",
+      "title": "A. VP conjunction with one shared event",
+      "instructions": "On the event-predicate approach (§11.3) a VP is a set of events ⟨v,t⟩. Conjunction follows the Partee & Rooth schema at that type: andVP ↝ λQ.λP.λe.[P(e) ∧ Q(e)], type ⟨⟨v,t⟩,⟨⟨v,t⟩,⟨v,t⟩⟩⟩. The Coord head applies to the right conjunct by FA, then to the left conjunct by FA, giving one event predicate. The Agent head joins by Predicate Modification and Existential Closure binds the single event. The prediction is one event that is both a smoking and a drinking.",
       "items": [
         {
           "sentence": "Frodo smoked and drank.",
@@ -84,8 +203,8 @@
       ]
     },
     {
-      "title": "B. Why one event is too strong",
-      "instructions": "Add a manner adverb to each conjunct. Because the single-event entry forces both predicates onto the SAME event, the derivation makes that one event both slow and quick — a near-contradiction. This is the textbook's argument (Exercise 3) that VP-and cannot denote a single shared event; the continuation fragment of §11.4 fixes it by handing each conjunct its own event quantifier.",
+      "title": "B. The single-event prediction",
+      "instructions": "Add a manner adverb to each conjunct. The single-event entry forces both predicates onto the same event, so the derivation makes one event both slow and quick. This is the textbook's argument (Exercise 3) that VP-and cannot denote a single shared event; the continuation fragment of §11.4 hands each conjunct its own event quantifier.",
       "items": [
         {
           "sentence": "Frodo smoked slowly and drank quickly.",
@@ -93,13 +212,13 @@
           "targets": [
             "∃e[agent(e,f) ∧ slow(e) ∧ smoke(e) ∧ quick(e) ∧ drink(e)]"
           ],
-          "note": "One event e is forced to be both slow and quick — the wrong prediction. Contrast with the two-event reading the continuation approach derives (§11.4, group E)."
+          "note": "One event e is forced to be both slow and quick. The continuation approach derives a two-event reading instead (§11.4, group E)."
         }
       ]
     },
     {
-      "title": "C. Negation the naïve way — and why it is too weak",
-      "instructions": "Suppose we negate inside the VP with truth-functional negation: notVP ↝ λP.λe.¬P(e), type ⟨⟨v,t⟩,⟨v,t⟩⟩. It maps the verb's event set to its complement, then the Agent head and Existential Closure apply as usual. The result asserts only that SOME event by the subject is not a barking — true if Spot did anything at all instead of, or in addition to, barking. This is the disastrously weak reading the textbook rejects (tree 70).",
+      "title": "C. VP-internal negation",
+      "instructions": "notVP ↝ λP.λe.¬P(e), type ⟨⟨v,t⟩,⟨v,t⟩⟩, maps the verb's event set to its complement. The Agent head then joins by Predicate Modification and Existential Closure binds the event. The result asserts only that some event by the subject is not a barking, true whenever Spot did anything besides barking. The textbook rejects this reading (tree 70).",
       "items": [
         {
           "sentence": "Spot didn't bark.",
@@ -120,8 +239,8 @@
       ]
     },
     {
-      "title": "D. Negation done right — above the event quantifier",
-      "instructions": "The attested reading needs negation to scope ABOVE the existential event quantifier. Build the clause down to an event predicate ⟨v,t⟩ (Agent by Predicate Modification), apply Existential Closure FIRST to reach a truth value ∃e[…], and only THEN apply sentential negation not ↝ λp.¬p by Function Application. The result, ¬∃e[…], says there is no such event — exactly what \"Spot didn't bark\" means.",
+      "title": "D. Negation above the event quantifier",
+      "instructions": "The attested reading needs negation to scope above the existential event quantifier. Build the clause down to an event predicate ⟨v,t⟩, with the Agent joining by Predicate Modification; apply Existential Closure first to reach a truth value ∃e[…], and only then apply sentential negation not ↝ λp.¬p by Function Application. The result, ¬∃e[…], says there is no such event, which is what \"Spot didn't bark\" means.",
       "items": [
         {
           "sentence": "Spot didn't bark.",

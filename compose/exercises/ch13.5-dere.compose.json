@@ -303,8 +303,8 @@
   },
   "exercises": [
     {
-      "title": "A. De dicto readings (IFA without QR across attitude verb)",
-      "instructions": "For the DE DICTO reading, apply IFA directly to combine the attitude verb with the embedded clause. Any quantifier inside the embedded clause is interpreted inside the belief/desire worlds. There is no commitment to the existence of the object in the actual world w0.",
+      "title": "A. De dicto readings (IFA without QR across the attitude verb)",
+      "instructions": "For the de dicto reading, apply IFA directly to combine the attitude verb with the embedded clause. Any quantifier inside the embedded clause is interpreted inside the belief or desire worlds. There is no commitment to the existence of the object in the actual world w0.",
       "items": [
         {
           "sentence": "Gandalf believes a dragon rides. (de dicto — no particular dragon)",
@@ -330,8 +330,8 @@
       ]
     },
     {
-      "title": "B. De re readings (QR above attitude verb, then IFA)",
-      "instructions": "For the DE RE reading, QR the object DP to sentence level — ABOVE the attitude verb — before applying IFA. The raised DP is interpreted in the evaluation world w0; the trace inside the embedded clause is a rigid individual that the attitude is about. Existential quantification over w0-individuals appears in the OUTERMOST position, outside the attitude.",
+      "title": "B. De re readings (QR above the attitude verb, then IFA)",
+      "instructions": "For the de re reading, QR the object DP to sentence level, above the attitude verb, before applying IFA. The raised DP is interpreted in the evaluation world w0, and the trace inside the embedded clause is a rigid individual that the attitude is about. Existential quantification over w0-individuals appears in outermost position, outside the attitude.",
       "items": [
         {
           "sentence": "Gandalf believes a dragon rides. (de re — a particular actual dragon)",
@@ -358,7 +358,7 @@
     },
     {
       "title": "C. Comparing the readings",
-      "instructions": "Two derivations of the same sentence, two different truth conditions. Compare the de dicto target (object exists in attitude worlds) with the de re target (object exists in actual world w0). A sentence is de re ambiguous when QR of a DP can land either inside or outside the intensional operator's scope.",
+      "instructions": "Two derivations of one sentence, with two different truth conditions. Compare the de dicto target, on which the object exists in the attitude worlds, with the de re target, on which it exists in the actual world w0. A sentence is de re ambiguous when QR of a DP can land either inside or outside the intensional operator's scope.",
       "items": [
         {
           "sentence": "Necessarily, Frodo rides. — apply IFA directly (de dicto / wide scope necessity)",
