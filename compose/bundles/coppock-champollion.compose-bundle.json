@@ -3846,8 +3846,7 @@
                 "sentence": "Galadriel admires her hair.",
                 "tree": "[.S [.DP Galadriel ] [.VP [.V admires ] [.DP [.DP he1 ] [.NP [.Poss 's ] [.NP hair ] ] ] ] ]",
                 "targets": [
-                  "free: admire(w, ιy.poss(x1,y) ∧ hair(y))",
-                  "bound: ∀x[noble(x) → admire(x, ιy.poss(x,y) ∧ hair(y))]"
+                  "admire(w, ιy.poss(x1,y) ∧ hair(y))"
                 ],
                 "reading": {
                   "section": "8.3.3"
