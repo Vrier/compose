@@ -13,8 +13,9 @@
 
    Budget note: ONE server instance runs everything, and the S5 rate limiter
    is live — keep register/auth calls in the budget. The suite makes FIVE
-   auth calls (TA, B, superuser, student login, student auth-refresh);
-   migration 1751700006 (N5) raised *:auth to 8/min, so there are 3 spare —
+   auth calls (TA, B, superuser, student login, student auth-refresh)
+   plus the DACE judge login (6 of 8);
+   migration 1751700006 (N5) raised *:auth to 8/min, so there are 2 spare —
    the N5 my-classes/leave/redeem checks reuse existing tokens and cost no
    auth calls. Register stays 5/min; the rate-limit probe runs LAST.
    =========================================================================== */
@@ -526,6 +527,62 @@ async function main() {
   expect('redeem refuses unpublished versions', r.status === 404, r.status);
   r = await req('GET', '/api/compose/my-classes', { token: TSTU });
   expect('my-classes excludes unpublished versions (N5)', r.json && r.json.classes && r.json.classes.length === 0, r.text.slice(0, 120));
+
+  // DACE — judge accounts (migration 1751700008, dace.pb.js). Register
+  // budget: /api/dace/register has its own 5/min rule. Auth budget: ONE
+  // login (6 of 8). Admin routes read e.auth fresh, so no auth-refresh.
+  r = await req('POST', '/api/collections/invite_codes/records', { token: TS,
+    body: { code: 'DACE-SUITE', note: 'suite judge code', max_uses: 0, used_count: 0, active: true, judge: true } });
+  expect('superuser creates a judge invite code', r.status === 200, r.text.slice(0, 120));
+  r = await req('POST', '/api/compose/register', { body: { email: 'nojudge@suite.org', password: 'nojudgepass12', inviteCode: 'DACE-SUITE' } });
+  contains('judge code is refused by /api/compose/register', r.text, 'Invalid invite code');
+  r = await req('POST', '/api/dace/register', { body: { email: 'j@suite.org', password: 'judgepass1234', inviteCode: 'COMPOSE-INVITE-2026' } });
+  contains('instructor code is refused by /api/dace/register', r.text, 'Invalid judge code');
+  r = await req('POST', '/api/dace/register', { body: { email: 'j@suite.org', password: 'short', inviteCode: 'DACE-SUITE' } });
+  expect('judge register rejects short password', r.status === 400, r.status);
+  r = await req('POST', '/api/dace/register', { body: { email: 'j@suite.org', password: 'judgepass1234', inviteCode: 'DACE-SUITE' } });
+  contains('judge register succeeds with a judge code', r.text, '"ok":true');
+  r = await req('POST', '/api/dace/register', { body: { email: 'j@suite.org', password: 'judgepass1234', inviteCode: 'DACE-SUITE' } });
+  expect('duplicate judge email rejected', r.status === 400, r.status);
+  r = await req('POST', '/api/collections/users/auth-with-password', { body: { identity: 'j@suite.org', password: 'judgepass1234' } });
+  const TJ = r.json && r.json.token, JID = r.json && r.json.record && r.json.record.id;
+  expect('judge logs in', !!TJ, r.text.slice(0, 120));
+  expect('judge record carries judge=true and role=student', r.json && r.json.record && r.json.record.judge === true && r.json.record.role === 'student', r.text.slice(0, 200));
+  expect('judge record is not a DACE admin', r.json && r.json.record && r.json.record.dace_admin === false, r.text.slice(0, 200));
+
+  const jdata = { f: { comp_inf: '1', ecm: '0' }, flags: { ecm: true }, t: { comp_inf: '2026-10-06T10:00:00Z', ecm: '2026-10-06T10:00:05Z' }, sentence: 'They knew that it rained.' };
+  r = await req('POST', '/api/collections/dace_judgements/records', { token: TJ, body: { user: JID, verb: 'know', data: jdata } });
+  const JREC = r.json && r.json.id;
+  expect('judge creates a judgement record', r.status === 200 && !!JREC, r.text.slice(0, 160));
+  r = await req('POST', '/api/collections/dace_judgements/records', { token: TJ, body: { user: JID, verb: 'know', data: jdata } });
+  expect('one record per (judge, verb)', r.status === 400, r.status);
+  r = await req('POST', '/api/collections/dace_judgements/records', { token: TSTU, body: { user: 'stu', verb: 'know', data: jdata } });
+  expect('non-judge cannot create judgements', r.status === 400 || r.status === 403, r.status);
+  r = await req('PATCH', `/api/collections/dace_judgements/records/${JREC}`, { token: TJ, body: { data: Object.assign({}, jdata, { nominal: 'knowledge' }) } });
+  expect('judge updates own record', r.status === 200 && r.json && r.json.data && r.json.data.nominal === 'knowledge', r.text.slice(0, 160));
+  r = await req('GET', '/api/collections/dace_judgements/records', { token: TJ });
+  expect('judge lists own records', r.json && r.json.totalItems === 1, r.text.slice(0, 120));
+  r = await req('GET', '/api/collections/dace_judgements/records', { token: TA });
+  expect('others see no judgements', r.json && r.json.totalItems === 0, r.text.slice(0, 120));
+  r = await req('PATCH', `/api/collections/users/records/${JID}`, { token: TJ, body: { dace_admin: true } });
+  expect('judge cannot self-promote to dace_admin (guard)', r.status === 200 && r.json && r.json.dace_admin === false, r.text.slice(0, 160));
+
+  r = await req('GET', '/api/dace/judges', { token: TJ });
+  expect('/api/dace/judges needs dace_admin', r.status === 403, r.status);
+  r = await req('PATCH', `/api/collections/users/records/${JID}`, { token: TS, body: { dace_admin: true } });
+  expect('superuser grants dace_admin', r.status === 200 && r.json && r.json.dace_admin === true, r.text.slice(0, 160));
+  r = await req('GET', '/api/dace/judges', { token: TJ });
+  const jl = r.json && r.json.judges;
+  expect('/api/dace/judges lists the judge with counts', Array.isArray(jl) && jl.length === 1 && jl[0].email === 'j@suite.org' && jl[0].cells === 2 && jl[0].flagged === 1 && jl[0].records === 1, r.text.slice(0, 200));
+  r = await req('GET', `/api/dace/judges/${JID}/judgements.csv`, { token: TJ, raw: true });
+  expect('per-judge CSV is served as text/csv', r.status === 200 && String(r.headers.get('content-type')).startsWith('text/csv'), r.status + ' ' + r.headers.get('content-type'));
+  expect('per-judge CSV has header + 2 rows', r.text === 'verb,feature,judgement,flagged,judged_at\nknow,comp_inf,1,0,2026-10-06T10:00:00Z\nknow,ecm,0,1,2026-10-06T10:00:05Z\n', JSON.stringify(r.text.slice(0, 200)));
+  r = await req('GET', `/api/dace/judges/${JID}/annotations.json`, { token: TJ });
+  expect('per-judge annotations in sidecar format', r.json && r.json.sentences && r.json.sentences._dace === 'sentences' && r.json.sentences.data.know === 'They knew that it rained.' && r.json.nominals.data.know === 'knowledge', r.text.slice(0, 200));
+  r = await req('GET', `/api/dace/judges/${JID}/judgements.csv`, { token: TSTU, raw: true });
+  expect('CSV route refuses non-admins', r.status === 403, r.status);
+  r = await req('GET', `/api/dace/judges/${VID}/judgements.csv`, { token: TJ, raw: true });
+  expect('CSV route 404s for non-judges', r.status === 404, r.status);
 
   // W6 — rate limiting LAST (burns the register budget on purpose)
   const codes = [];

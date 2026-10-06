@@ -25,6 +25,9 @@ onRecordUpdateRequest((e) => {
     const orig = e.record.original();
     // pin the privilege flag back to its stored value — block self-promotion
     e.record.set('role', orig.getString('role'));
+    // DACE flags (migration 1751700008): same treatment — admin-only.
+    e.record.set('judge', orig.getBool('judge'));
+    e.record.set('dace_admin', orig.getBool('dace_admin'));
     // `verified` is core-protected on the API, but re-assert defensively: a
     // regular user must not flip their own verification either.
     e.record.set('verified', orig.getBool('verified'));

@@ -20,7 +20,8 @@ routerAdd('POST', '/api/compose/register', (e) => {
 
   let code = null;
   try {
-    code = $app.findFirstRecordByFilter('invite_codes', 'code = {:c} && active = true', { c: inviteCode });
+    // judge codes (migration 1751700008) are for /api/dace/register only
+    code = $app.findFirstRecordByFilter('invite_codes', 'code = {:c} && active = true && judge != true', { c: inviteCode });
   } catch (_) { /* not found */ }
   if (!code || (code.getInt('max_uses') > 0 && code.getInt('used_count') >= code.getInt('max_uses'))) {
     return e.json(400, { error: 'Invalid invite code' });
