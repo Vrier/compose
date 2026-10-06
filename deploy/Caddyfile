@@ -1,7 +1,12 @@
 # ===========================================================================
-# COMPOSE — Caddyfile (S7/W8)
-# Installed at /etc/caddy/Caddyfile. Caddy obtains and renews Let's Encrypt
-# certificates automatically for every site listed here.
+# Caddyfile for the whole server (S7/W8; S68 completed it) — installed at
+# /etc/caddy/Caddyfile. Caddy obtains and renews Let's Encrypt certificates
+# automatically for every site listed here.
+#
+# This file is the ONLY source of truth for Caddy on the VPS. It is applied by
+# deploy/apply-caddyfile.sh (fetch + validate + reload, with rollback), never
+# by hand-editing on the server. Four sites live here, so a change for one of
+# them must keep the other three.
 # ===========================================================================
 
 # Personal site — static clone of github.com/Vrier/vrier.github.io at
@@ -13,11 +18,36 @@ tstephen.com {
 
 www.tstephen.com {
 	root * /srv/www
-	file_server
+	file_server {
+		hide .git .github
+	}
 	encode gzip
 }
 
-# COMPOSE — reverse proxy to PocketBase (systemd unit `compose`)
+# Teaching slides — static clone of github.com/Vrier/slides at /srv/slides
+# (that repo's Actions workflow resets it to main on every green push).
+slides.tstephen.com {
+	root * /srv/slides
+	file_server {
+		hide .git .github
+	}
+	encode gzip
+}
+
+# DACE — static: only the committed site/ of the clone at /srv/dace is served.
+# A cron job (installed by Vrier/dace deploy/setup-server.sh) moves the clone
+# to branch "live" every 2 minutes; GitHub Actions moves "live" after npm test.
+# The Judge at /judge/ signs in against compose.tstephen.com (PocketBase).
+dace.tstephen.com {
+	root * /srv/dace/site
+	file_server {
+		hide .git .github
+	}
+	encode gzip
+}
+
+# COMPOSE — reverse proxy to PocketBase (systemd unit `compose`). PocketBase's
+# default CORS (*) lets dace.tstephen.com call /api/ from the browser.
 compose.tstephen.com {
 	# Security headers (S47). HSTS is conservative: ~6 months, NOT preload and
 	# NOT includeSubDomains (tstephen.com is a separate, independently served

@@ -14,8 +14,8 @@
    Budget note: ONE server instance runs everything, and the S5 rate limiter
    is live — keep register/auth calls in the budget. The suite makes FIVE
    auth calls (TA, B, superuser, student login, student auth-refresh)
-   plus the DACE judge login (6 of 8);
-   migration 1751700006 (N5) raised *:auth to 8/min, so there are 2 spare —
+   plus the two DACE judge logins (7 of 8);
+   migration 1751700006 (N5) raised *:auth to 8/min, so there is 1 spare —
    the N5 my-classes/leave/redeem checks reuse existing tokens and cost no
    auth calls. Register stays 5/min; the rate-limit probe runs LAST.
    =========================================================================== */
@@ -583,6 +583,25 @@ async function main() {
   expect('CSV route refuses non-admins', r.status === 403, r.status);
   r = await req('GET', `/api/dace/judges/${VID}/judgements.csv`, { token: TJ, raw: true });
   expect('CSV route 404s for non-judges', r.status === 404, r.status);
+
+  // DACE — agreement across judges (second judge: register #2 on /api/dace/register,
+  // login = auth call 7 of 8)
+  r = await req('POST', '/api/dace/register', { body: { email: 'j2@suite.org', password: 'judgepass1234', inviteCode: 'DACE-SUITE' } });
+  contains('second judge registers', r.text, '"ok":true');
+  r = await req('POST', '/api/collections/users/auth-with-password', { body: { identity: 'j2@suite.org', password: 'judgepass1234' } });
+  const TJ2 = r.json && r.json.token, J2ID = r.json && r.json.record && r.json.record.id;
+  expect('second judge logs in', !!TJ2, r.text.slice(0, 120));
+  r = await req('POST', '/api/collections/dace_judgements/records', { token: TJ2, body: { user: J2ID, verb: 'know', data: { f: { comp_inf: '0', ecm: '0', raising: '1' }, flags: {}, t: {} } } });
+  expect('second judge records know', r.status === 200, r.text.slice(0, 120));
+  r = await req('GET', '/api/dace/agreement', { token: TJ });
+  const ag = r.json || {};
+  expect('agreement: 2 shared cells, 1 agree, 1 disagree', ag.cells_multi === 2 && ag.agree === 1 && ag.disagree === 1, r.text.slice(0, 300));
+  expect('agreement: the disagreement is know/comp_inf 1 vs 0', ag.disagreements && ag.disagreements[0].verb === 'know' && ag.disagreements[0].feature === 'comp_inf' && ag.disagreements[0].values['j@suite.org'] === '1' && ag.disagreements[0].values['j2@suite.org'] === '0', r.text.slice(0, 300));
+  expect('agreement: pairwise 1/2', ag.pairs && ag.pairs.length === 1 && ag.pairs[0].overlap === 2 && ag.pairs[0].agree === 1, r.text.slice(0, 300));
+  r = await req('GET', '/api/dace/agreement.csv', { token: TJ, raw: true });
+  expect('agreement.csv: header + 2 rows, judge columns, agree flag', r.text === 'verb,feature,j2@suite.org,j@suite.org,agree\nknow,comp_inf,0,1,0\nknow,ecm,0,0,1\n', JSON.stringify(r.text.slice(0, 200)));
+  r = await req('GET', '/api/dace/agreement', { token: TJ2 });
+  expect('agreement needs dace_admin', r.status === 403, r.status);
 
   // W6 — rate limiting LAST (burns the register budget on purpose)
   const codes = [];

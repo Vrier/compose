@@ -18,6 +18,11 @@
      request, so a judge's file is always current, however far they are.
    GET  /api/dace/judges/{id}/annotations.json    (dace_admin only)
      That judge's example sentences and nominals, in the DACE sidecar format.
+   GET  /api/dace/agreement                        (dace_admin only)
+     Cells judged by two or more judges: totals, pairwise agreement, and the
+     list of disagreements { verb, feature, values: { <email>: "0"|"1"|"5" } }.
+   GET  /api/dace/agreement.csv                    (dace_admin only)
+     The same cells as CSV: verb, feature, one column per judge, agree (0/1).
 
    Handlers run in isolated VMs: helpers are defined inside each handler.
    =========================================================================== */
@@ -143,4 +148,80 @@ routerAdd('GET', '/api/dace/judges/{id}/annotations.json', (e) => {
     sentences: { _dace: 'sentences', version: 1, data: sentences },
     nominals:  { _dace: 'nominals',  version: 1, data: nominals },
   });
+});
+
+// ---- agreement across judges ------------------------------------------------
+// Both routes build the same table: cell (verb|feature) → { email: value } over
+// every judge with judge = true. Handlers run in isolated VMs, so the builder is
+// repeated inline in each.
+routerAdd('GET', '/api/dace/agreement', (e) => {
+  if (!e.auth) return e.json(401, { error: 'sign in first' });
+  if (!e.auth.getBool('dace_admin')) return e.json(403, { error: 'not a DACE admin' });
+  const dataOf = (r) => { try { const v = r.get('data'); return JSON.parse(typeof v === 'string' ? v : toString(v)) || {}; } catch (_) { return {}; } };
+  const judges = $app.findRecordsByFilter('users', 'judge = true', 'email', 1000, 0);
+  const emails = judges.map((j) => j.getString('email'));
+  const cells = {}; // key → { verb, feature, values: { email: v } }
+  for (const j of judges) {
+    let records = [];
+    try { records = $app.findRecordsByFilter('dace_judgements', 'user = {:u}', '', 2000, 0, { u: j.id }); } catch (_) {}
+    for (const r of records) {
+      const f = dataOf(r).f || {};
+      for (const fk of Object.keys(f)) {
+        const key = r.getString('verb') + '|' + fk;
+        if (!cells[key]) cells[key] = { verb: r.getString('verb'), feature: fk, values: {} };
+        cells[key].values[j.getString('email')] = String(f[fk]);
+      }
+    }
+  }
+  let multi = 0, agree = 0;
+  const disagreements = [];
+  const pair = {}; // "a||b" → { overlap, agree }
+  for (const c of Object.values(cells)) {
+    const es = Object.keys(c.values).sort();
+    if (es.length < 2) continue;
+    multi++;
+    const vals = new Set(es.map((x) => c.values[x]));
+    if (vals.size === 1) agree++; else disagreements.push(c);
+    for (let i = 0; i < es.length; i++) for (let k = i + 1; k < es.length; k++) {
+      const pk = es[i] + '||' + es[k];
+      pair[pk] = pair[pk] || { a: es[i], b: es[k], overlap: 0, agree: 0 };
+      pair[pk].overlap++;
+      if (c.values[es[i]] === c.values[es[k]]) pair[pk].agree++;
+    }
+  }
+  disagreements.sort((x, y) => x.verb < y.verb ? -1 : x.verb > y.verb ? 1 : x.feature < y.feature ? -1 : 1);
+  e.response.header().set('Cache-Control', 'no-store');
+  return e.json(200, { judges: emails, cells_multi: multi, agree, disagree: disagreements.length, pairs: Object.values(pair), disagreements });
+});
+
+routerAdd('GET', '/api/dace/agreement.csv', (e) => {
+  if (!e.auth) return e.json(401, { error: 'sign in first' });
+  if (!e.auth.getBool('dace_admin')) return e.json(403, { error: 'not a DACE admin' });
+  const dataOf = (r) => { try { const v = r.get('data'); return JSON.parse(typeof v === 'string' ? v : toString(v)) || {}; } catch (_) { return {}; } };
+  const q = (s) => { s = String(s == null ? '' : s); return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  const judges = $app.findRecordsByFilter('users', 'judge = true', 'email', 1000, 0);
+  const emails = judges.map((j) => j.getString('email'));
+  const cells = {};
+  for (const j of judges) {
+    let records = [];
+    try { records = $app.findRecordsByFilter('dace_judgements', 'user = {:u}', '', 2000, 0, { u: j.id }); } catch (_) {}
+    for (const r of records) {
+      const f = dataOf(r).f || {};
+      for (const fk of Object.keys(f)) {
+        const key = r.getString('verb') + '|' + fk;
+        if (!cells[key]) cells[key] = { verb: r.getString('verb'), feature: fk, values: {} };
+        cells[key].values[j.getString('email')] = String(f[fk]);
+      }
+    }
+  }
+  const rows = Object.values(cells).filter((c) => Object.keys(c.values).length >= 2)
+    .sort((x, y) => x.verb < y.verb ? -1 : x.verb > y.verb ? 1 : x.feature < y.feature ? -1 : 1);
+  const lines = ['verb,feature,' + emails.map(q).join(',') + ',agree'];
+  for (const c of rows) {
+    const vs = Object.values(c.values);
+    lines.push([q(c.verb), q(c.feature), ...emails.map((em) => q(c.values[em] === undefined ? '' : c.values[em])), new Set(vs).size === 1 ? '1' : '0'].join(','));
+  }
+  e.response.header().set('Cache-Control', 'no-store');
+  e.response.header().set('Content-Disposition', 'attachment; filename="dace_agreement.csv"');
+  return e.blob(200, 'text/csv; charset=utf-8', toBytes(lines.join('\n') + '\n'));
 });

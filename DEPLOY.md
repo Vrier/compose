@@ -195,15 +195,21 @@ Actions tab → the next push shows *test-and-deploy* ending in
 rebuilds, and restarts the `compose` service — it does **not** touch Caddy.
 So changes to `deploy/Caddyfile` (e.g. the S47 security headers:
 `Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options`)
-do NOT take effect on push. After a Caddyfile change, apply it by hand once:
+do NOT take effect on push. `deploy/Caddyfile` is the whole server's config
+(www, slides, dace and compose — S68), so after a change apply it with the
+script, which validates, backs up, reloads, rolls back on failure and checks
+all four sites. From the Hetzner web console, as root (lowercase, no shifted
+symbols — the console drops them):
 
 **[server]**
 
 ```
-cp /srv/compose/deploy/Caddyfile /etc/caddy/Caddyfile
-systemctl reload caddy
-curl -sI https://compose.tstephen.com | grep -i 'strict-transport\|x-frame\|x-content'
+curl -f --location -o /root/caddy-apply.sh raw.githubusercontent.com/vrier/compose/main/deploy/apply-caddyfile.sh
+bash /root/caddy-apply.sh
 ```
+
+Never `cp` the file over by hand: an older copy that lacks the slides or dace
+block takes those sites offline.
 
 ## 10 · Restore drill — perform once now, before real content exists
 
@@ -269,7 +275,8 @@ https://www.tstephen.com; the apex redirects to www. Setup:
 - DNS (Porkbun): A record `www` → 167.233.233.109.
 - `/srv/www` is a clone of the site repo, owned by `compose`.
 - `/etc/caddy/Caddyfile` matches `deploy/Caddyfile` in this repo (apex
-  redirect + www file_server + compose reverse-proxy).
+  redirect + www, slides and dace file_servers with `.git` hidden + compose
+  reverse-proxy); apply with `deploy/apply-caddyfile.sh`.
 - The SITE repo carries its own `.github/workflows/deploy.yml`: every push
   to its main SSHes in as `compose` and fast-forwards `/srv/www`. It uses
   the same `DEPLOY_SSH_KEY` secret as this repo (add it to the site repo's
