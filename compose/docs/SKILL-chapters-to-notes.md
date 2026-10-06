@@ -18,14 +18,29 @@ meaning the COMPOSE solver computes for the trees they build).
 |---|---|
 | `compose/coppock-champollion.pdf` | The textbook (read with the `read_pdf` skill). |
 | `compose/_pdftext.txt` | Pre-extracted plain text of the whole book — grep it for a section number or example sentence to jump to the passage. |
-| `compose/reading/ch6.1-fa.md`, `ch6.2-quant.md` | Reference conversions — copy their voice and density. |
-| `compose/exercises/chX.*.compose.json` | The exercise set this reading pairs with. **Read it first** — its lexicon and section numbers constrain everything you write. |
+| `compose/reading/hk4-definites.md`, `ch7.3-relcl.md` | Reference conversions (the owner-approved pilots, S69/S73). Copy their voice and density. |
+| `compose/exercises/chX.*.compose.json` | The exercise set this reading pairs with. **Read it first**: its lexicon and section numbers constrain everything you write. |
 
-> The textbook is copyrighted. Write **condensed, original prose** in the COMPOSE
-> voice — never paste paragraphs verbatim. You are reproducing the *formal
-> analysis* (types, λ-terms, rules, the book's own example sentences and section
-> numbers), not the book's wording. The two reference readings show the target: a
-> few tight sentences per idea, then the math.
+> **Sourcing (the S22 quote standard; corrected S75).** Quote the source where the
+> wording itself carries the content, and attribute the quote. Rule statements,
+> lexical entries, definitions and the key claims of an argument are quoted
+> verbatim; so is any wording a reader would otherwise take to be ours. What is
+> NOT quoted is condensed signposting and explicitly flagged rendering or engine
+> notes. The rule to follow is "no unsourced paraphrase presented as fact", and
+> the failure mode to avoid is restating the book's argument in our own words as
+> though it were neutral exposition.
+>
+> The textbook is copyrighted, so quotes stay short and carry attribution, and
+> running passages are never reproduced. Earlier versions of this document said
+> "never paste paragraphs verbatim" and "never copy prose", which was read as a
+> ban on quoting at all; that was wrong and is what S65 corrected for the H&K
+> shelf and S74 for the papers shelf.
+>
+> **Density (S69–S74).** A reading is definitions plus brief guidance, around
+> 30–60 lines: terse entries with `§` pointers (no page numbers), one to three
+> guidance lines per exercise group named by group, engine notes as single
+> sentences. No `derivation`, `forest` or `\ex…\xe` blocks, no footnotes, no
+> Beyond-note blockquotes: the exercise set itself carries the derivations.
 
 ---
 
@@ -190,9 +205,20 @@ own line `[^id]: explanation`. All collect into a numbered list at the end.
 - **One idea per section; lead with the type.** State what type the new word is,
   then show it composing. The reading scaffolds *doing* the exercise — it is not a
   re-print of the chapter.
-- **Don't invent content.** No examples, generalizations, or denotations that
+- **Don't invent content.** No examples, generalisations, or denotations that
   aren't in the chapter and reflected in the exercise set.
-- **Condense, paraphrase, attribute ideas, never copy prose.** (See §0.)
+- **Quote where the wording carries the content; attribute every quote.** Rule
+  statements, lexical entries, definitions and the load-bearing claims of an
+  argument are the source's words, not ours. Condense the connective prose around
+  them, and flag rendering/engine deviations explicitly. No unsourced paraphrase
+  presented as fact. (See §0.)
+- **House style applies to the prose that IS ours.** No em-dashes, no "X, not Y"
+  or "rather than" contrasts, no caps-for-emphasis, no first person, no rhetorical
+  nudges ("Notice", "Note that", "Crucially"), no payoff or summary lines; titles
+  and headings name their subject; British spelling. Verbatim quotes keep the
+  source's own wording and spelling, and the papers' defined terms (Krifka's
+  *quantized reference*) are left as the paper spells them. Check with
+  `node scripts/claudism-grep.mjs --readings <key>` before finishing.
 
 ---
 

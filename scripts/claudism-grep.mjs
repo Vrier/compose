@@ -56,17 +56,30 @@ const report = (file, field, label, hits) => {
  * their wording and punctuation is the source's and not ours. Blank quoted
  * spans out before checking, and count them so the exemption stays visible. */
 let quotedSkipped = 0;
-const QUA_TERMS = /\b(?:quantized|quantization|quantizes)\b/g;
+/* Krifka's defined vocabulary, and "simply typed" (the lambda-calculus term, not
+ * the evaluative "simply"). */
+const QUA_TERMS = /\b(?:quantized|quantization|quantizes)\b|\bsimply typed\b/g;
 function deQuote(text) {
   return text
     .replace(/"[^"]{3,}"|“[^”]{3,}”/g, (m) => { quotedSkipped++; return ' '.repeat(m.length); })
     .replace(QUA_TERMS, (m) => ' '.repeat(m.length));
 }
 
+/* Bibliographic data is not ours to respell: a Credits section is a reference
+ * list, and a capitalised -ize/-yze token is part of a work's title ("Generalized
+ * Quantifiers and Natural Language"). Both are exempt from the spelling rule only. */
+function deSource(text) {
+  return text.replace(/\n#{1,3} Credits[\s\S]*$/, '')
+             .replace(/\b[A-Z]\w*(?:ize|ized|izes|izing|ization|yze|yzed)\b/g, (m) => ' '.repeat(m.length));
+}
+
 function scan(file, field, text) {
   if (!text) return;
   const t = deQuote(text);
-  for (const [label, re] of RULES) report(file, field, label, t.match(re) || []);
+  const tSrc = deSource(t);
+  for (const [label, re] of RULES) {
+    report(file, field, label, (label === 'American spelling' ? tSrc : t).match(re) || []);
+  }
   report(file, field, 'caps-emphasis', capsHits(t));
 }
 

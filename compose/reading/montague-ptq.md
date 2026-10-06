@@ -1,24 +1,24 @@
-# Montague's PTQ · A — The Extensional Core
+# Montague's PTQ · A: The Extensional Core
 
-PTQ opens: "The aim of this paper is to present in a rigorous way the syntax
-and semantics of a certain fragment of a certain dialect of English." In the
-fragment every term phrase — a name, a quantifier phrase, a pronoun — is
-translated at one type, the generalized-quantifier type ⟨⟨e,t⟩,t⟩; the
+PTQ opens: "The aim of this paper is to present in a rigorous way the syntax and
+semantics of a certain fragment of a certain dialect of English." In the
+fragment every term phrase (a name, a quantifier phrase, a pronoun) is
+translated at one type, the generalised-quantifier type ⟨⟨e,t⟩,t⟩; the
 worksheet's lexical entries below are PTQ's own translations (rules T1–T2,
 quoted at the point of use, with PTQ's P{x} notation adapted to P(x) and
-intension/extension marks dropped as licensed by his meaning postulates —
-see §6).
+intension/extension marks dropped as licensed by his meaning postulates; see
+§6).
 
-This reading develops the **extensional skeleton** of PTQ. The intensional half —
-the de dicto reading of *seek*, the rising-temperature puzzle — needs functions
-from possible worlds and is noted in §6 but not derived here.
+This reading develops the **extensional skeleton** of PTQ. The intensional half,
+covering the de dicto reading of *seek* and the rising-temperature puzzle, needs
+functions from possible worlds and is noted in §6 but not derived here.
 
 ## 1 Every noun phrase is a quantifier
 
 A name lifts to the set of its properties; PTQ's T1(e): "heₙ translates into
-λP.P{xₙ}" — the same shape, λP.P(j), for lifted names. For determiners,
-T2, quoted (notation adapted): "If ζ ∈ P_CN and ζ translates into ζ′, then
-every ζ translates into λP∀x[ζ′(x) → P{x}]":
+λP.P{xₙ}", the same shape as λP.P(j) for lifted names. For determiners, T2,
+quoted (notation adapted): "If ζ ∈ P_CN and ζ translates into ζ′, then every ζ
+translates into λP∀x[ζ′(x) → P{x}]":
 
 \begin{derivation}
 lift([[John]])    = lambda P.P(j)                       : <<e,t>,t>
@@ -44,16 +44,18 @@ A quantifier subject takes the VP as *its* argument (\ref{npq}):
 
 ## 2 Transitive verbs take quantifier objects
 
-In PTQ a transitive verb does not combine with an individual but with a *quantifier*.
-Its denotation feeds the object quantifier the relation's second slot:
+In PTQ a transitive verb does not combine with an individual but with a
+*quantifier*. Its denotation feeds the object quantifier the relation's second
+slot:
 
 \begin{derivation}
 [[loves]]            = lambda T.lambda x.T(lambda y.love(x,y)) : <<<e,t>,t>,<e,t>>
 [[loves every woman]] = lambda x.forall y[woman(y) -> love(x,y)] : <e,t>
 \end{derivation}
 
-So an in-situ object quantifier automatically takes **narrow scope** (\ref{tv}). A name
-object lifts first, and the truth conditions reduce to the simple relation:
+So an in-situ object quantifier automatically takes **narrow scope** (\ref{tv}).
+A name object lifts first, and the truth conditions reduce to the simple
+relation:
 
 \begin{derivation}
 [[loves Mary]]      = lambda x.love(x,m)     : <e,t>
@@ -79,11 +81,10 @@ object lifts first, and the truth conditions reduce to the simple relation:
 
 ## 3 The verb *be*
 
-One entry covers both identity and predication. PTQ's T1(b), quoted
-(notation adapted, extension marks dropped): "be translates into
-λ𝒫λx.𝒫{ŷ[ˇx = ˇy]}". Montague notes its extensionality need not be
-stipulated: "The reason why the extensionality of be was not explicitly
-assumed is that it can be proved."
+One entry covers both identity and predication. PTQ's T1(b), quoted (notation
+adapted, extension marks dropped): "be translates into λ𝒫λx.𝒫{ŷ[ˇx = ˇy]}".
+Montague notes its extensionality need not be stipulated: "The reason why the
+extensionality of be was not explicitly assumed is that it can be proved."
 
 \begin{derivation}
 [[is]]          = lambda T.lambda x.T(lambda y.x=y)   : <<<e,t>,t>,<e,t>>
@@ -91,8 +92,7 @@ assumed is that it can be proved."
 [[is a man]]    = lambda x.exists z[man(z) & x=z] = lambda x.man(x) : <e,t>
 \end{derivation}
 
-*Bill is Mary* is the identity `j=b`; *Bill is a man* reduces — by the one-point
-law — to the predication `man(j)` (\ref{beids}).
+*Bill is Mary* is the identity `j=b`; *Bill is a man* reduces, by the one-point law, to the predication `man(j)` (\ref{beids}).
 
 \ex<beids> Bill is Mary.
 \xe
@@ -102,8 +102,8 @@ law — to the predication `man(j)` (\ref{beids}).
 
 ## 4 The (Russellian)
 
-T2 continues (notation adapted): "the ζ translates into
-λP∃y[∀x[ζ′(x) ↔ x = y] ∧ P{y}]" — Russell's existence-and-uniqueness:
+T2 continues (notation adapted): "the ζ translates into λP∃y[∀x[ζ′(x) ↔ x = y] ∧
+P{y}]", Russell's existence-and-uniqueness:
 
 \begin{derivation}
 [[the]]      = lambda X.lambda Y.exists x[X(x) & forall y[X(y) -> y=x] & Y(x)] : <<e,t>,<<e,t>,t>>
@@ -117,10 +117,11 @@ There is a man, he is the only man, and he walks (\ref{theman}).
 
 ## 5 Quantifying-in and scope
 
-Surface scope falls out in situ (§2). The **inverse** reading, and de re readings
-generally, come from *quantifying-in*: build an open sentence with a pronoun —
-itself a lifted variable `λP.P(xₙ)` — then let a quantifier bind it. In COMPOSE this
-is Quantifier Raising: move the object to the front, leaving a trace.
+Surface scope falls out in situ (§2). The **inverse** reading, and de re
+readings generally, come from *quantifying-in*: build an open sentence with a
+pronoun, itself a lifted variable `λP.P(xₙ)`, and then let a quantifier bind it.
+In COMPOSE this is Quantifier Raising: move the object to the front, leaving a
+trace.
 
 \begin{derivation}
 [[every man loves a woman]]
@@ -128,8 +129,8 @@ is Quantifier Raising: move the object to the front, leaving a trace.
   inverse (∃ > ∀) : exists y[woman(y) & forall x[man(x) -> love(x,y)]]
 \end{derivation}
 
-The inverse is derived by raising *a woman* over the clause and binding the trace
-(\ref{scope}):
+The inverse is derived by raising *a woman* over the clause and binding the
+trace (\ref{scope}):
 
 \begin{derivation}
 [[every man loves t1]] = forall x[man(x) -> love(x,x1)]            : t
@@ -147,17 +148,17 @@ lambda-bind x1         = lambda x1.forall x[man(x) -> love(x,x1)]  : <e,t>
 
 This worksheet stays inside the extensional core: by Montague's own meaning
 postulates (MP1–MP4), names are rigid, ordinary common nouns and verbs are
-extensional, and the starred (reduced) translations used here are exactly
-what those postulates license. The paper's real subject — *seek*,
-*believe that*, *try to*, *necessarily*, and the temperature puzzle — lives
-in **Part B — The Intensional Fragment**, the companion worksheet on this
-page, which states explicitly how COMPOSE renders Montague's intensional
-logic in Gallin's two-sorted TY2.
+extensional, and the starred (reduced) translations used here are what those
+postulates license. The paper's real subject, covering *seek*, *believe that*,
+*try to*, *necessarily* and the temperature puzzle, lives in **Part B: The
+Intensional Fragment**, the companion worksheet on this page, which states
+explicitly how COMPOSE renders Montague's intensional logic in Gallin's
+two-sorted TY2.
 
 ## Credits
 
-Montague, R. (1973). The proper treatment of quantification in ordinary
-English. In K. J. J. Hintikka et al. (eds.), *Approaches to Natural
-Language*, 221–242. Reidel. Translations quoted from T1–T2 with notation
-adapted as flagged above. Notes text: quotes as marked, plus flagged
-rendering notes; remaining prose is signposting.
+Montague, R. (1973). The proper treatment of quantification in ordinary English.
+In K. J. J. Hintikka et al. (eds.), *Approaches to Natural Language*, 221–242.
+Reidel. Translations quoted from T1–T2 with notation adapted as flagged above.
+Notes text: quotes as marked, plus flagged rendering notes; remaining prose is
+signposting.
