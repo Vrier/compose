@@ -338,7 +338,7 @@
   "exercises": [
     {
       "title": "A. DP coordination (two quantified DPs)",
-      "instructions": "andDP ↝ λT.λU.λX.[T(λz.X(z)) ∧ U(λz.X(z))] takes two GQs (type ⟨⟨e,t⟩,t⟩) and returns a GQ. Place it in a ConjP with the right DP; FA with the left DP gives the coordinated GQ. The result distributes the VP over both DP denotations.",
+      "instructions": "andDP ↝ λT.λU.λX.[T(λz.X(z)) ∧ U(λz.X(z))] takes two generalised quantifiers of type ⟨⟨e,t⟩,t⟩ and returns one. Place it in a ConjP with the right DP; FA with the left DP gives the coordinated quantifier, which distributes the VP over both DP denotations.",
       "items": [
         {
           "sentence": "Every hobbit and some elf ride.",
@@ -357,8 +357,8 @@
       ]
     },
     {
-      "title": "B. Mixed coordination — name + quantifier (Lift required)",
-      "instructions": "A proper name (type e) cannot directly coordinate with a generalized quantifier. First apply the Montague Lift type-shift to the name's DP node, turning e.g. Frodo (type e) into λP.P(f) of type ⟨⟨e,t⟩,t⟩. Then andDP combines the two quantifiers in a ConjP, and the coordinated GQ applies to the VP. Lift the name yourself — there is no pre-lifted entry.",
+      "title": "B. Mixed coordination: name and quantifier",
+      "instructions": "A proper name of type e cannot coordinate directly with a generalised quantifier. Apply the Montague Lift type-shift at the name's DP node, taking Frodo from type e to λP.P(f) of type ⟨⟨e,t⟩,t⟩. andDP then combines the two quantifiers in a ConjP, and the result applies to the VP. Apply Lift yourself; the set has no pre-lifted entry.",
       "items": [
         {
           "sentence": "Frodo and every hobbit ride.",
