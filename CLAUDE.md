@@ -77,6 +77,18 @@ register + redeem + sync progress, never publish `/v/:slug` pages. A worksheet's
 shows "⌗ Code · XXXXXX" + "▦ QR & link"; chapter collections and the
 instructor Full-library rows carry ⌗ code buttons.
 
+**DACE shares this PocketBase.** The Judge at https://dace.tstephen.com/judge/
+(repo Vrier/dace, a static site on another origin) signs its judges in here
+with the SDK. `server/pb_hooks/dace.pb.js` + migration 1751700008 add
+`users.judge` / `users.dace_admin` (pinned by users_guard like `role`),
+`invite_codes.judge` (a judge code: accepted only by `/api/dace/register`,
+refused by `/api/compose/register`) and the `dace_judgements` collection
+(owner-only, judges only). `GET /api/dace/judges` and the per-judge
+`judgements.csv` / `annotations.json` routes need `dace_admin`. To add a judge:
+admin dashboard → invite_codes → new record with `judge` ticked; to let an
+account download the CSVs: tick `dace_admin` on it. The Judge's UI and the
+plan live in Vrier/dace (PLAN.md, "Judge accounts").
+
 Routes: `/` = THE app (demo worksheet + on-demand library, S13/S44);
 `/cc` `/hk` `/papers` + 22 chapter pages + `/editor` = tiny REDIRECT STUBS
 (S44, `<!--compose-stub-->` marker, noindex) → `/?code=<fixed code>` and
