@@ -88,6 +88,7 @@ for (const f of fs.readdirSync(exDir).filter((x) => x.endsWith('.compose.json'))
   const key = f.replace('.compose.json', '');
   if (keys.length && !keys.includes(key)) continue;
   const d = JSON.parse(fs.readFileSync(path.join(exDir, f), 'utf8'));
+  scan(key, 'worksheet.title', d.title);
   scan(key, 'subtitle', d.subtitle);
   for (const ex of d.exercises || []) {
     const g = (ex.title || '?')[0];
