@@ -367,8 +367,8 @@
   },
   "exercises": [
     {
-      "title": "A. Sum-formation (andE — name coordination)",
-      "instructions": "andE ↝ λy.λz.z⊕y (type ⟨e,⟨e,e⟩⟩) takes the right name first, then FA with the left, forming a sum of type e. The result is a new individual — the mereological sum of the two names — that can serve as subject or object of a predicate.",
+      "title": "A. Sum formation with andE",
+      "instructions": "andE ↝ λy.λz.z⊕y, type ⟨e,⟨e,e⟩⟩, takes the right name first, then combines with the left by FA to form a sum of type e. The result is a new individual, the mereological sum of the two names, and serves as subject or object of a predicate.",
       "items": [
         {
           "sentence": "Frodo and Sam (the sum f⊕s).",
@@ -395,7 +395,7 @@
     },
     {
       "title": "B. Parthood (≤)",
-      "instructions": "The parthood relation ≤ holds between an individual and a sum that contains it: f≤f⊕s. In a sentence \"Frodo is part of Frodo and Sam\", derive the sum first via andE, then apply the parthood predicate. The truth conditions contain ≤ directly.",
+      "instructions": "The parthood relation ≤ holds between an individual and a sum that contains it: f≤f⊕s. In \"Frodo is part of Frodo and Sam\", derive the sum first with andE, then apply the parthood predicate. The truth conditions contain ≤ directly.",
       "items": [
         {
           "sentence": "Frodo is part of Frodo and Sam. (f ≤ f⊕s)",
@@ -415,7 +415,7 @@
     },
     {
       "title": "C. Cardinality of sums (|·|)",
-      "instructions": "The cardinality operator |x| counts the atomic parts of an individual: |f⊕s| = 2. The copula \"are\" (λP.P) passes the numeral predicate to the plural subject, which then applies to the sum. Because ⊕ is commutative, associative and idempotent, the parts may be summed in any order — |s⊕f| = 2 is accepted just as readily.",
+      "instructions": "The cardinality operator |x| counts the atomic parts of an individual: |f⊕s| = 2. The copula \"are\" (λP.P) passes the numeral predicate to the plural subject, which applies to the sum. ⊕ is commutative, associative and idempotent, so the parts may be summed in any order and |s⊕f| = 2 is accepted equally.",
       "items": [
         {
           "sentence": "Frodo and Sam are two. (|f⊕s| = 2)",
@@ -435,7 +435,7 @@
     },
     {
       "title": "D. Cardinal numerals as quantifiers",
-      "instructions": "A numeral determiner \"two\" ⇝ λP.λQ.∃x[P(x) ∧ |x|=2 ∧ Q(x)] existentially quantifies over a sum of two atoms that satisfies the pluralized noun (∗) and the predicate. It is type ⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩, a generalized quantifier, and combines with the VP by Function Application.",
+      "instructions": "The numeral determiner \"two\" ⇝ λP.λQ.∃x[P(x) ∧ |x|=2 ∧ Q(x)] quantifies existentially over a sum of two atoms satisfying the pluralised noun (∗) and the predicate. It is type ⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩, a generalised quantifier, and combines with the VP by Function Application.",
       "items": [
         {
           "sentence": "Two hobbits ride.",

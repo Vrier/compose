@@ -4473,7 +4473,7 @@
         "exercises": [
           {
             "title": "A. Sentential coordination (andS / orS)",
-            "instructions": "andS ↝ λq.λp.[p ∧ q] has type ⟨t,⟨t,t⟩⟩. Place and in a ConjP with the right-hand sentence; the result is a ⟨t,t⟩ function that applies to the left sentence by FA. Compare andS and orS — the derivation is identical, only the connective changes.",
+            "instructions": "andS ↝ λq.λp.[p ∧ q], type ⟨t,⟨t,t⟩⟩. Place \"and\" in a ConjP with the right-hand sentence; the result is a ⟨t,t⟩ function that applies to the left sentence by FA. orS has the same derivation with the other connective.",
             "items": [
               {
                 "sentence": "Frodo sings and Gandalf rides.",
@@ -4500,7 +4500,7 @@
           },
           {
             "title": "B. VP coordination (andVP / orVP)",
-            "instructions": "andVP ↝ λQ.λP.λx.[P(x) ∧ Q(x)] has type ⟨⟨e,t⟩,⟨⟨e,t⟩,⟨e,t⟩⟩⟩. The coordinator takes the right VP first, then the left VP, and distributes the subject. VP-coordination gives the same truth conditions as sentential coordination but is more economical: the subject is mentioned once.",
+            "instructions": "andVP ↝ λQ.λP.λx.[P(x) ∧ Q(x)], type ⟨⟨e,t⟩,⟨⟨e,t⟩,⟨e,t⟩⟩⟩. The coordinator takes the right VP first, then the left VP, and distributes the subject. The truth conditions match sentential coordination, with the subject mentioned once.",
             "items": [
               {
                 "sentence": "Frodo rides and sings.",
@@ -4527,7 +4527,7 @@
           },
           {
             "title": "C. Transitive-verb coordination (andV)",
-            "instructions": "andV ↝ λR.λS.λy.λx.[S(y)(x) ∧ R(y)(x)] has type ⟨⟨e,⟨e,t⟩⟩,⟨⟨e,⟨e,t⟩⟩,⟨e,⟨e,t⟩⟩⟩⟩. It coordinates two transitive verbs, sharing BOTH subject and object. The ConjP takes the right V first, then FA with the left V, giving a ⟨e,⟨e,t⟩⟩ that takes its object normally.",
+            "instructions": "andV ↝ λR.λS.λy.λx.[S(y)(x) ∧ R(y)(x)], type ⟨⟨e,⟨e,t⟩⟩,⟨⟨e,⟨e,t⟩⟩,⟨e,⟨e,t⟩⟩⟩⟩. It coordinates two transitive verbs, sharing subject and object. The ConjP takes the right V first, then combines with the left V by FA, giving an ⟨e,⟨e,t⟩⟩ that takes its object normally.",
             "items": [
               {
                 "sentence": "Frodo carries and guards the ring.",
@@ -4546,8 +4546,8 @@
             ]
           },
           {
-            "title": "D. Mixed-type coordination & the ⊓ schema (Exercises 5–6)",
-            "instructions": "All the entries above share a pattern: each has ∧ (or ∨) at its core, and each operates on a type ending in t. The book generalizes them with a single recursive operator ⊓ (and ⊔ for or), defined in (16): ⊓⟨τ,⟨τ,τ⟩⟩ = λqλp.p∧q if τ=t, else λXλYλZ.⊓(X(Z))(Y(Z)). — ITEM 1 (Ex 5): coordinate two type-e names with andDP. Each name must first be raised to a quantifier ⟨⟨e,t⟩,t⟩ with the Montague Lift type-shifter (apply it once on each conjunct), so Frodo ⇝ λP.P(f). — ITEM 2 (Ex 6): genAnd is ⊓ specialized to the VP type ⟨e,t⟩: plugging τ=⟨e,t⟩ into (16) gives λXλYλZ.⊓⟨t,⟨t,t⟩⟩(X(Z))(Y(Z)), and the base case ⊓⟨t,⟨t,t⟩⟩ = λqλp.p∧q. Compose genAnd with two VPs and REDUCE — it collapses to exactly the andVP entry from group B.",
+            "title": "D. Mixed-type coordination and the ⊓ schema (Exercises 5–6)",
+            "instructions": "Each entry above has ∧ (or ∨) at its core and operates on a type ending in t. The book generalises them with one recursive operator ⊓ (and ⊔ for or), defined at (16): ⊓⟨τ,⟨τ,τ⟩⟩ = λqλp.p∧q if τ=t, else λXλYλZ.⊓(X(Z))(Y(Z)). Item 1 (Exercise 5) coordinates two type-e names with andDP; raise each conjunct to a quantifier ⟨⟨e,t⟩,t⟩ with the Montague Lift type-shifter first, so Frodo ⇝ λP.P(f). Item 2 (Exercise 6): genAnd is ⊓ at the VP type ⟨e,t⟩, so (16) gives λXλYλZ.⊓⟨t,⟨t,t⟩⟩(X(Z))(Y(Z)) with base case ⊓⟨t,⟨t,t⟩⟩ = λqλp.p∧q. Compose genAnd with two VPs and reduce; the result is the andVP entry from group B.",
             "items": [
               {
                 "sentence": "Frodo and Sam smoke. (Ex 5 — lift each conjunct)",
@@ -4911,7 +4911,7 @@
         "exercises": [
           {
             "title": "A. DP coordination (two quantified DPs)",
-            "instructions": "andDP ↝ λT.λU.λX.[T(λz.X(z)) ∧ U(λz.X(z))] takes two GQs (type ⟨⟨e,t⟩,t⟩) and returns a GQ. Place it in a ConjP with the right DP; FA with the left DP gives the coordinated GQ. The result distributes the VP over both DP denotations.",
+            "instructions": "andDP ↝ λT.λU.λX.[T(λz.X(z)) ∧ U(λz.X(z))] takes two generalised quantifiers of type ⟨⟨e,t⟩,t⟩ and returns one. Place it in a ConjP with the right DP; FA with the left DP gives the coordinated quantifier, which distributes the VP over both DP denotations.",
             "items": [
               {
                 "sentence": "Every hobbit and some elf ride.",
@@ -4930,8 +4930,8 @@
             ]
           },
           {
-            "title": "B. Mixed coordination — name + quantifier (Lift required)",
-            "instructions": "A proper name (type e) cannot directly coordinate with a generalized quantifier. First apply the Montague Lift type-shift to the name's DP node, turning e.g. Frodo (type e) into λP.P(f) of type ⟨⟨e,t⟩,t⟩. Then andDP combines the two quantifiers in a ConjP, and the coordinated GQ applies to the VP. Lift the name yourself — there is no pre-lifted entry.",
+            "title": "B. Mixed coordination: name and quantifier",
+            "instructions": "A proper name of type e cannot coordinate directly with a generalised quantifier. Apply the Montague Lift type-shift at the name's DP node, taking Frodo from type e to λP.P(f) of type ⟨⟨e,t⟩,t⟩. andDP then combines the two quantifiers in a ConjP, and the result applies to the VP. Apply Lift yourself; the set has no pre-lifted entry.",
             "items": [
               {
                 "sentence": "Frodo and every hobbit ride.",
@@ -5331,8 +5331,8 @@
         },
         "exercises": [
           {
-            "title": "A. Sum-formation (andE — name coordination)",
-            "instructions": "andE ↝ λy.λz.z⊕y (type ⟨e,⟨e,e⟩⟩) takes the right name first, then FA with the left, forming a sum of type e. The result is a new individual — the mereological sum of the two names — that can serve as subject or object of a predicate.",
+            "title": "A. Sum formation with andE",
+            "instructions": "andE ↝ λy.λz.z⊕y, type ⟨e,⟨e,e⟩⟩, takes the right name first, then combines with the left by FA to form a sum of type e. The result is a new individual, the mereological sum of the two names, and serves as subject or object of a predicate.",
             "items": [
               {
                 "sentence": "Frodo and Sam (the sum f⊕s).",
@@ -5359,7 +5359,7 @@
           },
           {
             "title": "B. Parthood (≤)",
-            "instructions": "The parthood relation ≤ holds between an individual and a sum that contains it: f≤f⊕s. In a sentence \"Frodo is part of Frodo and Sam\", derive the sum first via andE, then apply the parthood predicate. The truth conditions contain ≤ directly.",
+            "instructions": "The parthood relation ≤ holds between an individual and a sum that contains it: f≤f⊕s. In \"Frodo is part of Frodo and Sam\", derive the sum first with andE, then apply the parthood predicate. The truth conditions contain ≤ directly.",
             "items": [
               {
                 "sentence": "Frodo is part of Frodo and Sam. (f ≤ f⊕s)",
@@ -5379,7 +5379,7 @@
           },
           {
             "title": "C. Cardinality of sums (|·|)",
-            "instructions": "The cardinality operator |x| counts the atomic parts of an individual: |f⊕s| = 2. The copula \"are\" (λP.P) passes the numeral predicate to the plural subject, which then applies to the sum. Because ⊕ is commutative, associative and idempotent, the parts may be summed in any order — |s⊕f| = 2 is accepted just as readily.",
+            "instructions": "The cardinality operator |x| counts the atomic parts of an individual: |f⊕s| = 2. The copula \"are\" (λP.P) passes the numeral predicate to the plural subject, which applies to the sum. ⊕ is commutative, associative and idempotent, so the parts may be summed in any order and |s⊕f| = 2 is accepted equally.",
             "items": [
               {
                 "sentence": "Frodo and Sam are two. (|f⊕s| = 2)",
@@ -5399,7 +5399,7 @@
           },
           {
             "title": "D. Cardinal numerals as quantifiers",
-            "instructions": "A numeral determiner \"two\" ⇝ λP.λQ.∃x[P(x) ∧ |x|=2 ∧ Q(x)] existentially quantifies over a sum of two atoms that satisfies the pluralized noun (∗) and the predicate. It is type ⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩, a generalized quantifier, and combines with the VP by Function Application.",
+            "instructions": "The numeral determiner \"two\" ⇝ λP.λQ.∃x[P(x) ∧ |x|=2 ∧ Q(x)] quantifies existentially over a sum of two atoms satisfying the pluralised noun (∗) and the predicate. It is type ⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩, a generalised quantifier, and combines with the VP by Function Application.",
             "items": [
               {
                 "sentence": "Two hobbits ride.",
@@ -5801,7 +5801,7 @@
         "exercises": [
           {
             "title": "A. Plural predicate (∗P)",
-            "instructions": "The plural noun \"hobbits\" denotes ∗hobbit of type ⟨e,t⟩. It is true of any individual that is either a hobbit or a sum of hobbits. Build the NP and check its type — it should be ⟨e,t⟩, same as the singular \"hobbit\".",
+            "instructions": "The plural noun \"hobbits\" denotes ∗hobbit, type ⟨e,t⟩, true of any hobbit and of any sum of hobbits. Build the NP and check its type: ⟨e,t⟩, as for the singular \"hobbit\".",
             "items": [
               {
                 "sentence": "hobbits (∗hobbit)",
@@ -5828,7 +5828,7 @@
           },
           {
             "title": "B. Plural definite (theSUPR)",
-            "instructions": "The plural definite \"the hobbits\" uses the supremum iota: ιx.[∗hobbit(x) ∧ ∀y[∗hobbit(y)→y≤x]] — the maximal sum of all hobbits. theSUPR ↝ λX.ιx.[X(x) ∧ ∀y[X(y)→y≤x]] takes the plural predicate (∗hobbit) and returns its supremum — an individual of type e.",
+            "instructions": "The plural definite \"the hobbits\" uses the supremum iota, ιx.[∗hobbit(x) ∧ ∀y[∗hobbit(y)→y≤x]], the maximal sum of all hobbits. theSUPR ↝ λX.ιx.[X(x) ∧ ∀y[X(y)→y≤x]] takes the plural predicate ∗hobbit and returns its supremum, an individual of type e.",
             "items": [
               {
                 "sentence": "the hobbits",
@@ -5848,7 +5848,7 @@
           },
           {
             "title": "C. Plural definite as subject",
-            "instructions": "A plural definite description is a type-e individual (the maximal sum). Apply it as a subject to a VP by FA — the VP predicate holds of the entire sum, expressing a collective or distributive claim depending on the predicate.",
+            "instructions": "A plural definite description is a type-e individual, the maximal sum. Apply it as a subject to a VP by FA. The VP predicate holds of the entire sum, giving a collective or a distributive claim according to the predicate.",
             "items": [
               {
                 "sentence": "The hobbits ride.",
@@ -5868,7 +5868,7 @@
           },
           {
             "title": "D. The plural morpheme -s (Exercise 8)",
-            "instructions": "Instead of treating \"singers\" as an unanalyzed starred predicate, derive it compositionally. The plural morpheme is -s ⇝ λP.∗P (entry 30): it takes a singular noun and returns its algebraic closure. Build the noun by composing [.N singer ] with [.Pl -s ] via Function Application. For coordinated proper names, use andE (λyλz.z⊕y) to form the sum, and treat \"are\"/\"is\" as the identity function λP.P. These reproduce the book's (31) and (32b).",
+            "instructions": "Derive \"singers\" compositionally. The plural morpheme -s ⇝ λP.∗P (entry 30) takes a singular noun and returns its algebraic closure. Build the noun by composing [.N singer ] with [.Pl -s ] by Function Application. For coordinated proper names use andE (λyλz.z⊕y) to form the sum, and treat \"are\" and \"is\" as the identity function λP.P. These reproduce the book's (31) and (32b).",
             "items": [
               {
                 "sentence": "singers ( [singer -s] = ∗singer )",
@@ -5901,8 +5901,8 @@
             ]
           },
           {
-            "title": "E. theSUM — the sum analysis of plural the (Exercise 10)",
-            "instructions": "Before the supremum analysis, the book first tries treating plural the as the generalized sum: theSUM ⇝ λP.⊕P (entry 33), where ⊕P is the sum of all the P's (type e). For \"the singers\" this gives the right answer — the maximal singer-sum. But notice the second item: with \"two singers\", theSUM sums up ALL the two-singer pluralities, collapsing them back to the total sum — so \"theSUM two singers\" wrongly denotes the sum of all singers, not a pair. This is exactly why the book replaces theSUM with theSUPR. (Here two ⇝ λx.card(x)=2 combines with singers by Predicate Modification.)",
+            "title": "E. theSUM: the sum analysis of plural the (Exercise 10)",
+            "instructions": "Before the supremum analysis the book tries plural \"the\" as the generalised sum: theSUM ⇝ λP.⊕P (entry 33), where ⊕P is the sum of all the P's, type e. For \"the singers\" this gives the maximal singer-sum. In the second item, two ⇝ λx.card(x)=2 combines with singers by Predicate Modification, and theSUM then sums every two-singer plurality, so \"theSUM two singers\" denotes the sum of all singers. The book replaces theSUM with theSUPR on this ground.",
             "items": [
               {
                 "sentence": "theSUM singers met.",
@@ -5922,7 +5922,7 @@
           },
           {
             "title": "F. The silent determiner ∅D (Exercise 9)",
-            "instructions": "Bare plurals like \"Two singers met\" have no overt determiner, but combine with the VP like a quantifier. The book posits a silent determiner with existential-quantifier semantics: ∅D ⇝ λPλP'.∃x[P(x) ∧ P'(x)] (Exercise 9). Include the ∅D node explicitly in the tree. \"two singers\" is formed by Predicate Modification, then ∅D binds it existentially.",
+            "instructions": "Bare plurals like \"Two singers met\" have no overt determiner and combine with the VP like a quantifier. The book posits a silent determiner with existential-quantifier semantics: ∅D ⇝ λPλP'.∃x[P(x) ∧ P'(x)] (Exercise 9). Include the ∅D node explicitly in the tree. \"Two singers\" is formed by Predicate Modification, and ∅D then binds it existentially.",
             "items": [
               {
                 "sentence": "Two singers met.",
@@ -6304,7 +6304,7 @@
         "exercises": [
           {
             "title": "A. Cumulative predicate applied to plural sums",
-            "instructions": "The cumulative verb is the relational star ∗carry — the cumulative closure of the carry relation. ∗carry(X,Y) holds of two sums X and Y when X and Y can be divided into parts that pair up under carry, so every part of X carries some part of Y and vice versa. The verb is λy.λx.∗carry(x,y); the star operator now applies to a two-place relation ⟨e,⟨e,t⟩⟩, just as it applies to a one-place predicate ⟨e,t⟩ in the plural nouns. Build the sentence with theSUPR-formed plural definites as subject and object.",
+            "instructions": "The cumulative verb is the relational star ∗carry, the cumulative closure of the carry relation. ∗carry(X,Y) holds of two sums when they divide into parts that pair up under carry, so every part of X carries some part of Y and conversely. The verb is λy.λx.∗carry(x,y), with the star applying to a two-place relation ⟨e,⟨e,t⟩⟩ as it applies to a one-place predicate ⟨e,t⟩ in the plural nouns. Build the sentence with theSUPR-formed plural definites as subject and object.",
             "items": [
               {
                 "sentence": "The hobbits carried the rings. (cumulative)",
@@ -6323,8 +6323,8 @@
             ]
           },
           {
-            "title": "B. Distributive vs. cumulative contrast",
-            "instructions": "\"Every hobbit carried every ring\" (distributive — every individual to every individual) vs. \"The hobbits carried the rings\" (cumulative — sums to sums). Build both and compare. The distributive reading uses every+every and gives ∀x∀y[…carry(x,y)]; the cumulative reading uses theSUPR+theSUPR and the relational star ∗carry over the two plural sums.",
+            "title": "B. Distributive and cumulative readings",
+            "instructions": "The distributive reading of \"Every hobbit carried every ring\" uses every with every and gives ∀x∀y[…carry(x,y)], relating individuals to individuals. The cumulative reading of \"The hobbits carried the rings\" uses theSUPR with theSUPR and the relational star ∗carry over the two plural sums. Build each.",
             "items": [
               {
                 "sentence": "Every hobbit carried every ring. (distributive)",
@@ -6352,7 +6352,7 @@
         "compose": 1,
         "id": "ch10-fragment",
         "title": "10.5 The Full Fragment (L∗ with starred verbs)",
-        "subtitle": "The book's §10.5.4 translations: once the domain has sums, every verb is starred (holds distributively of sums). Capstone, incl. cumulative readings via the relational star.",
+        "subtitle": "The book's §10.5.4 translations: once the domain has sums, every verb is starred and holds distributively of sums. Capstone, including cumulative readings via the relational star.",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -6556,8 +6556,8 @@
         },
         "exercises": [
           {
-            "title": "A. Why verbs are starred — distributivity over sums",
-            "instructions": "Once plural individuals live in the domain, a verb like smoke must hold of a SUM whenever it holds of each atom. So the fragment stars every verb: smokes ↝ λx.∗smoke(x) (entry §10.5.4). Form the plural subject with andE (λyλz.z⊕y), which sums two entities, and apply the starred verb. ∗smoke(mx⊕l) is true exactly when both Maxine and LaVerne smoke — the distributive reading falls out of the star, with no extra distributivity operator.",
+            "title": "A. Starred verbs and distributivity over sums",
+            "instructions": "Once plural individuals live in the domain, a verb like smoke holds of a sum whenever it holds of each atom, so the fragment stars every verb: smokes ↝ λx.∗smoke(x) (§10.5.4). Form the plural subject with andE (λyλz.z⊕y), which sums two entities, and apply the starred verb. ∗smoke(mx⊕l) is true just in case Maxine and LaVerne both smoke, so the star delivers the distributive reading with no separate distributivity operator.",
             "items": [
               {
                 "sentence": "Maxine and LaVerne smoke.",
@@ -6577,7 +6577,7 @@
           },
           {
             "title": "B. Starred transitive verbs",
-            "instructions": "Transitive verbs are starred too: caught ↝ λyλx.∗catch(x,y), own ↝ λyλx.∗own(x,y) (§10.5.4). The object is taken first, then the subject, giving a flat ∗catch(subject, object). With singular arguments the star is vacuous, but the entry is uniform across singular and plural.",
+            "instructions": "Transitive verbs are starred too: caught ↝ λyλx.∗catch(x,y), own ↝ λyλx.∗own(x,y) (§10.5.4). The object is taken first, then the subject, giving a flat ∗catch(subject, object). With singular arguments the star is vacuous, and the entry is uniform across singular and plural.",
             "items": [
               {
                 "sentence": "Maxine caught Sue.",
@@ -6597,7 +6597,7 @@
           },
           {
             "title": "C. The plural morpheme with a starred verb",
-            "instructions": "Combine the pieces: the plural noun is [.N singer ] + [.Pl -s ] (-s ↝ λP.∗P), the silent ∅D ↝ λPλQ.∃x[P(x) ∧ Q(x)] turns it into a quantifier, and the starred verb supplies the predicate. \"Some singers smoke\" existentially quantifies over singer-sums that smoke.",
+            "instructions": "Combine the pieces: the plural noun is [.N singer ] + [.Pl -s ] (-s ↝ λP.∗P), the silent ∅D ↝ λPλQ.∃x[P(x) ∧ Q(x)] turns it into a quantifier, and the starred verb supplies the predicate. \"Some singers smoke\" quantifies existentially over singer-sums that smoke.",
             "items": [
               {
                 "sentence": "Some singers smoke.",
@@ -6610,7 +6610,7 @@
           },
           {
             "title": "D. Cumulative readings via the relational star (Exercise 41)",
-            "instructions": "The relational star generalizes ∗ to two-place predicates: ∗own holds of a pair of sums when they divide into atom-pairs each in the own-relation (entries 39–41). \"Maxine, LaVerne and Patty own four toothbrushes\" gets a CUMULATIVE reading: a total of four toothbrushes are collectively owned. The object \"four toothbrushes\" is ∅D(four ⊓ ∗toothbrush), a quantifier; let it take scope over the starred verb (apply RaiseO to the verb so the object combines in situ, or raise the object). The result is the book's (41).",
+            "instructions": "The relational star generalises ∗ to two-place predicates: ∗own holds of a pair of sums when they divide into atom-pairs each standing in the own-relation (entries 39–41). \"Maxine, LaVerne and Patty own four toothbrushes\" has a cumulative reading, on which four toothbrushes are owned in total. The object \"four toothbrushes\" is ∅D(four ⊓ ∗toothbrush), a quantifier; let it take scope over the starred verb, either by applying RaiseO to the verb so the object combines in situ or by raising the object. The result is the book's (41).",
             "items": [
               {
                 "sentence": "Maxine, LaVerne and Patty own four toothbrushes. (cumulative)",

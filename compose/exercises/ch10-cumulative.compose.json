@@ -363,7 +363,7 @@
   "exercises": [
     {
       "title": "A. Cumulative predicate applied to plural sums",
-      "instructions": "The cumulative verb is the relational star ∗carry — the cumulative closure of the carry relation. ∗carry(X,Y) holds of two sums X and Y when X and Y can be divided into parts that pair up under carry, so every part of X carries some part of Y and vice versa. The verb is λy.λx.∗carry(x,y); the star operator now applies to a two-place relation ⟨e,⟨e,t⟩⟩, just as it applies to a one-place predicate ⟨e,t⟩ in the plural nouns. Build the sentence with theSUPR-formed plural definites as subject and object.",
+      "instructions": "The cumulative verb is the relational star ∗carry, the cumulative closure of the carry relation. ∗carry(X,Y) holds of two sums when they divide into parts that pair up under carry, so every part of X carries some part of Y and conversely. The verb is λy.λx.∗carry(x,y), with the star applying to a two-place relation ⟨e,⟨e,t⟩⟩ as it applies to a one-place predicate ⟨e,t⟩ in the plural nouns. Build the sentence with theSUPR-formed plural definites as subject and object.",
       "items": [
         {
           "sentence": "The hobbits carried the rings. (cumulative)",
@@ -382,8 +382,8 @@
       ]
     },
     {
-      "title": "B. Distributive vs. cumulative contrast",
-      "instructions": "\"Every hobbit carried every ring\" (distributive — every individual to every individual) vs. \"The hobbits carried the rings\" (cumulative — sums to sums). Build both and compare. The distributive reading uses every+every and gives ∀x∀y[…carry(x,y)]; the cumulative reading uses theSUPR+theSUPR and the relational star ∗carry over the two plural sums.",
+      "title": "B. Distributive and cumulative readings",
+      "instructions": "The distributive reading of \"Every hobbit carried every ring\" uses every with every and gives ∀x∀y[…carry(x,y)], relating individuals to individuals. The cumulative reading of \"The hobbits carried the rings\" uses theSUPR with theSUPR and the relational star ∗carry over the two plural sums. Build each.",
       "items": [
         {
           "sentence": "Every hobbit carried every ring. (distributive)",

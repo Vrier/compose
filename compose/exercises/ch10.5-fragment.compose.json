@@ -2,7 +2,7 @@
   "compose": 1,
   "id": "ch10-fragment",
   "title": "10.5 The Full Fragment (L∗ with starred verbs)",
-  "subtitle": "The book's §10.5.4 translations: once the domain has sums, every verb is starred (holds distributively of sums). Capstone, incl. cumulative readings via the relational star.",
+  "subtitle": "The book's §10.5.4 translations: once the domain has sums, every verb is starred and holds distributively of sums. Capstone, including cumulative readings via the relational star.",
   "domain": {
     "multiLetterNames": true,
     "constants": {
@@ -16,38 +16,181 @@
     }
   },
   "lexicon": [
-    { "words": ["Maxine"], "denotation": "mx" },
-    { "words": ["LaVerne"], "denotation": "l" },
-    { "words": ["Patty"], "denotation": "pt" },
-    { "words": ["John"], "denotation": "j" },
-    { "words": ["Sue"], "denotation": "su" },
-    { "words": ["Mary"], "denotation": "my" },
-
-    { "words": ["smokes", "smoke"], "denotation": "Lx.*smoke(x)" },
-    { "words": ["drinks", "drink"], "denotation": "Lx.*drink(x)" },
-
-    { "words": ["caught", "catch"], "denotation": "Ly.Lx.*catch(x,y)" },
-    { "words": ["ate", "eat"], "denotation": "Ly.Lx.*eat(x,y)" },
-    { "words": ["own", "owns"], "denotation": "Ly.Lx.*own(x,y)" },
-
-    { "words": ["two"], "denotation": "Lx.card(x)=2" },
-    { "words": ["three"], "denotation": "Lx.card(x)=3" },
-    { "words": ["four"], "denotation": "Lx.card(x)=4" },
-
-    { "words": ["singer"], "denotation": "singer" },
-    { "words": ["toothbrush"], "denotation": "toothbrush" },
-    { "words": ["fish"], "denotation": "fish" },
-
-    { "words": ["-s", "PL"], "denotation": "LP.*P" },
-    { "words": ["andE", "andSUM"], "denotation": "Ly.Lz.z⊕y" },
-    { "words": ["andS"], "denotation": "Lq.Lp.[p & q]" },
-    { "words": ["orS"], "denotation": "Lq.Lp.[p ∨ q]" },
-    { "words": ["andVP"], "denotation": "LY.LX.Lx.[X(x) & Y(x)]" },
-    { "words": ["andV"], "denotation": "LR.LS.Ly.Lx.[S(y)(x) & R(y)(x)]" },
-    { "words": ["is", "are", "a", "be"], "denotation": "LP.P" },
-    { "words": ["the", "theSUPR"], "denotation": "LP.Iz.[P(z) & Ax[P(x) -> x≤z]]" },
-    { "words": ["∅D", "emptyD"], "denotation": "LP.LQ.Ex[P(x) & Q(x)]" },
-    { "words": ["some", "Some"], "denotation": "LX.LY.Ex[X(x) & Y(x)]" }
+    {
+      "words": [
+        "Maxine"
+      ],
+      "denotation": "mx"
+    },
+    {
+      "words": [
+        "LaVerne"
+      ],
+      "denotation": "l"
+    },
+    {
+      "words": [
+        "Patty"
+      ],
+      "denotation": "pt"
+    },
+    {
+      "words": [
+        "John"
+      ],
+      "denotation": "j"
+    },
+    {
+      "words": [
+        "Sue"
+      ],
+      "denotation": "su"
+    },
+    {
+      "words": [
+        "Mary"
+      ],
+      "denotation": "my"
+    },
+    {
+      "words": [
+        "smokes",
+        "smoke"
+      ],
+      "denotation": "Lx.*smoke(x)"
+    },
+    {
+      "words": [
+        "drinks",
+        "drink"
+      ],
+      "denotation": "Lx.*drink(x)"
+    },
+    {
+      "words": [
+        "caught",
+        "catch"
+      ],
+      "denotation": "Ly.Lx.*catch(x,y)"
+    },
+    {
+      "words": [
+        "ate",
+        "eat"
+      ],
+      "denotation": "Ly.Lx.*eat(x,y)"
+    },
+    {
+      "words": [
+        "own",
+        "owns"
+      ],
+      "denotation": "Ly.Lx.*own(x,y)"
+    },
+    {
+      "words": [
+        "two"
+      ],
+      "denotation": "Lx.card(x)=2"
+    },
+    {
+      "words": [
+        "three"
+      ],
+      "denotation": "Lx.card(x)=3"
+    },
+    {
+      "words": [
+        "four"
+      ],
+      "denotation": "Lx.card(x)=4"
+    },
+    {
+      "words": [
+        "singer"
+      ],
+      "denotation": "singer"
+    },
+    {
+      "words": [
+        "toothbrush"
+      ],
+      "denotation": "toothbrush"
+    },
+    {
+      "words": [
+        "fish"
+      ],
+      "denotation": "fish"
+    },
+    {
+      "words": [
+        "-s",
+        "PL"
+      ],
+      "denotation": "LP.*P"
+    },
+    {
+      "words": [
+        "andE",
+        "andSUM"
+      ],
+      "denotation": "Ly.Lz.z⊕y"
+    },
+    {
+      "words": [
+        "andS"
+      ],
+      "denotation": "Lq.Lp.[p & q]"
+    },
+    {
+      "words": [
+        "orS"
+      ],
+      "denotation": "Lq.Lp.[p ∨ q]"
+    },
+    {
+      "words": [
+        "andVP"
+      ],
+      "denotation": "LY.LX.Lx.[X(x) & Y(x)]"
+    },
+    {
+      "words": [
+        "andV"
+      ],
+      "denotation": "LR.LS.Ly.Lx.[S(y)(x) & R(y)(x)]"
+    },
+    {
+      "words": [
+        "is",
+        "are",
+        "a",
+        "be"
+      ],
+      "denotation": "LP.P"
+    },
+    {
+      "words": [
+        "the",
+        "theSUPR"
+      ],
+      "denotation": "LP.Iz.[P(z) & Ax[P(x) -> x≤z]]"
+    },
+    {
+      "words": [
+        "∅D",
+        "emptyD"
+      ],
+      "denotation": "LP.LQ.Ex[P(x) & Q(x)]"
+    },
+    {
+      "words": [
+        "some",
+        "Some"
+      ],
+      "denotation": "LX.LY.Ex[X(x) & Y(x)]"
+    }
   ],
   "rules": {
     "composition": {
@@ -56,13 +199,15 @@
       "predicateModification": true,
       "predicateAbstraction": true
     },
-    "typeShifts": ["raiseO"],
+    "typeShifts": [
+      "raiseO"
+    ],
     "quantifierRaising": true
   },
   "exercises": [
     {
-      "title": "A. Why verbs are starred — distributivity over sums",
-      "instructions": "Once plural individuals live in the domain, a verb like smoke must hold of a SUM whenever it holds of each atom. So the fragment stars every verb: smokes ↝ λx.∗smoke(x) (entry §10.5.4). Form the plural subject with andE (λyλz.z⊕y), which sums two entities, and apply the starred verb. ∗smoke(mx⊕l) is true exactly when both Maxine and LaVerne smoke — the distributive reading falls out of the star, with no extra distributivity operator.",
+      "title": "A. Starred verbs and distributivity over sums",
+      "instructions": "Once plural individuals live in the domain, a verb like smoke holds of a sum whenever it holds of each atom, so the fragment stars every verb: smokes ↝ λx.∗smoke(x) (§10.5.4). Form the plural subject with andE (λyλz.z⊕y), which sums two entities, and apply the starred verb. ∗smoke(mx⊕l) is true just in case Maxine and LaVerne both smoke, so the star delivers the distributive reading with no separate distributivity operator.",
       "items": [
         {
           "sentence": "Maxine and LaVerne smoke.",
@@ -82,7 +227,7 @@
     },
     {
       "title": "B. Starred transitive verbs",
-      "instructions": "Transitive verbs are starred too: caught ↝ λyλx.∗catch(x,y), own ↝ λyλx.∗own(x,y) (§10.5.4). The object is taken first, then the subject, giving a flat ∗catch(subject, object). With singular arguments the star is vacuous, but the entry is uniform across singular and plural.",
+      "instructions": "Transitive verbs are starred too: caught ↝ λyλx.∗catch(x,y), own ↝ λyλx.∗own(x,y) (§10.5.4). The object is taken first, then the subject, giving a flat ∗catch(subject, object). With singular arguments the star is vacuous, and the entry is uniform across singular and plural.",
       "items": [
         {
           "sentence": "Maxine caught Sue.",
@@ -102,7 +247,7 @@
     },
     {
       "title": "C. The plural morpheme with a starred verb",
-      "instructions": "Combine the pieces: the plural noun is [.N singer ] + [.Pl -s ] (-s ↝ λP.∗P), the silent ∅D ↝ λPλQ.∃x[P(x) ∧ Q(x)] turns it into a quantifier, and the starred verb supplies the predicate. \"Some singers smoke\" existentially quantifies over singer-sums that smoke.",
+      "instructions": "Combine the pieces: the plural noun is [.N singer ] + [.Pl -s ] (-s ↝ λP.∗P), the silent ∅D ↝ λPλQ.∃x[P(x) ∧ Q(x)] turns it into a quantifier, and the starred verb supplies the predicate. \"Some singers smoke\" quantifies existentially over singer-sums that smoke.",
       "items": [
         {
           "sentence": "Some singers smoke.",
@@ -115,7 +260,7 @@
     },
     {
       "title": "D. Cumulative readings via the relational star (Exercise 41)",
-      "instructions": "The relational star generalizes ∗ to two-place predicates: ∗own holds of a pair of sums when they divide into atom-pairs each in the own-relation (entries 39–41). \"Maxine, LaVerne and Patty own four toothbrushes\" gets a CUMULATIVE reading: a total of four toothbrushes are collectively owned. The object \"four toothbrushes\" is ∅D(four ⊓ ∗toothbrush), a quantifier; let it take scope over the starred verb (apply RaiseO to the verb so the object combines in situ, or raise the object). The result is the book's (41).",
+      "instructions": "The relational star generalises ∗ to two-place predicates: ∗own holds of a pair of sums when they divide into atom-pairs each standing in the own-relation (entries 39–41). \"Maxine, LaVerne and Patty own four toothbrushes\" has a cumulative reading, on which four toothbrushes are owned in total. The object \"four toothbrushes\" is ∅D(four ⊓ ∗toothbrush), a quantifier; let it take scope over the starred verb, either by applying RaiseO to the verb so the object combines in situ or by raising the object. The result is the book's (41).",
       "items": [
         {
           "sentence": "Maxine, LaVerne and Patty own four toothbrushes. (cumulative)",

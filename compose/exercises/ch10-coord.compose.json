@@ -358,7 +358,7 @@
   "exercises": [
     {
       "title": "A. Sentential coordination (andS / orS)",
-      "instructions": "andS ↝ λq.λp.[p ∧ q] has type ⟨t,⟨t,t⟩⟩. Place and in a ConjP with the right-hand sentence; the result is a ⟨t,t⟩ function that applies to the left sentence by FA. Compare andS and orS — the derivation is identical, only the connective changes.",
+      "instructions": "andS ↝ λq.λp.[p ∧ q], type ⟨t,⟨t,t⟩⟩. Place \"and\" in a ConjP with the right-hand sentence; the result is a ⟨t,t⟩ function that applies to the left sentence by FA. orS has the same derivation with the other connective.",
       "items": [
         {
           "sentence": "Frodo sings and Gandalf rides.",
@@ -385,7 +385,7 @@
     },
     {
       "title": "B. VP coordination (andVP / orVP)",
-      "instructions": "andVP ↝ λQ.λP.λx.[P(x) ∧ Q(x)] has type ⟨⟨e,t⟩,⟨⟨e,t⟩,⟨e,t⟩⟩⟩. The coordinator takes the right VP first, then the left VP, and distributes the subject. VP-coordination gives the same truth conditions as sentential coordination but is more economical: the subject is mentioned once.",
+      "instructions": "andVP ↝ λQ.λP.λx.[P(x) ∧ Q(x)], type ⟨⟨e,t⟩,⟨⟨e,t⟩,⟨e,t⟩⟩⟩. The coordinator takes the right VP first, then the left VP, and distributes the subject. The truth conditions match sentential coordination, with the subject mentioned once.",
       "items": [
         {
           "sentence": "Frodo rides and sings.",
@@ -412,7 +412,7 @@
     },
     {
       "title": "C. Transitive-verb coordination (andV)",
-      "instructions": "andV ↝ λR.λS.λy.λx.[S(y)(x) ∧ R(y)(x)] has type ⟨⟨e,⟨e,t⟩⟩,⟨⟨e,⟨e,t⟩⟩,⟨e,⟨e,t⟩⟩⟩⟩. It coordinates two transitive verbs, sharing BOTH subject and object. The ConjP takes the right V first, then FA with the left V, giving a ⟨e,⟨e,t⟩⟩ that takes its object normally.",
+      "instructions": "andV ↝ λR.λS.λy.λx.[S(y)(x) ∧ R(y)(x)], type ⟨⟨e,⟨e,t⟩⟩,⟨⟨e,⟨e,t⟩⟩,⟨e,⟨e,t⟩⟩⟩⟩. It coordinates two transitive verbs, sharing subject and object. The ConjP takes the right V first, then combines with the left V by FA, giving an ⟨e,⟨e,t⟩⟩ that takes its object normally.",
       "items": [
         {
           "sentence": "Frodo carries and guards the ring.",
@@ -431,8 +431,8 @@
       ]
     },
     {
-      "title": "D. Mixed-type coordination & the ⊓ schema (Exercises 5–6)",
-      "instructions": "All the entries above share a pattern: each has ∧ (or ∨) at its core, and each operates on a type ending in t. The book generalizes them with a single recursive operator ⊓ (and ⊔ for or), defined in (16): ⊓⟨τ,⟨τ,τ⟩⟩ = λqλp.p∧q if τ=t, else λXλYλZ.⊓(X(Z))(Y(Z)). — ITEM 1 (Ex 5): coordinate two type-e names with andDP. Each name must first be raised to a quantifier ⟨⟨e,t⟩,t⟩ with the Montague Lift type-shifter (apply it once on each conjunct), so Frodo ⇝ λP.P(f). — ITEM 2 (Ex 6): genAnd is ⊓ specialized to the VP type ⟨e,t⟩: plugging τ=⟨e,t⟩ into (16) gives λXλYλZ.⊓⟨t,⟨t,t⟩⟩(X(Z))(Y(Z)), and the base case ⊓⟨t,⟨t,t⟩⟩ = λqλp.p∧q. Compose genAnd with two VPs and REDUCE — it collapses to exactly the andVP entry from group B.",
+      "title": "D. Mixed-type coordination and the ⊓ schema (Exercises 5–6)",
+      "instructions": "Each entry above has ∧ (or ∨) at its core and operates on a type ending in t. The book generalises them with one recursive operator ⊓ (and ⊔ for or), defined at (16): ⊓⟨τ,⟨τ,τ⟩⟩ = λqλp.p∧q if τ=t, else λXλYλZ.⊓(X(Z))(Y(Z)). Item 1 (Exercise 5) coordinates two type-e names with andDP; raise each conjunct to a quantifier ⟨⟨e,t⟩,t⟩ with the Montague Lift type-shifter first, so Frodo ⇝ λP.P(f). Item 2 (Exercise 6): genAnd is ⊓ at the VP type ⟨e,t⟩, so (16) gives λXλYλZ.⊓⟨t,⟨t,t⟩⟩(X(Z))(Y(Z)) with base case ⊓⟨t,⟨t,t⟩⟩ = λqλp.p∧q. Compose genAnd with two VPs and reduce; the result is the andVP entry from group B.",
       "items": [
         {
           "sentence": "Frodo and Sam smoke. (Ex 5 — lift each conjunct)",

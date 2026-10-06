@@ -376,7 +376,7 @@
   "exercises": [
     {
       "title": "A. Plural predicate (∗P)",
-      "instructions": "The plural noun \"hobbits\" denotes ∗hobbit of type ⟨e,t⟩. It is true of any individual that is either a hobbit or a sum of hobbits. Build the NP and check its type — it should be ⟨e,t⟩, same as the singular \"hobbit\".",
+      "instructions": "The plural noun \"hobbits\" denotes ∗hobbit, type ⟨e,t⟩, true of any hobbit and of any sum of hobbits. Build the NP and check its type: ⟨e,t⟩, as for the singular \"hobbit\".",
       "items": [
         {
           "sentence": "hobbits (∗hobbit)",
@@ -403,7 +403,7 @@
     },
     {
       "title": "B. Plural definite (theSUPR)",
-      "instructions": "The plural definite \"the hobbits\" uses the supremum iota: ιx.[∗hobbit(x) ∧ ∀y[∗hobbit(y)→y≤x]] — the maximal sum of all hobbits. theSUPR ↝ λX.ιx.[X(x) ∧ ∀y[X(y)→y≤x]] takes the plural predicate (∗hobbit) and returns its supremum — an individual of type e.",
+      "instructions": "The plural definite \"the hobbits\" uses the supremum iota, ιx.[∗hobbit(x) ∧ ∀y[∗hobbit(y)→y≤x]], the maximal sum of all hobbits. theSUPR ↝ λX.ιx.[X(x) ∧ ∀y[X(y)→y≤x]] takes the plural predicate ∗hobbit and returns its supremum, an individual of type e.",
       "items": [
         {
           "sentence": "the hobbits",
@@ -423,7 +423,7 @@
     },
     {
       "title": "C. Plural definite as subject",
-      "instructions": "A plural definite description is a type-e individual (the maximal sum). Apply it as a subject to a VP by FA — the VP predicate holds of the entire sum, expressing a collective or distributive claim depending on the predicate.",
+      "instructions": "A plural definite description is a type-e individual, the maximal sum. Apply it as a subject to a VP by FA. The VP predicate holds of the entire sum, giving a collective or a distributive claim according to the predicate.",
       "items": [
         {
           "sentence": "The hobbits ride.",
@@ -443,7 +443,7 @@
     },
     {
       "title": "D. The plural morpheme -s (Exercise 8)",
-      "instructions": "Instead of treating \"singers\" as an unanalyzed starred predicate, derive it compositionally. The plural morpheme is -s ⇝ λP.∗P (entry 30): it takes a singular noun and returns its algebraic closure. Build the noun by composing [.N singer ] with [.Pl -s ] via Function Application. For coordinated proper names, use andE (λyλz.z⊕y) to form the sum, and treat \"are\"/\"is\" as the identity function λP.P. These reproduce the book's (31) and (32b).",
+      "instructions": "Derive \"singers\" compositionally. The plural morpheme -s ⇝ λP.∗P (entry 30) takes a singular noun and returns its algebraic closure. Build the noun by composing [.N singer ] with [.Pl -s ] by Function Application. For coordinated proper names use andE (λyλz.z⊕y) to form the sum, and treat \"are\" and \"is\" as the identity function λP.P. These reproduce the book's (31) and (32b).",
       "items": [
         {
           "sentence": "singers ( [singer -s] = ∗singer )",
@@ -476,8 +476,8 @@
       ]
     },
     {
-      "title": "E. theSUM — the sum analysis of plural the (Exercise 10)",
-      "instructions": "Before the supremum analysis, the book first tries treating plural the as the generalized sum: theSUM ⇝ λP.⊕P (entry 33), where ⊕P is the sum of all the P's (type e). For \"the singers\" this gives the right answer — the maximal singer-sum. But notice the second item: with \"two singers\", theSUM sums up ALL the two-singer pluralities, collapsing them back to the total sum — so \"theSUM two singers\" wrongly denotes the sum of all singers, not a pair. This is exactly why the book replaces theSUM with theSUPR. (Here two ⇝ λx.card(x)=2 combines with singers by Predicate Modification.)",
+      "title": "E. theSUM: the sum analysis of plural the (Exercise 10)",
+      "instructions": "Before the supremum analysis the book tries plural \"the\" as the generalised sum: theSUM ⇝ λP.⊕P (entry 33), where ⊕P is the sum of all the P's, type e. For \"the singers\" this gives the maximal singer-sum. In the second item, two ⇝ λx.card(x)=2 combines with singers by Predicate Modification, and theSUM then sums every two-singer plurality, so \"theSUM two singers\" denotes the sum of all singers. The book replaces theSUM with theSUPR on this ground.",
       "items": [
         {
           "sentence": "theSUM singers met.",
@@ -497,7 +497,7 @@
     },
     {
       "title": "F. The silent determiner ∅D (Exercise 9)",
-      "instructions": "Bare plurals like \"Two singers met\" have no overt determiner, but combine with the VP like a quantifier. The book posits a silent determiner with existential-quantifier semantics: ∅D ⇝ λPλP'.∃x[P(x) ∧ P'(x)] (Exercise 9). Include the ∅D node explicitly in the tree. \"two singers\" is formed by Predicate Modification, then ∅D binds it existentially.",
+      "instructions": "Bare plurals like \"Two singers met\" have no overt determiner and combine with the VP like a quantifier. The book posits a silent determiner with existential-quantifier semantics: ∅D ⇝ λPλP'.∃x[P(x) ∧ P'(x)] (Exercise 9). Include the ∅D node explicitly in the tree. \"Two singers\" is formed by Predicate Modification, and ∅D then binds it existentially.",
       "items": [
         {
           "sentence": "Two singers met.",
