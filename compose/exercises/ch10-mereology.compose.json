@@ -1,7 +1,7 @@
 {
   "compose": 1,
   "id": "ch10-mereology",
-  "title": "10.2 Mereology — Sums and Parthood",
+  "title": "10.2 Mereology: Sums and Parthood",
   "domain": {
     "multiLetterNames": true,
     "constants": {

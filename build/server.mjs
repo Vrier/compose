@@ -109,7 +109,7 @@ const stubPage = (title, dest) => `<!DOCTYPE html>
 </head>
 <body>
 <!--compose-stub-->
-<p>This page moved into the app — <a href="${dest}">continue to COMPOSE</a>.</p>
+<p>This page moved into the app. <a href="${dest}">Continue to COMPOSE</a>.</p>
 </body>
 </html>
 `;

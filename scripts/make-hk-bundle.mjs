@@ -52,7 +52,7 @@ const exercises = hkKeys.map((key) => {
 
 const bundle = {
   compose_bundle: 1,
-  title: 'Heim & Kratzer — Semantics in Generative Grammar',
+  title: 'Heim & Kratzer: Semantics in Generative Grammar',
   authors: 'Irene Heim & Angelika Kratzer (1998)',
   chapters: CHAPTERS,
   exercises,

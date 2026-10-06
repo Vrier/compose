@@ -1,6 +1,6 @@
 {
   "compose_bundle": 1,
-  "title": "Coppock & Champollion — Invitation to Formal Semantics",
+  "title": "Coppock & Champollion: Invitation to Formal Semantics",
   "authors": "Elizabeth Coppock & Lucas Champollion",
   "chapters": [
     {
@@ -4961,11 +4961,11 @@
     },
     {
       "key": "ch10-mereology",
-      "title": "10.2 Mereology — Sums and Parthood",
+      "title": "10.2 Mereology: Sums and Parthood",
       "content": {
         "compose": 1,
         "id": "ch10-mereology",
-        "title": "10.2 Mereology — Sums and Parthood",
+        "title": "10.2 Mereology: Sums and Parthood",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -7490,11 +7490,11 @@
     },
     {
       "key": "ch11.4-continuation",
-      "title": "Event Quantifiers — the Continuation Approach (§11.4–11.6)",
+      "title": "Event Quantifiers: the Continuation Approach (§11.4–11.6)",
       "content": {
         "compose": 1,
         "id": "ch11-cont",
-        "title": "Event Quantifiers — the Continuation Approach (§11.4–11.6)",
+        "title": "Event Quantifiers: the Continuation Approach (§11.4–11.6)",
         "subtitle": "Champollion's verbs-as-event-quantifiers fragment: Quantifier Closure, in-situ quantifiers, conjunction and negation",
         "domain": {
           "multiLetterNames": true,
@@ -10738,11 +10738,11 @@
     },
     {
       "key": "ch13.5-dere",
-      "title": "De dicto vs. De re (§13.6)",
+      "title": "De dicto and de re (§13.6)",
       "content": {
         "compose": 1,
         "id": "ch13-dere",
-        "title": "De dicto vs. De re (§13.6)",
+        "title": "De dicto and de re (§13.6)",
         "domain": {
           "multiLetterNames": true,
           "constants": {
