@@ -298,7 +298,7 @@
           }
         },
         {
-          "sentence": "He loves Arwen.",
+          "sentence": "He loves Aragorn.",
           "tree": "[.S [.DP he1 ] [.VP [.V loves ] [.DP Aragorn ] ] ]",
           "reading": {
             "section": "7.3.3.1"

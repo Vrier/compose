@@ -298,8 +298,6 @@
           "sentence": "No elf trusts every human.",
           "tree": "[.S [.DP [.D no ] [.NP elf ] ] [.VP [.V trusts ] [.DP [.D every ] [.NP human ] ] ] ]",
           "targets": [
-            "every > some (linear): ∀x[elf(x) → ∃y[hobbit(y) ∧ trust(x,y)]]",
-            "some > every (inverse): ∃y[hobbit(y) ∧ ∀x[elf(x) → trust(x,y)]]",
             "no > every: ¬∃x[elf(x) ∧ ∀y[human(y) → trust(x,y)]]",
             "every > no: ∀y[human(y) → ¬∃x[elf(x) ∧ trust(x,y)]]"
           ],
