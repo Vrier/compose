@@ -22,15 +22,29 @@ Champollion's *Invitation to Formal Semantics*.
   bracketing, and type α-equivalent and same-typed to the set's `lexicon`/`domain`).
 - Keep the standalone `.md` in `compose/reading/` as the source of truth; re-embed
   into the `.compose.json` when it changes.
-- The textbook is copyrighted — condense and paraphrase, never paste prose verbatim.
-  Since S65 the H&K readings follow the S22 quote standard: rule statements,
-  lexical entries and definitions verbatim with page cites, key claims as short
-  attributed quotes, connective prose minimal.
-- Paper readings (the /papers shelf) follow the quote-only sourcing standard
-  (S22): notes text is only (a) short direct quotes from the paper or secondary
-  literature, attributed, (b) the papers' numbered definitions, (c) explicitly
-  flagged rendering/implementation notes (the PTQ-B TY2 §0 pattern), and
-  (d) minimal signposting. No unsourced paraphrase presented as fact.
+- **Sourcing — quote where the wording carries the content.** All shelves follow
+  the S22 standard: rule statements, lexical entries, definitions and the
+  load-bearing claims of an argument are quoted verbatim and attributed; what is
+  not quoted is condensed signposting plus explicitly flagged rendering/engine
+  notes (the PTQ-B TY2 §0 pattern). The governing rule is **no unsourced
+  paraphrase presented as fact**. Copying prose IS correct when it is relevant;
+  the textbook being copyrighted means quotes stay short and attributed, not that
+  quoting is avoided. Cite with `§` pointers, not page numbers (S69–S74).
+- **Density — definitions plus brief guidance** (the sparse template, S69–S74;
+  the owner-approved pilots are `compose/reading/hk4-definites.md` and
+  `ch7.3-relcl.md`). Around 30–60 lines: terse entries with `§` pointers, one to
+  three guidance lines per exercise group named by group, engine notes as single
+  sentences. No `derivation`/`forest`/`\ex` blocks, footnotes or Beyond-notes in a
+  reading; the exercise set carries the derivations.
+- **House style for the prose that is ours** (worksheet titles, instructions,
+  subtitles, item notes, and a reading's own connective prose): no em-dashes, no
+  "X, not Y" or "rather than" contrasts, no caps-for-emphasis, no first person, no
+  rhetorical nudges ("Notice", "Note that", "Crucially"), no evaluatives
+  ("wrongly", "merely", "simply"), no payoff or summary lines; titles name their
+  subject rather than commenting on it; statements and imperatives over questions;
+  British spelling. Verbatim quotes keep the source's wording and spelling, and
+  code identifiers and the papers' defined terms are untouched. Lint with
+  `node scripts/claudism-grep.mjs [--readings] [<key> …]` before committing.
 
 ## Architecture (hosted V1.2 — LIVE at compose.tstephen.com)
 
