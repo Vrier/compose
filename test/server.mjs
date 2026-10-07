@@ -528,9 +528,10 @@ async function main() {
   r = await req('GET', '/api/compose/my-classes', { token: TSTU });
   expect('my-classes excludes unpublished versions (N5)', r.json && r.json.classes && r.json.classes.length === 0, r.text.slice(0, 120));
 
-  // DACE — judge accounts (migration 1751700008, dace.pb.js). Register
-  // budget: /api/dace/register has its own 5/min rule. Auth budget: ONE
-  // login (6 of 8). Admin routes read e.auth fresh, so no auth-refresh.
+  // DACE — judge accounts (migration 1751700008) and the judgement event log
+  // (1751700009), dace.pb.js. Register budget: /api/dace/register has its own
+  // 5/min rule. Auth budget: ONE login here (6 of 8). Admin routes read e.auth
+  // fresh, so no auth-refresh.
   r = await req('POST', '/api/collections/invite_codes/records', { token: TS,
     body: { code: 'DACE-SUITE', note: 'suite judge code', max_uses: 0, used_count: 0, active: true, judge: true } });
   expect('superuser creates a judge invite code', r.status === 200, r.text.slice(0, 120));
@@ -549,38 +550,101 @@ async function main() {
   expect('judge logs in', !!TJ, r.text.slice(0, 120));
   expect('judge record carries judge=true and role=student', r.json && r.json.record && r.json.record.judge === true && r.json.record.role === 'student', r.text.slice(0, 200));
   expect('judge record is not a DACE admin', r.json && r.json.record && r.json.record.dace_admin === false, r.text.slice(0, 200));
+  expect('first judge gets judge code J01 at registration', r.json && r.json.record && r.json.record.judge_code === 'J01', r.text.slice(0, 300));
 
-  const jdata = { f: { comp_inf: '1', ecm: '0' }, flags: { ecm: true }, t: { comp_inf: '2026-10-06T10:00:00Z', ecm: '2026-10-06T10:00:05Z' }, sentence: 'They knew that it rained.' };
-  r = await req('POST', '/api/collections/dace_judgements/records', { token: TJ, body: { user: JID, verb: 'know', data: jdata } });
-  const JREC = r.json && r.json.id;
-  expect('judge creates a judgement record', r.status === 200 && !!JREC, r.text.slice(0, 160));
-  r = await req('POST', '/api/collections/dace_judgements/records', { token: TJ, body: { user: JID, verb: 'know', data: jdata } });
-  expect('one record per (judge, verb)', r.status === 400, r.status);
-  r = await req('POST', '/api/collections/dace_judgements/records', { token: TSTU, body: { user: 'stu', verb: 'know', data: jdata } });
-  expect('non-judge cannot create judgements', r.status === 400 || r.status === 403, r.status);
-  r = await req('PATCH', `/api/collections/dace_judgements/records/${JREC}`, { token: TJ, body: { data: Object.assign({}, jdata, { nominal: 'knowledge' }) } });
-  expect('judge updates own record', r.status === 200 && r.json && r.json.data && r.json.data.nominal === 'knowledge', r.text.slice(0, 160));
+  // the event log: append-only, own events only, validated, server-timed
+  const evt = (token, uid, body) => req('POST', '/api/collections/dace_events/records', { token, body: Object.assign({ user: uid }, body) });
+  const J = (verb, feature, response, extra) => Object.assign({ verb, feature, kind: 'judge', response, item: feature + ':base', frame_v: 1, sentence: 'She ' + verb + ' it.' }, extra || {});
+  r = await evt(TJ, JID, Object.assign(J('know', 'comp_inf', 'acceptable'), { at: '1999-01-01 00:00:00.000Z' }));
+  const EV1 = r.json && r.json.id;
+  expect('judge appends a judge event', r.status === 200 && !!EV1, r.text.slice(0, 200));
+  expect('event time is the server\'s, not the client\'s', r.json && r.json.at && !r.json.at.startsWith('1999'), r.text.slice(0, 300));
+  r = await evt(TJ, JID, J('know', 'ecm', 'unacceptable'));
+  expect('second judge event', r.status === 200, r.text.slice(0, 160));
+  r = await evt(TJ, JID, { verb: 'know', feature: 'ecm', kind: 'flag' });
+  expect('flag event', r.status === 200, r.text.slice(0, 160));
+  r = await evt(TJ, JID, { verb: 'know', kind: 'sentence', response: 'They knew that it rained.' });
+  expect('sentence event', r.status === 200, r.text.slice(0, 160));
+  r = await evt(TJ, JID, { verb: 'know', kind: 'nominal', response: 'knowledge' });
+  expect('nominal event', r.status === 200, r.text.slice(0, 160));
+  r = await evt(TJ, JID, J('know', 'comp_inf', 'marginal', { repeat: true }));
+  expect('repeat (test–retest) event', r.status === 200, r.text.slice(0, 160));
+  r = await evt(TJ, JID, J('know', 'raising', 'acceptable'));
+  r = await evt(TJ, JID, { verb: 'know', feature: 'raising', kind: 'judge', response: 'clear' });
+  expect('clear event (withdraws a judgement)', r.status === 200, r.text.slice(0, 160));
+  r = await evt(TJ, JID, J('know', 'comp_inf', 'maybe'));
+  expect('unknown response rejected', r.status === 400, r.status);
+  r = await evt(TJ, JID, J('know', 'comp_inf', 'acceptable', { item: '' }));
+  expect('judge event without an item rejected', r.status === 400, r.status);
+  r = await evt(TJ, JID, { verb: 'know', feature: 'ecm', kind: 'sentence', response: 'x' });
+  expect('sentence event with a feature rejected', r.status === 400, r.status);
+  r = await evt(TJ, JID, { verb: 'know', feature: 'ecm', kind: 'flag', response: 'x' });
+  expect('flag event with a response rejected', r.status === 400, r.status);
+  r = await evt(TJ, JID, { verb: 'Know!', feature: 'ecm', kind: 'flag' });
+  expect('bad verb key rejected', r.status === 400, r.status);
+  r = await evt(TJ, 'someoneelse0000', J('know', 'comp_inf', 'acceptable'));
+  expect('judge cannot write events as someone else', r.status === 400 || r.status === 403, r.status);
+  r = await evt(TSTU, 'stu', J('know', 'comp_inf', 'acceptable'));
+  expect('non-judge cannot create events', r.status === 400 || r.status === 403, r.status);
+  r = await req('PATCH', `/api/collections/dace_events/records/${EV1}`, { token: TJ, body: { response: 'unacceptable' } });
+  expect('events cannot be edited (append-only)', r.status === 403 || r.status === 404, r.status);
+  r = await req('DELETE', `/api/collections/dace_events/records/${EV1}`, { token: TJ });
+  expect('events cannot be deleted (append-only)', r.status === 403 || r.status === 404, r.status);
+  r = await req('GET', '/api/collections/dace_events/records', { token: TJ });
+  expect('judge lists own events (8)', r.json && r.json.totalItems === 8, r.text.slice(0, 120));
+  r = await req('GET', '/api/collections/dace_events/records', { token: TA });
+  expect('others see no events', r.json && r.json.totalItems === 0, r.text.slice(0, 120));
+
+  // the cache (dace_judgements) follows the events; the Judge can only read it
   r = await req('GET', '/api/collections/dace_judgements/records', { token: TJ });
-  expect('judge lists own records', r.json && r.json.totalItems === 1, r.text.slice(0, 120));
+  const C = r.json && r.json.items && r.json.items[0];
+  const cd = (C && C.data) || {};
+  expect('one cache record per (judge, verb)', r.json && r.json.totalItems === 1 && C.verb === 'know', r.text.slice(0, 160));
+  expect('cache holds current responses (format v2)', cd.v === 2 && cd.r && cd.r.comp_inf === 'acceptable' && cd.r.ecm === 'unacceptable', JSON.stringify(cd).slice(0, 300));
+  expect('cache: repeat did not overwrite, clear removed', cd.r && !('raising' in cd.r) && cd.t && !('raising' in cd.t), JSON.stringify(cd).slice(0, 300));
+  expect('cache: flag, sentence, nominal', cd.flags && cd.flags.ecm === true && cd.sentence === 'They knew that it rained.' && cd.nominal === 'knowledge', JSON.stringify(cd).slice(0, 300));
+  r = await req('POST', '/api/collections/dace_judgements/records', { token: TJ, body: { user: JID, verb: 'think', data: { v: 2, r: {} } } });
+  expect('judge cannot write the cache directly', r.status === 400 || r.status === 403, r.status);
+  r = await req('PATCH', `/api/collections/dace_judgements/records/${C && C.id}`, { token: TJ, body: { data: { v: 2, r: {} } } });
+  expect('judge cannot edit the cache directly', r.status === 403 || r.status === 404, r.status);
   r = await req('GET', '/api/collections/dace_judgements/records', { token: TA });
-  expect('others see no judgements', r.json && r.json.totalItems === 0, r.text.slice(0, 120));
-  r = await req('PATCH', `/api/collections/users/records/${JID}`, { token: TJ, body: { dace_admin: true } });
-  expect('judge cannot self-promote to dace_admin (guard)', r.status === 200 && r.json && r.json.dace_admin === false, r.text.slice(0, 160));
+  expect('others see no cache records', r.json && r.json.totalItems === 0, r.text.slice(0, 120));
 
+  // profile: self-editable, judge code and dace_admin pinned
+  r = await req('PATCH', `/api/collections/users/records/${JID}`, { token: TJ,
+    body: { variety: 'Irish English', linguist: true, consent_publish: true, profile_done: true, judge_code: 'J99', dace_admin: true } });
+  expect('judge saves their profile', r.status === 200 && r.json && r.json.variety === 'Irish English' && r.json.profile_done === true, r.text.slice(0, 200));
+  expect('judge cannot change their judge code (guard)', r.json && r.json.judge_code === 'J01', r.text.slice(0, 200));
+  expect('judge cannot self-promote to dace_admin (guard)', r.json && r.json.dace_admin === false, r.text.slice(0, 200));
+
+  // admin routes
   r = await req('GET', '/api/dace/judges', { token: TJ });
   expect('/api/dace/judges needs dace_admin', r.status === 403, r.status);
   r = await req('PATCH', `/api/collections/users/records/${JID}`, { token: TS, body: { dace_admin: true } });
   expect('superuser grants dace_admin', r.status === 200 && r.json && r.json.dace_admin === true, r.text.slice(0, 160));
   r = await req('GET', '/api/dace/judges', { token: TJ });
   const jl = r.json && r.json.judges;
-  expect('/api/dace/judges lists the judge with counts', Array.isArray(jl) && jl.length === 1 && jl[0].email === 'j@suite.org' && jl[0].cells === 2 && jl[0].flagged === 1 && jl[0].records === 1, r.text.slice(0, 200));
+  expect('/api/dace/judges lists the judge with code, profile and counts',
+    Array.isArray(jl) && jl.length === 1 && jl[0].email === 'j@suite.org' && jl[0].judge_code === 'J01' && jl[0].variety === 'Irish English' &&
+    jl[0].cells === 2 && jl[0].flagged === 1 && jl[0].records === 1 && jl[0].events === 8, r.text.slice(0, 300));
+  const HEAD = 'event_id,judge,verb,feature,kind,response,item,frame_v,sentence,gold,repeat,at';
   r = await req('GET', `/api/dace/judges/${JID}/judgements.csv`, { token: TJ, raw: true });
+  const jrows = r.text.trim().split('\n');
   expect('per-judge CSV is served as text/csv', r.status === 200 && String(r.headers.get('content-type')).startsWith('text/csv'), r.status + ' ' + r.headers.get('content-type'));
-  expect('per-judge CSV has header + 2 rows', r.text === 'verb,feature,judgement,flagged,judged_at\nknow,comp_inf,1,0,2026-10-06T10:00:00Z\nknow,ecm,0,1,2026-10-06T10:00:05Z\n', JSON.stringify(r.text.slice(0, 200)));
+  expect('per-judge CSV: event columns + 8 events, oldest first', jrows[0] === HEAD && jrows.length === 9 && jrows[1].startsWith(EV1 + ',J01,know,comp_inf,judge,acceptable,comp_inf:base,1,She know it.,0,0,'), JSON.stringify(r.text.slice(0, 300)));
+  lacks('per-judge CSV carries no email', r.text, '@');
+  r = await req('GET', '/api/dace/events.csv', { token: TJ, raw: true });
+  expect('events.csv: every judge\'s events', r.status === 200 && r.text.trim().split('\n').length === 9 && r.text.startsWith(HEAD + '\n'), JSON.stringify(r.text.slice(0, 200)));
+  contains('events.csv: repeat flagged', r.text, ',comp_inf,judge,marginal,comp_inf:base,1,She know it.,0,1,');
+  lacks('events.csv carries no email', r.text, '@');
+  r = await req('GET', '/api/dace/judges.csv', { token: TJ, raw: true });
+  expect('judges.csv: one row per judge, by code', r.status === 200 && /^judge,variety,linguist,consent_publish,joined,events,cells,last_activity\nJ01,Irish English,1,1,\d{4}-\d\d-\d\d,8,2,/.test(r.text), JSON.stringify(r.text.slice(0, 200)));
   r = await req('GET', `/api/dace/judges/${JID}/annotations.json`, { token: TJ });
   expect('per-judge annotations in sidecar format', r.json && r.json.sentences && r.json.sentences._dace === 'sentences' && r.json.sentences.data.know === 'They knew that it rained.' && r.json.nominals.data.know === 'knowledge', r.text.slice(0, 200));
   r = await req('GET', `/api/dace/judges/${JID}/judgements.csv`, { token: TSTU, raw: true });
   expect('CSV route refuses non-admins', r.status === 403, r.status);
+  r = await req('GET', '/api/dace/events.csv', { token: TSTU, raw: true });
+  expect('events.csv refuses non-admins', r.status === 403, r.status);
   r = await req('GET', `/api/dace/judges/${VID}/judgements.csv`, { token: TJ, raw: true });
   expect('CSV route 404s for non-judges', r.status === 404, r.status);
 
@@ -590,18 +654,31 @@ async function main() {
   contains('second judge registers', r.text, '"ok":true');
   r = await req('POST', '/api/collections/users/auth-with-password', { body: { identity: 'j2@suite.org', password: 'judgepass1234' } });
   const TJ2 = r.json && r.json.token, J2ID = r.json && r.json.record && r.json.record.id;
-  expect('second judge logs in', !!TJ2, r.text.slice(0, 120));
-  r = await req('POST', '/api/collections/dace_judgements/records', { token: TJ2, body: { user: J2ID, verb: 'know', data: { f: { comp_inf: '0', ecm: '0', raising: '1' }, flags: {}, t: {} } } });
+  expect('second judge logs in with code J02', !!TJ2 && r.json.record.judge_code === 'J02', r.text.slice(0, 200));
+  for (const [fk, resp] of [['comp_inf', 'unacceptable'], ['ecm', 'unacceptable'], ['raising', 'acceptable'], ['that_omission', 'cant_judge']]) {
+    r = await evt(TJ2, J2ID, J('know', fk, resp));
+  }
   expect('second judge records know', r.status === 200, r.text.slice(0, 120));
+  r = await req('GET', '/api/collections/dace_events/records', { token: TJ2 });
+  expect('second judge sees only their own events', r.json && r.json.totalItems === 4, r.text.slice(0, 120));
   r = await req('GET', '/api/dace/agreement', { token: TJ });
   const ag = r.json || {};
   expect('agreement: 2 shared cells, 1 agree, 1 disagree', ag.cells_multi === 2 && ag.agree === 1 && ag.disagree === 1, r.text.slice(0, 300));
-  expect('agreement: the disagreement is know/comp_inf 1 vs 0', ag.disagreements && ag.disagreements[0].verb === 'know' && ag.disagreements[0].feature === 'comp_inf' && ag.disagreements[0].values['j@suite.org'] === '1' && ag.disagreements[0].values['j2@suite.org'] === '0', r.text.slice(0, 300));
+  expect('agreement: the disagreement is know/comp_inf acceptable vs unacceptable', ag.disagreements && ag.disagreements[0].verb === 'know' && ag.disagreements[0].feature === 'comp_inf' && ag.disagreements[0].values['j@suite.org'] === 'acceptable' && ag.disagreements[0].values['j2@suite.org'] === 'unacceptable', r.text.slice(0, 300));
   expect('agreement: pairwise 1/2', ag.pairs && ag.pairs.length === 1 && ag.pairs[0].overlap === 2 && ag.pairs[0].agree === 1, r.text.slice(0, 300));
   r = await req('GET', '/api/dace/agreement.csv', { token: TJ, raw: true });
-  expect('agreement.csv: header + 2 rows, judge columns, agree flag', r.text === 'verb,feature,j2@suite.org,j@suite.org,agree\nknow,comp_inf,0,1,0\nknow,ecm,0,0,1\n', JSON.stringify(r.text.slice(0, 200)));
+  expect('agreement.csv: header + 2 rows, judge columns, agree flag', r.text === 'verb,feature,j2@suite.org,j@suite.org,agree\nknow,comp_inf,unacceptable,acceptable,0\nknow,ecm,unacceptable,unacceptable,1\n', JSON.stringify(r.text.slice(0, 200)));
   r = await req('GET', '/api/dace/agreement', { token: TJ2 });
   expect('agreement needs dace_admin', r.status === 403, r.status);
+
+  // an account made a judge in the dashboard gets a code with its first event
+  r = await req('GET', `/api/collections/users/records?filter=${encodeURIComponent("email='a@suite.org'")}`, { token: TS });
+  const AID = r.json && r.json.items && r.json.items[0] && r.json.items[0].id;
+  r = await req('PATCH', `/api/collections/users/records/${AID}`, { token: TS, body: { judge: true } });
+  r = await evt(TA, AID, J('know', 'ecm', 'acceptable'));
+  expect('dashboard-made judge can append events', r.status === 200, r.text.slice(0, 160));
+  r = await req('GET', `/api/collections/users/records/${AID}`, { token: TS });
+  expect('dashboard-made judge gets the next code (J03)', r.json && r.json.judge_code === 'J03', r.text.slice(0, 200));
 
   // W6 — rate limiting LAST (burns the register budget on purpose)
   const codes = [];

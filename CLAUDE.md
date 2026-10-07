@@ -102,7 +102,16 @@ refused by `/api/compose/register`) and the `dace_judgements` collection
 (cells judged by ≥2 judges, pairwise agreement, disagreements) need `dace_admin`. To add a judge:
 admin dashboard → invite_codes → new record with `judge` ticked; to let an
 account download the CSVs: tick `dace_admin` on it. The Judge's UI and the
-plan live in Vrier/dace (PLAN.md, "Judge accounts").
+plan live in Vrier/dace (PLAN.md, "Judge accounts" and "Judgement data").
+Since migration 1751700009 the Judge **appends events** to `dace_events`
+(append-only: no update/delete rules; `at` stamped by the server; validated
+in `dace.pb.js`) and only READS `dace_judgements`, which the
+`onRecordAfterCreateSuccess` hook keeps as a per-(judge, verb) cache in
+format v2 (`r` = current responses; repeats never touch it). Judges get
+codes J01, J02 … (`users.judge_code`, pinned by users_guard) and a
+self-editable profile (`variety`, `linguist`, `consent_publish`,
+`profile_done`). `GET /api/dace/events.csv` / `judges.csv` export by code
+only, never email. Shared helpers: `pb_hooks/dace_lib.js`.
 
 Routes: `/` = THE app (demo worksheet + on-demand library, S13/S44);
 `/cc` `/hk` `/papers` + 22 chapter pages + `/editor` = tiny REDIRECT STUBS
