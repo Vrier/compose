@@ -457,7 +457,9 @@ body {
   position: relative;
 }
 .sym-key:hover { border-color: var(--accent); background: var(--accent-soft); }
-.sym-key .hint { position: absolute; bottom: -2px; right: 2px; font-size: 8px; color: var(--faint-text); font-family: 'IBM Plex Mono', monospace; }
+/* S81: the hint now carries the typed alias rather than a Ctrl code, so it
+   has to be readable. 8px was decoration; 9.5px is legible and still fits. */
+.sym-key .hint { position: absolute; bottom: -1px; right: 2px; font-size: 9.5px; color: var(--faint-text); font-family: 'IBM Plex Mono', monospace; }
 .palette-tip { font-size: 11px; color: var(--muted); padding: 2px 8px; border: 1px dashed var(--line); border-radius: 6px; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
 kbd { font-family: var(--mono); font-size: 0.88em; background: var(--panel-2); border: 1px solid var(--line); border-bottom: 2px solid var(--line); border-radius: 3px; padding: 0px 4px; color: var(--ink); }
 
