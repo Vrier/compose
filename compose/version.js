@@ -6,6 +6,11 @@
        keys and Enter; the result is announced and focus moves to the new
        binder. The drag handle leaves the node box (it was a button nested in
        a role="button") and is sized to render at 24px at any tree zoom.
+     a11y-2 Contrast: zero axe colour-contrast violations in all five audited
+       states, and every measured derive-view style clears 4.5:1 in all four
+       reachable palettes. The dark palettes had never been given the soft
+       tokens, so a resolved node's denotation sat at 1.06:1. New
+       high-contrast theme in Display, following prefers-contrast.
    1.3.0 (S55, 2026-08-01): responsive layout overhaul — a new tablet
    breakpoint (760–1180) with an adaptive-drawer layout (full-width stage +
    slim app-bar + slide-over nav/reference drawers), plus a holistic phone
