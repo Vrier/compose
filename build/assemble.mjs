@@ -52,12 +52,12 @@ const block = (code) => `<script>\n${safe(code)}\n</script>`;
    .jsx files are transpiled with esbuild in *transform* mode (no module
    wrapping) so top-level declarations stay in the shared global scope, exactly
    as the original separate <script> tags relied on. */
-const PLAIN = new Set(['version.js', 'engine.js', 'lcformat.js', 'sample-exercise.js',
+const PLAIN = new Set(['version.js', 'engine.js', 'speech.js', 'lcformat.js', 'sample-exercise.js',
   'exercise-files.js', 'exercises.js', 'lingdown.js']);
 
 const ORDER = [
   'version.js',
-  'engine.js', 'lcformat.js', 'sample-exercise.js', 'exercise-files.js', 'exercises.js',
+  'engine.js', 'speech.js', 'lcformat.js', 'sample-exercise.js', 'exercise-files.js', 'exercises.js',
   'components.jsx', 'mobile.jsx', 'views.jsx', 'editor.jsx',
   'lingdown.js',
   'reading-editor.jsx', 'reader.jsx', 'modals.jsx', 'export.jsx', 'tweaks-panel.jsx', 'scratchpad.jsx', 'app.jsx',

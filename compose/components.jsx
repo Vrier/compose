@@ -4,6 +4,7 @@
    ========================================================================= */
 const { useState, useEffect, useRef, useCallback } = React;
 const E = window.LC;
+const SPEECH = window.LCSpeech || { termToSpeech: () => '', typeToSpeech: () => '' };
 
 /* tiny localStorage helpers shared across all view/editor/app scripts.
    Student assignment builds set COMPOSE_CONFIG.assignment.island so each
@@ -21,17 +22,31 @@ function save(key, val) { try { localStorage.setItem(LC_NS + key, JSON.stringify
 
 /* render a parsed AST (or source string) as journal-style HTML */
 function Notation({ ast, src, type, className }) {
-  const html = React.useMemo(() => {
-    let node = ast;
-    if (!node && src != null) { try { node = E.parse(E.asciiToUnicode(src)); } catch (e) { node = null; } }
-    return node ? E.toHTML(node) : '<span class="lx-const">' + (src || '') + '</span>';
+  const node = React.useMemo(() => {
+    if (ast) return ast;
+    if (src != null) { try { return E.parse(E.asciiToUnicode(src)); } catch (e) { return null; } }
+    return null;
   }, [ast, src]);
-  return <span className={'lx ' + (className || '')} dangerouslySetInnerHTML={{ __html: html }} />;
+  const html = React.useMemo(
+    () => (node ? E.toHTML(node) : '<span class="lx-const">' + (src || '') + '</span>'),
+    [node, src]);
+  // S81: the glyphs are an image of a term as far as a screen reader is
+  // concerned. role="img" with a spoken label replaces the symbol soup, and
+  // is a role that permits a name (a bare span with aria-label is not).
+  const spoken = React.useMemo(() => {
+    try { return node ? SPEECH.termToSpeech(node) : (src || ''); } catch (e) { return src || ''; }
+  }, [node, src]);
+  return <span className={'lx ' + (className || '')} role="img" aria-label={spoken || undefined}
+    dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
 function TypeBadge({ type, className }) {
-  const html = E.typeToHTML(typeof type === 'string' ? E.parseType(type) : type);
-  return <span className={'ty ' + (className || '')} dangerouslySetInnerHTML={{ __html: html }} />;
+  const t = typeof type === 'string' ? E.parseType(type) : type;
+  const html = E.typeToHTML(t);
+  let spoken = '';
+  try { spoken = 'type ' + SPEECH.typeToSpeech(t); } catch (e) { spoken = ''; }
+  return <span className={'ty ' + (className || '')} role="img" aria-label={spoken || undefined}
+    dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
 /* clickable symbol reference / palette */

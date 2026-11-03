@@ -155,7 +155,13 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
       : (node.label || 'phrase');
     const bits = [(leaf ? 'Leaf ' : 'Node ') + name];
     if (m) {
-      try { bits.push('denotation ' + E.toStr(m.term) + ', type ' + E.typeToStr(m.type)); } catch (e) { /* leave visual only */ }
+      // S81: spoken rather than printed, so a screen reader hears
+      // "lambda x dot love of x and y, type e to t" and not the glyphs.
+      try {
+        const S = window.LCSpeech;
+        bits.push(S ? 'denotation ' + S.denotationToSpeech(m.term, m.type)
+                    : 'denotation ' + E.toStr(m.term) + ', type ' + E.typeToStr(m.type));
+      } catch (e) { /* leave visual only */ }
       if (m.rule && m.rule !== 'lex') bits.push('resolved by ' + m.rule);
       if (m.shifted) bits.push('type-shifted');
     } else if (!leaf) {
