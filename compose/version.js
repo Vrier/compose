@@ -24,6 +24,10 @@
      a11y-6 Feedback announcements: a refusal goes to role="alert", everything
        else to role="status", both regions always present, and the completion
        and hint messages are announced too.
+     a11y-7 ASCII aliases: bare lambda, forall, exists and iota, and a spaced
+       pipe for disjunction, are accepted in the term input and shown under
+       each palette symbol. Fixes a live bug: <-> never became the
+       biconditional, because -> was substituted first.
    1.3.0 (S55, 2026-08-01): responsive layout overhaul — a new tablet
    breakpoint (760–1180) with an adaptive-drawer layout (full-width stage +
    slim app-bar + slide-over nav/reference drawers), plus a holistic phone

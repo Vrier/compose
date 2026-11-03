@@ -51,10 +51,13 @@ function TypeBadge({ type, className }) {
 
 /* clickable symbol reference / palette */
 const PALETTE_GROUPS = [
-  { keys: [{ g: 'λ', code: '⌃L', ins: 'λ' }, { g: '∀', code: '⌃A', ins: '∀' }, { g: '∃', code: '⌃E', ins: '∃' }, { g: 'ι', code: '⌃I', ins: 'ι' }] },
-  { keys: [{ g: '∧', code: '⌃7', ins: '∧' }, { g: '∨', code: '⌃\\', ins: '∨' }, { g: '¬', code: '⌃N', ins: '¬' }, { g: '→', code: '⌃M', ins: '→' }, { g: '↔', code: '⌃B', ins: '↔' }] },
-  { label: 'Mereology', tag: 'mereology', keys: [{ g: '∗', code: '\\star', ins: '∗', op: 'star' }, { g: '⊕', code: '⌃O', ins: '⊕', op: 'oplus' }, { g: '≤', code: '<=', ins: '≤', op: 'leq' }] },
-  { label: 'Presupposition', tag: 'presup', keys: [{ g: '∂', code: '⌃D', ins: '∂', op: 'partial' }, { g: '⊤', code: '\\top', ins: '⊤', op: 'top' }, { g: '⊥', code: '\\bot', ins: '⊥', op: 'bot' }] },
+  // S81: `alias` is what can be TYPED. The Ctrl codes stay as a second route,
+  // but Ctrl+L and Ctrl+N are taken by the browser on Windows and Linux, so
+  // the alias is what the palette shows.
+  { keys: [{ g: 'λ', code: '⌃L', alias: 'lambda', ins: 'λ' }, { g: '∀', code: '⌃A', alias: 'forall', ins: '∀' }, { g: '∃', code: '⌃E', alias: 'exists', ins: '∃' }, { g: 'ι', code: '⌃I', alias: 'iota', ins: 'ι' }] },
+  { keys: [{ g: '∧', code: '⌃7', alias: '&', ins: '∧' }, { g: '∨', code: '⌃\\', alias: '|', ins: '∨' }, { g: '¬', code: '⌃N', alias: '~', ins: '¬' }, { g: '→', code: '⌃M', alias: '->', ins: '→' }, { g: '↔', code: '⌃B', alias: '<->', ins: '↔' }] },
+  { label: 'Mereology', tag: 'mereology', keys: [{ g: '∗', code: '\\star', alias: '\\star', ins: '∗', op: 'star' }, { g: '⊕', code: '⌃O', alias: '\\oplus', ins: '⊕', op: 'oplus' }, { g: '≤', code: '<=', alias: '<=', ins: '≤', op: 'leq' }] },
+  { label: 'Presupposition', tag: 'presup', keys: [{ g: '∂', code: '⌃D', alias: '\\partial', ins: '∂', op: 'partial' }, { g: '⊤', code: '\\top', alias: '\\top', ins: '⊤', op: 'top' }, { g: '⊥', code: '\\bot', alias: '\\bot', ins: '⊥', op: 'bot' }] },
   { keys: [{ g: '[', ins: '[' }, { g: ']', ins: ']' }, { g: '(', ins: '(' }, { g: ')', ins: ')' }] },
 ];
 // Operators belonging to the mereology layer (§10): the symbol palette hides this
@@ -78,13 +81,18 @@ function SymbolPalette({ onInsert, enabledOps }) {
     .map((grp) => ({ ...grp, keys: grp.keys.filter((k) => isOn(k.op)) }))
     .filter((grp) => grp.keys.length > 0);
   const keyBtn = (s) => (
-    <button key={s.g} className="sym-key" title={s.code ? 'Type ' + s.code : ''} onMouseDown={(e) => { e.preventDefault(); onInsert(s.ins); }}>
-      {s.g}{s.code && <span className="hint">{s.code}</span>}
+    <button key={s.g} className="sym-key"
+      title={(s.alias ? 'Insert ' + s.g + ', or type ' + s.alias : '')
+             + (s.code ? ' (' + s.code + ')' : '')}
+      aria-label={'Insert ' + s.g + (s.alias ? ', or type ' + s.alias : '')}
+      onMouseDown={(e) => { e.preventDefault(); onInsert(s.ins); }}>
+      <span aria-hidden="true">{s.g}</span>
+      {(s.alias || s.code) && <span className="hint" aria-hidden="true">{s.alias || s.code}</span>}
     </button>
   );
   return (
     <div className="palette">
-      <span className="palette-tip" title="Hold Ctrl and press the underlined key to insert a symbol">Hold <kbd>Ctrl</kbd> + key to insert</span>
+      <span className="palette-tip" title="Click a symbol to insert it, or type the ASCII alias shown under it. The Ctrl shortcuts also work where the browser does not reserve them.">Click a symbol, or type the alias under it</span>
       {groups.map((grp, gi) => (
         <React.Fragment key={gi}>
           {gi > 0 && <span className="sep" />}
