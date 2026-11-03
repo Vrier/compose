@@ -1,7 +1,7 @@
 {
   "compose": 1,
   "id": "ch10-plural",
-  "title": "10.3 Plurals & the Star Operator",
+  "title": "9.3 Plurals & the Star Operator",
   "domain": {
     "multiLetterNames": true,
     "constants": {

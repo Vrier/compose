@@ -1,7 +1,7 @@
 {
   "compose": 1,
   "id": "ch13-worlds",
-  "title": "World-Indexed Predicates (§13.4)",
+  "title": "World-Indexed Predicates (§12.3.2)",
   "domain": {
     "multiLetterNames": true,
     "constants": {

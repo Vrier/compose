@@ -1,7 +1,7 @@
 {
   "compose": 1,
   "id": "ch10-cumulative",
-  "title": "10.4 Cumulative Readings",
+  "title": "9.4 Cumulative Readings",
   "domain": {
     "multiLetterNames": true,
     "constants": {

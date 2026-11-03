@@ -1,7 +1,7 @@
 {
   "compose": 1,
   "id": "ch11-neodav",
-  "title": "Neo-Davidsonian Event Semantics (§11.3)",
+  "title": "Neo-Davidsonian Event Semantics (§10.1.1–10.2)",
   "domain": {
     "multiLetterNames": true,
     "constants": {

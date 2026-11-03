@@ -1,7 +1,7 @@
 {
   "compose": 1,
   "id": "ch10-lift",
-  "title": "10.1 DP Coordination & Montague Lift",
+  "title": "9.1 DP Coordination & Montague Lift",
   "domain": {
     "multiLetterNames": true,
     "constants": {

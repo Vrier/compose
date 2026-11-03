@@ -200,7 +200,7 @@ demand through fixed six-character <b>unlock codes</b> — enter one in the app
 ("⊕ Unlock with a code"), or open its <code>/?code=…</code> link or QR, and
 the collection joins your sidebar. No account needed:</p>
 <ul>
-<li><a href="/?code=${CODE_BY_KEY.cc}">Coppock &amp; Champollion companion</a> (§6–§13, all worksheets) — code <code>${CODE_BY_KEY.cc}</code></li>
+<li><a href="/?code=${CODE_BY_KEY.cc}">Coppock &amp; Champollion companion</a> (§6–§12, all worksheets) — code <code>${CODE_BY_KEY.cc}</code></li>
 <li><a href="/?code=${CODE_BY_KEY.hk}">Heim &amp; Kratzer companion</a> — code <code>${CODE_BY_KEY.hk}</code></li>
 <li><a href="/?code=${CODE_BY_KEY.papers}">Classic papers</a> (Partee 1986, Partee &amp; Rooth 1983, Montague's PTQ, Davidson 1967, Krifka 1998, Barwise &amp; Cooper 1981, Link 1983) — code <code>${CODE_BY_KEY.papers}</code></li>
 <li>the worksheet editor is the app's <b>Author</b> section — author and export .compose.json worksheets without an account; to host worksheets for a class, instructors sign in — see the <a href="/guide/">guide</a></li>
@@ -224,7 +224,7 @@ self-service password reset (a forgotten password is reset by the
 administrator).</p>
 <h2>Credits and lineage</h2>
 <p>The bundled worksheet library tracks Elizabeth Coppock &amp; Lucas
-Champollion's <em>Invitation to Formal Semantics</em> (§6–§13) and Irene Heim &amp;
+Champollion's <em>Invitation to Formal Semantics</em> (§6–§12) and Irene Heim &amp;
 Angelika Kratzer's <em>Semantics in Generative Grammar</em>, plus a classic-papers
 shelf: Partee (1986), Partee &amp; Rooth (1983), Montague's PTQ (1973), Davidson
 (1967), Krifka (1998), Barwise &amp; Cooper (1981) and Link (1983). Textbook
@@ -405,7 +405,7 @@ use it as the template for your own set. The format is documented in
 
 <h3>Whole-book bundles</h3>
 <table class="files-table"><thead><tr><th>File</th><th>Contents</th></tr></thead><tbody>
-<tr><td><a href="/files/coppock-champollion.compose-bundle.json" download>coppock-champollion.compose-bundle.json</a></td><td>All Coppock &amp; Champollion worksheets (§6–§13) in one bundle</td></tr>
+<tr><td><a href="/files/coppock-champollion.compose-bundle.json" download>coppock-champollion.compose-bundle.json</a></td><td>All Coppock &amp; Champollion worksheets (§6–§12) in one bundle</td></tr>
 <tr><td><a href="/files/heim-kratzer.compose-bundle.json" download>heim-kratzer.compose-bundle.json</a></td><td>All Heim &amp; Kratzer worksheets in one bundle</td></tr>
 </tbody></table>
 

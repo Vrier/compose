@@ -1,7 +1,7 @@
 {
   "compose": 1,
   "id": "ch13-attitudes",
-  "title": "Propositional Attitudes (§13.5.2)",
+  "title": "Propositional Attitudes (§12.5.2)",
   "domain": {
     "multiLetterNames": true,
     "constants": {
