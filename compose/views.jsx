@@ -1152,18 +1152,30 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
         {selected && !qrPick && selected.mode === 'compose' && !chosen && (() => {
           const rules = rulesFor(selected.node);
           return (
-            <>
-              <div className="dock-label">Choose a composition rule for ⟨{selected.node.label || '•'}⟩</div>
+            /* S81: a NON-modal dialog. It is named, takes focus on open,
+               Escape dismisses it and focus returns to the node it came from.
+               aria-modal is deliberately absent: the chooser is a panel under
+               the tree, not an overlay, and claiming modality would hide the
+               derivation the student is reasoning about from a screen reader. */
+            <div role="dialog" aria-labelledby="rule-chooser-label" className="rule-chooser">
+              <div className="dock-label" id="rule-chooser-label">Choose a composition rule for ⟨{selected.node.label || '•'}⟩</div>
               <div className="rule-row">
                 {rules.map((entry) => {
                   const rej = rejected[entry.key];
+                  const reasonId = 'rc-reason-' + entry.key;
                   return (
-                    <button key={entry.key} className={'rule-card' + (rej ? ' rejected' : '')} onClick={() => pickRule(entry)}>
+                    <button key={entry.key} className={'rule-card' + (rej ? ' rejected' : '')}
+                      /* refused rules are marked, so the ✕ and the red are not
+                         the only carriers of the refusal */
+                      aria-disabled={rej ? 'true' : undefined}
+                      aria-describedby={rej ? reasonId : undefined}
+                      onClick={() => pickRule(entry)}>
                       <span className="rc-name">
-                        <span className="rc-mark">{rej ? '✕' : ''}</span>
+                        <span className="rc-mark" aria-hidden="true">{rej ? '✕' : ''}</span>
+                        {rej && <span className="sr-only">Does not apply. </span>}
                         {entry.name} <span className="rc-abbr">{entry.abbr}</span>
                       </span>
-                      <span className="rc-desc">{rej || entry.desc}</span>
+                      <span className="rc-desc" id={rej ? reasonId : undefined}>{rej || entry.desc}</span>
                     </button>
                   );
                 })}
@@ -1171,7 +1183,7 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
               </div>
               <div className="dock-hint" style={{ fontSize: 13 }}>Pick the rule you think applies — invalid choices are marked in red with the reason.</div>
               {fb && <Feedback kind={fb.kind}>{fb.msg}</Feedback>}
-            </>
+            </div>
           );
         })()}
 

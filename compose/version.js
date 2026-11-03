@@ -14,6 +14,10 @@
      a11y-3 Reduced motion: every transition and animation is cut to an
        instant under prefers-reduced-motion, inline node and edge fades
        included; 0 elements still animating under the setting.
+     a11y-4 The rule chooser is a named, non-modal dialog that takes focus and
+       closes on Escape; a refused rule is marked aria-disabled and describes
+       itself with its reason, so the cross and the red are not the only
+       carriers of the refusal.
    1.3.0 (S55, 2026-08-01): responsive layout overhaul — a new tablet
    breakpoint (760–1180) with an adaptive-drawer layout (full-width stage +
    slim app-bar + slide-over nav/reference drawers), plus a holistic phone
