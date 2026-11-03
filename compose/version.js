@@ -21,6 +21,9 @@
      a11y-5 Spoken forms: compose/speech.js renders a term and a type as a
        sentence ("lambda x dot love of x and y", "type e to e to t") for the
        label of every denotation and type chip, which carry role="img".
+     a11y-6 Feedback announcements: a refusal goes to role="alert", everything
+       else to role="status", both regions always present, and the completion
+       and hint messages are announced too.
    1.3.0 (S55, 2026-08-01): responsive layout overhaul — a new tablet
    breakpoint (760–1180) with an adaptive-drawer layout (full-width stage +
    slim app-bar + slide-over nav/reference drawers), plus a holistic phone

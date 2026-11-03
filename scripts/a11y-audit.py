@@ -189,9 +189,10 @@ def probe_keyboard_raise(pg):
                   f"focus now on node {moved or 'unknown'}")
 
 
-def live_text(pg):
-    el = pg.locator("[aria-live], [role=status], [role=alert]")
-    return " | ".join(el.nth(i).inner_text() for i in range(el.count()))
+def live_text(pg, role=None):
+    sel = "[role=%s]" % role if role else "[aria-live], [role=status], [role=alert]"
+    el = pg.locator(sel)
+    return " | ".join((el.nth(i).inner_text() or "").strip() for i in range(el.count())).strip(" |")
 
 
 with sync_playwright() as p:
@@ -210,8 +211,13 @@ with sync_playwright() as p:
 
     pg.locator(RULE_FA).first.click(); pg.wait_for_timeout(500)
     axe(pg, "term entry")
+    # a wrong answer first, to check the assertive region, then the right one
+    answer(pg, "λQ.∀z.hobbit(z)")
+    bad_alert = live_text(pg, "alert")
+    bad_status = live_text(pg, "status")
     answer(pg, "λQ.∀z.hobbit(z)→Q(z)")
-    good = live_text(pg)
+    good = live_text(pg, "status")
+    good_alert = live_text(pg, "alert")
 
     pg.locator(READY.format(cat="VP")).first.click(); pg.wait_for_timeout(400)
     pg.locator(RULE_FA).first.click(); pg.wait_for_timeout(400)
@@ -245,7 +251,10 @@ with sync_playwright() as p:
     print("aria-live regions:", pg.locator("[aria-live]").count(),
           "| role=status:", pg.locator("[role=status]").count(),
           "| role=alert:", pg.locator("[role=alert]").count())
-    print("feedback announced on a correct check:", bool(good.strip()), "|", good.strip()[:80])
+    print("correct check -> role=status:", bool(good.strip()), "|", good.strip()[:70])
+    print("correct check leaves role=alert empty:", not good_alert.strip())
+    print("refused answer -> role=alert:", bool(bad_alert.strip()), "|", bad_alert.strip()[:70])
+    print("refused answer leaves role=status empty:", not bad_status.strip())
     print("prefers-reduced-motion rule in CSS:", pg.evaluate(
         "() => Array.from(document.styleSheets).some(s=>{try{return Array.from(s.cssRules)"
         ".some(r=>r.cssText.includes('prefers-reduced-motion'))}catch(e){return false}})"))

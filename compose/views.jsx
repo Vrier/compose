@@ -821,6 +821,48 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
     requestAnimationFrame(() => api.current && api.current.focus());
   }
 
+  /* S81 (SC 4.1.3): what the live regions say. The dock renders its feedback
+     in several places and some of it is JSX carrying a TypeBadge, so the
+     announcement is computed as plain text from the same conditions rather
+     than scraped from the rendered nodes. A refusal is urgent and goes to
+     role="alert"; everything else is polite and goes to role="status". */
+  const announce = React.useMemo(() => {
+    const txt = (m, fallback) => (typeof m === 'string' ? m : fallback);
+    if (live) return { kind: 'info', text: live };
+    if (fb) {
+      const lead = fb.kind === 'good' ? 'Correct. ' : fb.kind === 'bad' ? 'Not accepted. ' : '';
+      return { kind: fb.kind, text: lead + txt(fb.msg, '') };
+    }
+    if (allDone && hasScopes && scopeFb) {
+      if (scopeFb.kind === 'good' && scopeFb.targetError) {
+        return { kind: 'info', text: 'Derivation complete, but this target could not be checked. Tell your instructor.' };
+      }
+      if (scopeFb.kind === 'good') {
+        const label = parseScopeTarget(problem.targets[scopeFb.idx]).label;
+        return { kind: 'good', text: 'Correct. The ' + label + ' scope reading is confirmed.'
+          + (completedTargets.size === problem.targets.length
+             ? ' Both readings derived.' : ' Select the other checkbox to derive the second reading.') };
+      }
+      return { kind: 'bad', text: txt(scopeFb.msg, 'That reading does not match the target.') };
+    }
+    if (allDone && hasSingleTarget && singleFb) {
+      if (singleFb.ok && singleFb.targetError) {
+        return { kind: 'info', text: 'Derivation complete, but the target could not be checked. Tell your instructor.' };
+      }
+      if (singleFb.ok) return { kind: 'good', text: 'Correct derivation. The meaning matches the target.' };
+      return { kind: 'bad', text: txt(singleFb.msg, 'The derivation does not match the target.') };
+    }
+    if (allDone) return { kind: 'good', text: 'Derivation complete. The root meaning is computed.' };
+    if (allNodesDone && !rootDone && rootMeaning) {
+      let ty = '';
+      try { ty = window.LCSpeech ? window.LCSpeech.typeToSpeech(rootMeaning.type) : E.typeToStr(rootMeaning.type); } catch (e) { ty = ''; }
+      return { kind: 'info', text: 'All nodes are resolved, but the root is type ' + ty
+        + '. Apply Existential Closure or another operation to reach type t.' };
+    }
+    return { kind: '', text: '' };
+  }, [live, fb, allDone, allNodesDone, rootDone, rootMeaning, hasScopes, scopeFb,
+      hasSingleTarget, singleFb, problem, completedTargets]);
+
   const availCount = layout.nodes.filter(({ node }) => isAvailable(node)).length;
   const sentence = problem.gloss || treeGloss(root);
 
@@ -850,8 +892,13 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
             <button className="btn-ghost hint-btn" title="Reveal the next hint"
               disabled={hintStage > hintList.length || (hintStage === hintList.length && LC_ASSESSMENT)}
               onClick={() => {
-                if (hintStage < hintList.length) setHintStage(hintStage + 1);
-                else { revealSolution(); setHintStage(hintStage + 1); }
+                if (hintStage < hintList.length) {
+                  setLive('Hint ' + (hintStage + 1) + ' of ' + hintList.length + '. ' + hintList[hintStage]);
+                  setHintStage(hintStage + 1);
+                } else {
+                  revealSolution(); setHintStage(hintStage + 1);
+                  setLive('The worked solution is now filled in.');
+                }
               }}>
               💡 {hintStage < hintList.length ? 'Hint (' + (hintStage + 1) + '/' + hintList.length + ')' : hintStage === hintList.length ? 'Show answer' : 'Answer shown'}
             </button>
@@ -1063,13 +1110,13 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
           else if (chosen) { if (selected && selected.pa) setSelected(null); setChosen(null); setFb(null); }
           else if (selected) { setSelected(null); setFb(null); setRejected({}); }
         }}>
+        {/* S81: both regions are always present, so a screen reader is
+            already watching them when their text changes. */}
         <div className="sr-only" role="status" aria-live="polite">
-          {live
-            ? live
-            : fb
-            ? ((fb.kind === 'good' ? 'Correct. ' : fb.kind === 'bad' ? 'Not accepted. ' : '') + (typeof fb.msg === 'string' ? fb.msg : ''))
-            : allDone ? 'Derivation complete.'
-            : selected ? '' : ''}
+          {announce.kind !== 'bad' ? announce.text : ''}
+        </div>
+        <div className="sr-only" role="alert" aria-live="assertive">
+          {announce.kind === 'bad' ? announce.text : ''}
         </div>
         {/* S81: the keyboard route to QR. Offered for a raisable node whatever
             dock panel it opened (a resolved DP lands in view or shift mode, an
