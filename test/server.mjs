@@ -24,6 +24,10 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { createRequire } from 'node:module';
+/* S81: read the canonical version rather than pinning it here, so a bump in
+   compose/version.js does not turn the suite red for the wrong reason. */
+const { COMPOSE_VERSION } = createRequire(import.meta.url)('../compose/version.js');
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(HERE, '..');
@@ -283,7 +287,7 @@ async function main() {
   contains('service-worker registration shipped', page, 'serviceWorker.register');
   r = await req('GET', '/sw.js', { raw: true });
   expect('sw.js served', r.status === 200, r.status);
-  contains('sw cache name is versioned', r.text, "CACHE = 'compose-v1.3.0'");
+  contains('sw cache name is versioned', r.text, "CACHE = 'compose-v" + COMPOSE_VERSION + "'");
   contains('sw never touches dash/edit/admin/api', r.text, "p.startsWith('/dash') || p.startsWith('/edit') || p.startsWith('/_') || p.startsWith('/api')");
   r = await req('GET', '/manifest.json', { raw: true });
   contains('web manifest served', r.text, '"short_name": "COMPOSE"');
@@ -439,7 +443,7 @@ async function main() {
   // W9 — about page (S8)
   r = await req('GET', '/about/', { raw: true });
   contains('about page serves', r.text, 'How to cite');
-  contains('about page carries the canonical version', r.text, 'version 1.3.0');
+  contains('about page carries the canonical version', r.text, 'version ' + COMPOSE_VERSION);
   contains('about page shares the family codes as app links (S44)', r.text, '/?code=KT6WF4');
   contains('about page states what accounts store (N7)', r.text, 'password hash');
 

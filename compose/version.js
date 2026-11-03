@@ -46,7 +46,7 @@
    and (via the vendored copy) by the PocketBase serving hooks. Bump here and
    nowhere else.
    =========================================================================== */
-const COMPOSE_VERSION = '1.3.0';
+const COMPOSE_VERSION = '1.4.0';
 const COMPOSE_DATE = '2026';
 if (typeof window !== 'undefined') { window.COMPOSE_VERSION = COMPOSE_VERSION; window.COMPOSE_DATE = COMPOSE_DATE; }
 if (typeof module !== 'undefined' && module.exports) module.exports = { COMPOSE_VERSION, COMPOSE_DATE };
