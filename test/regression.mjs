@@ -37,10 +37,20 @@ const E = window.LC, F = window.LCFormat;
 const typeStr = (t) => { try { return E.typeToStr ? E.typeToStr(t) : JSON.stringify(t); } catch { return '?'; } };
 
 /* Mirror app's matchesTarget (views.jsx) so we also regress the grader. */
+/* S80: mirrors views.labelIsFormula — a colon is a label separator only when
+   the half before it is not itself a formula, so an H&K definedness target
+   (φ : ψ, parsed as ∂(φ) ∧ ψ) is graded whole. */
+function labelIsFormula(labelPart) {
+  if (!labelPart) return false;
+  const binder = /[λ∀∃ι]\s*[A-Za-z]|\b[LAEI][a-z]['’ 0-9]*\s*[.[]/;
+  if (!binder.test(labelPart) && labelPart.indexOf('∂') === -1) return false;
+  return E.tryParse(labelPart).ok;
+}
 function parseTarget(str) {
   if (!str) return null;
   const colon = str.indexOf(':');
-  const formula = colon > -1 ? str.slice(colon + 1).trim() : str.trim();
+  const split = colon > -1 && !labelIsFormula(str.slice(0, colon).trim());
+  const formula = split ? str.slice(colon + 1).trim() : str.trim();
   const r = E.tryParse(formula);
   return r && r.ok ? r.ast : null;
 }
