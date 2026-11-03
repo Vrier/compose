@@ -1,0 +1,78 @@
+<main class="about-wrap">
+<h1>Accessibility</h1>
+<p class="about-sub">How COMPOSE is tested, what conforms, and what does not.</p>
+
+<p><b>Target.</b> WCAG 2.2 Level AA for the derivation view, which is where
+students spend their time: the tree, the rule chooser, the term entry and the
+feedback. The surrounding pages are held to the same target but are tested less
+often.</p>
+
+<h2>What is tested, and how</h2>
+<p>Four scripts run against a local build of this site and are kept in the
+repository, so anyone can repeat them:</p>
+<ul>
+<li><code>scripts/a11y-audit.py</code> — axe-core 4.10.2 over five states of a
+live derivation (library, rule chooser open, term entry, rule refused, after a
+raise), plus probes for the keyboard route to Quantifier Raising, the dialog
+semantics of the chooser, the live regions and reduced motion.</li>
+<li><code>scripts/a11y-keyboard-walk.py</code> — completes a whole worksheet,
+quantifier raising included, with zero pointer events.</li>
+<li><code>scripts/a11y-contrast.py</code> — measures the rendered contrast of
+every derive-view text style in every palette.</li>
+<li><code>scripts/a11y-reflow.py</code> — the four states at 320&nbsp;px and at
+200% zoom.</li>
+</ul>
+<p>Last run 3 November 2026 against version 1.4.0, in Chromium 156 on Linux.
+Results: <b>zero axe violations</b> in all five states; the worksheet completes
+with the keyboard alone; <b>every measured text style clears 4.5:1</b> in all
+four palettes and in the high-contrast theme; no clipping or page-level
+horizontal scrolling at either width.</p>
+
+<h2>What this means in practice</h2>
+<ul>
+<li>Every step of a derivation can be done from the keyboard. Quantifier
+Raising, which used to need a drag, now also answers to <kbd>R</kbd> on a
+focused node, or a "Raise" entry in the rule chooser, and offers its landing
+sites to the arrow keys.</li>
+<li>Denotations and types are announced as words rather than symbols:
+"lambda x dot love of x and y", "type e to e to t".</li>
+<li>A refused rule says why in text, not only in red.</li>
+<li>Results are announced: a correct step politely, a refusal immediately.</li>
+<li>Every symbol can be typed in ASCII (<code>lambda</code>,
+<code>forall</code>, <code>exists</code>, <code>iota</code>, <code>-&gt;</code>,
+<code>&lt;-&gt;</code>, <code>&amp;</code>, <code>~</code>), shown under each
+palette key, because the Ctrl shortcuts are reserved by some browsers.</li>
+<li>Animation stops under the operating system's reduce-motion setting, and a
+high-contrast theme is available in Display, on by default if the system asks
+for more contrast.</li>
+</ul>
+
+<h2>Known gaps</h2>
+<ul>
+<li><b>Screen readers have not been tested by a person.</b> The markup is
+built to a published 20-step script
+(<code>compose/docs/A11Y-CHECKLIST.md</code>) covering VoiceOver on macOS and
+iOS and NVDA on Windows, and the automated probes check that the
+announcements exist and carry the right urgency. Whether they are useful in
+sequence is not yet confirmed.</li>
+<li>The tree is a diagram. It scrolls inside its own pane at narrow widths and
+at high zoom, which WCAG allows, but following a large derivation with a
+magnifier is still work.</li>
+<li>Roughly 660 contrast checks per run come back inconclusive rather than
+passing. Almost all are axe declining to judge single characters and
+mathematical symbols; the styles behind them are measured by hand in the
+contrast script.</li>
+<li>Worksheet content is authored by instructors. COMPOSE cannot guarantee that
+a particular worksheet's prose is accessible.</li>
+<li>The editor, the instructor dashboard and the reading view have not had the
+same pass as the derive view.</li>
+</ul>
+
+<h2>Feedback</h2>
+<p>Accessibility problems are bugs. Report one, with the browser and assistive
+technology you were using, to
+<a href="mailto:tom.stephen64@gmail.com">tom.stephen64@gmail.com</a> or at
+<a href="https://github.com/Vrier/compose/issues">github.com/Vrier/compose/issues</a>.</p>
+
+<div class="about-foot">COMPOSE version __VERSION__ · <a href="/">Open the app</a> · <a href="/help/">Student help</a> · <a href="/about/">About and how to cite</a></div>
+</main>

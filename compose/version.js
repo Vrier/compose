@@ -32,6 +32,8 @@
        div carrying aria-label: zero aria-prohibited-attr results.
      a11y-9 Zoom and reflow: no page-level horizontal scrolling and nothing
        clipped in the four derive states at 320px or at 200% zoom.
+     a11y-10 /accessibility, linked from Guide & help: conformance target,
+       what is tested with which tools and when, known gaps, and a contact.
      a11y-11 compose/docs/A11Y-CHECKLIST.md: a 20-step manual screen-reader
        pass for VoiceOver and NVDA, expected announcements against heard.
    1.3.0 (S55, 2026-08-01): responsive layout overhaul — a new tablet
