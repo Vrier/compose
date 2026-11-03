@@ -1,7 +1,7 @@
 {
   "compose": 1,
   "id": "ch12-tense",
-  "title": "Tense (§12.2.2.4)",
+  "title": "Tense (§11.2.5)",
   "domain": {
     "multiLetterNames": true,
     "constants": {

@@ -82,140 +82,140 @@
       "code": "YJB8SZ",
       "kind": "worksheet",
       "key": "ch10-coord",
-      "title": "10.1 Coordination",
+      "title": "9.1 Coordination",
       "url": "/?code=YJB8SZ"
     },
     {
       "code": "FHM2JD",
       "kind": "worksheet",
       "key": "ch10-cumulative",
-      "title": "10.4 Cumulative Readings",
+      "title": "9.4 Cumulative Readings",
       "url": "/?code=FHM2JD"
     },
     {
       "code": "M7G23G",
       "kind": "worksheet",
       "key": "ch10-lift",
-      "title": "10.1 DP Coordination & Montague Lift",
+      "title": "9.1 DP Coordination & Montague Lift",
       "url": "/?code=M7G23G"
     },
     {
       "code": "JYHINY",
       "kind": "worksheet",
       "key": "ch10-mereology",
-      "title": "10.2 Mereology: Sums and Parthood",
+      "title": "9.2 Mereology: Sums and Parthood",
       "url": "/?code=JYHINY"
     },
     {
       "code": "4YPCFY",
       "kind": "worksheet",
       "key": "ch10-plural",
-      "title": "10.3 Plurals & the Star Operator",
+      "title": "9.3 Plurals & the Star Operator",
       "url": "/?code=4YPCFY"
     },
     {
       "code": "PH72N8",
       "kind": "worksheet",
       "key": "ch10.5-fragment",
-      "title": "10.5 The Full Fragment (L∗ with starred verbs)",
+      "title": "9.5 The Full Fragment (L∗ with starred verbs)",
       "url": "/?code=PH72N8"
     },
     {
       "code": "HNAWBH",
       "kind": "worksheet",
       "key": "ch11.1-dav",
-      "title": "Davidsonian Event Semantics (§11.1–11.2)",
+      "title": "Davidsonian Event Semantics (§10.1)",
       "url": "/?code=HNAWBH"
     },
     {
       "code": "E4BW35",
       "kind": "worksheet",
       "key": "ch11.3-neodav",
-      "title": "Neo-Davidsonian Event Semantics (§11.3)",
+      "title": "Neo-Davidsonian Event Semantics (§10.1.1–10.2)",
       "url": "/?code=E4BW35"
     },
     {
       "code": "M8IYND",
       "kind": "worksheet",
       "key": "ch11.4-continuation",
-      "title": "Event Quantifiers: the Continuation Approach (§11.4–11.6)",
+      "title": "Event Quantifiers: the Continuation Approach (§10.3–10.5)",
       "url": "/?code=M8IYND"
     },
     {
       "code": "XNX2G4",
       "kind": "worksheet",
       "key": "ch11.5-conjneg",
-      "title": "Conjunction & Negation in Event Semantics (§11.5–11.6)",
+      "title": "Conjunction & Negation in Event Semantics (§10.3–10.4)",
       "url": "/?code=XNX2G4"
     },
     {
       "code": "4TC5QP",
       "kind": "worksheet",
       "key": "ch12.1-times",
-      "title": "Tense (§12.2.2.4)",
+      "title": "Tense (§11.2.5)",
       "url": "/?code=4TC5QP"
     },
     {
       "code": "X9TFD7",
       "kind": "worksheet",
       "key": "ch12.2-aspects",
-      "title": "The Perfect (§12.2.2.5)",
+      "title": "The Perfect (§11.2.4)",
       "url": "/?code=X9TFD7"
     },
     {
       "code": "KF6257",
       "kind": "worksheet",
       "key": "ch12.3-future",
-      "title": "The Future: WOLL, will & would (§12.2.2.4)",
+      "title": "The Future: WOLL, will & would (§11.2.5)",
       "url": "/?code=KF6257"
     },
     {
       "code": "RDH6BD",
       "kind": "worksheet",
       "key": "ch13.1-worlds",
-      "title": "World-Indexed Predicates (§13.4)",
+      "title": "World-Indexed Predicates (§12.3.2)",
       "url": "/?code=RDH6BD"
     },
     {
       "code": "M5M2YF",
       "kind": "worksheet",
       "key": "ch13.2-modals",
-      "title": "Modals: Necessity & Possibility (§13.4.4)",
+      "title": "Modals: Necessity & Possibility (§12.4.4)",
       "url": "/?code=M5M2YF"
     },
     {
       "code": "GCJDRA",
       "kind": "worksheet",
       "key": "ch13.3-intensional",
-      "title": "Intensional Transitive Verbs (§13.4.4)",
+      "title": "Intensional Transitive Verbs (§12.4.4)",
       "url": "/?code=GCJDRA"
     },
     {
       "code": "XSFRSG",
       "kind": "worksheet",
       "key": "ch13.4-attitudes",
-      "title": "Propositional Attitudes (§13.5.2)",
+      "title": "Propositional Attitudes (§12.5.2)",
       "url": "/?code=XSFRSG"
     },
     {
       "code": "IESWEU",
       "kind": "worksheet",
       "key": "ch13.5-dere",
-      "title": "De dicto and de re (§13.6)",
+      "title": "De dicto and de re (§12.6)",
       "url": "/?code=IESWEU"
     },
     {
       "code": "KWBI86",
       "kind": "worksheet",
       "key": "ch13.6-worlds-times",
-      "title": "Worlds & Times Combined (§12–13)",
+      "title": "Worlds & Times Combined (§11–12)",
       "url": "/?code=KWBI86"
     },
     {
       "code": "MVBT2Q",
       "kind": "worksheet",
       "key": "ch13.7-haveto",
-      "title": "Contextual Modal Base & Presupposition: have to (§13.5.1)",
+      "title": "Contextual Modal Base & Presupposition: have to (§12.5.1)",
       "url": "/?code=MVBT2Q"
     },
     {
@@ -351,7 +351,7 @@
       "code": "JV5NKN",
       "kind": "chapter",
       "key": "cc/ch10",
-      "title": "C&C §10 Coordination & Plurals",
+      "title": "C&C §9 Coordination & Plurals",
       "url": "/?code=JV5NKN",
       "prefix": "ch10"
     },
@@ -359,7 +359,7 @@
       "code": "F7Q8Y7",
       "kind": "chapter",
       "key": "cc/ch11",
-      "title": "C&C §11 Event Semantics",
+      "title": "C&C §10 Event Semantics",
       "url": "/?code=F7Q8Y7",
       "prefix": "ch11"
     },
@@ -367,7 +367,7 @@
       "code": "7N7UWF",
       "kind": "chapter",
       "key": "cc/ch12",
-      "title": "C&C §12 Tense & Aspect",
+      "title": "C&C §11 Tense & Aspect",
       "url": "/?code=7N7UWF",
       "prefix": "ch12"
     },
@@ -375,7 +375,7 @@
       "code": "VYDXIG",
       "kind": "chapter",
       "key": "cc/ch13",
-      "title": "C&C §13 Intensional Semantics",
+      "title": "C&C §12 Intensional Semantics",
       "url": "/?code=VYDXIG",
       "prefix": "ch13"
     },

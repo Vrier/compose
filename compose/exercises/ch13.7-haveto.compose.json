@@ -1,7 +1,7 @@
 {
   "compose": 1,
   "id": "ch13-haveto",
-  "title": "Contextual Modal Base & Presupposition: have to (§13.5.1)",
+  "title": "Contextual Modal Base & Presupposition: have to (§12.5.1)",
   "subtitle": "A context-supplied accessibility relation R, with a ∂-presupposition that R is deontic (the book's eq. 55 and the ∂ extension it suggests)",
   "domain": {
     "multiLetterNames": true,

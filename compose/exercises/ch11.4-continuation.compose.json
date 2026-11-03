@@ -1,7 +1,7 @@
 {
   "compose": 1,
   "id": "ch11-cont",
-  "title": "Event Quantifiers: the Continuation Approach (§11.4–11.6)",
+  "title": "Event Quantifiers: the Continuation Approach (§10.3–10.5)",
   "subtitle": "Champollion's verbs-as-event-quantifiers fragment: Quantifier Closure, in-situ quantifiers, conjunction and negation",
   "domain": {
     "multiLetterNames": true,
@@ -416,7 +416,7 @@
       ]
     },
     {
-      "title": "E. Conjunction (§11.5)",
+      "title": "E. Conjunction (§10.4)",
       "instructions": "VP-and on the continuation approach is andVP ↝ λW.λV.λk.[V(k) ∧ W(k)]: each conjunct is handed its own copy of the continuation, so each gets its own event quantifier. \"Frodo smoked and drank\" then describes two events, so the contradictory modifiers in the second item attach to different events and no contradiction arises (textbook Exercise 3).",
       "items": [
         {
@@ -436,8 +436,8 @@
       ]
     },
     {
-      "title": "F. Negation (§11.6)",
-      "instructions": "Sentential negation is not ↝ λV.λk.¬V(k): it negates the whole event quantifier, so the existential stays trapped inside the negation and the result says there is no such event, the only attested reading. Aux did ↝ λV.λk.V(k) is the identity. The event-predicate approach of §11.3 yields only the much weaker \"there is an event that isn't a barking\".",
+      "title": "F. Negation (§10.3)",
+      "instructions": "Sentential negation is not ↝ λV.λk.¬V(k): it negates the whole event quantifier, so the existential stays trapped inside the negation and the result says there is no such event, the only attested reading. Aux did ↝ λV.λk.V(k) is the identity. The event-predicate approach of §10.5.1 yields only the much weaker \"there is an event that isn't a barking\".",
       "items": [
         {
           "sentence": "Sam didn't sleep.",

@@ -1,7 +1,7 @@
 {
   "compose": 1,
   "id": "ch12-perfect",
-  "title": "The Perfect (§12.2.2.5)",
+  "title": "The Perfect (§11.2.4)",
   "domain": {
     "multiLetterNames": true,
     "constants": {

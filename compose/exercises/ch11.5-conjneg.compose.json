@@ -1,8 +1,8 @@
 {
   "compose": 1,
   "id": "ch11-conjneg",
-  "title": "Conjunction & Negation in Event Semantics (§11.5–11.6)",
-  "subtitle": "The event-predicate fragment of §11.3, applied to VP coordination and sentential negation, with the diagnostics that motivate the continuation approach.",
+  "title": "Conjunction & Negation in Event Semantics (§10.3–10.4)",
+  "subtitle": "The event-predicate fragment of §10.5.1, applied to VP coordination and sentential negation, with the diagnostics that motivate the continuation approach.",
   "domain": {
     "multiLetterNames": true,
     "constants": {
@@ -177,7 +177,7 @@
   "exercises": [
     {
       "title": "A. VP conjunction with one shared event",
-      "instructions": "On the event-predicate approach (§11.3) a VP is a set of events ⟨v,t⟩. Conjunction follows the Partee & Rooth schema at that type: andVP ↝ λQ.λP.λe.[P(e) ∧ Q(e)], type ⟨⟨v,t⟩,⟨⟨v,t⟩,⟨v,t⟩⟩⟩. The Coord head applies to the right conjunct by FA, then to the left conjunct by FA, giving one event predicate. The Agent head joins by Predicate Modification and Existential Closure binds the single event. The prediction is one event that is both a smoking and a drinking.",
+      "instructions": "On the event-predicate approach (§10.5.1) a VP is a set of events ⟨v,t⟩. Conjunction follows the Partee & Rooth schema at that type: andVP ↝ λQ.λP.λe.[P(e) ∧ Q(e)], type ⟨⟨v,t⟩,⟨⟨v,t⟩,⟨v,t⟩⟩⟩. The Coord head applies to the right conjunct by FA, then to the left conjunct by FA, giving one event predicate. The Agent head joins by Predicate Modification and Existential Closure binds the single event. The prediction is one event that is both a smoking and a drinking.",
       "items": [
         {
           "sentence": "Frodo smoked and drank.",
@@ -204,7 +204,7 @@
     },
     {
       "title": "B. The single-event prediction",
-      "instructions": "Add a manner adverb to each conjunct. The single-event entry forces both predicates onto the same event, so the derivation makes one event both slow and quick. This is the textbook's argument (Exercise 3) that VP-and cannot denote a single shared event; the continuation fragment of §11.4 hands each conjunct its own event quantifier.",
+      "instructions": "Add a manner adverb to each conjunct. The single-event entry forces both predicates onto the same event, so the derivation makes one event both slow and quick. This is the textbook's argument (Exercise 3) that VP-and cannot denote a single shared event; the continuation fragment of §10.5.2 hands each conjunct its own event quantifier.",
       "items": [
         {
           "sentence": "Frodo smoked slowly and drank quickly.",
@@ -212,7 +212,7 @@
           "targets": [
             "∃e[agent(e,f) ∧ slow(e) ∧ smoke(e) ∧ quick(e) ∧ drink(e)]"
           ],
-          "note": "One event e is forced to be both slow and quick. The continuation approach derives a two-event reading instead (§11.4, group E)."
+          "note": "One event e is forced to be both slow and quick. The continuation approach derives a two-event reading instead (§10.5.2, group E)."
         }
       ]
     },

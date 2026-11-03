@@ -17,8 +17,8 @@
 
 export const CC_CHAPTERS = [
   ['ch6', '§6 Function Application & Quantifiers'], ['ch7', '§7 Adjectives, Relatives & Pronouns'],
-  ['ch8', '§8 Definites & Possessives'], ['ch10', '§10 Coordination & Plurals'],
-  ['ch11', '§11 Event Semantics'], ['ch12', '§12 Tense & Aspect'], ['ch13', '§13 Intensional Semantics'],
+  ['ch8', '§8 Definites & Possessives'], ['ch10', '§9 Coordination & Plurals'],
+  ['ch11', '§10 Event Semantics'], ['ch12', '§11 Tense & Aspect'], ['ch13', '§12 Intensional Semantics'],
 ];
 
 export const HK_CHAPTERS = [
