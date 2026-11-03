@@ -959,8 +959,18 @@
       [/\\sum\b/g, '⊕'],
     ];
     for (const [re, ch] of codes) s = s.replace(re, ch);
-    // direct symbols
-    s = s.replace(/->/g, '→').replace(/<->/g, '↔').replace(/&/g, '∧').replace(/~/g, '¬').replace(/<=/g, '≤');
+    // S81: bare words for the binders. The palette's Ctrl shortcuts are not
+    // dependable (Ctrl+L and Ctrl+N are taken by the browser on Windows and
+    // Linux), so every symbol needs a way to be typed in ASCII. Whole words
+    // only, and the backslash forms above have already been consumed.
+    s = s.replace(/\blambda\b/g, 'λ').replace(/\bforall\b/g, '∀')
+         .replace(/\bexists\b/g, '∃').replace(/\biota\b/g, 'ι');
+    // direct symbols. <-> MUST be substituted before ->, or "a <-> b" becomes
+    // "a <→ b" and the biconditional is never produced (S81: it never was).
+    s = s.replace(/<->/g, '↔').replace(/->/g, '→').replace(/&/g, '∧').replace(/~/g, '¬').replace(/<=/g, '≤');
+    // Disjunction as a spaced pipe only: |x| is cardinality in this notation,
+    // so a bare | cannot be rewritten.
+    s = s.replace(/ \| /g, ' ∨ ');
     // note: we intentionally do NOT auto-convert bare L/E/A/V to avoid breaking
     // multi-letter identifiers; the palette + backslash codes handle binders.
     return s;

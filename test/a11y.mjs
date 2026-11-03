@@ -1,12 +1,15 @@
 /* ===========================================================================
    COMPOSE — accessibility unit tests (S81)
 
-   Covers the a11y behaviour that is pure functions and so can be tested
-   without a browser:
+   Covers the two pieces of a11y behaviour that are pure functions and so can
+   be tested without a browser:
 
      A. SPEECH — compose/speech.js renders a λ-term and a type as a spoken
         sentence for the aria-label of every denotation and type chip. Ten
         terms taken from the worksheet library, plus the type forms.
+     B. ASCII ALIASES — a term typed with ASCII aliases must parse to the same
+        term as one typed with the symbols, since the Ctrl shortcuts in the
+        palette are unreliable on Windows and Linux.
 
    No external dependencies.
    =========================================================================== */
@@ -83,9 +86,33 @@ for (const [src] of TERMS) {
   else pass++;
 }
 
+/* ---- B. ASCII aliases grade identically to symbols --------------------- */
+const ALIASES = [
+  ['\\lambda x.run(x)',        'λx.run(x)'],
+  ['lambda x.run(x)',          'λx.run(x)'],
+  ['forall x.hobbit(x)',       '∀x.hobbit(x)'],
+  ['exists x.hobbit(x)',       '∃x.hobbit(x)'],
+  ['iota x.cat(x)',            'ιx.cat(x)'],
+  ['p -> q',                   'p → q'],
+  ['p <-> q',                  'p ↔ q'],
+  ['p & q',                    'p ∧ q'],
+  ['p | q',                    'p ∨ q'],
+  ['~p',                       '¬p'],
+  ['lambda x.cat(x) & gray(x)', 'λx.cat(x) ∧ gray(x)'],
+  ['forall x.hobbit(x) -> love(g, x)', '∀x.hobbit(x) → love(g, x)'],
+];
+for (const [ascii, unicode] of ALIASES) {
+  const a = E.tryParse(ascii), u = E.tryParse(unicode);
+  if (!a.ok) { fails.push(`alias did not parse: ${ascii} (${a.error})`); continue; }
+  if (!u.ok) { fails.push(`symbol form did not parse: ${unicode}`); continue; }
+  if (!E.alphaEqual(E.normalize(a.ast), E.normalize(u.ast))) {
+    fails.push(`alias differs: ${ascii}\n    -> ${E.toStr(a.ast)}\n    vs ${E.toStr(u.ast)}`);
+  } else pass++;
+}
+
 if (fails.length) {
   console.log(`✗ a11y suite: ${fails.length} failed, ${pass} passed\n`);
   for (const f of fails) console.log('  ✗ ' + f);
   process.exit(1);
 }
-console.log(`✓ a11y suite OK — ${pass} checks (spoken terms and types)`);
+console.log(`✓ a11y suite OK — ${pass} checks (spoken terms and types, ASCII aliases)`);
