@@ -28,6 +28,8 @@
        pipe for disjunction, are accepted in the term input and shown under
        each palette symbol. Fixes a live bug: <-> never became the
        biconditional, because -> was substituted first.
+     a11y-8 A node that cannot be clicked is role="group" rather than a bare
+       div carrying aria-label: zero aria-prohibited-attr results.
    1.3.0 (S55, 2026-08-01): responsive layout overhaul — a new tablet
    breakpoint (760–1180) with an adaptive-drawer layout (full-width stage +
    slim app-bar + slide-over nav/reference drawers), plus a holistic phone

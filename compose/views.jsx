@@ -1042,7 +1042,13 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
                 )}
                 <div className="node-box-wrap">
                 <div className={cls.join(' ')}
-                  role={clickable ? 'button' : undefined}
+                  /* S81: a node that cannot be clicked was a plain div
+                     carrying aria-label, which is what axe reports as
+                     aria-prohibited-attr: a generic element has no role that
+                     a name can attach to. role="group" is a container role
+                     that does take a name, and claims no interactivity the
+                     node does not have. */
+                  role={clickable ? 'button' : 'group'}
                   tabIndex={clickable ? 0 : -1}
                   data-nodeid={node.id}
                   aria-label={nodeA11yLabel(node, m, leaf, avail, shiftable, tok)}
