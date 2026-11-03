@@ -251,6 +251,9 @@ body {
   display: flex; flex-direction: column; align-items: center; gap: 5px;
   text-align: center;
 }
+/* S81: a non-interactive positioning context for the raise handle, so the
+   handle can sit on the box's corner without being a child of it. */
+.node-box-wrap { position: relative; display: flex; }
 .node-box {
   min-width: 46px; padding: 7px 13px; border-radius: 9px;
   border: 1.5px solid var(--line); background: var(--panel);
@@ -425,11 +428,23 @@ kbd { font-family: var(--mono); font-size: 0.88em; background: var(--panel-2); b
 .ty-prod { color: var(--faint); padding: 0 0.1em; }
 
 /* ---- Quantifier Raising drag/drop ---------------------------------------- */
+/* S81: 24px square for SC 2.5.8 (target size), and positioned against
+   .node-box-wrap rather than inside .node-box, which made it a button nested
+   in a role="button" (axe nested-interactive, SC 4.1.2). */
+/* The tree is scaled by `transform: scale(--tree-zoom)`, so a 24px handle
+   rendered at a fitted zoom of 0.65 measures 15.6px and fails 2.5.8. Sizing
+   in inverse-scaled units keeps the RENDERED target at 24px at any zoom. */
 .qr-handle {
-  position: absolute; bottom: -9px; right: -9px; width: 20px; height: 20px;
-  background: oklch(0.55 0.15 255); color: white; border-radius: 5px;
-  font-size: 13px; display: grid; place-items: center; cursor: grab; z-index: 3;
-  border: none; line-height: 1; box-shadow: var(--shadow-sm);
+  position: absolute;
+  /* top-right: the denotation and type sit BELOW the box, and at a fitted
+     zoom the inverse-scaled handle is large enough to cover them. */
+  top: calc(-11px / var(--tree-zoom, 1)); right: calc(-11px / var(--tree-zoom, 1));
+  width: calc(24px / var(--tree-zoom, 1)); height: calc(24px / var(--tree-zoom, 1));
+  background: oklch(0.55 0.15 255); color: white;
+  border-radius: calc(6px / var(--tree-zoom, 1));
+  font-size: calc(14px / var(--tree-zoom, 1));
+  display: grid; place-items: center; cursor: grab; z-index: 3;
+  border: none; line-height: 1; box-shadow: var(--shadow-sm); padding: 0;
 }
 .qr-handle:hover { filter: brightness(1.15); transform: scale(1.1); }
 .qr-handle:active { cursor: grabbing; }
@@ -1609,6 +1624,7 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
 .node-box:focus-visible, .rule-card:focus-visible, .shift-card:focus-visible,
+.qr-handle:focus-visible,
 .btn:focus-visible, .btn-ghost:focus-visible, .zoom-btn:focus-visible,
 .sym-key:focus-visible, .entry input:focus-visible {
   outline: 2px solid var(--accent);
