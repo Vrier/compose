@@ -170,7 +170,8 @@ html, body { height: auto !important; overflow: auto !important; }
 .about-wrap p, .about-wrap li { font-size: 15.5px; color: var(--ink); }
 .about-cite { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; white-space: pre-wrap; margin: 10px 0; }
 .about-foot { margin-top: 40px; font-size: 12.5px; color: var(--ink-soft); }
-.about-wrap a { color: #b5532f; }
+/* S81: was a hard-coded #b5532f at 4.41:1 on the page ground. */
+.about-wrap a { color: var(--accent-ink); }
 </style>
 </head>
 <body>
@@ -381,7 +382,8 @@ html, body { height: auto !important; overflow: auto !important; }
 .about-wrap h2 { font-size: 19px; margin: 30px 0 8px; }
 .about-wrap h3 { font-size: 16px; margin: 22px 0 6px; }
 .about-wrap p, .about-wrap li, .about-wrap td, .about-wrap th { font-size: 14.5px; color: var(--ink); }
-.about-wrap a { color: #b5532f; }
+/* S81: was a hard-coded #b5532f at 4.41:1 on the page ground. */
+.about-wrap a { color: var(--accent-ink); }
 .files-table { width: 100%; border-collapse: collapse; margin: 6px 0 14px; }
 .files-table th, .files-table td { text-align: left; padding: 5px 10px 5px 0; border-bottom: 1px solid var(--line); }
 .files-table th { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); }
@@ -458,7 +460,8 @@ html, body { height: auto !important; overflow: auto !important; }
 .about-sub { color: var(--ink-soft); margin-bottom: 20px; }
 .about-wrap h2 { font-size: 20px; margin: 38px 0 10px; padding-top: 8px; border-top: 1px solid var(--line); }
 .about-wrap p, .about-wrap td, .about-wrap th { font-size: 15px; color: var(--ink); }
-.about-wrap a { color: #b5532f; }
+/* S81: was a hard-coded #b5532f at 4.41:1 on the page ground. */
+.about-wrap a { color: var(--accent-ink); }
 html { scroll-behavior: smooth; }
 .guide-wrap { max-width: 1080px; }
 .guide-wrap h2 { scroll-margin-top: 24px; }
@@ -498,12 +501,18 @@ const helpPage = docPage({ title: 'Help with derivations', path: '/help/',
   desc: 'Student reference for COMPOSE: the composition rules, type-shifts, symbol entry, grading, and how to read the feedback.' }, helpBody);
 const helpGuidesPage = docPage({ title: 'Derivation guides', path: '/help/guides/',
   desc: 'Worked step-by-step COMPOSE derivations: a first tree, a transitive verb, and Predicate Modification.' }, helpGuidesBody);
+/* S81: the accessibility statement. Conformance target, what is tested and
+   when, known gaps, and where to report a problem. */
+const a11yBody = fs.readFileSync(path.join('build', 'a11y-body.html'), 'utf8')
+  .split('__VERSION__').join(COMPOSE_VERSION);
+const a11yPage = docPage({ title: 'Accessibility', path: '/accessibility/',
+  desc: 'How COMPOSE is tested for accessibility, what conforms to WCAG 2.2 AA, what does not, and how to report a problem.' }, a11yBody);
 
 /* machine sitemap + robots (S14.1) */
 const SITE = 'https://compose.tstephen.com';
 // S44: the curated paths and /editor are noindex redirect stubs — only the
 // real documents stay in the sitemap.
-const sitemapUrls = ['/', '/about/', '/files/', '/guide/', '/help/', '/help/guides/'];
+const sitemapUrls = ['/', '/about/', '/accessibility/', '/files/', '/guide/', '/help/', '/help/guides/'];
 const sitemapXml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
   + sitemapUrls.map((u) => '  <url><loc>' + SITE + u + '</loc></url>').join('\n') + '\n</urlset>\n';
 const robotsTxt = 'User-agent: *\nAllow: /\nDisallow: /dash/\nDisallow: /edit/\nDisallow: /_/\nSitemap: ' + SITE + '/sitemap.xml\n';
@@ -518,6 +527,7 @@ write(path.join('pb_public', 'files', 'index.html'), filesPage);
 write(path.join('pb_public', 'guide', 'index.html'), guidePage);
 write(path.join('pb_public', 'help', 'index.html'), helpPage);
 write(path.join('pb_public', 'help', 'guides', 'index.html'), helpGuidesPage);
+write(path.join('pb_public', 'accessibility', 'index.html'), a11yPage);
 for (const img of fs.readdirSync(path.join('server', 'guide-assets')).filter((f) => f.endsWith('.jpg') || f.endsWith('.mp4'))) {
   fs.copyFileSync(path.join('server', 'guide-assets', img), path.join(OUT, 'pb_public', 'guide', img));
 }

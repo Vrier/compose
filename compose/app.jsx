@@ -1232,6 +1232,7 @@ function App() {
     { path: '/help/guides/', title: 'Worked walkthroughs', glyph: '\u25b7', hay: 'help videos walkthrough derivation guides' },
     { path: '/files/', title: 'Downloads & site map', glyph: '\u2913', hay: 'files downloads site map worksheets json' },
     { path: '/about/', title: 'About & how to cite', glyph: '\u00a7', hay: 'about cite citation credits accounts' },
+    { path: '/accessibility/', title: 'Accessibility', glyph: '\u263c', hay: 'accessibility wcag screen reader keyboard contrast conformance' },
   ];
   const [docPath, setDocPath] = useState(null);
   const [, setDocTick] = useState(0); // bump when a fetch settles
