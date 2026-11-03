@@ -105,6 +105,11 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
   const dockRef = useRef(null);          // a11y (S13.5): dock focus target
   const lastPickedRef = useRef(null);    // a11y: node to refocus when the dock closes
   const [qrDrag, setQrDrag] = useState(null); // {nodeId, label, x, y, dropTarget}
+  // S81 (SC 2.5.7, 2.1.1): the keyboard route to Quantifier Raising. The drag
+  // stays; this is the second way in. {nodeId, label, bindIdx, sites:[{id,label,gloss}]}
+  const [qrPick, setQrPick] = useState(null);
+  const [live, setLive] = useState('');     // S81: one-shot screen-reader announcement
+  const focusAfterRef = useRef(null);       // S81: node to focus once the tree has re-rendered
   // Assessment mode (W3): a hosted version can be served with
   // assignment.mode === 'assessment' — every reveal-the-answer affordance
   // (the target truth conditions) must disappear for students.
@@ -125,6 +130,23 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
       if (back && back.focus) back.focus();
     }
   }, [selected, chosen]);
+
+  // S81: after a raise the tree is rebuilt, so focus has to be placed once the
+  // new nodes exist. `root` is a fresh object on every restructure.
+  useEffect(() => {
+    const id = focusAfterRef.current;
+    if (!id) return;
+    focusAfterRef.current = null;
+    const el = document.querySelector('[data-nodeid="' + id + '"]');
+    if (el && el.focus) el.focus();
+  }, [root]);
+
+  // S81: opening the landing-site list puts focus on the first site.
+  useEffect(() => {
+    if (!qrPick || !dockRef.current) return;
+    const el = dockRef.current.querySelector('button.qr-site');
+    if (el) el.focus();
+  }, [qrPick]);
 
   // Plain-text description of a node for screen readers.
   function nodeA11yLabel(node, m, leaf, avail, shiftable, tok) {
@@ -243,6 +265,61 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
       } catch(e) { console.warn('QR failed:', e.message); }
     }
     setQrDrag(null);
+  }
+
+  // ---- S81: Quantifier Raising without a pointer -------------------------
+  // SC 2.5.7 (Dragging Movements) and 2.1.1 (Keyboard). The landing sites are
+  // the ones the drag would accept: every clause node except the raising DP
+  // itself and anything it dominates.
+  function qrSitesFor(node) {
+    return potentialDropZones
+      .filter((n) => n.id !== node.id && !(D.isDominatedBy ? D.isDominatedBy(root, node.id, n.id) : false))
+      .map((n) => ({ id: n.id, label: n.label || 'S', gloss: spanOf(n, 6) }));
+  }
+  function qrLabelFor(node) {
+    return spanOf(node, 4) || node.word || node.label || 'this phrase';
+  }
+  function startQRPick(node) {
+    const sites = qrSitesFor(node);
+    setChosen(null);
+    if (!sites.length) {
+      setLive('No landing site is available for ' + qrLabelFor(node) + '.');
+      setFb({ kind: 'info', msg: 'There is no clause node this phrase can raise to.' });
+      return;
+    }
+    setQrPick({ nodeId: node.id, label: qrLabelFor(node), bindIdx: qrIndexFor(node), sites });
+    setFb(null);
+    setLive('Choose a landing site for ' + qrLabelFor(node) + '. ' + sites.length +
+            (sites.length === 1 ? ' site' : ' sites') + ' available, use the arrow keys and press Enter.');
+  }
+  function cancelQRPick() {
+    if (!qrPick) return;
+    const back = qrPick.nodeId;
+    setQrPick(null);
+    setLive('Raise cancelled.');
+    const el = document.querySelector('[data-nodeid="' + back + '"]');
+    if (el && el.focus) el.focus();
+  }
+  function commitQRPick(siteId) {
+    if (!qrPick) return;
+    const site = qrPick.sites.find((x) => x.id === siteId);
+    const qrIdx = qrPick.bindIdx != null ? qrPick.bindIdx : (root.__qrIndex || 0) + 1;
+    try {
+      const newTree = D.applyQR(root, qrPick.nodeId, siteId, qrIdx);
+      newTree.__qrIndex = Math.max(qrIdx, root.__qrIndex || 0);
+      // the new binder node applyQR builds; the focus effect sends focus there
+      focusAfterRef.current = 'qrlp-' + qrIdx;
+      lastPickedRef.current = null;
+      setQrPick(null);
+      setLive('Raised ' + qrPick.label + ' to ' + (site ? site.label : 'the clause') +
+              '; trace t' + qrIdx + ' inserted. Focus is on the new lambda binder node, ' +
+              'which Predicate Abstraction resolves.');
+      applyQRTree(newTree);
+    } catch (e) {
+      setQrPick(null);
+      setFb({ kind: 'bad', msg: 'That landing site is not legal: ' + e.message });
+      setLive('That landing site is not legal.');
+    }
   }
 
 
@@ -519,7 +596,8 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
     const prev = slotHistory[slotHistory.length - 1];
     writeSlot(prev.tree || null, slotHistory.slice(0, -1));
     effectiveSetMeanings(prev.meanings || {});
-    setSelected(null); setFb(null);
+    setSelected(null); setFb(null); setQrPick(null);
+    setLive('Raise undone. The tree and the compositions you had before the raise are restored.');
   }
 
   // ---- pan: click-and-drag the empty canvas to scroll the tree -----------
@@ -603,6 +681,7 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
   }, [problem.id, fitTree]);
 
   function pickNode(node) {
+    setLive('');
     const leaf = !node.children || node.children.length === 0;
     const m = getMeaning(node);
     const pa = isPA(node);
@@ -707,6 +786,7 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
     setSelected(null); setFb(null);
   }
   function check() {
+    setLive('');
     if (!chosen) return;
     const node = selected.node;
     const target = chosen.result;
@@ -860,7 +940,7 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
 
           return (
         <div className="tree-zoom" style={{ width: layout.width * zoom, height: (layout.height + extraHTotal) * zoom }}>
-        <div className="tree-wrap" role="group" aria-label={'Derivation tree' + (problem && problem.sentence ? ' for: ' + problem.sentence : '')} ref={wrapRef} style={{ width: layout.width, height: layout.height + extraHTotal, transform: 'scale(' + zoom + ')', transformOrigin: 'top left' }}>
+        <div className="tree-wrap" role="group" aria-label={'Derivation tree' + (problem && problem.sentence ? ' for: ' + problem.sentence : '')} ref={wrapRef} style={{ width: layout.width, height: layout.height + extraHTotal, transform: 'scale(' + zoom + ')', transformOrigin: 'top left', '--tree-zoom': zoom }}>
           <svg className="tree-svg" aria-hidden="true" width={layout.width} height={layout.height + extraHTotal}>
             {layout.edges.map((e, i) => {
               const pn = nodeById[e.parentId], cn = nodeById[e.childId];
@@ -907,16 +987,22 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
                     ))}
                   </div>
                 )}
+                <div className="node-box-wrap">
                 <div className={cls.join(' ')}
                   role={clickable ? 'button' : undefined}
-                  tabIndex={clickable ? 0 : undefined}
+                  tabIndex={clickable ? 0 : -1}
                   data-nodeid={node.id}
                   aria-label={nodeA11yLabel(node, m, leaf, avail, shiftable, tok)}
                   aria-pressed={clickable ? !!sel : undefined}
-                  onKeyDown={(e) => { if (clickable && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); e.stopPropagation(); lastPickedRef.current = node.id; pickNode(node); } }}
+                  onKeyDown={(e) => {
+                    if (clickable && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); e.stopPropagation(); lastPickedRef.current = node.id; pickNode(node); return; }
+                    // S81: R raises a quantifier from the keyboard
+                    if ((e.key === 'r' || e.key === 'R') && !e.ctrlKey && !e.metaKey && !e.altKey && isRaisable(node)) {
+                      e.preventDefault(); e.stopPropagation(); lastPickedRef.current = node.id; startQRPick(node);
+                    }
+                  }}
                   onClick={(e) => { if (clickable) { e.stopPropagation(); lastPickedRef.current = node.id; pickNode(node); } }}>
                   {m && !m.shifted && !leaf && m.rule && m.rule !== 'lex' && <span className="node-rule-tag">{m.rule}</span>}
-                  {isRaisable(node) && !qrDrag && <button className="qr-handle" title="Drag to raise (QR)" onPointerDown={e => startQRDrag(e, node)} onClick={e=>e.stopPropagation()}>&#x2912;</button>}
                   {shiftable && !sel && <span className="shift-dot" title="Type-shiftable">⇅</span>}
                   {leaf
                     ? (tok.trace ? <span className="node-word"><i>t</i><sub>{tok.trace}</sub></span>
@@ -927,6 +1013,15 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
                       : <><span className="node-label">{node.label || '•'}</span>
                           {allow.showSpans && !m && <span className="node-span-label">{spanOf(node, 4)}</span>}
                          </>}
+                </div>
+                {/* S81: the drag handle is a SIBLING of the node box, not a child of it.
+                    axe reported nested-interactive (a button inside role="button");
+                    24px square satisfies SC 2.5.8 target size. */}
+                {isRaisable(node) && !qrDrag && (
+                  <button className="qr-handle" aria-label={'Raise ' + (spanOf(node, 4) || node.word || node.label || 'this phrase') + ' (Quantifier Raising). Drag to a clause node, or press R on the node.'}
+                    onPointerDown={e => startQRDrag(e, node)}
+                    onClick={(e) => { e.stopPropagation(); startQRPick(node); }}>&#x2912;</button>
+                )}
                 </div>
                 {(() => {
                   if (isIndex) return null;
@@ -958,16 +1053,56 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
         onKeyDown={(e) => {
           if (e.key !== 'Escape') return;
           e.stopPropagation();
-          if (chosen) { if (selected && selected.pa) setSelected(null); setChosen(null); setFb(null); }
+          if (qrPick) { cancelQRPick(); }
+          else if (chosen) { if (selected && selected.pa) setSelected(null); setChosen(null); setFb(null); }
           else if (selected) { setSelected(null); setFb(null); setRejected({}); }
         }}>
         <div className="sr-only" role="status" aria-live="polite">
-          {fb
+          {live
+            ? live
+            : fb
             ? ((fb.kind === 'good' ? 'Correct. ' : fb.kind === 'bad' ? 'Not accepted. ' : '') + (typeof fb.msg === 'string' ? fb.msg : ''))
             : allDone ? 'Derivation complete.'
             : selected ? '' : ''}
         </div>
-        {!selected && !allDone && (
+        {/* S81: the keyboard route to QR. Offered for a raisable node whatever
+            dock panel it opened (a resolved DP lands in view or shift mode, an
+            unresolved NN-presolved one in compose mode). */}
+        {selected && !chosen && !qrPick && isRaisable(selected.node) && (
+          <div className="rule-row qr-raise-row">
+            <button className="rule-card qr-raise-card" onClick={() => startQRPick(selected.node)}>
+              <span className="rc-name">Raise{'\u2026'} <span className="rc-abbr">QR</span></span>
+              <span className="rc-desc">Move this quantifier to a clause node, leaving a trace behind. Shortcut: press R on a node in the tree.</span>
+            </button>
+          </div>
+        )}
+
+        {qrPick && (
+          <>
+            <div className="dock-label" id="qr-pick-label">Choose a landing site for {qrPick.label}</div>
+            <div className="rule-row qr-site-row" role="group" aria-labelledby="qr-pick-label"
+              onKeyDown={(e) => {
+                const btns = Array.from(e.currentTarget.querySelectorAll('button.qr-site'));
+                if (!btns.length) return;
+                const i = btns.indexOf(document.activeElement);
+                if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); btns[Math.min(i + 1, btns.length - 1)].focus(); }
+                else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); btns[Math.max(i - 1, 0)].focus(); }
+                else if (e.key === 'Home') { e.preventDefault(); btns[0].focus(); }
+                else if (e.key === 'End') { e.preventDefault(); btns[btns.length - 1].focus(); }
+              }}>
+              {qrPick.sites.map((site, si) => (
+                <button key={site.id} className="rule-card qr-site" onClick={() => commitQRPick(site.id)}>
+                  <span className="rc-name">{site.label} <span className="rc-abbr">{si + 1} of {qrPick.sites.length}</span></span>
+                  <span className="rc-desc">{site.gloss || 'this clause'}</span>
+                </button>
+              ))}
+              <button className="btn-ghost" style={{ alignSelf: 'center' }} onClick={cancelQRPick}>Cancel</button>
+            </div>
+            <div className="dock-hint" style={{ fontSize: 13 }}>Arrow keys move between sites, Enter raises, Escape cancels. The trace stays where the phrase was.</div>
+          </>
+        )}
+
+        {!selected && !qrPick && !allDone && (
           <div className="dock-hint">
             {availCount > 0 ? 'Select a highlighted node to compute its meaning.'
               : 'Work bottom-up — the next node lights up once its children are resolved.'}
@@ -982,7 +1117,7 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
         {allDone && hasScopes && scopeFb && scopeFb.kind !== 'good' && <Feedback kind="bad">{scopeFb.msg}</Feedback>}
         {allNodesDone && !rootDone && rootMeaning && <Feedback kind="info">All nodes resolved, but the root is type <TypeBadge type={rootMeaning.type} /> — apply Existential Closure (EC) or another operation to reach type <span className="lx">t</span> before the exercise completes.</Feedback>}
 
-        {selected && selected.mode === 'view' && (
+        {selected && !qrPick && selected.mode === 'view' && (
           <>
             <div className="dock-label">⟨{selected.node.label || selected.node.word || '•'}⟩ · resolved by <span style={{color:'var(--good)',fontWeight:600}}>{selected.m.rule}</span></div>
             <div className="compose-line" style={{fontSize:18}}>
@@ -996,7 +1131,7 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
           </>
         )}
 
-        {selected && selected.mode === 'shift' && (
+        {selected && !qrPick && selected.mode === 'shift' && (
           <>
             <div className="dock-label">Type-shift ⟨{selected.node.label || (selected.node.word) || '•'}⟩ <span className="dock-sub">current type <TypeBadge type={selected.m.type} /></span></div>
             <div className="rule-row">
@@ -1014,7 +1149,7 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
           </>
         )}
 
-        {selected && selected.mode === 'compose' && !chosen && (() => {
+        {selected && !qrPick && selected.mode === 'compose' && !chosen && (() => {
           const rules = rulesFor(selected.node);
           return (
             <>
@@ -1040,7 +1175,7 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
           );
         })()}
 
-        {selected && chosen && (() => {
+        {selected && !qrPick && chosen && (() => {
             return (<>
             <div className="dock-label">{chosen.rule.name} — {chosen.isPA ? 'enter the λ-abstraction over x₀' + chosen.idx : chosen.isPM ? 'write the modified predicate' : 'apply β-reduction'}</div>
             <div className="compose-line">

@@ -1,5 +1,11 @@
 /* ===========================================================================
    COMPOSE — the ONE canonical version string (S8/W9).
+   1.4.0 (S81, 2026-11-03): WCAG 2.2 AA pass over the derive view.
+     a11y-1 Quantifier Raising without a pointer: a Raise entry in the chooser
+       and R on a focused node open a landing-site list driven by the arrow
+       keys and Enter; the result is announced and focus moves to the new
+       binder. The drag handle leaves the node box (it was a button nested in
+       a role="button") and is sized to render at 24px at any tree zoom.
    1.3.0 (S55, 2026-08-01): responsive layout overhaul — a new tablet
    breakpoint (760–1180) with an adaptive-drawer layout (full-width stage +
    slim app-bar + slide-over nav/reference drawers), plus a holistic phone
