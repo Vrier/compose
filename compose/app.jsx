@@ -1059,6 +1059,12 @@ function App() {
   }, []);
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const [theme, setTheme] = useState(() => load('lc2-theme', 'parchment'));
+  // S81: the high-contrast palette, honouring the OS setting the first time.
+  const [highContrast, setHighContrast] = useState(() => {
+    const saved = load('lc2-hc', null);
+    if (saved !== null) return !!saved;
+    try { return window.matchMedia('(prefers-contrast: more)').matches; } catch (e) { return false; }
+  });
   const [userFiles, setUserFiles] = useState(() => load('lc2-userfiles', [])); // [{key,title,text}]
   const [bundles, setBundles] = useState(() => load('lc2-bundles', [])); // [{id,title,chapters,sets:[{key,title,text}]}]
   // S44: remember what lc2-file held BEFORE this render — the save effect
@@ -1546,7 +1552,11 @@ function App() {
   }, [userFiles]);
   useEffect(() => { save('lc2-bundles', bundles); }, [bundles]);
 
-  useEffect(() => { document.documentElement.setAttribute('data-theme', teacherMode ? 'studio' : theme); save('lc2-theme', theme); }, [theme, teacherMode]);
+  useEffect(() => {
+    // S81: high contrast overrides the teacher-mode palette as well.
+    document.documentElement.setAttribute('data-theme', highContrast ? 'hc' : (teacherMode ? 'studio' : theme));
+    save('lc2-theme', theme); save('lc2-hc', highContrast);
+  }, [theme, teacherMode, highContrast]);
   useEffect(() => { document.documentElement.style.setProperty('--lx-scale', t.notation); }, [t.notation]);
   useEffect(() => { save('lc2-file', fileKey); }, [fileKey]);
   useEffect(() => { save('lc2-sel', sel); }, [sel]);
@@ -2629,6 +2639,10 @@ function App() {
                     <button className={'beh-toggle' + (darkMode ? ' on' : '')} role="switch" aria-checked={darkMode} onClick={() => setDarkMode((d) => !d)}><span className="beh-knob" /></button>
                   </label>
                   <label className="settings-row">
+                    <span className="settings-label">High contrast</span>
+                    <button className={'beh-toggle' + (highContrast ? ' on' : '')} role="switch" aria-checked={highContrast} onClick={() => setHighContrast((v) => !v)}><span className="beh-knob" /></button>
+                  </label>
+                  <label className="settings-row">
                     <span className="settings-label">Auto-resolve non-branching</span>
                     <button className={'beh-toggle' + (autoNN ? ' on' : '')} role="switch" aria-checked={autoNN} onClick={() => setAutoNN((v) => !v)}><span className="beh-knob" /></button>
                   </label>
@@ -3629,6 +3643,10 @@ function App() {
             <label className="settings-row">
               <span className="settings-label">Dark mode</span>
               <button className={'beh-toggle' + (darkMode ? ' on' : '')} role="switch" aria-checked={darkMode} onClick={() => setDarkMode((d) => !d)}><span className="beh-knob" /></button>
+            </label>
+            <label className="settings-row">
+              <span className="settings-label">High contrast</span>
+              <button className={'beh-toggle' + (highContrast ? ' on' : '')} role="switch" aria-checked={highContrast} onClick={() => setHighContrast((v) => !v)}><span className="beh-knob" /></button>
             </label>
             <label className="settings-row">
               <span className="settings-label">Auto-resolve non-branching</span>

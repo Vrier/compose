@@ -20,7 +20,7 @@
   --faint-text:oklch(0.535 0.014 62);
   --line:      oklch(0.875 0.016 72);
   --line-soft: oklch(0.915 0.012 74);
-  --accent:    oklch(0.585 0.13 44);
+  --accent:    oklch(0.558 0.13 44); /* S81: white on the primary button 4.26->4.5+ */
   --accent-ink:oklch(0.46 0.13 42);
   --accent-soft:oklch(0.93 0.05 56);
   --good:      oklch(0.55 0.1 150);
@@ -41,15 +41,15 @@
   --panel-2:   oklch(0.982 0.005 150);
   --ink:       oklch(0.27 0.018 235);
   --ink-soft:  oklch(0.4 0.016 235);
-  --muted:     oklch(0.54 0.014 230);
+  --muted:     oklch(0.515 0.014 230); /* S81: 3.98->4.5+ on panel */
   --faint:     oklch(0.68 0.012 220);
   --faint-text:oklch(0.543 0.012 220);
   --line:      oklch(0.9 0.01 210);
   --line-soft: oklch(0.94 0.007 200);
-  --accent:    oklch(0.58 0.095 205);
+  --accent:    oklch(0.545 0.095 205); /* S81: white on the primary button */
   --accent-ink:oklch(0.47 0.1 210);
   --accent-soft:oklch(0.94 0.035 200);
-  --good:      oklch(0.58 0.1 160);
+  --good:      oklch(0.545 0.1 160); /* S81: white rule tag 4.09->4.5+ */
   --good-soft: oklch(0.94 0.04 165);
   --bad:       oklch(0.57 0.15 25);
   --bad-soft:  oklch(0.95 0.04 30);
@@ -109,6 +109,68 @@ body {
     radial-gradient(circle at 20% 18%, var(--bg-grain) 0, transparent 38%),
     radial-gradient(circle at 82% 72%, var(--bg-grain) 0, transparent 42%);
 }
+
+/* S81: high-contrast palette, chosen from Display. Every text token clears
+   7:1 on its own panel (AAA) and every state indicator clears 3:1, so the
+   derive view stays readable with a contrast-raising OS setting or low
+   vision. Flat colours, no shadows, solid borders. */
+:root[data-theme="hc"] {
+  --on-accent: #ffffff;
+  --bg:        #ffffff;
+  --bg-grain:  #ffffff;
+  --panel:     #ffffff;
+  --panel-2:   #f0f0f0;
+  --ink:       #000000;
+  --ink-soft:  #1a1a1a;
+  --muted:     #3a3a3a;
+  --faint:     #4a4a4a;
+  --faint-text:#3a3a3a;
+  --line:      #000000;
+  --line-soft: #565656;
+  --accent:    #0b4fa8;
+  --accent-ink:#093f86;
+  --accent-soft:#dbe7f7;
+  --good:      #0f5c34;
+  --on-good:   #ffffff;
+  --good-soft: #d6efe0;
+  --bad:       #990d1e;
+  --bad-soft:  #fadde1;
+  --select:    #0b4fa8;
+  --select-soft:#dbe7f7;
+  --hover:     #e6e6e6;
+  --shadow:    none;
+  --shadow-sm: none;
+  --radius: 10px;
+}
+:root[data-theme="hc"][data-dark="true"] {
+  --on-accent: #ffffff;
+  --bg:        #000000;
+  --bg-grain:  #000000;
+  --panel:     #000000;
+  --panel-2:   #121212;
+  --ink:       #ffffff;
+  --ink-soft:  #f2f2f2;
+  --muted:     #d2d2d2;
+  --faint:     #bdbdbd;
+  --faint-text:#d2d2d2;
+  --line:      #ffffff;
+  --line-soft: #9a9a9a;
+  --accent:    #2b7fe6;
+  --accent-ink:#9ecdff;
+  --accent-soft:#0d2135;
+  --good:      #0f7a46;
+  --on-good:   #ffffff;
+  --good-soft: #06251a;
+  --bad:       #b01626;
+  --bad-soft:  #2c0a0f;
+  --select:    #2b7fe6;
+  --select-soft:#0d2135;
+  --hover:     #1d1d1d;
+  --shadow:    none;
+  --shadow-sm: none;
+}
+/* the grain wash is decoration that lowers contrast; off in high contrast */
+:root[data-theme="hc"] .app-grain { display: none; }
 
 /* ---- app shell --------------------------------------------------------- */
 #root { height: 100%; position: relative; z-index: 1; }
@@ -261,6 +323,10 @@ body {
   box-shadow: var(--shadow-sm);
 }
 .node-box .node-label { font-size: 13px; color: var(--muted); font-style: italic; }
+/* S81: on the tinted backgrounds of a selected or available node, --muted and
+   --faint-text fall under 4.5:1. --ink-soft is the darker sibling token. */
+.node-box.selected .node-label, .node-box.available .node-label { color: var(--ink-soft); }
+.node-box.selected .node-span-label, .node-box.available .node-span-label { color: var(--ink-soft); }
 .node-box .node-word { font-size: 16px; font-weight: 500; }
 .node-leaf .node-box { background: var(--panel-2); cursor: default; border-style: solid; }
 .node-box.selectable:hover { border-color: var(--accent); box-shadow: var(--shadow); }
@@ -288,12 +354,15 @@ body {
   color: var(--ink); max-width: 280px; line-height: 1.35;
 }
 .node-meaning.pending { background: var(--panel-2); color: var(--muted); font-style: italic; }
+/* S81: 11px is small text, so the badge needs the 4.5:1 token. */
 .node-type-badge {
   font-size: 11px; color: var(--accent-ink); margin-top: 1px;
 }
 .node-rule-tag {
   position: absolute; top: -10px; right: -8px; font-size: 9.5px; font-weight: 700;
-  letter-spacing: 0.04em; background: var(--good); color: white;
+  /* S81: --good is dark in the light palettes and bright in the dark ones,
+     so the tag's text colour has to follow it rather than always being white. */
+  letter-spacing: 0.04em; background: var(--good); color: var(--on-good, white);
   padding: 2px 6px; border-radius: 6px; box-shadow: var(--shadow-sm);
 }
 
@@ -915,6 +984,15 @@ kbd { font-family: var(--mono); font-size: 0.88em; background: var(--panel-2); b
   --select-soft:    oklch(0.74 0.12 168 / 0.15);
   --good:           oklch(0.72 0.16 152);
   --bad:            oklch(0.72 0.18 22);
+  --on-good:        oklch(0.18 0.04 152);
+  /* S81: these five were missing, so they kept their light-mode values under
+     a dark panel. --good-soft is the background of every resolved node's
+     denotation, which left near-white --ink on a pale green wash at 1.06:1. */
+  --accent:         oklch(0.78 0.13 56);
+  --accent-ink:     oklch(0.84 0.11 60);
+  --accent-soft:    oklch(0.78 0.13 56 / 0.16);
+  --good-soft:      oklch(0.72 0.16 152 / 0.16);
+  --bad-soft:       oklch(0.72 0.18 22 / 0.16);
 }
 /* Studio dark: cool slate, teal accents */
 :root[data-theme="studio"][data-dark="true"] {
@@ -923,7 +1001,7 @@ kbd { font-family: var(--mono); font-size: 0.88em; background: var(--panel-2); b
   --panel:     oklch(0.20 0.014 222);
   --panel-2:   oklch(0.23 0.016 220);
   --ink:       oklch(0.93 0.008 230);
-  --ink-soft:  oklch(0.77 0.012 225);
+  --ink-soft:  oklch(0.79 0.012 225); /* S81: 4.43->4.5+ on a selected node */
   --muted:     oklch(0.63 0.014 220); /* S61: AA on node bg */
   --faint:     oklch(0.40 0.012 215);
   --faint-text:oklch(0.618 0.012 215);
@@ -931,12 +1009,16 @@ kbd { font-family: var(--mono); font-size: 0.88em; background: var(--panel-2); b
   --line-soft: oklch(0.25 0.014 220);
   --hover:     oklch(1 0 0 / 0.05);
   --accent:         oklch(0.74 0.13 200);
-  --accent-ink:     oklch(0.74 0.13 200);
-  --accent-soft:    oklch(0.74 0.13 200 / 0.15);
+  --accent-ink:     oklch(0.82 0.11 202);
+  --accent-soft:    oklch(0.74 0.13 200 / 0.16);
   --select:         oklch(0.74 0.12 168);
   --select-soft:    oklch(0.74 0.12 168 / 0.15);
   --good:           oklch(0.72 0.16 152);
   --bad:            oklch(0.72 0.18 22);
+  --on-good:        oklch(0.18 0.04 152);
+  /* S81: as in parchment dark, these kept their light-mode values. */
+  --good-soft:      oklch(0.72 0.16 152 / 0.16);
+  --bad-soft:       oklch(0.72 0.18 22 / 0.16);
 }
 
 /* (retired settings-dropdown shell removed S41 — the old top-bar settings
@@ -1830,7 +1912,9 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
   cursor: pointer; text-align: left;
 }
 .colx-item:hover { background: var(--panel-2); color: var(--accent-ink); }
-.colx-item.on { background: var(--accent-soft); color: var(--accent); }
+/* S81: --accent on --accent-soft measured 3.5:1. --accent-ink is the darker
+   on-tint member of the same pair and is what the rest of the app uses. */
+.colx-item.on { background: var(--accent-soft); color: var(--accent-ink); }
 .colx-ring {
   width: 15px; height: 15px; flex: none; border-radius: 50%;
   border: 1px solid var(--line); background: transparent;
