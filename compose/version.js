@@ -18,6 +18,9 @@
        closes on Escape; a refused rule is marked aria-disabled and describes
        itself with its reason, so the cross and the red are not the only
        carriers of the refusal.
+     a11y-5 Spoken forms: compose/speech.js renders a term and a type as a
+       sentence ("lambda x dot love of x and y", "type e to e to t") for the
+       label of every denotation and type chip, which carry role="img".
    1.3.0 (S55, 2026-08-01): responsive layout overhaul — a new tablet
    breakpoint (760–1180) with an adaptive-drawer layout (full-width stage +
    slim app-bar + slide-over nav/reference drawers), plus a holistic phone
