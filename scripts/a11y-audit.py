@@ -249,6 +249,21 @@ with sync_playwright() as p:
     print("prefers-reduced-motion rule in CSS:", pg.evaluate(
         "() => Array.from(document.styleSheets).some(s=>{try{return Array.from(s.cssRules)"
         ".some(r=>r.cssText.includes('prefers-reduced-motion'))}catch(e){return false}})"))
+    pg.emulate_media(reduced_motion="reduce")
+    pg.wait_for_timeout(250)
+    still = pg.evaluate(
+        """() => {
+            const moving = [];
+            for (const el of document.querySelectorAll('*')) {
+                const cs = getComputedStyle(el);
+                const t = parseFloat(cs.transitionDuration) || 0;
+                const a = cs.animationName !== 'none' ? (parseFloat(cs.animationDuration) || 0) : 0;
+                if (t > 0.01 || a > 0.01) moving.push(el.className.toString().slice(0, 40) || el.tagName);
+            }
+            return moving;
+        }""")
+    print("under reduce, elements still animating:", len(still), still[:4])
+    pg.emulate_media(reduced_motion="no-preference")
     print("html lang:", pg.evaluate("() => document.documentElement.lang"))
 
     print("\n== violation totals across the five states:",

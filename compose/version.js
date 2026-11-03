@@ -11,6 +11,9 @@
        reachable palettes. The dark palettes had never been given the soft
        tokens, so a resolved node's denotation sat at 1.06:1. New
        high-contrast theme in Display, following prefers-contrast.
+     a11y-3 Reduced motion: every transition and animation is cut to an
+       instant under prefers-reduced-motion, inline node and edge fades
+       included; 0 elements still animating under the setting.
    1.3.0 (S55, 2026-08-01): responsive layout overhaul — a new tablet
    breakpoint (760–1180) with an adaptive-drawer layout (full-width stage +
    slim app-bar + slide-over nav/reference drawers), plus a holistic phone

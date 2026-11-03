@@ -130,7 +130,9 @@ function ReaderPanel({ set, section, onClose, embedded }) {
     const m = docRef.current && docRef.current.querySelector('.ld-userhl[data-hl="' + id + '"]');
     if (!m || !scrollRef.current) return;
     const sr = scrollRef.current.getBoundingClientRect(), mr = m.getBoundingClientRect();
-    scrollRef.current.scrollTo({ top: scrollRef.current.scrollTop + (mr.top - sr.top) - 40, behavior: 'smooth' });
+    // S81 (SC 2.3.3): a scripted smooth scroll is not reachable by CSS.
+    const reduce = (() => { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } })();
+    scrollRef.current.scrollTo({ top: scrollRef.current.scrollTop + (mr.top - sr.top) - 40, behavior: reduce ? 'auto' : 'smooth' });
     m.classList.remove('ld-flash'); void m.offsetWidth; m.classList.add('ld-flash');
     setTimeout(() => m.classList.remove('ld-flash'), 1300);
   }
