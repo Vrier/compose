@@ -327,11 +327,29 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
   const rootDone = rootMeaning && E.typeToStr(rootMeaning.type) === 't';
   const allNodesDone = layout.nodes.every(({ node }) => getMeaning(node) || (node.word && /^\d+$/.test(node.word)));
 
+  /* S80: the "label: formula" split must not swallow a definedness condition.
+     An H&K-style target is written  φ : ψ , which the engine parses to
+     ∂(φ) ∧ ψ. Splitting at the first colon dropped the presupposition and
+     graded against the assertion alone, so a student who derived exactly the
+     right term was told the result did not match (hk4-definites, hk5-relatives,
+     hk6-quantifiers: eight derivations that could not be completed at all).
+     The left half is a formula rather than a label when it parses AND carries a
+     bound binder or ∂. Calibrated against all 23 distinct label halves in the
+     library, so every real label is untouched: "no > every",
+     "every > some (inverse)", "inverse scope (¬ > ∀)", "de re",
+     "him = the king, he = Boromir". */
+  function labelIsFormula(labelPart) {
+    if (!labelPart) return false;
+    const binder = /[λ∀∃ι]\s*[A-Za-z]|\b[LAEI][a-z]['’ 0-9]*\s*[.[]/;
+    if (!binder.test(labelPart) && labelPart.indexOf('∂') === -1) return false;
+    return E.tryParse(labelPart).ok;
+  }
   function parseScopeTarget(str) {
     if (!str) return { label: '', sublabel: '', term: null };
     const colon = str.indexOf(':');
-    const labelPart = colon > -1 ? str.slice(0, colon).trim() : '';
-    const formula = colon > -1 ? str.slice(colon + 1).trim() : str.trim();
+    const split = colon > -1 && !labelIsFormula(str.slice(0, colon).trim());
+    const labelPart = split ? str.slice(0, colon).trim() : '';
+    const formula = split ? str.slice(colon + 1).trim() : str.trim();
     // Extract (linear) or (inverse) from label: "every > some (linear)"
     const subMatch = labelPart.match(/\((linear|inverse|bound|free|deictic|unbound)\)\s*$/i);
     const sublabel = subMatch ? subMatch[1].toLowerCase() : '';
