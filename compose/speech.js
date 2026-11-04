@@ -65,9 +65,10 @@
         return sayName(e.name);
       case 'app': {
         // love(x, y) -> "love of x and y"; a non-symbol head is applied
+        // same walk as engine.js spine(): {t:'app', fn, arg}
         const args = [];
         let head = e;
-        while (head.t === 'app') { args.unshift(head.arg !== undefined ? head.arg : head.r); head = head.fn !== undefined ? head.fn : head.l; }
+        while (head.t === 'app') { args.unshift(head.arg); head = head.fn; }
         const parts = args.map(termToSpeech).filter((x) => x !== '');
         if (head.t === 'sym') {
           if (!parts.length) return sayName(head.name);
