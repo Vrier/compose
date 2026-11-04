@@ -34,3 +34,4 @@ Thumbs.db
 
 # local session handoff (never pushed)
 HANDOFF.md
+.a11y-review-bundle/
