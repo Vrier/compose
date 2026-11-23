@@ -11,7 +11,6 @@
      node scripts/capture-n3.mjs notes      Notes tab with the ch7 reading
      node scripts/capture-n3.mjs closed     close → reopen strip; reload stays
                                             closed (panelTouched verified)
-     node scripts/capture-n3.mjs twilight   Rules tab under the twilight theme
      node scripts/capture-n3.mjs narrow     1000px: first-visit auto-open
                                             (overlay), reload → default-closed
 
@@ -80,17 +79,6 @@ if (SCENE === 'first') {
     !(await has('.rp-panel')) && (await has('.rp-reopen')));
   await page.click('.rp-reopen'); await sleep(400);
   check('reopen strip reopens the panel', await has('.rp-panel'));
-} else if (SCENE === 'twilight') {
-  await page.evaluate(() => {
-    // replicate components.jsx LC_NS: assignment island first, then build id
-    const a = window.COMPOSE_CONFIG && window.COMPOSE_CONFIG.assignment;
-    const ns = (a && a.island) ? a.island + ':' : ('build-' + window.COMPOSE_BUILD.id + ':');
-    localStorage.setItem(ns + 'lc2-theme', '"twilight"');
-  });
-  await page.reload({ waitUntil: 'networkidle2' }); await sleep(1200);
-  check('twilight: panel present after reload', await has('.rp-panel'));
-  check('twilight: Rules tab remembered (refTab)', ((await activeTab()) || '').startsWith('Rules'));
-  await shot('n3-twilight-rules.png');
 } else if (SCENE === 'narrow') {
   check('1000px first visit: auto-open still surfaces the Rules panel (overlay)',
     (await has('.rp-panel')) && ((await activeTab()) || '').startsWith('Rules'));

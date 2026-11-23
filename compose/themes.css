@@ -3,7 +3,7 @@
    Three directions share one structural skeleton; only tokens change.
      [data-theme="parchment"]  warm paper, terracotta ink   (default)
      [data-theme="studio"]     bright warm-neutral, teal, card depth
-     [data-theme="twilight"]   warm dark espresso, amber glow
+     [data-theme="hc"]         high contrast (S81)
    ========================================================================= */
 
 /* ---- tokens ------------------------------------------------------------ */
@@ -58,32 +58,6 @@
   --shadow:    0 1px 2px oklch(0.5 0.02 230 / 0.06), 0 12px 30px oklch(0.5 0.04 230 / 0.1);
   --shadow-sm: 0 1px 3px oklch(0.5 0.02 230 / 0.1);
   --radius: 14px;
-}
-:root[data-theme="twilight"] {
-  --on-accent: oklch(0.2 0.02 60);
-  --bg:        oklch(0.225 0.016 58);
-  --bg-grain:  oklch(0.245 0.018 58);
-  --panel:     oklch(0.275 0.019 60);
-  --panel-2:   oklch(0.305 0.02 62);
-  --ink:       oklch(0.93 0.014 80);
-  --ink-soft:  oklch(0.82 0.016 78);
-  --muted:     oklch(0.68 0.018 72);
-  --faint:     oklch(0.55 0.016 66);
-  --faint-text:oklch(0.677 0.016 66);
-  --line:      oklch(0.38 0.018 60);
-  --line-soft: oklch(0.33 0.016 60);
-  --accent:    oklch(0.76 0.13 68);
-  --accent-ink:oklch(0.83 0.12 72);
-  --accent-soft:oklch(0.34 0.05 62);
-  --good:      oklch(0.74 0.12 162);
-  --good-soft: oklch(0.34 0.05 162);
-  --bad:       oklch(0.68 0.15 28);
-  --bad-soft:  oklch(0.34 0.06 30);
-  --select:    oklch(0.74 0.1 255);
-  --select-soft:oklch(0.34 0.05 255);
-  --shadow:    0 1px 2px oklch(0.12 0.02 60 / 0.4), 0 14px 34px oklch(0.1 0.02 60 / 0.45);
-  --shadow-sm: 0 1px 3px oklch(0.12 0.02 60 / 0.4);
-  --radius: 12px;
 }
 
 /* ---- base -------------------------------------------------------------- */
@@ -1720,7 +1694,7 @@ details[open] > .ue-group-head::before { transform: rotate(90deg); }
    N1 (S29) — LEFT SIDEBAR NAVIGATION
    Sizes/spacing/copy follow the design handoff prototype (272px sidebar,
    58px rail, 272px drill-in exercises column, practice header). All colours
-   via theme tokens; never hardcode oklch here (twilight must stay legible).
+   via theme tokens; never hardcode oklch here (dark mode and high contrast must stay legible).
    ========================================================================= */
 
 /* ---- skip link ---------------------------------------------------------- */

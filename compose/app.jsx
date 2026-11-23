@@ -1058,7 +1058,9 @@ function App() {
     return all;
   }, []);
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
-  const [theme, setTheme] = useState(() => load('lc2-theme', 'parchment'));
+  // S83: parchment is the only student palette (twilight dropped); a stored
+  // lc2-theme from an older build is overwritten by the effect below.
+  const theme = 'parchment';
   // S81: the high-contrast palette, honouring the OS setting the first time.
   const [highContrast, setHighContrast] = useState(() => {
     const saved = load('lc2-hc', null);

@@ -8,9 +8,9 @@ and composites the background stack the way a browser paints it, then reports
 the WCAG 2.x ratio.
 
 Palettes: the app writes data-theme from one state and data-dark from another.
-`setTheme` is never called from the UI, so a student sees parchment light or
-parchment dark, and teacher mode forces studio. The twilight palette in
-themes.css is unreachable. High-contrast is the S81 addition.
+A student sees parchment light or parchment dark, and teacher mode forces
+studio. High-contrast is the S81 addition. (A fourth palette, twilight, was
+never reachable from the UI and was removed in S83.)
 
 Text needs 4.5:1 (3:1 at >=18.66px, or >=14px bold); UI state indicators 3:1.
 
