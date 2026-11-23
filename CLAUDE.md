@@ -178,16 +178,30 @@ the failures already understood.
 
 Remote: `git@github.com:Vrier/compose.git` (repo is public; pushes authenticate
 with the write deploy key `.github-deploy-key` in the repo root — gitignored,
-added to GitHub 2026-07-09). Push with:
+added to GitHub 2026-07-09).
 
-    GIT_SSH_COMMAND="ssh -i .github-deploy-key -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new" git push git@github.com:Vrier/compose.git HEAD:main
+Since S83, work reaches `main` through a pull request: commit on a branch,
+push the branch, open a pull request, and merge it when Thomas says so. Push a
+branch with:
+
+    GIT_SSH_COMMAND="ssh -i .github-deploy-key -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new" git push git@github.com:Vrier/compose.git HEAD:refs/heads/<branch>
 
 The SSH URL is spelled out because a working copy's `origin` may be the HTTPS
-URL, which the deploy key cannot authenticate. A branch goes up the same way,
-with `HEAD:refs/heads/<branch>`.
+URL, which the deploy key cannot authenticate. Nor can the key open a pull
+request: open it at `https://github.com/Vrier/compose/compare/main...<branch>`
+in a browser signed in as Thomas. To merge, rebase the branch onto
+`origin/main` if `main` has moved and rerun the suites, then either push the
+branch head with `HEAD:main` in place of `HEAD:refs/heads/<branch>` (GitHub
+records the fast-forward as the pull request's merge) or use GitHub's merge
+button.
 
 Every push to `main` triggers `.github/workflows/deploy.yml`: full test suite,
 then SSH deploy to the VPS (167.233.233.109 → compose.tstephen.com). Do not
 push red: CI failing means no deploy, but keep main green regardless.
 Pushes to any other branch, and pull requests, run
 `.github/workflows/test.yml`: the same suites, with no deploy.
+
+On a Linux mount of the Windows working copy, git cannot remove its own lock
+files unless the session is allowed to delete files in that folder, so ask for
+that permission before the first git write. HANDOFF.md (local, gitignored)
+has the details, and the workarounds for a session without it.
