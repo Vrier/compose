@@ -35,6 +35,7 @@ Thumbs.db
 # --- Linglib cross-check (tools/linglib): Lake build output and generated files ---
 tools/linglib/.lake/
 tools/linglib/ComposeLean/LibPairs.lean
+tools/linglib/ComposeLean/Gen/
 tools/linglib/oracle-*.jsonl
 
 # local session handoff (never pushed)
