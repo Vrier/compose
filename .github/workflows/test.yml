@@ -1,0 +1,34 @@
+# ===========================================================================
+# COMPOSE: the full test suite on pull requests and on pushes to any branch
+# other than main. No deploy: deploy.yml alone deploys, on pushes to main.
+# ===========================================================================
+name: test
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install deps
+        run: npm ci --no-audit --no-fund
+
+      - name: Fetch pinned PocketBase (enables the server suite)
+        run: bash server/get-pocketbase.sh
+
+      - name: Full test suite
+        run: npm test

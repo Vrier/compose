@@ -32,6 +32,11 @@ Thumbs.db
 *.log
 .site-deploy-key*
 
+# --- Linglib cross-check (tools/linglib): Lake build output and generated files ---
+tools/linglib/.lake/
+tools/linglib/ComposeLean/LibPairs.lean
+tools/linglib/oracle-*.jsonl
+
 # local session handoff (never pushed)
 HANDOFF.md
 .a11y-review-bundle/
