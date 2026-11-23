@@ -917,9 +917,11 @@ ch6.2-quant | g1p2 | \exists x.\mathit{elf}(x) \land \lnot \mathit{drink}(x)
 ch6.2-quant | g2p0 | \forall x.\mathit{dwarf}(x) \rightarrow \mathit{trust}(x, a)
 ch6.2-quant | g2p1 | \exists x.\mathit{elf}(x) \land \lnot \mathit{fear}(x, n)
 ch6.2-quant | g2p2 | \lnot (\exists x.\mathit{orc}(x) \land \mathit{ranger}(x))
-ch6.2-quant | g3p0 | UNSOLVED
+ch6.2-quant | g3p0 | \lnot (\forall x.\mathit{hobbit}(x) \rightarrow \mathit{love}(x, g))
 ch6.2-quant | g3p1 | \forall x.\mathit{hobbit}(x) \rightarrow \lnot \mathit{love}(x, g)
 ch6.2-quant | g3p2 | \exists x.\mathit{elf}(x) \land \lnot \mathit{trust}(x, n)
+ch6.2-quant | g3p3 | \lnot (\forall x.\mathit{hobbit}(x) \rightarrow \mathit{love}(x, g))
+ch6.2-quant | g3p4 | \lnot (\exists x.\mathit{elf}(x) \land \mathit{trust}(x, n))
 ch7.1-adj | i-d1 | \mathit{mischievous}(\mathit{pi}) \land \mathit{hobbit}(\mathit{pi})
 ch7.1-adj | i-d1 | F | % ============================================================
 ch7.1-adj | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com
@@ -1591,6 +1593,7 @@ montague-ptq | g2p0 | UNSOLVED
 montague-ptq | g2p1 | \mathit{man}(b)
 montague-ptq | g3p0 | \exists x.\mathit{man}(x) \land (\forall y.\mathit{man}(y) \rightarrow y = x) \land \mathit{walk}(x)
 montague-ptq | g4p0 | \forall x.\mathit{man}(x) \rightarrow (\exists y.\mathit{woman}(y) \land \mathit{love}(x, y))
+montague-ptq | g4p1 | UNSOLVED
 partee-rooth-conj | i-d1 | \mathit{walk}(j) \land \mathit{talk}(j)
 partee-rooth-conj | i-d1 | F | % ============================================================
 partee-rooth-conj | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com

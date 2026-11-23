@@ -277,13 +277,22 @@
     },
     {
       "title": "E. Quantifying-in and scope",
-      "instructions": "An in-situ object quantifier takes narrow scope. For the inverse reading, raise the object quantifier over the clause (QR) and bind the trace, which is Montague's quantifying-in. \"Every man loves a woman\" is scope-ambiguous: derive both readings.",
+      "instructions": "An in-situ object quantifier takes narrow scope. The inverse reading has its own logical form, in which the object quantifier sits above the clause and binds a trace: Montague's quantifying-in. Lift the trace to a term phrase so that the verb can take it.",
       "items": [
         {
-          "sentence": "Every man loves a woman.",
+          "sentence": "Every man loves a woman (surface scope).",
           "tree": "[.t [.T [.Det every ] [.CN man ] ] [.IV [.TV loves ] [.T [.Det a ] [.CN woman ] ] ] ]",
           "targets": [
-            "Ax[man(x) -> Ey[woman(y) & love(x,y)]]",
+            "Ax[man(x) -> Ey[woman(y) & love(x,y)]]"
+          ],
+          "reading": {
+            "section": "5"
+          }
+        },
+        {
+          "sentence": "Every man loves a woman (inverse scope).",
+          "tree": "[.t [.T [.Det a ] [.CN woman ] ] [.LP 1 [.t [.T [.Det every ] [.CN man ] ] [.IV [.TV loves ] [.T t1 ] ] ] ] ]",
+          "targets": [
             "Ey[woman(y) & Ax[man(x) -> love(x,y)]]"
           ],
           "reading": {

@@ -73,10 +73,10 @@ The `↔` layers accept a target that is logically equivalent to the derived
 meaning, which the grader's formula matching may reject; a target that is not
 equivalent fails. Coverage is the fragment `compose2lean.mjs` translates: sorts
 e and t, FA, PM, NN and PA, roots of type t, surface trees that `solveTree`
-completes. At Linglib `v4.36.0` that is 116 of the 393 derivations, with 108
-targets; all 116 `beta_` and the one `simp_` theorem hold, and 104 targets.
-`known-failures.txt` lists the other four with their reasons, and the check
-exits 1 on any failure the list lacks. The library takes about 70 seconds.
+completes. At Linglib `v4.36.0` that is 119 of the 396 derivations, with 108
+targets; all 119 `beta_` and the one `simp_` theorem hold, and 107 targets.
+`known-failures.txt` lists the other one with its reason, and the check exits 1
+on any failure the list lacks. The library takes about 70 seconds.
 
 ## Files
 

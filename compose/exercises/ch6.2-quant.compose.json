@@ -236,6 +236,12 @@
     },
     {
       "words": [
+        "Not"
+      ],
+      "denotation": "Lp.~p"
+    },
+    {
+      "words": [
         "everything",
         "everyone"
       ],
@@ -372,7 +378,7 @@
         {
           "sentence": "Not every hobbit loves Gandalf.",
           "instructions": "Surface-scope reading only: negation takes wide scope.",
-          "tree": "[.S [.NegP [.Neg not ] [.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.V loves ] [.DP Gandalf ] ] ] ] ]",
+          "tree": "[.S [.NegP [.Neg Not ] [.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.V loves ] [.DP Gandalf ] ] ] ] ]",
           "targets": [
             "wide scope: ¬∀x[hobbit(x) → love(x, g)]"
           ],
@@ -381,33 +387,45 @@
           }
         },
         {
-          "sentence": "Every hobbit doesn't love Gandalf.",
-          "instructions": "Two scope readings are possible. Derive each on the tree provided for it.",
+          "sentence": "Every hobbit doesn't love Gandalf (surface scope).",
+          "instructions": "Surface scope: negation inside the VP, under the quantifier. The inverse reading has its own tree at the end of this group.",
           "tree": "[.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.Neg doesnt ] [.VP [.V love ] [.DP Gandalf ] ] ] ]",
           "targets": [
-            "surface scope (∀ > ¬): ∀x[hobbit(x) → ¬love(x, g)]",
-            "inverse scope (¬ > ∀): ¬∀x[hobbit(x) → love(x, g)]"
+            "surface scope (∀ > ¬): ∀x[hobbit(x) → ¬love(x, g)]"
           ],
-          "scopeTrees": {
-            "0": "[.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.Neg doesnt ] [.VP [.V love ] [.DP Gandalf ] ] ] ]",
-            "1": "[.S [.NegP [.Neg not ] [.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.V loves ] [.DP Gandalf ] ] ] ] ]"
-          },
           "reading": {
             "section": "6.6"
           }
         },
         {
-          "sentence": "Some elf doesn't trust Sauron.",
-          "instructions": "Two scope readings are possible.",
+          "sentence": "Some elf doesn't trust Sauron (surface scope).",
+          "instructions": "Surface scope: negation inside the VP, under the quantifier. The inverse reading has its own tree at the end of this group.",
           "tree": "[.S [.DP [.D some ] [.NP elf ] ] [.VP [.Neg doesnt ] [.VP [.V trust ] [.DP Sauron ] ] ] ]",
           "targets": [
-            "surface scope (∃ > ¬): ∃x[elf(x) ∧ ¬trust(x, n)]",
+            "surface scope (∃ > ¬): ∃x[elf(x) ∧ ¬trust(x, n)]"
+          ],
+          "reading": {
+            "section": "6.6"
+          }
+        },
+        {
+          "sentence": "Every hobbit doesn't love Gandalf (inverse scope).",
+          "instructions": "Inverse scope: the logical form puts sentential negation above the quantified clause.",
+          "tree": "[.S [.NegP [.Neg Not ] [.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.V loves ] [.DP Gandalf ] ] ] ] ]",
+          "targets": [
+            "inverse scope (¬ > ∀): ¬∀x[hobbit(x) → love(x, g)]"
+          ],
+          "reading": {
+            "section": "6.6"
+          }
+        },
+        {
+          "sentence": "Some elf doesn't trust Sauron (inverse scope).",
+          "instructions": "Inverse scope: the logical form puts sentential negation above the quantified clause.",
+          "tree": "[.S [.NegP [.Neg Not ] [.S [.DP [.D some ] [.NP elf ] ] [.VP [.V trusts ] [.DP Sauron ] ] ] ] ]",
+          "targets": [
             "inverse scope (¬ > ∃): ¬∃x[elf(x) ∧ trust(x, n)]"
           ],
-          "scopeTrees": {
-            "0": "[.S [.DP [.D some ] [.NP elf ] ] [.VP [.Neg doesnt ] [.VP [.V trust ] [.DP Sauron ] ] ] ]",
-            "1": "[.S [.NegP [.Neg not ] [.S [.DP [.D some ] [.NP elf ] ] [.VP [.V trusts ] [.DP Sauron ] ] ] ] ]"
-          },
           "reading": {
             "section": "6.6"
           }

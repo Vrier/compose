@@ -2,12 +2,6 @@
 # line, then # and the reason. derivations.mjs fails only on failures missing
 # from this list, and reports listed ones that pass again.
 
-# Second readings the surface tree cannot give under the worksheet's inventory
-# (QR is off for ch6-quant). validate.mjs fails the same three targets.
-ch6.2-quant:target_g3_g3p1_1   # inverse scope (¬ > ∀) of "Every hobbit doesn't love Gandalf"
-ch6.2-quant:target_g3_g3p2_1   # inverse scope (¬ > ∃) of "Some elf doesn't trust Sauron"
-montague-ptq:target_g4_g4p0_1  # ∃ > ∀ reading of "Every man loves a woman"
-
 # Needs QR, which COMPOSE offers here and the translation does not yet search.
 # validate.mjs derives it with one QR step.
 ch7.6-pron:target_g1_g1p0_0    # bound reading of "Every dwarf trusts themself"
