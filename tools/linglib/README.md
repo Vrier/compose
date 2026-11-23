@@ -54,6 +54,30 @@ in `lean-toolchain` to the ones Linglib's README names, run `lake update` here,
 then regenerate. Linglib follows Lean's monthly releases and its README asks for
 review of its AI-assisted code, so a new tag is a change to inspect.
 
+## Derivation check
+
+    node tools/linglib/derivations.mjs
+
+Translates each worksheet into a Lean file in `ComposeLean/Gen/` and proves, in
+an arbitrary model, up to three theorems per derivation about the meaning
+Linglib's interpreter assigns the tree, with Heim and Kratzer's grammar as
+`Studies/HeimKratzer1998.lean` states it:
+
+| layer | theorem | proof |
+|---|---|---|
+| `beta_` | the value is COMPOSE's composition, β-normal | `rfl` |
+| `simp_` | `normalize`'s simplifiers keep the meaning, where they changed it | `↔` |
+| `target_` | the stated target is the derived meaning | `↔` |
+
+The `↔` layers accept a target that is logically equivalent to the derived
+meaning, which the grader's formula matching may reject; a target that is not
+equivalent fails. Coverage is the fragment `compose2lean.mjs` translates: sorts
+e and t, FA, PM, NN and PA, roots of type t, surface trees that `solveTree`
+completes. At Linglib `v4.36.0` that is 116 of the 393 derivations, with 108
+targets; all 116 `beta_` and the one `simp_` theorem hold, and 104 targets.
+`known-failures.txt` lists the other four with their reasons, and the check
+exits 1 on any failure the list lacks. The library takes about 70 seconds.
+
 ## Files
 
 | file | role |
@@ -61,6 +85,9 @@ review of its AI-assisted code, so a new tag is a change to inspect.
 | `lakefile.lean`, `lean-toolchain`, `lake-manifest.json` | the Lake project, pinned to Linglib `v4.36.0` |
 | `ComposeLean/RuleOracle.lean` | evaluates Linglib's rule definitions on the grid and the library pairs |
 | `regenerate.mjs` | the whole pipeline, from the library to the fixture |
+| `compose2lean.mjs` | one worksheet to one Lean file: `Model`, `Word`, `Item`, `Item.val`, the grammar, the theorems |
+| `derivations.mjs` | the derivation check over the library |
+| `known-failures.txt` | derivation-check failures already understood |
 
 Generated and ignored by git: `.lake/`, `ComposeLean/LibPairs.lean`,
-`oracle-grid.jsonl`, `oracle-lib.jsonl`.
+`ComposeLean/Gen/`, `oracle-grid.jsonl`, `oracle-lib.jsonl`.
