@@ -22,6 +22,12 @@ www.tstephen.com {
 		hide .git .github
 	}
 	encode gzip
+	# Missing pages get the site's own 404.html (in that repo since
+	# 2026-11-24); file_server keeps the 404 status.
+	handle_errors {
+		rewrite * /404.html
+		file_server
+	}
 }
 
 # Teaching slides — static clone of github.com/Vrier/slides at /srv/slides
