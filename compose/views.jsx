@@ -92,7 +92,19 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
     (function walk(n) { for (const c of n.children || []) { pm[c.id] = n.id; walk(c); } })(root);
     return pm;
   }, [root]);
-  const allow = allowed || { fa: true, pm: true, nn: true, pa: true, shift: {}, qr: false, showSpans: true };
+  // S86: a worksheet in another idiom (aps: Altshuler, Parsons & Schwarzschild)
+  // is composed by its own rules (LCFormat.candidateRulesFor) and written in its
+  // own notation. Its structures are given, so it raises nothing here.
+  const isIdiom = !!(set && set.idiom);
+  const allow = isIdiom
+    ? Object.assign({}, allowed || { nn: true, shift: {}, showSpans: true }, { qr: false })
+    : (allowed || { fa: true, pm: true, nn: true, pa: true, shift: {}, qr: false, showSpans: true });
+  // The book's marker leaves (who_x, and) carry no translation of their own;
+  // the rule at their mother reads them (RelPro, Conjunction).
+  const isMarkerLeaf = (c) => {
+    if (!isIdiom || (c.children && c.children.length) || !c.word) return false;
+    try { const r = window.LCFormat.slLeaf(c, set); return !!(r && r.marker); } catch (e) { return false; }
+  };
 
   const [selected, setSelected] = useState(null);   // { node, mode:'compose'|'shift', pa? }
   const [chosen, setChosen] = useState(null);
@@ -371,6 +383,7 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
   }, [effectiveMeanings, solution]);
 
   const isPA = useCallback((node) => {
+    if (isIdiom) return undefined; // the book's raising adds no binder node
     const idx = (node.children || []).find((c) => c.word && /^\d+$/.test(c.word));
     const real = (node.children || []).filter((c) => !(c.word && /^\d+$/.test(c.word)));
     if (idx && real.length === 1) return { idx: idx.word, child: real[0] };
@@ -381,8 +394,8 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
   const realChildren = useCallback((node) => {
     const pa = isPA(node);
     if (pa) return [pa.child];
-    return (node.children || []).filter((c) => !(c.word && /^\d+$/.test(c.word)));
-  }, [isPA]);
+    return (node.children || []).filter((c) => !(c.word && /^\d+$/.test(c.word)) && !isMarkerLeaf(c));
+  }, [isPA, set]);
 
   const isAvailable = useCallback((node) => {
     if (!node.children || node.children.length === 0) return false;
@@ -408,7 +421,7 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
 
   const rootMeaning = getMeaning(root);
   const rootDone = rootMeaning && E.typeToStr(rootMeaning.type) === 't';
-  const allNodesDone = layout.nodes.every(({ node }) => getMeaning(node) || (node.word && /^\d+$/.test(node.word)));
+  const allNodesDone = layout.nodes.every(({ node }) => getMeaning(node) || (node.word && /^\d+$/.test(node.word)) || isMarkerLeaf(node));
 
   /* S80: the "label: formula" split must not swallow a definedness condition.
      An H&K-style target is written  φ : ψ , which the engine parses to
@@ -429,10 +442,18 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
   }
   function parseScopeTarget(str) {
     if (!str) return { label: '', sublabel: '', term: null };
-    const colon = str.indexOf(':');
-    const split = colon > -1 && !labelIsFormula(str.slice(0, colon).trim());
-    const labelPart = split ? str.slice(0, colon).trim() : '';
-    const formula = split ? str.slice(colon + 1).trim() : str.trim();
+    let labelPart, formula;
+    if (isIdiom) {
+      // S86: every SL quantifier holds a colon; a label ends at the first colon
+      // outside square brackets.
+      const sp = window.LCFormat.splitTarget(str, set.notation);
+      labelPart = sp.label; formula = sp.formula;
+    } else {
+      const colon = str.indexOf(':');
+      const split = colon > -1 && !labelIsFormula(str.slice(0, colon).trim());
+      labelPart = split ? str.slice(0, colon).trim() : '';
+      formula = split ? str.slice(colon + 1).trim() : str.trim();
+    }
     // Extract (linear) or (inverse) from label: "every > some (linear)"
     const subMatch = labelPart.match(/\((linear|inverse|bound|free|deictic|unbound)\)\s*$/i);
     const sublabel = subMatch ? subMatch[1].toLowerCase() : '';
@@ -708,6 +729,14 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
     setChosen(null); setVal(''); setFb(null); setRejected({});
   }
   function rulesFor(node) {
+    if (isIdiom) {
+      // S86: the book's rules, each with its translation or the reason the
+      // Wellformedness Filter refuses it. Non-branching Node only where a node
+      // has one daughter: the book's trees branch everywhere.
+      const kidsN = realChildren(node).length + (node.children || []).filter(isMarkerLeaf).length;
+      return window.LCFormat.candidateRulesFor(set, node, getMeaning)
+        .filter((r) => allow[r.key] !== false && (r.key !== 'nn' || kidsN === 1));
+    }
     const pa = isPA(node);
     // A PA/index node is syntactically branching (index + clause); only
     // Predicate Abstraction may resolve it — never Non-branching Node.
@@ -730,8 +759,35 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
   function pickRule(entry) {
     const node = selected.node;
     if (!entry.ok) {
-      setRejected((r) => ({ ...r, [entry.key]: entry.reason }));
+      const nextRej = { ...rejected, [entry.key]: entry.reason };
+      setRejected(nextRej);
       setFb(null);
+      // S86: the book gives some structures no translation. Such a derivation
+      // has no target, and it is done once every rule at the node where the
+      // translation stops has been tried and refused.
+      if (isIdiom && !(problem.targets && problem.targets.length)) {
+        const rs = rulesFor(node);
+        if (rs.length && rs.every((r) => !r.ok && nextRej[r.key])) {
+          setFb({ kind: 'good', msg: 'Every rule is refused at ⟨' + (node.label || '•') + '⟩, so this structure has no translation.' });
+          onComplete && onComplete();
+        }
+      }
+      return;
+    }
+    if (isIdiom) {
+      // S86: a step that writes the daughters' translations side by side
+      // resolves on choosing the rule; a step that puts an index into the
+      // translation (IndexedDaughter, RelPro, EvExist, the Merge that gives a
+      // quantifier its scope) is written out by the student.
+      if (allow.autoCompose || !entry.typed) {
+        resolveNode(node.id, { term: entry.result.term, type: entry.result.type, rule: entry.abbr });
+        setSelected(null); setChosen(null); setRejected({});
+        setFb({ kind: 'good', msg: entry.name + (allow.autoCompose ? ' — auto-applied.' : ' applied.') });
+        return;
+      }
+      setChosen({ rule: entry, result: entry.result, raw: null, idiom: true });
+      setVal(''); setFb(null);
+      requestAnimationFrame(() => api.current && api.current.focus());
       return;
     }
     if (entry.key === 'pa') {
@@ -791,9 +847,38 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
     effectiveSetMeanings(next);
     setSelected(null); setFb(null);
   }
+  // The variable a quantifier binds: [Q u: φ] or [Q u: φ](ψ) → u.
+  function slQuantVar(t) {
+    if (E.slIsQuantified(t)) return t.fn.arg.v;
+    if (E.slIsPrefix(t)) return t.arg.v;
+    return null;
+  }
+  function checkIdiom() {
+    const node = selected.node;
+    const target = chosen.result;
+    const parsed = E.tryParse(val, set.notation);
+    if (!parsed.ok) {
+      setFb({ kind: 'bad', msg: 'Could not read that as a formula of SL. Check the brackets; a quantifier is written [∃x: …] and ⊓ can be typed as ^.' });
+      return;
+    }
+    if (!E.equivACη(parsed.ast, target.term)) {
+      setFb({ kind: 'bad', msg: 'Not the translation ' + chosen.rule.name + ' gives here. ' + chosen.rule.desc });
+      return;
+    }
+    const want = slQuantVar(target.term), got = slQuantVar(parsed.ast);
+    if (want && got !== want) {
+      setFb({ kind: 'bad', msg: 'Right formula, wrong variable: the quantifier binds the index ' + want + ', so write [… ' + want + ': …].' });
+      return;
+    }
+    // The rule's own translation is stored, so later steps read the book's form.
+    resolveNode(node.id, { term: target.term, type: target.type, rule: chosen.rule.abbr });
+    setSelected(null); setChosen(null); setVal('');
+    setFb({ kind: 'good', msg: 'Correct: node translated by ' + chosen.rule.name + '.' });
+  }
   function check() {
     setLive('');
     if (!chosen) return;
+    if (chosen.idiom) { checkIdiom(); return; }
     const node = selected.node;
     const target = chosen.result;
     const parsed = E.tryParse(val);
@@ -856,8 +941,9 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
     if (allNodesDone && !rootDone && rootMeaning) {
       let ty = '';
       try { ty = window.LCSpeech ? window.LCSpeech.typeToSpeech(rootMeaning.type) : E.typeToStr(rootMeaning.type); } catch (e) { ty = ''; }
-      return { kind: 'info', text: 'All nodes are resolved, but the root is type ' + ty
-        + '. Apply Existential Closure or another operation to reach type t.' };
+      return { kind: 'info', text: isIdiom
+        ? 'All nodes are translated, but the sentence is not a formula. A node lower down took a rule that leaves a quantifier with no scope; reset and choose again.'
+        : 'All nodes are resolved, but the root is type ' + ty + '. Apply Existential Closure or another operation to reach type t.' };
     }
     return { kind: '', text: '' };
   }, [live, fb, allDone, allNodesDone, rootDone, rootMeaning, hasScopes, scopeFb,
@@ -1174,7 +1260,9 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
         {allDone && hasScopes && scopeFb && scopeFb.kind === 'good' && scopeFb.targetError && <Feedback kind="info">⚠ Derivation complete, but this target could not be checked — tell your instructor.</Feedback>}
         {allDone && hasScopes && scopeFb && scopeFb.kind === 'good' && !scopeFb.targetError && <Feedback kind="good">✓ {parseScopeTarget(problem.targets[scopeFb.idx]).label} scope reading confirmed!{completedTargets.size === problem.targets.length ? ' Both readings derived — well done.' : ' Select the other checkbox to derive the second reading.'}</Feedback>}
         {allDone && hasScopes && scopeFb && scopeFb.kind !== 'good' && <Feedback kind="bad">{scopeFb.msg}</Feedback>}
-        {allNodesDone && !rootDone && rootMeaning && <Feedback kind="info">All nodes resolved, but the root is type <TypeBadge type={rootMeaning.type} /> — apply Existential Closure (EC) or another operation to reach type <span className="lx">t</span> before the exercise completes.</Feedback>}
+        {allNodesDone && !rootDone && rootMeaning && (isIdiom
+          ? <Feedback kind="info">All nodes are translated, but the sentence is not a formula. A node lower down took a rule that leaves a quantifier with no scope; reset and choose again.</Feedback>
+          : <Feedback kind="info">All nodes resolved, but the root is type <TypeBadge type={rootMeaning.type} /> — apply Existential Closure (EC) or another operation to reach type <span className="lx">t</span> before the exercise completes.</Feedback>)}
 
         {selected && !qrPick && selected.mode === 'view' && (
           <>
@@ -1248,9 +1336,19 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
 
         {selected && !qrPick && chosen && (() => {
             return (<>
-            <div className="dock-label">{chosen.rule.name} — {chosen.isPA ? 'enter the λ-abstraction over x₀' + chosen.idx : chosen.isPM ? 'write the modified predicate' : 'apply β-reduction'}</div>
+            <div className="dock-label">{chosen.rule.name} — {chosen.idiom ? 'write the translation' : chosen.isPA ? 'enter the λ-abstraction over x₀' + chosen.idx : chosen.isPM ? 'write the modified predicate' : 'apply β-reduction'}</div>
             <div className="compose-line">
-              {chosen.isPM
+              {chosen.idiom
+                ? <><span className="lead">daughters →</span>
+                    {realChildren(selected.node).map((c, i) => (
+                      <React.Fragment key={c.id}>
+                        {i > 0 && <span className="lead">,</span>}
+                        <span className="lead" style={{ fontStyle: 'italic' }}>{c.word || c.label}</span>
+                        <Notation ast={getMeaning(c).term} />
+                      </React.Fragment>
+                    ))}
+                    <span className="lead" style={{ marginLeft: 6 }}>{chosen.rule.desc}</span></>
+              : chosen.isPM
                 ? <><span className="lead">conjoin the sisters →</span>
                     <span className="pm-sisters">
                       <Notation ast={chosen.sisters[0].term} />
@@ -1269,12 +1367,12 @@ function TreeView({ set, problem, meanings, onSetMeanings, onComplete, density, 
             </div>
             <div className="entry-row">
               <ExpressionInput value={val} onChange={setVal} onSubmit={check} apiRef={api} autoFocus
-                placeholder={chosen.isPA ? 'Enter λx₀'+chosen.idx+'.[…]' : chosen.isPM ? 'Enter the modified predicate λx.[ … ]' : 'Enter the β-reduced result…'}
+                placeholder={chosen.idiom ? (chosen.rule.key === 'relpro' ? 'Enter λx.…' : 'Enter the translation, e.g. [∃x: …](…)') : chosen.isPA ? 'Enter λx₀'+chosen.idx+'.[…]' : chosen.isPM ? 'Enter the modified predicate λx.[ … ]' : 'Enter the β-reduced result…'}
                 status={fb ? (fb.kind === 'good' ? 'ok' : 'err') : ''} />
               <button className="btn btn-primary" onClick={check}>Check answer</button>
             </div>
             <div className="dock-tools">
-              <SymbolPalette enabledOps={allowed && allowed.ops} onInsert={(t) => api.current && api.current.insert(t)} />
+              <SymbolPalette enabledOps={allowed && allowed.ops} idiom={isIdiom ? set.idiom : null} onInsert={(t) => api.current && api.current.insert(t)} />
               <span style={{ flex: 1 }} />
 
               <button className="btn-ghost" onClick={() => { if (selected.pa) { setSelected(null); } setChosen(null); setFb(null); }}>Back</button>

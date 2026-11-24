@@ -703,6 +703,13 @@
         : { ok: false, reason: 'RelPro abstracts over a formula, and the sister of the relative pronoun is ' + slIsA(real[0]) + '.' })
       : { ok: false, reason: 'RelPro applies to a node whose daughters are an indexed relative pronoun and one other.' });
     put('evex', !ready ? pending : two ? slEvExist(real[0], real[1]) : { ok: false, reason: 'EvExist combines exactly two daughters; ' + count(real.length) });
+    // Chapter 4 translates the event phrase by EvExist (24). Where that rule is
+    // on and applies, IndexedDaughter would leave the sentence a quantifier with
+    // no scope, so it is refused here, as the solver's order already has it.
+    const evAt = out.find((r) => r.key === 'evex'), idxAt = out.find((r) => r.key === 'idx');
+    if (set.config && set.config.evex && evAt && evAt.ok && idxAt && idxAt.ok) {
+      out[out.indexOf(idxAt)] = Object.assign({}, SL_RULES.idx, { ok: false, reason: 'In chapter 4 an event phrase is translated by EvExist (24); IndexedDaughter would leave the sentence a quantifier with no scope.' });
+    }
     const NN = { key: 'nn', name: 'Non-branching Node', abbr: 'NN', desc: 'A node with one daughter has that daughter’s translation.' };
     if (kids.length === 1 && ready && real.length === 1) out.push(Object.assign({}, NN, { ok: true, result: { term: real[0].term, type: real[0].type } }));
     else if (!ready) out.push(Object.assign({}, NN, pending));

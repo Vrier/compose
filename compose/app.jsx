@@ -1,6 +1,12 @@
 /* ===========================================================================
    COMPOSE — application shell
    ========================================================================= */
+// S86: the symbols of the book's logic SL, for an aps worksheet.
+const SL_REF_KEYS = [
+  { g: '∀', k: 'forall', n: 'every' }, { g: '∃', k: 'exists', n: 'some' },
+  { g: '⊓', k: '^', n: 'PredCon' }, { g: '&', k: '&', n: 'and' },
+  { g: '¬', k: '~', n: 'not' }, { g: 'λ', k: 'lambda', n: 'lambda' },
+];
 const REF_KEYS = [
   { g: 'λ', k: 'L', n: 'lambda' }, { g: '∀', k: 'A', n: 'for all' },
   { g: '∃', k: 'E', n: 'exists' }, { g: 'ι', k: 'I', n: 'iota' },
@@ -2181,15 +2187,21 @@ function App() {
             <div className="lex-word">{e.words.join(', ')}
               {e.type && <span className="lex-type"><TypeBadge type={e.type} /></span>}</div>
             {e.term && <div className="lex-den"><Notation ast={e.term} /></div>}
+            {!e.term && e.kind && <div className="lex-den" style={{ fontSize: 13, color: 'var(--muted)' }}>{
+              e.kind === 'pronoun' ? 'Pronoun: translates as its index'
+              : e.kind === 'relative' ? 'Relative pronoun: read by RelPro'
+              : 'Read by Conjunction'}</div>}
           </div>
         ))}
         <div className="lex-kbd-ref">
           <div className="panel-head" style={{ marginTop: 8 }}>Entering symbols</div>
           <div className="ref-row">
-            {REF_KEYS.map((r) => (<div className="ref-key" key={r.g}><span className="g">{r.g}</span>{r.n}<span className="k">{r.k}</span></div>))}
+            {(set && set.idiom === 'aps' ? SL_REF_KEYS : REF_KEYS).map((r) => (<div className="ref-key" key={r.g}><span className="g">{r.g}</span>{r.n}<span className="k">{r.k}</span></div>))}
           </div>
           <div style={{ padding: '0 18px 22px', fontSize: 12.5, color: 'var(--muted)', lineHeight: 1.5 }}>
-            Type binder letters before a variable (<span className="mono">Lx</span> → λx). <span className="mono">&amp;</span>, <span className="mono">~</span>, <span className="mono">-&gt;</span> convert as you type.
+            {set && set.idiom === 'aps'
+              ? <>Write a quantifier as <span className="mono">[exists x: Dish(x)]</span>; <span className="mono">^</span>, <span className="mono">&amp;</span>, <span className="mono">~</span> and the words <span className="mono">forall</span>, <span className="mono">exists</span>, <span className="mono">lambda</span> convert as you type.</>
+              : <>Type binder letters before a variable (<span className="mono">Lx</span> → λx). <span className="mono">&amp;</span>, <span className="mono">~</span>, <span className="mono">-&gt;</span> convert as you type.</>}
           </div>
         </div>
       </div>

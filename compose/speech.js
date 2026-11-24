@@ -16,7 +16,25 @@
     '=': 'equals', '≠': 'is not equal to', '<': 'is less than',
     '>': 'is greater than', '⊆': 'is a subset of', '≤': 'is part of',
     '⊕': 'joined with',
+    '⊓': 'conjoined with',   // S86: the book's predicate conjunction (PredCon)
   };
+  // S86: the restricted quantifiers of the aps idiom, [Q u: φ] and [Q u: φ](ψ).
+  // Stored as an application of a quantifier symbol (§∀ §∃ §No §The); spoken
+  // as the book reads them, never as the symbol's internal name.
+  const SL_Q = { '∀': 'every', '∃': 'some', 'No': 'no', 'The': 'the' };
+  function slSpeech(e) {
+    const E = (typeof window !== 'undefined' && window.LC) || null;
+    if (!E || !E.slIsPrefix) return null;
+    const word = (sym) => SL_Q[E.slQuantLabel(sym.name)] || E.slQuantLabel(sym.name);
+    if (E.slIsQuantified(e)) {
+      const r = e.fn.arg, sc = e.arg;
+      return 'for ' + word(e.fn.fn) + ' ' + sayName(r.v) + ' such that ' + termToSpeech(r.body)
+           + ', ' + termToSpeech(sc.body);
+    }
+    if (E.slIsPrefix(e)) return 'the quantifier ' + word(e.fn) + ' ' + sayName(e.arg.v) + ' such that ' + termToSpeech(e.arg.body);
+    if (E.slIsQuantSym(e)) return 'the quantifier symbol ' + word(e);
+    return null;
+  }
   const QUANT = { '∀': 'for all', '∃': 'there is some', 'ι': 'the unique' };
   const QUANT_JOIN = { '∀': ', ', '∃': ' such that ', 'ι': ' such that ' };
   const CONST = {
@@ -61,9 +79,13 @@
   function termToSpeech(e) {
     if (!e || !e.t) return '';
     switch (e.t) {
-      case 'sym':
-        return sayName(e.name);
+      case 'sym': {
+        const q = slSpeech(e);
+        return q != null ? q : sayName(e.name);
+      }
       case 'app': {
+        const q = slSpeech(e);
+        if (q != null) return q;
         // love(x, y) -> "love of x and y"; a non-symbol head is applied
         // same walk as engine.js spine(): {t:'app', fn, arg}
         const args = [];
