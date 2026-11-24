@@ -84,6 +84,7 @@ to a worksheet file to get editor autocomplete and validation in VS Code.
 | `exercises[].items[]` | Each item is one tree (a **derivation**; `derivations` is the forward-looking spelling of the list and is accepted today). `tree` uses bracket notation `[.Label child child]`; a leaf is a lexicon word, a trace is `t_1`, an index leaf is a bare number. `sentence` is the title shown to the student; `targets` (optional) are the accepted goal denotations — give two for a scope-ambiguous item to require both readings. |
 | `id` (on exercises and items) | Optional **stable id** (1–32 chars of `A–Z a–z 0–9 _ -`). Student progress is keyed by these ids. **Without stable ids, inserting or reordering content silently re-attaches every student's saved progress to the wrong derivations** — critical for hosted worksheets, where links are live. The editor generates ids automatically. |
 | `notation` | `"cc"` (Coppock & Champollion, default) or `"hk"` (Heim & Kratzer) rendering conventions. |
+| `idiom` | Which rules compose the trees and which logic is read and printed. Absent: the default idiom described above. `"aps"`: the rules of translation of Altshuler, Parsons & Schwarzschild; see **Idioms** below. An idiom sets its own notation. |
 | `reading` | Optional embedded reading companion: `{ "format": "latex", "markdown": "…" }` — a Markdown skeleton with LaTeX linguistics content (expex/linguex/gb4e examples, qtree/forest trees, `\llbracket…\rrbracket`, `$…$` math, tipa; see `docs/SKILL-chapters-to-notes.md` §3). `"lingdown"` is accepted as a legacy format value. Items anchor to its `##` sections via `"reading": { "section": "…" }`. |
 | `hints` | Per-derivation staged hints (array of strings). Students reveal them one at a time via a 💡 button; after the last hint, a final "Show answer" stage fills in the worked solution (practice mode only — in assessment mode the button is absent entirely). |
 | `targetsMode` | Whether all targets are required (`"all"`, default — two targets mean both scope readings must be derived) or **any one suffices** (`"any"` — for equivalent formulations that don't normalize together, or either-scope-acceptable items). |
@@ -117,6 +118,71 @@ target parsed) and stay within: **2 MB** total, **40 worksheets** per bundle,
 **400 derivations** in total, unique worksheet keys. Violations are rejected
 with structured diagnostics naming the offending path. Hosted uploads accept
 the JSON formats only (not the legacy DSL).
+
+---
+
+## Idioms
+
+An idiom is a textbook's own system: its rules, and the logic its translations
+are written in. A worksheet names one with the top-level `idiom` field. The
+default idiom needs no field.
+
+### `"idiom": "aps"`
+
+Altshuler, Parsons & Schwarzschild, *A Course in Semantics* (2019), chapters
+3–5. An LF tree is translated into the symbolic logic SL by Lexicon, Merge,
+PredCon, IndexedDaughter and Conjunction, with RelPro (§3.5) and EvExist
+(chapter 4). The Wellformedness Filter keeps the results that are expressions
+of SL.
+
+```json
+{
+  "compose": 1,
+  "idiom": "aps",
+  "title": "Quantificational determiner phrases (§3.3)",
+  "domain": {
+    "constants": { "e": "Jack", "<e,t>": "Person Dish", "<e,<e,t>>": "Liked" },
+    "variables": { "e": "x y z" }
+  },
+  "lexicon": [
+    { "words": ["Jack"],        "denotation": "Jack" },
+    { "words": ["liked"],       "denotation": "Liked" },
+    { "words": ["every"],       "denotation": "∀" },
+    { "words": ["some", "a"],   "denotation": "∃" },
+    { "words": ["not"],         "denotation": "¬" },
+    { "words": ["she", "herself"], "kind": "pronoun" },
+    { "words": ["who"],         "kind": "relative" },
+    { "words": ["and"],         "kind": "conjunction" }
+  ],
+  "rules": { "composition": { "merge": true, "indexedDaughter": true, "predCon": false } },
+  "exercises": [
+    { "id": "A", "derivations": [
+      { "id": "d1", "sentence": "Some person liked every dish.",
+        "tree": "[.VP [.DP some_y person ] [.VP [.DP every_x dish ] [.VP y [.V′ liked x ] ] ] ]",
+        "targets": ["some > every: [∃y: Person(y)]([∀x: Dish(x)](Liked(x)(y)))"] }
+    ] }
+  ]
+}
+```
+
+| Part | In this idiom |
+|---|---|
+| `domain` | Every symbol of SL is declared. Its type gives its category: `e` an individual constant or variable, `<e,t>` a one-place predicate, `<e,<e,t>>` a two-place predicate. Events and states are entities, so one sort serves. |
+| `lexicon[].denotation` | The SL symbol that translates the word: a declared constant, a quantifier symbol (`∀`, `∃`, `No`, `The`), or `¬`. |
+| `lexicon[].kind` | `pronoun`, `relative` or `conjunction`: a word with no translation of its own. The entry has no denotation. |
+| Leaves | `every_x` is the word `every` indexed `x`. A declared variable alone, `x`, is the copy of an index that Quantifier Raising leaves behind. `she_x` is an indexed pronoun and translates as `x`. No node binds a variable and there are no numeral leaves. |
+| `rules.composition` | `merge`, `predCon`, `indexedDaughter` and `conjunction` default on; `relPro` and `evExist` default off. |
+| Targets and answers | Written in SL: `π(α)`, `(π ⊓ π′)`, `¬(φ)`, `(φ & ψ)`, `[∀x: φ](ψ)`, `[No x: φ](ψ)`, `λx.φ`. `^` and `∩` type `⊓`; `~` types `¬`; `forall` and `exists` type `∀` and `∃`. The ASCII binder letters `L A E I` are off, so `In`, `At` and `Is` are names. A label ends at the first colon outside square brackets. |
+| Grading | By meaning, as everywhere. The quantifier symbols and `⊓` are unfolded into the default notation inside the comparison only, so `[No x: φ](ψ)` matches `¬[∃x: φ](ψ)` and `(π ⊓ π′)(α)` matches `(π(α) & π′(α))`. What is shown is never unfolded. |
+| A derivation with no target | A structure the book gives no translation. The solver must find none. |
+
+Three steps are ones a student writes out: IndexedDaughter, EvExist, and the
+Merge that puts a quantifier in front of its scope. Every other step is
+concatenation and resolves on choosing the rule. The chooser marks the three
+with `typed: true`.
+
+The views do not yet play this idiom (S86 is the engine and the format).
+`test/idiom.mjs` runs the fixtures in `test/fixtures/idiom/`.
 
 ---
 

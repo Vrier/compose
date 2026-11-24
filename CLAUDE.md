@@ -130,7 +130,7 @@ scripts/capture-walkthroughs.mjs); `/about/` = citation page; `/_/` = PB
 admin. Worksheets are shared through unlock codes or `.compose.json` files
 only. Instructor content lives in the `versions` collection (bundle JSON),
 validated on save by the real engine running inside PB's goja VM. Deploys:
-push to `main` → GitHub Actions runs all seven test suites → SSH →
+push to `main` → GitHub Actions runs all eight test suites → SSH →
 `deploy/deploy.sh` (pull, build, restart). PB data lives in
 `/srv/compose-data`, never touched by deploys; nightly PB zips + Hetzner
 Backups (restore drill passed 2026-07-11, `deploy/restore-drill.sh`). See
@@ -156,6 +156,26 @@ The repo is being taken to a hosted service across multiple sessions:
 - **The session protocol in IMPLEMENTATION.md §0 is mandatory**: start green
   (`npm test`), stay in scope, end green, update PLAN.md §8, commit.
 - PROMPTS.md holds the bootstrap/session/resume prompts used to run each session.
+
+## Idioms
+
+A worksheet with `"idiom": "aps"` (S86) is composed by the rules of translation
+of Altshuler, Parsons & Schwarzschild, *A Course in Semantics* (2019): Merge,
+PredCon, IndexedDaughter, Conjunction, RelPro and EvExist, into the book's
+symbolic logic SL. `compose/FORMAT.md` § Idioms has the format. The design is
+in the Claude project as `claude/aps-idiom-design.md`.
+
+- An SL expression is an ordinary engine term (`engine.js`, "SL" section). The
+  quantifier symbols and ⊓ stay primitive in every stored term and are unfolded
+  inside `equivACη` only. Never unfold for display.
+- `lcformat.js`, "the aps idiom": `solveTree` dispatches on `set.idiom`;
+  `candidateRulesFor(set, node, meaningOf)` is the chooser for any idiom.
+- `test/idiom.mjs` (in `npm test`) solves the fixtures in `test/fixtures/idiom/`
+  by the book's rules, converts each tree to the default idiom and requires
+  `solveTree` to agree, and snapshots the chooser in `test/golden-idiom.txt`.
+  Regenerate with `node test/idiom.mjs --update`, for intended changes only.
+- The views do not play the idiom yet. Until they do, keep `aps*` worksheets
+  out of `compose/exercises/`.
 
 ## Linglib cross-check
 

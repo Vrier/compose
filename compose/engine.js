@@ -10,6 +10,9 @@
      {t:'not',  e}                          negation
      {t:'bin',  op, l, r}   op: ∧ ∨ → ↔ =   binary connective / comparison
      {t:'quant',q, v, body} q: ∀ ∃ ι        quantifier / iota
+   The 'aps' notation (S86) reads and prints the symbolic logic SL of
+   Altshuler, Parsons & Schwarzschild 2019 over these same nodes; see the
+   "SL" section below.
    ========================================================================= */
 (function () {
   'use strict';
@@ -115,6 +118,12 @@
   // ---- parser (recursive descent) ----------------------------------------
   // precedence (low→high): ↔ , → , ∨ , ∧ , (= ≠ < > ⊆) , ¬ , application , atom
   function parse(src) {
+    // S86: in the 'aps' notation the reader is SL's (no ASCII binder letters,
+    // restricted quantifiers, ⊓). Every other notation reads the core language.
+    if (_disp === 'aps') return parseSL(src);
+    return parseCore(src);
+  }
+  function parseCore(src) {
     const toks = tokenize(src);
     let p = 0;
     const peek = () => toks[p];
@@ -557,7 +566,10 @@
   }
   // Compare two terms up to αβη + AC (used for lenient answer checking)
   function equivACη(a, b) {
-    try { return alphaEqualAC(etaReduce(normalize(a)), etaReduce(normalize(b))); }
+    // S86: SL's quantifier symbols and ⊓ are unfolded here and nowhere else, so
+    // an SL term is compared by meaning with any other term (slUnfold returns
+    // its argument untouched when the term has no SL construct).
+    try { return alphaEqualAC(etaReduce(normalize(slUnfold(a))), etaReduce(normalize(slUnfold(b)))); }
     catch { return false; }
   }
 
@@ -739,7 +751,7 @@
       case 'not': return 4;
       case 'bin':
         if (e.op === '=' || e.op === '≠' || e.op === '<' || e.op === '>' || e.op === '⊆' || e.op === '≤') return 3;
-        if (e.op === '⊕') return 4; // ⊕ binds tighter than comparison
+        if (e.op === '⊕' || e.op === '⊓') return 4; // ⊕ and ⊓ bind tighter than comparison
         if (e.op === '∧') return 2;
         if (e.op === '∨') return 2;
         if (e.op === '→') return 1;
@@ -799,6 +811,7 @@
   }
   function toHTML(e, parentPrec = -1, mode) {
     return withNotation(mode, () => {
+      if (_disp === 'aps') return slPrint(e, SL_HTML);
       let s = render(e);
       if (prec(e) < parentPrec) s = '<span class="lx-paren">(</span>' + s + '<span class="lx-paren">)</span>';
       return s;
@@ -852,12 +865,13 @@
     return '';
   }
   function varNoItalic(v) { return '<i class="lx-bv">' + esc(v) + '</i>'; }
-  function opGlyph(op) { return { '∧': '∧', '∨': '∨', '→': '→', '↔': '↔', '=': '=', '≠': '≠', '<': '<', '>': '>', '⊆': '⊆', '≤': '≤', '⊕': '⊕' }[op] || op; }
-  function opClass(op) { return { '∧': 'and', '∨': 'or', '→': 'imp', '↔': 'iff', '=': 'eq', '≠': 'neq', '<': 'lt', '>': 'gt', '⊆': 'sub', '≤': 'leq', '⊕': 'oplus' }[op] || 'op'; }
+  function opGlyph(op) { return { '∧': '∧', '∨': '∨', '→': '→', '↔': '↔', '=': '=', '≠': '≠', '<': '<', '>': '>', '⊆': '⊆', '≤': '≤', '⊕': '⊕', '⊓': '⊓' }[op] || op; }
+  function opClass(op) { return { '∧': 'and', '∨': 'or', '→': 'imp', '↔': 'iff', '=': 'eq', '≠': 'neq', '<': 'lt', '>': 'gt', '⊆': 'sub', '≤': 'leq', '⊕': 'oplus', '⊓': 'sqcap' }[op] || 'op'; }
 
   // plain unicode string (for inputs / comparison display)
   function toStr(e, parentPrec = -1, mode) {
     if (typeof mode === 'string') return withNotation(mode, () => toStr(e, parentPrec));
+    if (_disp === 'aps') return slPrint(e, SL_STR);
     let s;
     switch (e.t) {
       case 'sym': s = (_disp === 'hk' && e.name === 'w0') ? 'w' : e.name; break;
@@ -901,9 +915,10 @@
     return '\\mathit{' + latexEscape(name) + '}';
   }
   const LATEX_OPS = { '∧': '\\land', '∨': '\\lor', '→': '\\rightarrow', '↔': '\\leftrightarrow',
-    '=': '=', '≠': '\\neq', '<': '<', '>': '>', '⊆': '\\subseteq', '≤': '\\leq', '⊕': '\\oplus' };
+    '=': '=', '≠': '\\neq', '<': '<', '>': '>', '⊆': '\\subseteq', '≤': '\\leq', '⊕': '\\oplus', '⊓': '\\sqcap' };
   function toLaTeX(e, parentPrec = -1, mode) {
     if (typeof mode === 'string') return withNotation(mode, () => toLaTeX(e, parentPrec));
+    if (_disp === 'aps') return slPrint(e, SL_TEX);
     let s;
     switch (e.t) {
       case 'sym': s = symLaTeX(e.name); break;
@@ -976,13 +991,204 @@
     return s;
   }
 
-  // safe parse → returns {ok, ast, error}
-  function tryParse(src) {
-    try { return { ok: true, ast: parse(asciiToUnicode(src)) }; }
-    catch (e) { return { ok: false, error: e.message || 'Parse error' }; }
+  // safe parse → returns {ok, ast, error}. `mode` (S86, optional) reads the
+  // source in that notation whatever the current default is; loaders pass the
+  // worksheet's own notation so parsing never depends on what is on screen.
+  function tryParse(src, mode) {
+    return withNotation(mode, () => {
+      try { return { ok: true, ast: parse(asciiToUnicode(src)) }; }
+      catch (e) { return { ok: false, error: e.message || 'Parse error' }; }
+    });
   }
 
-  
+
+  // ---- SL: the symbolic logic of the 'aps' idiom (S86) ----------------------
+  // Altshuler, Parsons & Schwarzschild, A Course in Semantics (2019), §2.5 and
+  // §3.5.2. An SL expression is an ordinary term under three conventions:
+  //   (π ⊓ π′)       Bin('⊓', π, π′)                               never expanded in a stored term
+  //   [Q u: φ]       App(Sym('§Q'), Lam(u, φ))                     a quantifier awaiting its scope
+  //   [Q u: φ](ψ)    App(App(Sym('§Q'), Lam(u, φ)), Lam(u, ψ))
+  // Binding is Lam's, so substitution, α-equivalence and normalisation need no
+  // new cases. The quantifier symbols and ⊓ stay primitive in every stored term:
+  // slUnfold rewrites them into the core language, and only equivACη calls it,
+  // so the printer never has to recover [∀x: φ](ψ) from ∀x.(φ → ψ). The '§' in a
+  // symbol's name cannot be typed in either reader, so nothing collides with it.
+  const SL_QDEF = {                      // label → definition in the core language
+    '∀': 'λP.λQ.∀x.(P(x) → Q(x))',
+    '∃': 'λP.λQ.∃x.(P(x) ∧ Q(x))',
+    'No': 'λP.λQ.¬∃x.(P(x) ∧ Q(x))',
+    'The': 'λP.λQ.∃x.((∀y.(P(y) ↔ y = x)) ∧ Q(x))',   // the book's THE: exactly one φ, and it is ψ
+  };
+  const slQuantSym = (label) => (SL_QDEF[label] !== undefined ? Sym('§' + label) : null);
+  // label of a quantifier symbol ('∀', '∃', 'No', 'The'), or undefined
+  const slQuantLabel = (name) => (typeof name === 'string' && name[0] === '§' && SL_QDEF[name.slice(1)] !== undefined ? name.slice(1) : undefined);
+  const slIsQuantSym = (e) => !!e && e.t === 'sym' && slQuantLabel(e.name) !== undefined;
+  const slIsPrefix = (e) => !!e && e.t === 'app' && slIsQuantSym(e.fn) && e.arg.t === 'lam' && !e.arg.dom;
+  const slIsQuantified = (e) => !!e && e.t === 'app' && slIsPrefix(e.fn) && e.arg.t === 'lam' && !e.arg.dom;
+  // The translation of "not" is the symbol ¬. As a term it is λφ.¬φ, so Merge with
+  // a formula is plain application and β-reduction gives ¬(φ).
+  const slNeg = () => Lam('φ', Not(Sym('φ')));
+  const slIsNeg = (e) => !!e && e.t === 'lam' && !e.dom && e.body.t === 'not' && e.body.e.t === 'sym' && e.body.e.name === e.v;
+
+  function tokenizeSL(src) {
+    const toks = []; let i = 0;
+    while (i < src.length) {
+      const c = src[i];
+      if (/\s/.test(c)) { i++; continue; }
+      if ('()[]:.'.includes(c)) { toks.push({ k: c }); i++; continue; }
+      if (c === '∧' || c === '&') { toks.push({ k: '&' }); i++; continue; }
+      if (c === '⊓' || c === '∩' || c === '^') { toks.push({ k: '⊓' }); i++; continue; }   // ⊓ is the book's symbol; ∩ and ^ are typing aliases
+      if (c === '¬' || c === '~') { toks.push({ k: '¬' }); i++; continue; }
+      if (c === 'λ') { toks.push({ k: 'λ' }); i++; continue; }
+      if (c === '∀' || c === '∃') { toks.push({ k: 'id', v: c }); i++; continue; }
+      // No ASCII binder letters: In, At, Is and Ex are ordinary SL names here.
+      if (/[A-Za-z]/.test(c)) {
+        let j = i + 1; while (j < src.length && /[A-Za-z0-9_'’]/.test(src[j])) j++;
+        toks.push({ k: 'id', v: src.slice(i, j) }); i = j; continue;
+      }
+      if ('∨→↔'.includes(c)) throw new ParseError('SL has no “' + c + '”: its connectives are ¬, & and ⊓');
+      throw new ParseError('Unexpected character “' + c + '”');
+    }
+    return toks;
+  }
+  // precedence (low→high): & , ⊓ , ¬ , application , atom
+  function parseSL(src) {
+    const t = tokenizeSL(src); let p = 0;
+    const peek = () => t[p], next = () => t[p++];
+    const expect = (k) => { if (!peek() || peek().k !== k) throw new ParseError('Expected ' + k); return next(); };
+    function expr() { let l = cap(); while (peek() && peek().k === '&') { next(); l = Bin('∧', l, cap()); } return l; }
+    function cap() { let l = unary(); while (peek() && peek().k === '⊓') { next(); l = Bin('⊓', l, unary()); } return l; }
+    function unary() {
+      if (peek() && peek().k === '¬') {
+        next();
+        if (!peek() || peek().k === ')' || peek().k === ']') return slNeg();   // the bare symbol, as in: not ⇝ ¬
+        return Not(unary());
+      }
+      return post();
+    }
+    function post() {
+      let h = prim();
+      while (peek() && peek().k === '(') {
+        next(); const a = expr(); expect(')');
+        // a quantifier binds its variable in the scope written after it
+        h = slIsPrefix(h) ? App(h, Lam(h.arg.v, a)) : App(h, a);
+      }
+      return h;
+    }
+    function prim() {
+      const k = peek();
+      if (!k) throw new ParseError('Unexpected end of expression');
+      if (k.k === '(') { next(); const e = expr(); expect(')'); return e; }
+      if (k.k === '[') {
+        next();
+        const q = expect('id').v, qs = slQuantSym(q);
+        if (!qs) throw new ParseError('“' + q + '” is not a quantifier symbol (∀, ∃, No, The)');
+        const u = expect('id').v; expect(':');
+        const r = expr(); expect(']');
+        return App(qs, Lam(u, r));
+      }
+      if (k.k === 'λ') { next(); const u = expect('id').v; if (peek() && peek().k === '.') next(); return Lam(u, expr()); }
+      if (k.k === 'id') {
+        next();
+        const qs = slQuantSym(k.v);
+        // a quantifier symbol on its own, as in: every ⇝ ∀
+        if (qs && (k.v === '∀' || k.v === '∃' || !peek())) return qs;
+        return Sym(k.v);
+      }
+      throw new ParseError('Unexpected token');
+    }
+    const e = expr();
+    if (p < t.length) throw new ParseError('Unexpected trailing input');
+    return e;
+  }
+
+  // One printer, three surfaces. `k` supplies the surface (plain text, HTML, LaTeX).
+  const slFlat = (e, op) => (e.t === 'bin' && e.op === op) ? [...slFlat(e.l, op), ...slFlat(e.r, op)] : [e];
+  const SL_STR = {
+    sym: (n) => n, lp: '(', rp: ')', lb: '[', rb: ']', and: ' & ', cap: ' ⊓ ', neg: '¬',
+    lam: (v) => 'λ' + v + '.', q: (q, v) => (q.length === 1 ? q + v : q + ' ' + v) + ': ',
+    core: (e) => toStr(e, 5, 'cc'),
+  };
+  const SL_HTML = {
+    sym: (n) => symHTML(n),
+    lp: '<span class="lx-paren">(</span>', rp: '<span class="lx-paren">)</span>',
+    lb: '<span class="lx-paren">[</span>', rb: '<span class="lx-paren">]</span>',
+    and: '<span class="lx-op lx-and">&amp;</span>', cap: '<span class="lx-op lx-sqcap">⊓</span>',
+    neg: '<span class="lx-op lx-neg">¬</span>',
+    lam: (v) => '<span class="lx-binder">λ' + varNoItalic(v) + '</span><span class="lx-dot">.</span>',
+    q: (q, v) => '<span class="lx-binder">' + esc(q) + (q.length === 1 ? '' : ' ') + varNoItalic(v) + '</span><span class="lx-colon">: </span>',
+    core: (e) => toHTML(e, 5, 'cc'),
+  };
+  const SL_TEX_Q = { '∀': '\\forall ', '∃': '\\exists ', 'No': '\\mathrm{No}\\,', 'The': '\\mathrm{The}\\,' };
+  const SL_TEX = {
+    sym: (n) => (SL_TEX_Q[n] ? SL_TEX_Q[n].trim() : symLaTeX(n)), lp: '(', rp: ')', lb: '[', rb: ']',
+    and: ' \\mathbin{\\&} ', cap: ' \\sqcap ', neg: '\\lnot ',
+    lam: (v) => '\\lambda ' + symLaTeX(v) + '.', q: (q, v) => SL_TEX_Q[q] + symLaTeX(v) + '\\colon ',
+    core: (e) => toLaTeX(e, 5, 'cc'),
+  };
+  // `abbrev` applies the book's convention (27): no parentheses inside a chain of ⊓ or of &.
+  function slPrint(e, k, abbrev) {
+    const P = (x) => slPrint(x, k, abbrev);
+    switch (e.t) {
+      case 'sym': { const q = slQuantLabel(e.name); return k.sym(q !== undefined ? q : e.name); }
+      case 'lam': return slIsNeg(e) ? k.neg : (e.dom ? k.core(e) : k.lam(e.v) + P(e.body));
+      case 'not': return k.neg + ((e.e.t === 'bin' && (e.e.op === '∧' || e.e.op === '⊓')) ? P(e.e) : k.lp + P(e.e) + k.rp);
+      case 'bin': {
+        if (e.op !== '∧' && e.op !== '⊓') return k.core(e);
+        return k.lp + (abbrev ? slFlat(e, e.op) : [e.l, e.r]).map(P).join(e.op === '∧' ? k.and : k.cap) + k.rp;
+      }
+      case 'app': {
+        if (slIsQuantified(e)) {
+          const u = e.fn.arg.v;
+          const scope = e.arg.v === u ? e.arg.body : subst(e.arg.body, e.arg.v, Sym(u));
+          return k.lb + k.q(slQuantLabel(e.fn.fn.name), u) + P(e.fn.arg.body) + k.rb + k.lp + P(scope) + k.rp;
+        }
+        if (slIsPrefix(e)) return k.lb + k.q(slQuantLabel(e.fn.name), e.arg.v) + P(e.arg.body) + k.rb;
+        return ((e.fn.t === 'lam' && !slIsNeg(e.fn)) ? k.lp + P(e.fn) + k.rp : P(e.fn)) + k.lp + P(e.arg) + k.rp;
+      }
+    }
+    return k.core(e);     // a node SL does not have: show it in the core notation
+  }
+  function slToStr(e, abbrev) { return slPrint(e, SL_STR, !!abbrev); }
+
+  // SL → the core language, by the definition of each symbol.
+  function slHas(e) {
+    if (!e || typeof e !== 'object') return false;
+    switch (e.t) {
+      case 'sym': return slQuantLabel(e.name) !== undefined;
+      case 'app': return slHas(e.fn) || slHas(e.arg);
+      case 'lam': return slHas(e.body) || (!!e.dom && slHas(e.dom));
+      case 'quant': return slHas(e.body);
+      case 'bin': return e.op === '⊓' || slHas(e.l) || slHas(e.r);
+      case 'def': return slHas(e.cond) || slHas(e.e);
+      case 'not': case 'star': case 'partial': case 'gsum': case 'card': return slHas(e.e);
+    }
+    return false;
+  }
+  function slUnfold(e) {
+    if (!slHas(e)) return e;
+    switch (e.t) {
+      case 'sym': return parseCore(SL_QDEF[slQuantLabel(e.name)]);
+      case 'app': return App(slUnfold(e.fn), slUnfold(e.arg));
+      case 'lam': return Lam(e.v, slUnfold(e.body), e.dom ? slUnfold(e.dom) : undefined);
+      case 'quant': return Quant(e.q, e.v, slUnfold(e.body));
+      case 'not': return Not(slUnfold(e.e));
+      case 'def': return Def(slUnfold(e.cond), slUnfold(e.e));
+      case 'star': return { t: 'star', e: slUnfold(e.e) };
+      case 'partial': return Partial(slUnfold(e.e));
+      case 'gsum': return Gsum(slUnfold(e.e));
+      case 'card': return Card(slUnfold(e.e));
+      case 'bin': {
+        const l = slUnfold(e.l), r = slUnfold(e.r);
+        if (e.op !== '⊓') return Bin(e.op, l, r);
+        // (π ⊓ π′) := λz.(π(z) ∧ π′(z)), the book's conjunction equivalence
+        const z = freshName('z', new Set([...freeVars(l), ...freeVars(r)]));
+        return Lam(z, Bin('∧', App(l, Sym(z)), App(r, Sym(z))));
+      }
+    }
+    return e;
+  }
+
   // ---- variable prettification -----------------------------------------------
   // Renames xN-style bound variables (like x1, x2 from QR traces) to simple
   // letters (x, y, z, …) when the term is in normal form and renaming is safe.
@@ -1076,7 +1282,9 @@
 const LC_API = {
     VERSION: (typeof COMPOSE_VERSION !== 'undefined' ? COMPOSE_VERSION : '1.0.0'),
     Sym, Lam, App, Not, Bin, Quant, Partial, Gsum, Card, Def,
-    parse, tokenize, tryParse, asciiToUnicode, setNotation,
+    parse, parseCore, tokenize, tryParse, asciiToUnicode, setNotation, withNotation,
+    // SL, the 'aps' notation (S86)
+    parseSL, slToStr, slUnfold, slQuantSym, slQuantLabel, slIsQuantSym, slIsPrefix, slIsQuantified, slNeg, slIsNeg,
     freeVars, subst, betaStep, normalize, normalizeInfo, simplifyBool, isNormal, findRedex, reduceAt, floatDef,
     toLaTeX, typeToLaTeX,
     alphaEqual, alphaEqualAC, equiv, prettifyVars, etaReduce, equivACη,

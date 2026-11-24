@@ -32,6 +32,12 @@
       ],
       "description": "Rendering notation: Coppock & Champollion (default) or Heim & Kratzer."
     },
+    "idiom": {
+      "enum": [
+        "aps"
+      ],
+      "description": "Which rules compose the trees and which logic is read and printed. Absent: the default idiom, FA / PM / NN / PA / IFA over λ-terms. \"aps\": the rules of translation of Altshuler, Parsons & Schwarzschild 2019 (Merge, PredCon, IndexedDaughter, Conjunction, RelPro, EvExist) into the symbolic logic SL. An idiom sets its own notation, so `notation` is not read."
+    },
     "domain": {
       "type": "object",
       "properties": {
@@ -78,6 +84,36 @@
             "intensionalFunctionApplication": {
               "type": "boolean",
               "default": false
+            },
+            "merge": {
+              "type": "boolean",
+              "default": true,
+              "description": "aps idiom."
+            },
+            "predCon": {
+              "type": "boolean",
+              "default": true,
+              "description": "aps idiom."
+            },
+            "indexedDaughter": {
+              "type": "boolean",
+              "default": true,
+              "description": "aps idiom."
+            },
+            "conjunction": {
+              "type": "boolean",
+              "default": true,
+              "description": "aps idiom."
+            },
+            "relPro": {
+              "type": "boolean",
+              "default": false,
+              "description": "aps idiom, §3.5."
+            },
+            "evExist": {
+              "type": "boolean",
+              "default": false,
+              "description": "aps idiom, chapter 4 only."
             }
           }
         },
@@ -219,7 +255,15 @@
         },
         "denotation": {
           "type": "string",
-          "description": "A λ-term. ASCII shortcuts (L→λ, A→∀, E→∃) are accepted."
+          "description": "A λ-term. ASCII shortcuts (L→λ, A→∀, E→∃) are accepted. In the aps idiom: the SL symbol that translates the word (Dog, Liked, ∀, ∃, No, The, ¬), declared in domain.constants."
+        },
+        "kind": {
+          "enum": [
+            "pronoun",
+            "relative",
+            "conjunction"
+          ],
+          "description": "aps idiom only: a word with no translation of its own, used by the rules Pronoun, RelPro and Conjunction. An entry with a kind carries no denotation."
         },
         "den": {
           "type": "string",

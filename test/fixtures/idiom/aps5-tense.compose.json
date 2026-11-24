@@ -1,0 +1,158 @@
+{
+  "compose": 1,
+  "id": "aps5-tense",
+  "idiom": "aps",
+  "title": "Tense and aspect (chapter 5)",
+  "subtitle": "Test data for tense, the progressive and the perfect",
+  "meta": {
+    "source": "after Altshuler, Parsons & Schwarzschild, A Course in Semantics (MIT Press, 2019)",
+    "tags": [
+      "test-fixture"
+    ]
+  },
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "Jack",
+      "<e,t>": "Fall Speak Past Pres",
+      "<e,<e,t>>": "Agent Patient InProgress Completed"
+    },
+    "variables": {
+      "e": "x y z e s"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Jack"
+      ],
+      "denotation": "Jack"
+    },
+    {
+      "words": [
+        "fell",
+        "fall",
+        "falling"
+      ],
+      "denotation": "Fall"
+    },
+    {
+      "words": [
+        "spoken"
+      ],
+      "denotation": "Speak"
+    },
+    {
+      "words": [
+        "Past"
+      ],
+      "denotation": "Past"
+    },
+    {
+      "words": [
+        "Pres"
+      ],
+      "denotation": "Pres"
+    },
+    {
+      "words": [
+        "Agent"
+      ],
+      "denotation": "Agent"
+    },
+    {
+      "words": [
+        "Patient"
+      ],
+      "denotation": "Patient"
+    },
+    {
+      "words": [
+        "be"
+      ],
+      "denotation": "InProgress"
+    },
+    {
+      "words": [
+        "have"
+      ],
+      "denotation": "Completed"
+    },
+    {
+      "words": [
+        "∃"
+      ],
+      "denotation": "∃"
+    },
+    {
+      "words": [
+        "not"
+      ],
+      "denotation": "¬"
+    },
+    {
+      "words": [
+        "NOT"
+      ],
+      "denotation": "No"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "merge": true,
+      "predCon": true,
+      "indexedDaughter": true,
+      "conjunction": false
+    }
+  },
+  "exercises": [
+    {
+      "id": "A",
+      "title": "A. Rules of chapter 5",
+      "derivations": [
+        {
+          "id": "tense",
+          "sentence": "Jack fell.",
+          "tree": "[.TP [.EP ∃_e [.VP [.θP Patient Jack ] fell ] ] [.TP Past e ] ]",
+          "targets": [
+            "[∃e: (Patient(Jack) ⊓ Fall)(e)](Past(e))"
+          ]
+        },
+        {
+          "id": "prog",
+          "sentence": "Jack was falling.",
+          "tree": "[.TP [.EP ∃_e [.VP [.θP Patient Jack ] falling ] ] [.TP [.EP ∃_s [.VP be e ] ] [.TP Past s ] ] ]",
+          "targets": [
+            "[∃e: (Patient(Jack) ⊓ Fall)(e)]([∃s: InProgress(e)(s)](Past(s)))"
+          ]
+        },
+        {
+          "id": "perf",
+          "sentence": "Jack has spoken.",
+          "tree": "[.TP [.EP ∃_e [.VP [.θP Agent Jack ] spoken ] ] [.TP [.EP ∃_s [.VP have e ] ] [.TP Pres s ] ] ]",
+          "targets": [
+            "[∃e: (Agent(Jack) ⊓ Speak)(e)]([∃s: Completed(e)(s)](Pres(s)))"
+          ]
+        },
+        {
+          "id": "neg-q",
+          "sentence": "Jack didn’t fall.",
+          "tree": "[.TP [.EP NOT_e [.VP [.θP Patient Jack ] fall ] ] [.TP Past e ] ]",
+          "targets": [
+            "[No e: (Patient(Jack) ⊓ Fall)(e)](Past(e))"
+          ]
+        },
+        {
+          "id": "ep-low",
+          "sentence": "Jack fell.",
+          "tree": "[.TP Past [.EP ∃_e [.VP [.θP Patient Jack ] fell ] ] ]"
+        },
+        {
+          "id": "neg-t",
+          "sentence": "Jack didn’t fall.",
+          "tree": "[.TP [.EP ∃_e [.VP [.θP Patient Jack ] fall ] ] [.TP Past [.NegP not e ] ] ]"
+        }
+      ]
+    }
+  ]
+}

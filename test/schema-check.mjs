@@ -36,7 +36,9 @@ function checkLexEntry(e, file, p) {
   else if (!isStr(words) && !isStrArr(words)) err(file, `${p}.words`, 'must be a string or an array of strings');
   else if (Array.isArray(words) && words.length === 0) err(file, `${p}.words`, 'must not be empty');
   const den = e.denotation !== undefined ? e.denotation : e.den;
-  if (den === undefined) err(file, p, 'missing denotation (or legacy den)');
+  // S86: in the aps idiom an entry with a kind (pronoun, relative, conjunction) has no denotation.
+  if (e.kind !== undefined && !['pronoun', 'relative', 'conjunction'].includes(e.kind)) err(file, `${p}.kind`, 'must be "pronoun", "relative" or "conjunction"');
+  if (den === undefined) { if (e.kind === undefined) err(file, p, 'missing denotation (or legacy den)'); }
   else if (!isStr(den)) err(file, `${p}.denotation`, 'must be a string');
   for (const k of ['displayAs', 'display']) if (e[k] !== undefined && !isStr(e[k])) err(file, `${p}.${k}`, 'must be a string');
 }
@@ -72,6 +74,7 @@ function checkWorksheet(w, file, p = '') {
   if (w.compose !== 1) err(file, `${p}compose`, `must be 1 (got ${JSON.stringify(w.compose)})`);
   if (!isStr(w.title) || !w.title.trim()) err(file, `${p}title`, 'missing or empty title');
   if (w.notation !== undefined && w.notation !== 'cc' && w.notation !== 'hk') err(file, `${p}notation`, 'must be "cc" or "hk"');
+  if (w.idiom !== undefined && w.idiom !== 'aps') err(file, `${p}idiom`, 'must be "aps"');
   if (w.domain !== undefined) {
     if (!isObj(w.domain)) err(file, `${p}domain`, 'must be an object');
     else {
@@ -146,10 +149,18 @@ for (const f of fs.readdirSync(bunDir).filter((f) => f.endsWith('.compose-bundle
   catch (e) { err(f, '', 'not valid JSON: ' + e.message); }
 }
 
+// S86: the idiom fixtures exercise the idiom field and lexicon kinds.
+let fixtures = 0;
+const fxDir = path.join(HERE, 'fixtures', 'idiom');
+for (const f of fs.readdirSync(fxDir).filter((f) => f.endsWith('.compose.json')).sort()) {
+  try { checkWorksheet(JSON.parse(fs.readFileSync(path.join(fxDir, f), 'utf8')), 'fixtures/idiom/' + f); fixtures++; }
+  catch (e) { err(f, '', 'not valid JSON: ' + e.message); }
+}
+
 if (errors.length) {
   console.error(`✗ SCHEMA CHECK: ${errors.length} violation(s):\n`);
   for (const e of errors.slice(0, 40)) console.error('  ' + e);
   if (errors.length > 40) console.error(`  … and ${errors.length - 40} more`);
   process.exit(1);
 }
-console.log(`✓ schema check OK — ${sets} worksheets + ${bundles} bundles conform to schemas/`);
+console.log(`✓ schema check OK — ${sets} worksheets + ${bundles} bundles + ${fixtures} idiom fixtures conform to schemas/`);
