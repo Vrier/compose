@@ -38,6 +38,7 @@ globalThis.localStorage = { getItem: () => null, setItem() {}, removeItem() {} }
 const load = (f) => vm.runInThisContext(fs.readFileSync(path.join(SRC, f), 'utf8'), { filename: f });
 load('engine.js');
 load('lcformat.js');
+load('speech.js');
 const E = window.LC, F = window.LCFormat;
 
 let checks = 0;
@@ -254,6 +255,28 @@ ok(F.splitTarget('every > some (inverse): ∀x.P(x)', 'cc').formula === '∀x.P(
   }
   ok(same2 && nodes > 100, 'candidateRulesFor agrees with candidateRules on ' + nodes + ' nodes of three library worksheets');
 }
+
+/* ---- speech: every node translation is spoken in words ------------------------ */
+// The tree announces each node to screen readers through LCSpeech. An SL term
+// must never be read out by a quantifier symbol's internal name (§∃) or with
+// ⊓ left unspoken.
+{
+  let spoken = 0; const bad = [];
+  E.withNotation('aps', () => {
+    for (const [key, set] of Object.entries(sets)) for (const g of set.groups) for (const p of g.problems) {
+      const root = F.parseTree(p.tree), sol = F.solveTree(root, set);
+      for (const m of Object.values(sol)) {
+        if (!m || !m.term) continue;
+        const said = window.LCSpeech.denotationToSpeech(m.term, m.type);
+        spoken++;
+        if (/[§⊓]/.test(said)) bad.push(key + ': ' + sl(m.term) + ' -> ' + said);
+      }
+    }
+  });
+  ok(spoken > 100 && bad.length === 0, 'speech of SL terms: ' + bad.slice(0, 3).join(' | '));
+}
+ok(/^for every x such that Dish of x, Liked of x and Jack/.test(window.LCSpeech.denotationToSpeech(readSL('[∀x: Dish(x)](Liked(x)(Jack))'), 't')),
+  'a quantified formula is spoken as the book reads it');
 
 /* ---- E. the textbook bundle --------------------------------------------------- */
 // compose/bundles/altshuler-parsons-schwarzschild.compose-bundle.json is generated

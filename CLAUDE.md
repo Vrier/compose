@@ -183,9 +183,16 @@ in the Claude project as `claude/aps-idiom-design.md`.
 - The textbook bundle is `compose/bundles/altshuler-parsons-schwarzschild.compose-bundle.json`,
   generated from those worksheets: run `npm run bundle:aps` after editing one.
   `test/idiom.mjs` fails on a stale bundle.
-- The views do not play the idiom yet: an aps worksheet opens and shows its
-  tree, and the only rule on offer is Non-branching Node. Stage 2 (the views)
-  has to land before these worksheets reach students on the live site.
+- The views play the idiom (S86). In `views.jsx`, `rulesFor` asks
+  `candidateRulesFor`; a plain step resolves on choosing the rule, and a step
+  marked `typed` is written out and checked in SL by `checkIdiom` (the
+  quantifier's variable has to be the index). Marker leaves (`who_x`, `and`)
+  do not count as daughters for readiness. Raising is off, since the
+  structures are given. A derivation with no target is done once every rule
+  at the node where the translation stops has been refused. The palette
+  (`SL_PALETTE_GROUPS`), the Rules tab (`modals.jsx`), Entering symbols
+  (`app.jsx`) and speech (`speech.js`) follow the book. Not yet: raising in
+  the book's form, categories in place of types on the badges.
 
 ## Linglib cross-check
 

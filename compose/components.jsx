@@ -60,6 +60,14 @@ const PALETTE_GROUPS = [
   { label: 'Presupposition', tag: 'presup', keys: [{ g: '∂', code: '⌃D', alias: '\\partial', ins: '∂', op: 'partial' }, { g: '⊤', code: '\\top', alias: '\\top', ins: '⊤', op: 'top' }, { g: '⊥', code: '\\bot', alias: '\\bot', ins: '⊥', op: 'bot' }] },
   { keys: [{ g: '[', ins: '[' }, { g: ']', ins: ']' }, { g: '(', ins: '(' }, { g: ')', ins: ')' }] },
 ];
+// S86: the palette for the aps idiom, the symbols of the book's logic SL. A
+// quantifier is typed [∃x: φ]; ⊓ has the alias ^ and the whole words forall,
+// exists and lambda convert as in the default palette.
+const SL_PALETTE_GROUPS = [
+  { keys: [{ g: '∀', code: '⌃A', alias: 'forall', ins: '∀' }, { g: '∃', code: '⌃E', alias: 'exists', ins: '∃' }, { g: 'No', ins: 'No' }, { g: 'The', ins: 'The' }, { g: 'λ', alias: 'lambda', ins: 'λ' }] },
+  { keys: [{ g: '⊓', alias: '^', ins: '⊓' }, { g: '&', alias: '&', ins: '&' }, { g: '¬', code: '⌃N', alias: '~', ins: '¬' }] },
+  { keys: [{ g: '[', ins: '[' }, { g: ']', ins: ']' }, { g: ':', ins: ': ' }, { g: '(', ins: '(' }, { g: ')', ins: ')' }] },
+];
 // Operators belonging to the mereology layer (§10): the symbol palette hides this
 // Canonical, individually-gateable domain operators. The editor exposes one
 // checkbox per entry; the symbol palette (editor + workspace) shows an operator
@@ -75,9 +83,9 @@ const DOMAIN_OPS = [
 const DEFAULT_OPS = Object.fromEntries(DOMAIN_OPS.map((o) => [o.key, true]));
 // A gateable palette key is shown only when its operator is enabled. Keys with
 // no `op` (logical constants, brackets) are always shown.
-function SymbolPalette({ onInsert, enabledOps }) {
+function SymbolPalette({ onInsert, enabledOps, idiom }) {
   const isOn = (op) => !op || !enabledOps || enabledOps[op] !== false;
-  const groups = PALETTE_GROUPS
+  const groups = (idiom === 'aps' ? SL_PALETTE_GROUPS : PALETTE_GROUPS)
     .map((grp) => ({ ...grp, keys: grp.keys.filter((k) => isOn(k.op)) }))
     .filter((grp) => grp.keys.length > 0);
   const keyBtn = (s) => (
@@ -164,4 +172,4 @@ function Feedback({ kind, children }) {
   );
 }
 
-Object.assign(window, { Notation, TypeBadge, SymbolPalette, ExpressionInput, Feedback, PALETTE_GROUPS, DOMAIN_OPS, DEFAULT_OPS });
+Object.assign(window, { Notation, TypeBadge, SymbolPalette, ExpressionInput, Feedback, PALETTE_GROUPS, SL_PALETTE_GROUPS, DOMAIN_OPS, DEFAULT_OPS });

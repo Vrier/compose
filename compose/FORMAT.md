@@ -203,9 +203,14 @@ holds the `aps*` worksheets of `compose/exercises/` under the book's chapters
 by `npm run bundle:aps` (`scripts/make-aps-bundle.mjs`), and `test/idiom.mjs`
 fails when it differs from its sources.
 
-The views do not yet play this idiom (S86 is the engine and the format). An
-aps worksheet loads in the app and every derivation opens, and no step can be
-taken yet: the only rule on offer is Non-branching Node.
+**In the app.** At a node the chooser offers the book's rules, each with its
+translation or the reason the Wellformedness Filter refuses it. A plain step
+resolves on choosing the rule; a written-out step is typed in SL, with the
+index as the quantifier's variable. Where EvExist is on and applies, it is the
+rule for the event phrase, and IndexedDaughter is refused there. A derivation
+with no target is done once every rule at the node where the translation stops
+has been tried and refused. The structures are given: the app raises nothing
+in this idiom yet.
 
 ---
 

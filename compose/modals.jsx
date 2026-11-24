@@ -11,6 +11,34 @@
 
 /* ---- RulesContent — the shared rule inventory ------------------------- */
 function RulesContent({ allowed, setAllowed, toggleRule, toggleShift, readOnly }) {
+  // S86: a worksheet in the aps idiom lists the book's rules of translation,
+  // as set in its file; the FA/PM/PA toggles do not apply to it.
+  if (allowed && allowed.idiom === 'aps' && window.LCFormat && window.LCFormat.SL_RULES) {
+    const R = window.LCFormat.SL_RULES;
+    const WHEN = {
+      merge: 'Resolves on choosing the rule. Where a quantifier takes its scope, you write the translation.',
+      predcon: 'Resolves on choosing the rule.',
+      conj: 'Resolves on choosing the rule.',
+      idx: 'You write the translation, with the index as the variable.',
+      relpro: 'You write the translation, abstracting over the index.',
+      evex: 'You write the translation, with the index as the variable.',
+    };
+    return (
+      <div className="rules-student-view">
+        {['merge', 'predcon', 'idx', 'conj', 'relpro', 'evex'].filter((k) => allowed[k]).map((k) => (
+          <div key={k} className="rsv-rule-card">
+            <div className="rsv-rule-hdr"><span className="rsv-name">{R[k].name}</span></div>
+            <div className="rsv-rule-desc">{R[k].desc}</div>
+            <div className="rsv-rule-when"><span className="rsv-when-label">How to use:</span> {WHEN[k]}</div>
+          </div>
+        ))}
+        <div className="rsv-rule-card">
+          <div className="rsv-rule-hdr"><span className="rsv-name">Wellformedness Filter</span></div>
+          <div className="rsv-rule-desc">A translation that is not an expression of SL is discarded. A rule the filter refuses is marked in red with the reason.</div>
+        </div>
+      </div>
+    );
+  }
   const shiftOnCount = window.LCData.SHIFTERS.filter(s => allowed.shift && allowed.shift[s.key]).length;
   const groups = {};
   for (const s of window.LCData.SHIFTERS) { if (!groups[s.group]) groups[s.group] = []; groups[s.group].push(s); }
