@@ -1,0 +1,156 @@
+{
+  "compose": 1,
+  "id": "aps4-events",
+  "idiom": "aps",
+  "title": "Events (chapter 4)",
+  "subtitle": "Test data for thematic role heads, the event phrase and EvExist",
+  "meta": {
+    "source": "after Altshuler, Parsons & Schwarzschild, A Course in Semantics (MIT Press, 2019)",
+    "tags": [
+      "test-fixture"
+    ]
+  },
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "Jack Jill Boston",
+      "<e,t>": "Wedding Called Discussed Tourist Smiled Event",
+      "<e,<e,t>>": "Agent Patient In"
+    },
+    "variables": {
+      "e": "x y z e s"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Jack"
+      ],
+      "denotation": "Jack"
+    },
+    {
+      "words": [
+        "Jill"
+      ],
+      "denotation": "Jill"
+    },
+    {
+      "words": [
+        "Boston"
+      ],
+      "denotation": "Boston"
+    },
+    {
+      "words": [
+        "wedding"
+      ],
+      "denotation": "Wedding"
+    },
+    {
+      "words": [
+        "called"
+      ],
+      "denotation": "Called"
+    },
+    {
+      "words": [
+        "discussed"
+      ],
+      "denotation": "Discussed"
+    },
+    {
+      "words": [
+        "tourist"
+      ],
+      "denotation": "Tourist"
+    },
+    {
+      "words": [
+        "smiled"
+      ],
+      "denotation": "Smiled"
+    },
+    {
+      "words": [
+        "Agent"
+      ],
+      "denotation": "Agent"
+    },
+    {
+      "words": [
+        "Patient"
+      ],
+      "denotation": "Patient"
+    },
+    {
+      "words": [
+        "in"
+      ],
+      "denotation": "In"
+    },
+    {
+      "words": [
+        "every"
+      ],
+      "denotation": "∀"
+    },
+    {
+      "words": [
+        "a"
+      ],
+      "denotation": "∃"
+    },
+    {
+      "words": [
+        "∃"
+      ],
+      "denotation": "∃"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "merge": true,
+      "predCon": true,
+      "indexedDaughter": true,
+      "conjunction": false,
+      "evExist": true
+    }
+  },
+  "exercises": [
+    {
+      "id": "A",
+      "title": "A. Rules of chapter 4",
+      "derivations": [
+        {
+          "id": "ep",
+          "sentence": "Jill called Jack.",
+          "tree": "[.EP ∃_e [.VP [.θP Agent Jill ] [.V′ called [.θP Patient Jack ] ] ] ]",
+          "targets": [
+            "[∃e: Event(e)]((Agent(Jill) ⊓ (Called ⊓ Patient(Jack)))(e))"
+          ]
+        },
+        {
+          "id": "pp-vp",
+          "sentence": "Jack discussed a wedding in Boston.",
+          "tree": "[.EP [.DP a_x wedding ] [.EP ∃_e [.VP [.θP Agent Jack ] [.V′ [.V′ discussed [.θP Patient x ] ] [.PP in Boston ] ] ] ] ]",
+          "targets": [
+            "[∃x: Wedding(x)]([∃e: Event(e)]((Agent(Jack) ⊓ ((Discussed ⊓ Patient(x)) ⊓ In(Boston)))(e)))"
+          ]
+        },
+        {
+          "id": "dp-ep",
+          "sentence": "Every tourist smiled.",
+          "tree": "[.EP [.DP every_x tourist ] [.EP ∃_e [.VP [.θP Agent x ] smiled ] ] ]",
+          "targets": [
+            "[∀x: Tourist(x)]([∃e: Event(e)]((Agent(x) ⊓ Smiled)(e)))"
+          ]
+        },
+        {
+          "id": "dp-vp",
+          "sentence": "Every tourist smiled.",
+          "tree": "[.EP ∃_e [.VP [.DP every_x tourist ] [.VP [.θP Agent x ] smiled ] ] ]"
+        }
+      ]
+    }
+  ]
+}

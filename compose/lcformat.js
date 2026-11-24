@@ -4,6 +4,8 @@
    `use rule`, `exercise …`, labeled-bracket trees) into playable problem sets,
    infers types by unification, and computes node meanings for FA / PM / NN /
    Predicate (λ) Abstraction.  Exposed as window.LCFormat.
+   A worksheet with "idiom": "aps" (S86) is solved by the rules of translation
+   of Altshuler, Parsons & Schwarzschild 2019 instead; see "the aps idiom".
    ========================================================================= */
 (function () {
   'use strict';
@@ -65,6 +67,9 @@
         case 'sym': {
           const n = t.name;
           if (/^\d+$/.test(n)) return 'n';            // numeric literal — type n (number)
+          if (E.slQuantLabel(n) !== undefined) {      // SL quantifier symbol (S86): ⟨⟨σ,t⟩,⟨⟨σ,t⟩,t⟩⟩
+            const qs = fresh(); return { from: { from: qs, to: 't' }, to: { from: { from: qs, to: 't' }, to: 't' } };
+          }
           if (ctx[n] !== undefined) return ctx[n];
           if (typeEnv[n] !== undefined) return typeEnv[n];
           if (predEnv[n] !== undefined) return predEnv[n];
@@ -154,6 +159,12 @@
             const rs = walk(s, sub);
             if (isFun(rs)) throw new Error('⊕ expects atomic terms, not functions');
             return rs;
+          }
+          if (t.op === '⊓') {
+            // SL predicate conjunction (S86): ⟨σ,t⟩ × ⟨σ,t⟩ → ⟨σ,t⟩
+            const cs = fresh();
+            if (!unify(l, { from: cs, to: 't' }, sub) || !unify(r, { from: cs, to: 't' }, sub)) throw new Error('⊓ joins two one-place predicates of one sort');
+            return walk({ from: cs, to: 't' }, sub);
           }
           if (!unify(l, 't', sub) || !unify(r, 't', sub)) throw new Error(t.op + ' on non-truth type'); return 't';
         }
@@ -387,7 +398,7 @@
   }
   function applyShift(op, nodeTerm, nodeType, typeEnv) {
     const termStr = (op.computeTerm && nodeType) ? op.computeTerm(nodeType) : op.term;
-    const opTerm = E.parse(E.asciiToUnicode(termStr));
+    const opTerm = E.parseCore(E.asciiToUnicode(termStr));   // shifter terms are written in the core language, whatever is on screen
     const term = norm(E.App(opTerm, nodeTerm));
     let type;
     if (op.computeOutput && nodeType) type = cleanType(op.computeOutput(nodeType));
@@ -479,6 +490,7 @@
   // Returns map nodeId → {term, type, rule} for every computable node
   // (leaves included, so the UI can read any node's target meaning).
   function solveTree(root, set) {
+    if (set && set.idiom === 'aps') return solveTreeSL(root, set);
     const result = {};
     function leaf(node) {
       const w = node.word;
@@ -522,6 +534,249 @@
     return result;
   }
 
+  /* ---- the aps idiom (S86) ---------------------------------------------- */
+  // Altshuler, Parsons & Schwarzschild, A Course in Semantics (2019), §3.10,
+  // §4.8 and §5.4. An LF tree is translated into SL (engine.js, "SL" section) by
+  // the book's rules, and the Wellformedness Filter keeps the results that are
+  // expressions of SL. The filter is a check over categories, and a category is
+  // read off an engine type:
+  //   individual constant or variable  σ          one-place predicate  ⟨σ,t⟩
+  //   two-place predicate  ⟨σ,⟨σ′,t⟩⟩              formula              t
+  //   quantifier awaiting its scope  ⟨⟨σ,t⟩,t⟩, with the shape [Q u: φ]
+  // A quantifier is a category of its own here, as in the book's exercise (3.9).
+  //
+  // Tree conventions: `every_x` is a leaf indexed x; `x` alone is the copy of an
+  // index that Quantifier Raising leaves behind; `she_x` is an indexed pronoun.
+  // No node binds a variable: a raised quantifier binds its index when Merge
+  // writes it in front of its scope.
+  const SL_KINDS = ['pronoun', 'relative', 'conjunction'];
+  const SL_CAT_NAME = { term: 'an individual constant or variable', pred1: 'a one-place predicate', pred2: 'a two-place predicate',
+    formula: 'a formula', quantifier: 'a quantifier', det: 'a quantifier symbol', neg: 'the negation symbol' };
+  const isSort = (t) => typeof t === 'string' && t !== 't';
+  function slCategory(m) {
+    if (!m || !m.term) return null;
+    if (E.slIsQuantSym(m.term)) return 'det';
+    if (E.slIsPrefix(m.term)) return 'quantifier';
+    if (E.slIsNeg(m.term)) return 'neg';
+    const t = m.type;
+    if (t === 't') return 'formula';
+    if (isSort(t)) return 'term';
+    if (isFun(t) && isSort(t.from)) {
+      if (t.to === 't') return 'pred1';
+      if (isFun(t.to) && isSort(t.to.from) && t.to.to === 't') return 'pred2';
+    }
+    return null;
+  }
+  const slShow = (m) => E.slToStr(m.term);
+  const slIsA = (m) => SL_CAT_NAME[slCategory(m)] || 'not an expression of SL';
+
+  // `typed` marks the steps a student writes out (S86, owner decision): the two
+  // that build or discharge a quantifier. Every other step is plain concatenation.
+  const SL_RULES = {
+    merge:   { key: 'merge',   name: 'Merge',           abbr: 'Merge',           desc: 'Write the translation of one daughter in front of the other’s, in parentheses: α′(β′). The Wellformedness Filter keeps the order that is an expression of SL.' },
+    predcon: { key: 'predcon', name: 'PredCon',         abbr: 'PredCon',         desc: 'Conjoin the translations of two one-place predicates: (α′ ⊓ β′).' },
+    idx:     { key: 'idx',     name: 'IndexedDaughter', abbr: 'IndexedDaughter', desc: 'A daughter indexed u and its sister, a one-place predicate, form a quantifier: [α′u: β′(u)].' },
+    conj:    { key: 'conj',    name: 'Conjunction',     abbr: 'Conjunction',     desc: 'A node with the daughters and, α, β translates as (α′ & β′).' },
+    relpro:  { key: 'relpro',  name: 'RelPro',          abbr: 'RelPro',          desc: 'A relative pronoun indexed u and its sister, a formula, form a one-place predicate: λu.α′.' },
+    evex:    { key: 'evex',    name: 'EvExist',         abbr: 'EvExist',         desc: 'An ∃ indexed u and its sister, a one-place predicate of events, form a formula: [∃u: Event(u)](α′(u)). Chapter 4 only.' },
+  };
+  const SL_RULE_ORDER = ['merge', 'predcon', 'idx', 'conj', 'relpro', 'evex'];
+
+  function slMerge(l, r) {
+    const why = [];
+    for (const [f, a] of [[l, r], [r, l]]) {
+      const cf = slCategory(f), ca = slCategory(a);
+      if ((cf === 'pred1' || cf === 'pred2') && ca === 'term' && E.typeEqual(f.type.from, a.type, {})) {
+        const raw = E.App(f.term, a.term);
+        return { ok: true, term: raw, raw, type: f.type.to };
+      }
+      if (cf === 'neg' && ca === 'formula') { const raw = E.App(f.term, a.term); return { ok: true, term: norm(raw), raw, type: 't' }; }
+      if (cf === 'quantifier' && ca === 'formula') {
+        const u = f.term.arg.v, raw = E.App(f.term, E.Lam(u, a.term));
+        return { ok: true, term: raw, raw, type: 't', binds: u, typed: true };
+      }
+      const need = (cf === 'pred1' || cf === 'pred2') ? 'a predicate combines with an individual constant or variable' + (ca === 'term' ? ' of its own sort' : '')
+        : cf === 'quantifier' ? 'a quantifier takes a formula as its scope'
+        : cf === 'neg' ? 'negation applies to a formula'
+        : cf === 'det' ? 'a quantifier symbol enters a translation through IndexedDaughter'
+        : (SL_CAT_NAME[cf] || 'this expression') + ' takes no argument';
+      why.push(slShow(f) + '(' + slShow(a) + ') is not well formed: ' + need + ', and ' + slShow(a) + ' is ' + slIsA(a) + '.');
+    }
+    return { ok: false, reason: why.join(' ') };
+  }
+  function slPredCon(l, r) {
+    if (slCategory(l) === 'pred1' && slCategory(r) === 'pred1' && E.typeEqual(l.type, r.type, {})) {
+      const raw = E.Bin('⊓', l.term, r.term);
+      return { ok: true, term: raw, raw, type: l.type };
+    }
+    return { ok: false, reason: '(' + slShow(l) + ' ⊓ ' + slShow(r) + ') is not well formed: ⊓ joins two one-place predicates, and the daughters are ' + slIsA(l) + ' and ' + slIsA(r) + '.' };
+  }
+  function slIndexedDaughter(l, r) {
+    for (const [d, b] of [[l, r], [r, l]]) {
+      if (d.index && slCategory(d) === 'det') {
+        if (slCategory(b) !== 'pred1') return { ok: false, reason: 'The sister of the indexed daughter has to translate as a one-place predicate, and ' + slShow(b) + ' is ' + slIsA(b) + '.' };
+        const u = d.index, raw = E.App(d.term, E.Lam(u, norm(E.App(b.term, E.Sym(u)))));
+        return { ok: true, term: raw, raw, type: { from: b.type, to: 't' }, typed: true };
+      }
+    }
+    return { ok: false, reason: 'Neither daughter is an indexed quantifier symbol.' };
+  }
+  function slEvExist(l, r) {
+    for (const [d, b] of [[l, r], [r, l]]) {
+      // The rule is keyed to the event-existential head, written ∃ in the tree, and
+      // not to a determiner that happens to translate as ∃ (a, some).
+      if (d.index && d.word === '∃' && E.slIsQuantSym(d.term) && E.slQuantLabel(d.term.name) === '∃' && slCategory(b) === 'pred1') {
+        const u = d.index;
+        const raw = E.App(E.App(d.term, E.Lam(u, E.App(E.Sym('Event'), E.Sym(u)))), E.Lam(u, norm(E.App(b.term, E.Sym(u)))));
+        return { ok: true, term: raw, raw, type: 't', typed: true };
+      }
+    }
+    return { ok: false, reason: 'EvExist applies to the indexed ∃ that heads an event phrase and its sister, a one-place predicate.' };
+  }
+
+  // What a leaf is in an SL tree. Returns null for a leaf with no reading,
+  // {marker} for "and" and for a relative pronoun, or a meaning record.
+  function slLeaf(node, set) {
+    const w = node.word || '';
+    const varType = (u) => (set.typeEnv[u] !== undefined && set.constEnv[u] === undefined) ? set.typeEnv[u] : null;
+    const whole = set.lex[w];
+    if (whole && whole.kind === 'conjunction') return { marker: 'and' };
+    const m = w.match(/^(.+)_([A-Za-z][A-Za-z0-9'’]*)$/);
+    if (m && varType(m[2]) && set.lex[m[1]]) {
+      const lx = set.lex[m[1]], u = m[2];
+      if (lx.kind === 'pronoun') return { term: E.Sym(u), type: varType(u), rule: 'trace', sl: 'Pronoun', index: u };
+      if (lx.kind === 'relative') return { marker: 'rel', index: u };
+      if (lx.kind || !lx.term) return null;
+      return { term: lx.term, type: lx.type, rule: 'lex', sl: slLexRule(lx), index: u, word: m[1] };
+    }
+    if (whole && !whole.kind && whole.term) return { term: whole.term, type: whole.type, rule: 'lex', sl: slLexRule(whole) };
+    if (!whole && varType(w)) return { term: E.Sym(w), type: varType(w), rule: 'trace', sl: 'Variable' };
+    return null;
+  }
+  // The book lists the determiners and not under SpecificVocab; the rest fall under Lexicon.
+  const slLexRule = (lx) => (E.slIsQuantSym(lx.term) || E.slIsNeg(lx.term)) ? 'SpecificVocab' : 'Lexicon';
+  function slUnreadLeaves(root, set) {
+    const out = [];
+    (function walkTree(n) { if (!n.children || n.children.length === 0) { if (n.word !== undefined && !slLeaf(n, set)) out.push(n.word); } else n.children.forEach(walkTree); })(root);
+    return out;
+  }
+
+  // Every rule of the idiom at one node, each with ok and a result or a reason.
+  // `meaningOf(child)` returns the child's meaning record, or null.
+  function slRulesAt(node, set, meaningOf) {
+    const kids = node.children || [];
+    const info = kids.map((c) => ((!c.children || c.children.length === 0) ? slLeaf(c, set) : null));
+    const hasAnd = info.some((x) => x && x.marker === 'and');
+    const rel = info.find((x) => x && x.marker === 'rel') || null;
+    const real = kids.filter((c, i) => !(info[i] && info[i].marker)).map(meaningOf);
+    const ready = real.every((x) => x && x.term && x.type != null);
+    const two = real.length === 2 && ready && !hasAnd && !rel;
+    const out = [];
+    const put = (key, res) => out.push(res.ok
+      ? Object.assign({}, SL_RULES[key], { ok: true, typed: !!res.typed, binds: res.binds, raw: res.raw, result: { term: res.term, type: cleanType(res.type), raw: res.raw } })
+      : Object.assign({}, SL_RULES[key], { ok: false, reason: res.reason }));
+    const count = (n) => 'this node has ' + n + (hasAnd ? ', with and' : rel ? ', with a relative pronoun' : '') + '.';
+    for (const [key, fn] of [['merge', slMerge], ['predcon', slPredCon], ['idx', slIndexedDaughter]]) {
+      put(key, two ? fn(real[0], real[1]) : { ok: false, reason: SL_RULES[key].name + ' combines the translations of exactly two daughters; ' + count(real.length) });
+    }
+    put('conj', (hasAnd && real.length === 2 && ready)
+      ? ((slCategory(real[0]) === 'formula' && slCategory(real[1]) === 'formula')
+        ? { ok: true, term: E.Bin('∧', real[0].term, real[1].term), raw: E.Bin('∧', real[0].term, real[1].term), type: 't' }
+        : { ok: false, reason: 'Conjunction joins two formulas, and the daughters are ' + slIsA(real[0]) + ' and ' + slIsA(real[1]) + '.' })
+      : { ok: false, reason: 'Conjunction applies to a node with three daughters, one of them the word and.' });
+    put('relpro', (rel && real.length === 1 && ready)
+      ? (slCategory(real[0]) === 'formula'
+        ? { ok: true, term: E.Lam(rel.index, real[0].term), raw: E.Lam(rel.index, real[0].term), type: { from: set.typeEnv[rel.index] || 'e', to: 't' } }
+        : { ok: false, reason: 'RelPro abstracts over a formula, and the sister of the relative pronoun is ' + slIsA(real[0]) + '.' })
+      : { ok: false, reason: 'RelPro applies to a node whose daughters are an indexed relative pronoun and one other.' });
+    put('evex', two ? slEvExist(real[0], real[1]) : { ok: false, reason: 'EvExist combines exactly two daughters; ' + count(real.length) });
+    const NN = { key: 'nn', name: 'Non-branching Node', abbr: 'NN', desc: 'A node with one daughter has that daughter’s translation.' };
+    if (kids.length === 1 && ready && real.length === 1) out.push(Object.assign({}, NN, { ok: true, result: { term: real[0].term, type: real[0].type } }));
+    else out.push(Object.assign({}, NN, { ok: false, reason: 'Non-branching Node applies only to a node with exactly one daughter; this node has ' + kids.length + '.' }));
+    return out;
+  }
+  // The rule chooser for any worksheet. The default idiom keeps candidateRules,
+  // with the index leaf of a λ-binder node left to the view as before.
+  function candidateRulesFor(set, node, meaningOf) {
+    if (set && set.idiom === 'aps') return slRulesAt(node, set, meaningOf);
+    return candidateRules((node.children || []).filter((c) => !(c.word && /^\d+$/.test(c.word))).map(meaningOf));
+  }
+
+  // Auto-solver. Order matters in one place: where EvExist is enabled it wins at
+  // an event phrase, as chapter 4 stipulates; chapter 5 withdraws the rule.
+  const SL_SOLVE_ORDER = ['conj', 'relpro', 'evex', 'idx', 'merge', 'predcon', 'nn'];
+  function solveTreeSL(root, set) {
+    const result = {};
+    const cfg = set.config || {};
+    const on = (key) => key === 'nn' ? cfg.nn !== false : cfg[key] !== false && cfg[key] !== undefined;
+    function solve(node) {
+      if (!node.children || node.children.length === 0) {
+        const m = slLeaf(node, set);
+        if (m && !m.marker) result[node.id] = m;
+        return m;
+      }
+      node.children.forEach(solve);
+      const rules = slRulesAt(node, set, (c) => result[c.id] || null);
+      for (const key of SL_SOLVE_ORDER) {
+        const r = rules.find((x) => x.key === key);
+        if (r && r.ok && on(key)) {
+          const solved = { term: r.result.term, type: r.result.type, raw: r.raw, rule: r.abbr };
+          if (r.typed) solved.typed = true;
+          if (r.binds) solved.binds = r.binds;
+          return (result[node.id] = solved);
+        }
+      }
+      return null;
+    }
+    solve(root);
+    return result;
+  }
+
+  // Quantifier Raising in the book's form (§3.3): a node with an indexed daughter
+  // adjoins to a node that dominates it, and a copy of the index stays behind.
+  function slIndexOf(node, set) {
+    for (const c of (node.children || [])) {
+      if (c.children && c.children.length) continue;
+      const m = slLeaf(c, set);
+      if (m && m.index && !m.marker && slCategory(m) === 'det') return m.index;
+    }
+    return null;
+  }
+  const raisableSL = (node, set) => slIndexOf(node, set) !== null;
+  function landingSitesSL(root, nodeId) {
+    const out = [];
+    (function walkTree(n) { if (n.id !== nodeId && n.children && n.children.length && findNodeById(n, nodeId)) out.push(n); (n.children || []).forEach(walkTree); })(root);
+    return out;
+  }
+  function applyQRSL(root, nodeId, siteId, set) {
+    const tree = JSON.parse(JSON.stringify(root));
+    const parent = findParentOf(tree, nodeId);
+    if (!parent) throw new Error('the root cannot be raised');
+    const at = parent.children.findIndex((c) => c.id === nodeId), moved = parent.children[at];
+    const u = slIndexOf(moved, set);
+    if (!u) throw new Error('only a node with an indexed daughter can be raised');
+    const site = findNodeById(tree, siteId);
+    if (!site || site.id === nodeId || !findNodeById(site, nodeId)) throw new Error('the landing site has to dominate the raised node');
+    const k = (tree.__qrIndex || 0) + 1;
+    parent.children[at] = { id: 'qrv-' + k, word: u, children: [] };
+    const adjoined = { id: 'qradj-' + k, label: site.label || null, children: [moved, site] };
+    const siteParent = findParentOf(tree, siteId);
+    if (!siteParent) { adjoined.__qrIndex = k; return adjoined; }
+    siteParent.children[siteParent.children.findIndex((c) => c.id === siteId)] = adjoined;
+    tree.__qrIndex = k;
+    return tree;
+  }
+
+  // "label: formula" → its two halves. In the aps notation the label ends at the
+  // first colon outside square brackets, since every quantifier holds a colon.
+  function splitTarget(str, notation) {
+    const text = String(str || '');
+    let at = -1;
+    if (notation === 'aps') { let depth = 0; for (let i = 0; i < text.length; i++) { const c = text[i]; if (c === '[') depth++; else if (c === ']') depth--; else if (c === ':' && depth === 0) { at = i; break; } } }
+    else at = text.indexOf(':');
+    return at > -1 ? { label: text.slice(0, at).trim(), formula: text.slice(at + 1).trim() } : { label: '', formula: text.trim() };
+  }
+
   /* ---- whole-file parser ------------------------------------------------ */
   // Dispatches on content: a leading "{" means the native COMPOSE JSON format;
   // anything else is parsed as the legacy Lambda-Calculator DSL.
@@ -553,9 +808,18 @@
   // (lexicon + exercises) used to INFER operator availability when the file
   // does not configure it — so students only see mereology / presupposition
   // palette keys on worksheets that actually use those symbols.
-  function rulesToConfig(r, contentHay) {
+  function rulesToConfig(r, contentHay, idiom) {
     r = r || {};
     const comp = r.composition || {};
+    if (idiom === 'aps') {
+      // The idiom has its own inventory. The keys of the default idiom are
+      // switched off so no view offers FA or PM on an SL tree.
+      const base = rulesToConfig({ quantifierRaising: r.quantifierRaising, autoResolveNonBranching: r.autoResolveNonBranching,
+        operators: { star: false, oplus: false, leq: false, partial: false, top: false, bot: false } }, '');
+      return Object.assign(base, { idiom: 'aps', fa: false, pm: false, pa: false, ifa: false, mereology: false, presup: false,
+        merge: comp.merge !== false, predcon: comp.predCon !== false, idx: comp.indexedDaughter !== false,
+        conj: comp.conjunction !== false, relpro: !!comp.relPro, evex: !!comp.evExist });
+    }
     const shiftKeys = Array.isArray(r.typeShifts) ? r.typeShifts : [];
     const shift = {};
     for (const s of SHIFTERS) shift[s.key] = shiftKeys.includes(s.key);
@@ -634,6 +898,11 @@
       notation: obj.notation || 'cc',
       typeEnv: {}, constEnv: {}, lex: {}, lexList: [], rules: [], multiLetter: true, groups: [], displayHints: {} };
 
+    // --- idiom (S86): which rules compose the trees and which logic is read and
+    // printed. Absent means the default idiom, FA / PM / NN / PA / IFA over λ-terms.
+    if (obj.idiom !== undefined && obj.idiom !== 'aps') diag('error', 'idiom', 'unknown idiom ' + JSON.stringify(obj.idiom) + ' (this app understands "aps")');
+    if (obj.idiom === 'aps') { set.idiom = 'aps'; set.notation = 'aps'; }
+
     // --- domain declarations ---
     const dom = obj.domain || {};
     set.multiLetter = dom.multiLetterNames !== false;
@@ -658,10 +927,28 @@
       const src = String(e.denotation || e.den || '').trim();
       const display = e.displayAs || e.display || null;
       if (display) for (const w of words) set.displayHints[w] = display;
+      // S86: in the aps idiom a pronoun, a relative pronoun and "and" have no
+      // translation of their own; the rules Pronoun, RelPro and Conjunction use them.
+      if (e.kind !== undefined) {
+        if (set.idiom !== 'aps') diag('warn', 'lexicon[' + li + '].kind', '"kind" is read only in the aps idiom');
+        else if (SL_KINDS.indexOf(e.kind) === -1) diag('error', 'lexicon[' + li + '].kind', 'unknown kind ' + JSON.stringify(e.kind) + ' (pronoun, relative, conjunction)');
+        else {
+          if (src) diag('warn', 'lexicon[' + li + '].denotation', (words.join(', ') || '(no words)') + ': an entry with a kind has no translation; the denotation is ignored');
+          const kentry = { words, src: '', term: null, type: null, err: null, hint: display, kind: e.kind };
+          set.lexList.push(kentry);
+          for (const w of words) set.lex[w] = kentry;
+          return;
+        }
+      }
       let term = null, type = null, err = null;
-      const pr = E.tryParse(src);
+      const pr = E.tryParse(src, set.notation);
       if (pr.ok) { term = pr.ast; try { type = inferType(term, set.typeEnv); } catch (ex) { err = ex.message; } }
       else err = pr.error;
+      if (!err && set.idiom === 'aps') {
+        // A category of SL comes from a declared type, so every symbol must be declared.
+        if (term.t === 'sym' && E.slQuantLabel(term.name) === undefined && set.typeEnv[term.name] === undefined) err = 'undeclared symbol ' + term.name + ': declare it in domain.constants (its type gives its category)';
+        else if (!slCategory({ term, type })) err = 'not a symbol of SL: ' + E.slToStr(term) + ' has type ' + E.typeToStr(type);
+      }
       if (err) diag('error', 'lexicon[' + li + '].denotation', (words.join(', ') || '(no words)') + ': ' + err);
       const entry = { words, src, term, type, err, hint: display };
       set.lexList.push(entry);
@@ -669,14 +956,19 @@
     });
 
     // --- rule configuration (composition rules, type-shifts, behaviour) ---
-    set.config = rulesToConfig(obj.rules, JSON.stringify(obj.lexicon || []) + JSON.stringify(obj.exercises || []) + JSON.stringify(obj.domain || {}));
+    set.config = rulesToConfig(obj.rules, JSON.stringify(obj.lexicon || []) + JSON.stringify(obj.exercises || []) + JSON.stringify(obj.domain || {}), set.idiom);
     // mirror the enabled composition rules into the legacy `rules` name list
     const comp = (obj.rules && obj.rules.composition) || {};
+    if (set.idiom === 'aps') {
+      for (const k of SL_RULE_ORDER) if (set.config[k]) set.rules.push(SL_RULES[k].name.toLowerCase());
+      if (comp.nonBranchingNodes !== false) set.rules.push('non-branching nodes');
+    } else {
     if (comp.functionApplication !== false) set.rules.push('function application');
     if (comp.predicateModification) set.rules.push('predicate modification');
     if (comp.nonBranchingNodes !== false) set.rules.push('non-branching nodes');
     if (comp.predicateAbstraction) set.rules.push('predicate abstraction');
     if (comp.intensionalFunctionApplication) set.rules.push('intensional function application');
+    }
 
     // --- exercises (every exercise is a tree; no kind needed) ---
     // Stable ids (W13c): an optional "id" on each exercise (group) and each
@@ -706,14 +998,21 @@
         if (collect) {
           const treeSrc = String(item.tree || '').trim();
           if (!treeSrc) diag('error', ipath + '.tree', 'missing tree');
-          else { try { parseTree(treeSrc); } catch (ex) { diag('error', ipath + '.tree', 'tree does not parse: ' + ex.message); } }
+          else {
+            try {
+              const troot = parseTree(treeSrc);
+              if (set.idiom === 'aps') for (const bad of slUnreadLeaves(troot, set)) diag('error', ipath + '.tree', 'leaf "' + bad + '" has no translation: it is not in the lexicon, not a declared variable, and not a lexicon word with a declared variable as its index');
+            } catch (ex) { diag('error', ipath + '.tree', 'tree does not parse: ' + ex.message); }
+          }
           tgts.forEach((ts, ti) => {
             // mirror the grader's parseScopeTarget: formula is after the first
             // colon; a trailing "(label)" lives in the label part, not the formula.
             const str = String(ts);
             const colon = str.indexOf(':');
-            const formula = (colon > -1 ? str.slice(colon + 1) : str).trim();
-            const r = E.tryParse(formula);
+            // S86: every SL quantifier holds a colon, so in the aps notation the
+            // label ends at the first colon outside square brackets (splitTarget).
+            const formula = set.notation === 'aps' ? splitTarget(str, 'aps').formula : (colon > -1 ? str.slice(colon + 1) : str).trim();
+            const r = E.tryParse(formula, set.notation);
             if (!r.ok) diag('error', ipath + '.targets[' + ti + ']', 'target does not parse — the grader could not check answers against it: ' + (r.error || ''));
           });
         }
@@ -785,7 +1084,7 @@
         const words = m[1].split(',').map((w) => w.trim()).filter(Boolean);
         const src = m[2].trim();
         let term = null, type = null, err = null;
-        const pr = E.tryParse(src);
+        const pr = E.tryParse(src, 'cc');      // the legacy DSL is always the core language
         if (pr.ok) { term = pr.ast; try { type = inferType(term, set.typeEnv); } catch (e) { err = e.message; } }
         else err = pr.error;
         const entry = { words, src, term, type, err, hint: set.displayHints[words[0]] || null };
@@ -812,7 +1111,7 @@
         if (group.kind === 'tree' || trimmed[0] === '[') {
           group.problems.push({ id: group.id + 'p' + group.problems.length, kind: 'tree', tree: trimmed, gloss: pendingInstr || '', targets: pendingTargets && pendingTargets.length ? [...pendingTargets] : undefined });
         } else if (group.kind === 'types') {
-          const pr = E.tryParse(trimmed);
+          const pr = E.tryParse(trimmed, 'cc');
           let ans = null; if (pr.ok) { try { ans = inferType(pr.ast, set.typeEnv); } catch (e) {} }
           group.problems.push({ id: group.id + 'p' + group.problems.length, kind: 'types', src: trimmed, answerType: ans, gloss: pendingInstr || '' });
         } else {
@@ -928,7 +1227,9 @@
   }
 
   // Universal module footer (W13f): mirror of engine.js.
-  const LCFORMAT_API = { parseFile, parseJSON, parseDSL, rulesToConfig, parseTree, solveTree, applicable, candidateRules, inferType, expandList, refreshVars, SHIFTERS, applicableShifts, applyShift, findNodeById, findParentOf, allSNodes, isDominatedBy, applyQR, derivationToLaTeX };
+  const LCFORMAT_API = { parseFile, parseJSON, parseDSL, rulesToConfig, parseTree, solveTree, applicable, candidateRules, inferType, expandList, refreshVars, SHIFTERS, applicableShifts, applyShift, findNodeById, findParentOf, allSNodes, isDominatedBy, applyQR, derivationToLaTeX,
+    // the aps idiom (S86)
+    candidateRulesFor, slLeaf, slCategory, SL_CAT_NAME, SL_RULES, raisableSL, landingSitesSL, applyQRSL, splitTarget };
   if (typeof window !== 'undefined') window.LCFormat = LCFORMAT_API;
   if (typeof module !== 'undefined' && module.exports) module.exports = LCFORMAT_API;
 })();

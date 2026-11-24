@@ -1,0 +1,286 @@
+{
+  "compose": 1,
+  "id": "aps3-modifiers",
+  "idiom": "aps",
+  "title": "Modifiers, relative clauses, conjunction and pronouns (§3.4–3.7)",
+  "subtitle": "Test data for PredCon, RelPro, Conjunction and Pronoun",
+  "meta": {
+    "source": "after Altshuler, Parsons & Schwarzschild, A Course in Semantics (MIT Press, 2019)",
+    "tags": [
+      "test-fixture"
+    ]
+  },
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "Jack Sue Maria Fred Henry Boston",
+      "<e,t>": "Wedding Sang Quiet Actor Sings Dances Girl Story Bottle Smiled",
+      "<e,<e,t>>": "Discussed In Likes Met About Submitted Opened"
+    },
+    "variables": {
+      "e": "x y z"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Jack"
+      ],
+      "denotation": "Jack"
+    },
+    {
+      "words": [
+        "Sue"
+      ],
+      "denotation": "Sue"
+    },
+    {
+      "words": [
+        "Maria"
+      ],
+      "denotation": "Maria"
+    },
+    {
+      "words": [
+        "Fred"
+      ],
+      "denotation": "Fred"
+    },
+    {
+      "words": [
+        "Henry"
+      ],
+      "denotation": "Henry"
+    },
+    {
+      "words": [
+        "Boston"
+      ],
+      "denotation": "Boston"
+    },
+    {
+      "words": [
+        "wedding"
+      ],
+      "denotation": "Wedding"
+    },
+    {
+      "words": [
+        "sang"
+      ],
+      "denotation": "Sang"
+    },
+    {
+      "words": [
+        "quietly"
+      ],
+      "denotation": "Quiet"
+    },
+    {
+      "words": [
+        "actor"
+      ],
+      "denotation": "Actor"
+    },
+    {
+      "words": [
+        "sings"
+      ],
+      "denotation": "Sings"
+    },
+    {
+      "words": [
+        "dances"
+      ],
+      "denotation": "Dances"
+    },
+    {
+      "words": [
+        "girl"
+      ],
+      "denotation": "Girl"
+    },
+    {
+      "words": [
+        "story"
+      ],
+      "denotation": "Story"
+    },
+    {
+      "words": [
+        "bottle"
+      ],
+      "denotation": "Bottle"
+    },
+    {
+      "words": [
+        "smiled"
+      ],
+      "denotation": "Smiled"
+    },
+    {
+      "words": [
+        "discussed"
+      ],
+      "denotation": "Discussed"
+    },
+    {
+      "words": [
+        "in"
+      ],
+      "denotation": "In"
+    },
+    {
+      "words": [
+        "likes"
+      ],
+      "denotation": "Likes"
+    },
+    {
+      "words": [
+        "met"
+      ],
+      "denotation": "Met"
+    },
+    {
+      "words": [
+        "about"
+      ],
+      "denotation": "About"
+    },
+    {
+      "words": [
+        "submitted"
+      ],
+      "denotation": "Submitted"
+    },
+    {
+      "words": [
+        "opened"
+      ],
+      "denotation": "Opened"
+    },
+    {
+      "words": [
+        "every"
+      ],
+      "denotation": "∀"
+    },
+    {
+      "words": [
+        "some",
+        "a"
+      ],
+      "denotation": "∃"
+    },
+    {
+      "words": [
+        "no"
+      ],
+      "denotation": "No"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "The"
+    },
+    {
+      "words": [
+        "she",
+        "herself"
+      ],
+      "kind": "pronoun"
+    },
+    {
+      "words": [
+        "who"
+      ],
+      "kind": "relative"
+    },
+    {
+      "words": [
+        "and"
+      ],
+      "kind": "conjunction"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "merge": true,
+      "predCon": true,
+      "indexedDaughter": true,
+      "conjunction": true,
+      "relPro": true
+    }
+  },
+  "exercises": [
+    {
+      "id": "A",
+      "title": "A. Rules of §3.4–3.7",
+      "derivations": [
+        {
+          "id": "pp-np",
+          "sentence": "Jack discussed a wedding in Boston.",
+          "tree": "[.VP [.DP a_x [.NP wedding [.PP in Boston ] ] ] [.VP Jack [.V′ discussed x ] ] ]",
+          "targets": [
+            "[∃x: (Wedding ⊓ In(Boston))(x)](Discussed(x)(Jack))"
+          ]
+        },
+        {
+          "id": "adverb",
+          "sentence": "Jack sang quietly.",
+          "tree": "[.VP Jack [.V′ sang quietly ] ]",
+          "targets": [
+            "(Sang ⊓ Quiet)(Jack)"
+          ]
+        },
+        {
+          "id": "relcl",
+          "sentence": "Jack met every actor who Sue likes.",
+          "tree": "[.VP [.DP every_z [.NP actor [.CP who_x [.VP Sue [.V′ likes x ] ] ] ] ] [.VP Jack [.V′ met z ] ] ]",
+          "targets": [
+            "[∀z: (Actor ⊓ λx.Likes(x)(Sue))(z)](Met(z)(Jack))"
+          ]
+        },
+        {
+          "id": "conj",
+          "sentence": "Maria sings and Fred dances.",
+          "tree": "[.VP [.VP Maria sings ] and [.VP Fred dances ] ]",
+          "targets": [
+            "(Sings(Maria) & Dances(Fred))"
+          ]
+        },
+        {
+          "id": "bound",
+          "sentence": "No girl submitted a story about herself.",
+          "tree": "[.VP [.DP no_x girl ] [.VP [.DP a_y [.NP story [.PP about herself_x ] ] ] [.VP x [.V′ submitted y ] ] ] ]",
+          "targets": [
+            "[No x: Girl(x)]([∃y: (Story ⊓ About(x))(y)](Submitted(y)(x)))"
+          ]
+        },
+        {
+          "id": "free",
+          "sentence": "She smiled.",
+          "tree": "[.VP she_y smiled ]",
+          "targets": [
+            "Smiled(y)"
+          ]
+        },
+        {
+          "id": "the",
+          "sentence": "Henry opened the bottle.",
+          "tree": "[.VP [.DP the_x bottle ] [.VP Henry [.V′ opened x ] ] ]",
+          "targets": [
+            "[The x: Bottle(x)](Opened(x)(Henry))"
+          ]
+        },
+        {
+          "id": "in-situ",
+          "sentence": "Every actor sang.",
+          "tree": "[.VP [.DP every_x actor ] sang ]"
+        }
+      ]
+    }
+  ]
+}

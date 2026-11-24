@@ -347,6 +347,7 @@ Suites: regression 3730+331, schema 46+2, latex 1657, notes 124, server 219; che
 - **2026-11-24 — S84 (Caddy: the personal site's 404 page; one commit).** OWNER ASK, from a review of www.tstephen.com: missing pages there came back as an empty 404. Vrier/Vrier.github.io now has a `404.html` (its 7fccda5), and `deploy/Caddyfile`'s `www.tstephen.com` block gains `handle_errors` (`rewrite * /404.html`, `file_server`, which keeps the 404 status). No other block changed. `npm test` green before and after (the server suite skips without `server/pocketbase`). Like every Caddyfile change it takes effect only once `deploy/apply-caddyfile.sh` is run from the console (DEPLOY.md, Caddy caveat); the owner runs it.
 
 - **2026-11-24 — S85 (Caddy: headers for www and slides, and the slides 404 page; one commit).** OWNER ASK, from a second review of www.tstephen.com. `deploy/Caddyfile`: `www.tstephen.com` gains the S47 header set (HSTS ~6 months without includeSubDomains, nosniff, X-Frame-Options SAMEORIGIN; its only frame is its own `compose/demo.html`); `slides.tstephen.com` gains HSTS and nosniff, deliberately without X-Frame-Options in case slides are embedded elsewhere (e.g. Blackboard), and `handle_errors` serving that repo's new `404.html`. No other block changed. `npm test` green before and after (server suite skipped, no `server/pocketbase`). Takes effect, with S84, when the owner runs `deploy/apply-caddyfile.sh`.
+- **2026-11-24 — S86 (the aps idiom, stage 1: engine and format; one commit, on branch `s86-aps-idiom`).** OWNER ASK: a chapter-by-chapter companion to Altshuler, Parsons & Schwarzschild, *A Course in Semantics* (2019), in the book's own idiom. Owner decisions of the day: the worksheet field is a new `idiom`; a student writes out the non-trivial steps only. `engine.js`: a reader for the book's symbolic logic SL (restricted quantifiers `[∀x: φ](ψ)`, `⊓`, no ASCII binder letters), reached when the notation is `aps`; one SL printer behind `toStr`, `toHTML` and `toLaTeX`; `slUnfold`, called inside `equivACη` and nowhere else; `tryParse(src, mode)`. An SL expression is an ordinary term: `[Q u: φ](ψ)` is `App(App(Sym('§Q'), Lam(u, φ)), Lam(u, ψ))`, so binding, substitution and α-equivalence are unchanged. `lcformat.js`: `idiom: "aps"`, lexicon `kind` (pronoun, relative, conjunction), six rule keys, typing for `⊓` and the quantifier symbols, `solveTree` dispatching to the book's rules (Merge, PredCon, IndexedDaughter, Conjunction, RelPro, EvExist) with the Wellformedness Filter as a check over categories, `candidateRulesFor` with refusals in the book's vocabulary and `typed: true` on IndexedDaughter, EvExist and the binding Merge, raising in the book's form (`applyQRSL`: no binder node, a copy of the index left behind, any dominating node as landing site), `splitTarget`. Schema, `schema-check.mjs` and FORMAT.md § Idioms follow. NEW eighth suite `test/idiom.mjs` over four fixtures in `test/fixtures/idiom/` (a pilot worksheet on §3.2–3.3 and test data for §3.4–3.7, chapter 4 and chapter 5): 439 checks; 25 derivations print the book's formula and are confirmed by `solveTree` on a converted tree of the default idiom, 5 structures get no translation, as the book has it. `golden.txt` and `golden-latex.txt` are byte-identical: the 46 worksheets are untouched. FOUND: the default reader takes `In(Boston)` as `ιn`, so SL needs its own reader; a target is split at its first colon and every SL quantifier holds one. NOT DONE, stage 2: the views (`rulesFor`, `pickRule` honouring `typed`, `check`, `parseScopeTarget` through `splitTarget`, raising, palette, category badge, speech). Until then the pilot stays a fixture and out of `compose/exercises/`. Open owner decisions are listed in the project note `claude/aps-idiom-design.md`. `npm test` green before and after (server suite skipped, no `server/pocketbase`).
 
 ## 9. Decisions that must be made by the project owner (not by agents)
 
@@ -361,15 +362,17 @@ Ranked by engine fit; each tier's blocker is explicit.
 
 1. **Engine-ready now:** von Fintel & Heim, *Intensional Semantics* lecture notes
    (natural /hk continuation; IFA + world/time machinery already exercised by
-   ch13; freely distributed notes suit the paraphrase posture) › Altshuler,
-   Parsons & Schwarzschild, *A Course in Semantics* (problem-set-driven,
-   near-mechanical conversion) › Zimmermann & Sternefeld, *Introduction to
-   Semantics* (strictly compositional).
+   ch13; freely distributed notes suit the paraphrase posture) › Zimmermann &
+   Sternefeld, *Introduction to Semantics* (strictly compositional).
+   Altshuler, Parsons & Schwarzschild was listed here as a near-mechanical
+   conversion; the owner chose the book's own idiom instead (see tier 3).
 2. **Papers as filler sessions (existing machinery):** Davidson 1967 ✓ S21,
    Partee & Rooth 1983 ✓ S21, Barwise & Cooper 1981 ✓ S22, Link 1983 ✓ S22
    (added: ch10 machinery IS Link's), Kratzer 1977/1991 modality (after ch13
    polish; remaining), Hamblin/Karttunen questions (candidate, medium cost).
-3. **One package away:** Jacobson, *Compositional Semantics* — needs a
+3. **One package away:** Altshuler, Parsons & Schwarzschild, *A Course in
+   Semantics*, chapters 3–5 in the book's own idiom: the `aps` idiom, engine
+   and format done in S86, views and content to come. Jacobson, *Compositional Semantics* — needs a
    variable-free package (function composition + Geach/z as type-shift
    entries); dovetails with the ESSLLI composition-universals course. Winter,
    *Elements of Formal Semantics* — mostly fits, flexible typing in places.

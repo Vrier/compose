@@ -1,0 +1,325 @@
+{
+  "compose": 1,
+  "id": "aps3-pilot",
+  "idiom": "aps",
+  "title": "Translation and Quantificational Determiner Phrases (§3.2–3.3)",
+  "subtitle": "Altshuler, Parsons & Schwarzschild: Lexicon, Merge, IndexedDaughter and the Wellformedness Filter, with each LF given",
+  "meta": {
+    "source": "after Altshuler, Parsons & Schwarzschild, A Course in Semantics (MIT Press, 2019)",
+    "tags": [
+      "pilot"
+    ]
+  },
+  "domain": {
+    "multiLetterNames": true,
+    "constants": {
+      "e": "Bruce Jack Jill",
+      "<e,t>": "Sang Sing Computer Crashed Bottle Fell Dish Person Character Survived",
+      "<e,<e,t>>": "Visited Liked"
+    },
+    "variables": {
+      "e": "x y z"
+    }
+  },
+  "lexicon": [
+    {
+      "words": [
+        "Bruce"
+      ],
+      "denotation": "Bruce"
+    },
+    {
+      "words": [
+        "Jack"
+      ],
+      "denotation": "Jack"
+    },
+    {
+      "words": [
+        "Jill"
+      ],
+      "denotation": "Jill"
+    },
+    {
+      "words": [
+        "sang"
+      ],
+      "denotation": "Sang"
+    },
+    {
+      "words": [
+        "sing"
+      ],
+      "denotation": "Sing"
+    },
+    {
+      "words": [
+        "visited"
+      ],
+      "denotation": "Visited"
+    },
+    {
+      "words": [
+        "liked"
+      ],
+      "denotation": "Liked"
+    },
+    {
+      "words": [
+        "computer"
+      ],
+      "denotation": "Computer"
+    },
+    {
+      "words": [
+        "crashed"
+      ],
+      "denotation": "Crashed"
+    },
+    {
+      "words": [
+        "bottle"
+      ],
+      "denotation": "Bottle"
+    },
+    {
+      "words": [
+        "fell"
+      ],
+      "denotation": "Fell"
+    },
+    {
+      "words": [
+        "dish"
+      ],
+      "denotation": "Dish"
+    },
+    {
+      "words": [
+        "person"
+      ],
+      "denotation": "Person"
+    },
+    {
+      "words": [
+        "character"
+      ],
+      "denotation": "Character"
+    },
+    {
+      "words": [
+        "survived",
+        "survive"
+      ],
+      "denotation": "Survived"
+    },
+    {
+      "words": [
+        "every",
+        "all"
+      ],
+      "denotation": "∀"
+    },
+    {
+      "words": [
+        "some",
+        "a"
+      ],
+      "denotation": "∃"
+    },
+    {
+      "words": [
+        "no"
+      ],
+      "denotation": "No"
+    },
+    {
+      "words": [
+        "not"
+      ],
+      "denotation": "¬"
+    }
+  ],
+  "rules": {
+    "composition": {
+      "merge": true,
+      "indexedDaughter": true,
+      "predCon": false,
+      "conjunction": false
+    }
+  },
+  "exercises": [
+    {
+      "id": "A",
+      "title": "A. Lexicon and Merge (§3.2)",
+      "instructions": "Lexicon translates a word as the symbol of SL with the same extension. Merge writes the translation of one daughter in front of the other’s, in parentheses. The Wellformedness Filter keeps the order that is an expression of SL.",
+      "derivations": [
+        {
+          "id": "d1",
+          "sentence": "Bruce sang.",
+          "tree": "[.VP Bruce sang ]",
+          "targets": [
+            "Sang(Bruce)"
+          ],
+          "reading": {
+            "section": "3.2"
+          }
+        },
+        {
+          "id": "d2",
+          "sentence": "Jack visited Jill.",
+          "tree": "[.VP Jack [.V′ visited Jill ] ]",
+          "targets": [
+            "Visited(Jill)(Jack)"
+          ],
+          "reading": {
+            "section": "3.2"
+          },
+          "hints": [
+            "Merge at V′ gives two potential translations, Visited(Jill) and Jill(Visited). One is an expression of SL.",
+            "Visited(Jill) is a one-place predicate. Merge at VP writes it in front of Jack."
+          ]
+        },
+        {
+          "id": "d3",
+          "sentence": "Jill visited Jack.",
+          "tree": "[.VP Jill [.V′ visited Jack ] ]",
+          "targets": [
+            "Visited(Jack)(Jill)"
+          ],
+          "reading": {
+            "section": "3.2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "title": "B. Quantifiers after raising (§3.3)",
+      "instructions": "Each tree is an LF. The raised phrase has left a copy of its index in its old position. IndexedDaughter forms a quantifier from an indexed determiner and its sister. Merge writes the quantifier in front of its scope.",
+      "derivations": [
+        {
+          "id": "d1",
+          "sentence": "No computer crashed.",
+          "tree": "[.VP [.DP no_x computer ] [.VP x crashed ] ]",
+          "targets": [
+            "[No x: Computer(x)](Crashed(x))"
+          ],
+          "reading": {
+            "section": "3.3"
+          },
+          "hints": [
+            "IndexedDaughter at DP: the determiner is indexed x and its sister translates as Computer, so the quantifier is [No x: Computer(x)].",
+            "The lower VP translates as Crashed(x), a formula. Merge writes the quantifier in front of it."
+          ]
+        },
+        {
+          "id": "d2",
+          "sentence": "Some bottle fell.",
+          "tree": "[.VP [.DP some_x bottle ] [.VP x fell ] ]",
+          "targets": [
+            "[∃x: Bottle(x)](Fell(x))"
+          ],
+          "reading": {
+            "section": "3.3"
+          }
+        },
+        {
+          "id": "d3",
+          "sentence": "Jack liked every dish.",
+          "tree": "[.VP [.DP every_x dish ] [.VP Jack [.V′ liked x ] ] ]",
+          "targets": [
+            "[∀x: Dish(x)](Liked(x)(Jack))"
+          ],
+          "reading": {
+            "section": "3.3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "title": "C. Two LFs of one sentence (§3.3)",
+      "instructions": "Some person liked every dish has one base structure and two LFs. The quantifier adjoined higher has the other in its scope.",
+      "derivations": [
+        {
+          "id": "d1",
+          "sentence": "Some person liked every dish.",
+          "tree": "[.VP [.DP some_y person ] [.VP [.DP every_x dish ] [.VP y [.V′ liked x ] ] ] ]",
+          "targets": [
+            "some > every: [∃y: Person(y)]([∀x: Dish(x)](Liked(x)(y)))"
+          ],
+          "reading": {
+            "section": "3.3"
+          }
+        },
+        {
+          "id": "d2",
+          "sentence": "Some person liked every dish.",
+          "tree": "[.VP [.DP every_x dish ] [.VP [.DP some_y person ] [.VP y [.V′ liked x ] ] ] ]",
+          "targets": [
+            "every > some: [∀x: Dish(x)]([∃y: Person(y)](Liked(x)(y)))"
+          ],
+          "reading": {
+            "section": "3.3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "D",
+      "title": "D. Negation and scope (§3.3.2)",
+      "instructions": "SpecificVocab translates not as ¬. Merge writes ¬ in front of a formula. Every character didn’t survive has two LFs, one for each height of the raised phrase.",
+      "derivations": [
+        {
+          "id": "d1",
+          "sentence": "Jack didn’t sing.",
+          "tree": "[.NegP not [.VP Jack sing ] ]",
+          "targets": [
+            "¬(Sing(Jack))"
+          ],
+          "reading": {
+            "section": "3.3.2"
+          }
+        },
+        {
+          "id": "d2",
+          "sentence": "Every character didn’t survive.",
+          "tree": "[.NegP not [.VP [.DP every_x character ] [.VP x survived ] ] ]",
+          "targets": [
+            "not > every: ¬([∀x: Character(x)](Survived(x)))"
+          ],
+          "reading": {
+            "section": "3.3.2"
+          }
+        },
+        {
+          "id": "d3",
+          "sentence": "Every character didn’t survive.",
+          "tree": "[.NegP [.DP every_x character ] [.NegP not [.VP x survived ] ] ]",
+          "targets": [
+            "every > not: [∀x: Character(x)](¬(Survived(x)))"
+          ],
+          "reading": {
+            "section": "3.3.2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "E",
+      "title": "E. A structure with no translation (§3.3)",
+      "instructions": "This tree is the base structure of Some bottle fell, with the determiner phrase left in place. At the top node every rule is refused. Read the reason given for each.",
+      "derivations": [
+        {
+          "id": "d1",
+          "sentence": "Some bottle fell.",
+          "tree": "[.VP [.DP some_x bottle ] fell ]",
+          "reading": {
+            "section": "3.3"
+          }
+        }
+      ]
+    }
+  ]
+}
