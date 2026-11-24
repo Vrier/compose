@@ -114,7 +114,7 @@ self-editable profile (`variety`, `linguist`, `consent_publish`,
 only, never email. Shared helpers: `pb_hooks/dace_lib.js`.
 
 Routes: `/` = THE app (demo worksheet + on-demand library, S13/S44);
-`/cc` `/hk` `/papers` + 22 chapter pages + `/editor` = tiny REDIRECT STUBS
+`/cc` `/hk` `/aps` `/papers` + 25 chapter pages + `/editor` = tiny REDIRECT STUBS
 (S44, `<!--compose-stub-->` marker, noindex) → `/?code=<fixed code>` and
 `/?editor=1` (the in-app editor is open to ANON as the sandbox — authoring
 surfaces show for everyone on the root; hosting stays instructor-only);
@@ -170,16 +170,22 @@ in the Claude project as `claude/aps-idiom-design.md`.
   inside `equivACη` only. Never unfold for display.
 - `lcformat.js`, "the aps idiom": `solveTree` dispatches on `set.idiom`;
   `candidateRulesFor(set, node, meaningOf)` is the chooser for any idiom.
-- `test/idiom.mjs` (in `npm test`) solves the worksheets in `test/fixtures/idiom/`
-  by the book's rules, converts each tree to the default idiom and requires
-  `solveTree` to agree, and snapshots the chooser in `test/golden-idiom.txt`.
-  Regenerate with `node test/idiom.mjs --update`, for intended changes only.
+- The worksheets are `compose/exercises/aps*.compose.json`, in the library with
+  the rest: keys `aps<chapter>.<section>-<topic>`, family `aps` in
+  `build/curated-map.mjs`, chapters in `compose/exercises.js`. A worksheet that
+  declares an idiom is skipped by `test/regression.mjs` and
+  `test/linglib-rules.mjs`, and snapshotted in its own notation by
+  `test/latex.mjs`.
+- `test/idiom.mjs` (in `npm test`) solves every aps worksheet by the book's
+  rules, converts each tree to the default idiom and requires `solveTree` to
+  agree, and snapshots the chooser in `test/golden-idiom.txt`. Regenerate with
+  `node test/idiom.mjs --update`, for intended changes only.
 - The textbook bundle is `compose/bundles/altshuler-parsons-schwarzschild.compose-bundle.json`,
   generated from those worksheets: run `npm run bundle:aps` after editing one.
   `test/idiom.mjs` fails on a stale bundle.
-- The views do not play the idiom yet. Until they do, keep `aps*` worksheets
-  out of `compose/exercises/` and the bundle out of the `/files/` page
-  (`build/server.mjs`).
+- The views do not play the idiom yet: an aps worksheet opens and shows its
+  tree, and the only rule on offer is Non-branching Node. Stage 2 (the views)
+  has to land before these worksheets reach students on the live site.
 
 ## Linglib cross-check
 

@@ -81,6 +81,9 @@ function snapshot() {
     let set;
     try { set = F.parseFile(fs.readFileSync(path.join(dir, file), 'utf8'), key); }
     catch (e) { lines.push(`${key} | PARSE-ERROR | ${e.message}`); continue; }
+    // S86: a worksheet in another idiom (aps) has its own rules, chooser and
+    // printer; test/idiom.mjs snapshots it in test/golden-idiom.txt.
+    if (set.idiom) continue;
     for (const g of (set.groups || [])) {
       for (const p of (g.problems || [])) {
         if (p.kind !== 'tree' || !p.tree) continue;
@@ -131,6 +134,7 @@ function roundTripCheck() {
   let checked = 0; const fails = [];
   for (const file of fs.readdirSync(dir).filter((f) => f.endsWith('.compose.json')).sort()) {
     const set = F.parseFile(fs.readFileSync(path.join(dir, file), 'utf8'), file);
+    if (set.idiom) continue; // S86: round-tripped in its own notation by test/idiom.mjs
     for (const g of (set.groups || [])) for (const p of (g.problems || [])) {
       if (p.kind !== 'tree' || !p.tree) continue;
       let r; try { const root = F.parseTree(p.tree); r = F.solveTree(root, set)[root.id]; } catch { continue; }

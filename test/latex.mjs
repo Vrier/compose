@@ -37,6 +37,10 @@ function snapshot() {
     try { set = F.parseFile(fs.readFileSync(path.join(dir, file), 'utf8'), key); }
     catch (e) { lines.push(`${key} | PARSE-ERROR | ${e.message}`); continue; }
     let first = true;
+    // S86: the app exports a sheet under its own notation (app.jsx sets it on
+    // opening the sheet); an idiom sheet is snapshotted the same way. Other
+    // sheets keep the default, so their lines are unchanged.
+    const inNotation = set.idiom ? (f) => E.withNotation(set.notation, f) : (f) => f();
     for (const g of (set.groups || [])) {
       for (const p of (g.problems || [])) {
         if (p.kind !== 'tree' || !p.tree) continue;
@@ -44,10 +48,10 @@ function snapshot() {
         try { root = F.parseTree(p.tree); res = F.solveTree(root, set); }
         catch (e) { lines.push(`${key} | ${p.id} | TREE-ERR ${e.message}`); continue; }
         const r = res[root.id];
-        lines.push(`${key} | ${p.id} | ${r ? E.toLaTeX(r.term) : 'UNSOLVED'}`);
+        lines.push(`${key} | ${p.id} | ${r ? inNotation(() => E.toLaTeX(r.term)) : 'UNSOLVED'}`);
         if (first && r) {
           first = false;
-          const forest = F.derivationToLaTeX(root, res, { sentence: p.gloss });
+          const forest = inNotation(() => F.derivationToLaTeX(root, res, { sentence: p.gloss }));
           for (const fl of forest.split('\n')) lines.push(`${key} | ${p.id} | F | ${fl}`);
         }
       }

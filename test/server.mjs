@@ -125,8 +125,8 @@ async function main() {
     const curated = curatedTable(wsKeys);
     expect('every curated chapter page has a code',
       curated.filter((e) => e.path.includes('/')).every((e) => entries.some((x) => x.kind === 'chapter' && x.key === e.path)));
-    expect('families cc/hk/papers have codes',
-      ['cc', 'hk', 'papers'].every((k) => entries.some((x) => x.kind === 'family' && x.key === k)));
+    expect('families cc/hk/aps/papers have codes',
+      ['cc', 'hk', 'aps', 'papers'].every((k) => entries.some((x) => x.kind === 'family' && x.key === k)));
     const tmpReg = path.join(os.tmpdir(), 'compose-curated-regen-' + process.pid + '.json');
     execFileSync(process.execPath, [path.join(ROOT, 'scripts', 'gen-curated-codes.mjs'), tmpReg], { cwd: ROOT, stdio: 'ignore' });
     expect('gen-curated-codes.mjs regenerates the committed registry byte-for-byte',
@@ -140,8 +140,12 @@ async function main() {
     expect('registry urls are app links (/?code=…, S44)',
       entries.every((x) => typeof x.url === 'string' && x.url.startsWith('/?code=')));
     expect('library manifest embedded (window.COMPOSE_LIBRARY, S44)', rootHtml.includes('window.COMPOSE_LIBRARY'));
-    expect('manifest carries the three families (S44)',
-      ['"key":"cc"', '"key":"hk"', '"key":"papers"'].every((n) => rootHtml.includes(n)));
+    expect('manifest carries the four families (S44, aps S86)',
+      ['"key":"cc"', '"key":"hk"', '"key":"aps"', '"key":"papers"'].every((n) => rootHtml.includes(n)));
+    expect('manifest lists the aps worksheets (S86)', rootHtml.includes('"aps3.2-quantifiers"') && rootHtml.includes('"aps5.1-tense"'));
+    expect('the aps bundle is published under /files/ (S86)',
+      fs.readFileSync(path.join(SERVER, 'pb_public', 'files', 'altshuler-parsons-schwarzschild.compose-bundle.json'), 'utf8')
+      === fs.readFileSync(path.join(ROOT, 'compose', 'bundles', 'altshuler-parsons-schwarzschild.compose-bundle.json'), 'utf8'));
     expect('manifest lists §13 worksheets (S44)', rootHtml.includes('"ch13.1-worlds"'));
     expect('/files/worksheets copies are byte-identical to compose/exercises (S44)',
       wsKeys.every((k) =>
@@ -360,14 +364,14 @@ async function main() {
     ok('teacher dist has no HTML importer (S39)', !t.includes('importHtmlFile'), 'unexpected importHtmlFile');
   }
 
-  // S13 → S44 — the 25 curated pages are now tiny redirect stubs: every old
+  // S13 → S44 — the 29 curated pages (25 + the aps family, S86) are tiny redirect stubs: every old
   // link/QR forwards into the app at /?code=<that set's fixed code>, and no
   // stub inlines worksheet content any more. Sweep them ALL against the
   // registry so coverage stays equivalent to the old per-page checks.
   {
     const reg = JSON.parse(fs.readFileSync(path.join(ROOT, 'compose', 'curated-codes.json'), 'utf8')).entries;
     const pageEntries = reg.filter((e) => e.kind === 'chapter' || e.kind === 'family');
-    expect('registry covers all 25 curated paths', pageEntries.length === 25, pageEntries.length);
+    expect('registry covers all 29 curated paths', pageEntries.length === 29, pageEntries.length);
     for (const e of pageEntries) {
       const rr = await req('GET', '/' + e.key + '/', { raw: true });
       const okStub = rr.status === 200 && rr.text.includes('<!--compose-stub-->')
@@ -445,6 +449,7 @@ async function main() {
   contains('about page serves', r.text, 'How to cite');
   contains('about page carries the canonical version', r.text, 'version ' + COMPOSE_VERSION);
   contains('about page shares the family codes as app links (S44)', r.text, '/?code=KT6WF4');
+  contains('about page lists the Altshuler, Parsons & Schwarzschild companion (S86)', r.text, '/?code=JEF75G');
   contains('about page states what accounts store (N7)', r.text, 'password hash');
 
   // N0 (§11) — student accounts, unlock codes, enrollments, progress, drafts

@@ -149,10 +149,11 @@ for (const f of fs.readdirSync(bunDir).filter((f) => f.endsWith('.compose-bundle
   catch (e) { err(f, '', 'not valid JSON: ' + e.message); }
 }
 
-// S86: the idiom fixtures exercise the idiom field and lexicon kinds.
+// S86: the aps worksheets live in compose/exercises/ with the rest and are
+// checked above; idiom fixtures that are test data only would go here.
 let fixtures = 0;
 const fxDir = path.join(HERE, 'fixtures', 'idiom');
-for (const f of fs.readdirSync(fxDir).filter((f) => f.endsWith('.compose.json')).sort()) {
+for (const f of (fs.existsSync(fxDir) ? fs.readdirSync(fxDir) : []).filter((f) => f.endsWith('.compose.json')).sort()) {
   try { checkWorksheet(JSON.parse(fs.readFileSync(path.join(fxDir, f), 'utf8')), 'fixtures/idiom/' + f); fixtures++; }
   catch (e) { err(f, '', 'not valid JSON: ' + e.message); }
 }
@@ -163,4 +164,4 @@ if (errors.length) {
   if (errors.length > 40) console.error(`  … and ${errors.length - 40} more`);
   process.exit(1);
 }
-console.log(`✓ schema check OK — ${sets} worksheets + ${bundles} bundles + ${fixtures} idiom fixtures conform to schemas/`);
+console.log(`✓ schema check OK — ${sets} worksheets + ${bundles} bundles${fixtures ? ' + ' + fixtures + ' idiom fixtures' : ''} conform to schemas/`);

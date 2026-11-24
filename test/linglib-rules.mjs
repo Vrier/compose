@@ -79,6 +79,10 @@ let outside = 0;
 const exDir = path.join(SRC, 'exercises');
 for (const f of fs.readdirSync(exDir).filter((x) => x.endsWith('.compose.json'))) {
   const set = F.parseFile(fs.readFileSync(path.join(exDir, f), 'utf8'), f);
+  // S86: an idiom sheet (aps) is composed by the book's rules, so its sister
+  // types say nothing about FA/PM/PA; its Linglib check would go through the
+  // tree conversion in test/idiom.mjs.
+  if (set.idiom) continue;
   for (const g of set.groups) for (const p of g.problems) {
     let root; try { root = F.parseTree(p.tree); } catch { continue; }
     const sol = F.solveTree(root, set);

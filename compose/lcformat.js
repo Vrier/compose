@@ -67,8 +67,11 @@
         case 'sym': {
           const n = t.name;
           if (/^\d+$/.test(n)) return 'n';            // numeric literal — type n (number)
-          if (E.slQuantLabel(n) !== undefined) {      // SL quantifier symbol (S86): ⟨⟨σ,t⟩,⟨⟨σ,t⟩,t⟩⟩
-            const qs = fresh(); return { from: { from: qs, to: 't' }, to: { from: { from: qs, to: 't' }, to: 't' } };
+          if (E.slQuantLabel(n) !== undefined) {      // SL quantifier symbol (S86): ⟨⟨e,t⟩,⟨⟨e,t⟩,t⟩⟩
+            // SL has one sort, and events and states are entities in this
+            // family, so a quantifier ranges over e. A type variable here
+            // stayed unresolved at a bare leaf and printed as ⟨⟨t,t⟩,…⟩.
+            return { from: { from: 'e', to: 't' }, to: { from: { from: 'e', to: 't' }, to: 't' } };
           }
           if (ctx[n] !== undefined) return ctx[n];
           if (typeEnv[n] !== undefined) return typeEnv[n];
@@ -1205,8 +1208,14 @@
     '% ============================================================',
   ].join('\n');
 
+  // Characters a tree label or a leaf word can carry that pdfLaTeX's text
+  // mode lacks (S86: the aps sheets label nodes V′ and θP and have the leaf ∃).
+  const LATEX_TEXT_UNICODE = { '′': "\\ensuremath{'}", '″': "\\ensuremath{''}", 'θ': '\\ensuremath{\\theta}',
+    'λ': '\\ensuremath{\\lambda}', '∃': '\\ensuremath{\\exists}', '∀': '\\ensuremath{\\forall}', '¬': '\\ensuremath{\\neg}' };
   function latexTextEscape(str) {
-    return String(str).replace(/[\\{}$&#^_%~]/g, (c) => ({ '\\': '\\textbackslash{}', '{': '\\{', '}': '\\}', '$': '\\$', '&': '\\&', '#': '\\#', '^': '\\^{}', '_': '\\_', '%': '\\%', '~': '\\~{}' }[c]));
+    // ASCII specials first, then the Unicode, so no inserted command is re-escaped
+    return String(str).replace(/[\\{}$&#^_%~]/g, (c) => ({ '\\': '\\textbackslash{}', '{': '\\{', '}': '\\}', '$': '\\$', '&': '\\&', '#': '\\#', '^': '\\^{}', '_': '\\_', '%': '\\%', '~': '\\~{}' }[c]))
+      .replace(/[′″θλ∃∀¬]/g, (c) => LATEX_TEXT_UNICODE[c]);
   }
 
   function derivationToLaTeX(root, solution, opts) {
