@@ -23,7 +23,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import esbuild from 'esbuild';
 import { buildParts, assemblePage, inlineLibraryJS, libraryMap, safe, IDENTITY_TOKEN, LIBRARY_TOKEN } from './assemble.mjs';
-import { CC_CHAPTERS, HK_CHAPTERS, PAPERS_PREFIXES, curatedTable } from './curated-map.mjs';
+import { CC_CHAPTERS, HK_CHAPTERS, APS_CHAPTERS, PAPERS_PREFIXES, curatedTable } from './curated-map.mjs';
 import { createRequire } from 'node:module';
 const { COMPOSE_VERSION, COMPOSE_DATE } = createRequire(import.meta.url)('../compose/version.js');
 
@@ -183,7 +183,9 @@ html, body { height: auto !important; overflow: auto !important; }
 semantics in the Heim &amp; Kratzer / Coppock &amp; Champollion tradition. Students
 compose a sentence's meaning bottom-up over a syntactic tree, choosing
 composition rules at each node; denotations are genuine typed λ-terms, so
-answers are graded by <em>meaning</em> (α/β/η-equivalence), not surface form.</p>
+answers are graded by <em>meaning</em> (α/β/η-equivalence), not surface form.
+The Altshuler, Parsons &amp; Schwarzschild worksheets keep that book's own
+system: rules of translation into its symbolic logic, graded the same way.</p>
 <h2>How to cite</h2>
 <p>If COMPOSE plays a role in your teaching or research, please cite it:</p>
 <div class="about-cite">Stephen, Thomas (${COMPOSE_DATE}). COMPOSE: Compositional Meaning Practice — an online semantics engine (version ${COMPOSE_VERSION}). https://compose.tstephen.com</div>
@@ -203,6 +205,7 @@ the collection joins your sidebar. No account needed:</p>
 <ul>
 <li><a href="/?code=${CODE_BY_KEY.cc}">Coppock &amp; Champollion companion</a> (§6–§12, all worksheets) — code <code>${CODE_BY_KEY.cc}</code></li>
 <li><a href="/?code=${CODE_BY_KEY.hk}">Heim &amp; Kratzer companion</a> — code <code>${CODE_BY_KEY.hk}</code></li>
+<li><a href="/?code=${CODE_BY_KEY.aps}">Altshuler, Parsons &amp; Schwarzschild companion</a> (chapters 3–5) — code <code>${CODE_BY_KEY.aps}</code></li>
 <li><a href="/?code=${CODE_BY_KEY.papers}">Classic papers</a> (Partee 1986, Partee &amp; Rooth 1983, Montague's PTQ, Davidson 1967, Krifka 1998, Barwise &amp; Cooper 1981, Link 1983) — code <code>${CODE_BY_KEY.papers}</code></li>
 <li>the worksheet editor is the app's <b>Author</b> section — author and export .compose.json worksheets without an account; to host worksheets for a class, instructors sign in — see the <a href="/guide/">guide</a></li>
 <li><a href="/files/">/files</a> — download every worksheet and bundle as .compose.json, plus the full site map</li>
@@ -211,7 +214,8 @@ the collection joins your sidebar. No account needed:</p>
 </ul>
 <p>Older links (<code>/cc</code>, <code>/hk</code>, <code>/papers</code>, the
 chapter pages, <code>/editor</code>) still work: they forward into the app,
-unlocking the right content as they land.</p>
+unlocking the right content as they land. <code>/aps</code> and its chapter
+pages forward the same way.</p>
 <h2>Accounts</h2>
 <p>Everything above works without an account — including the library's own
 unlock codes: every built-in worksheet, chapter and collection has a fixed
@@ -225,9 +229,10 @@ self-service password reset (a forgotten password is reset by the
 administrator).</p>
 <h2>Credits and lineage</h2>
 <p>The bundled worksheet library tracks Elizabeth Coppock &amp; Lucas
-Champollion's <em>Invitation to Formal Semantics</em> (§6–§12) and Irene Heim &amp;
-Angelika Kratzer's <em>Semantics in Generative Grammar</em>, plus a classic-papers
-shelf: Partee (1986), Partee &amp; Rooth (1983), Montague's PTQ (1973), Davidson
+Champollion's <em>Invitation to Formal Semantics</em> (§6–§12), Irene Heim &amp;
+Angelika Kratzer's <em>Semantics in Generative Grammar</em> and chapters 3–5 of
+Daniel Altshuler, Terence Parsons &amp; Roger Schwarzschild's <em>A Course in
+Semantics</em> (2019), plus a classic-papers shelf: Partee (1986), Partee &amp; Rooth (1983), Montague's PTQ (1973), Davidson
 (1967), Krifka (1998), Barwise &amp; Cooper (1981) and Link (1983). Textbook
 companions are original paraphrase — nothing is reproduced from the textbooks.
 Paper companions quote sparingly and with attribution: their notes contain only
@@ -341,7 +346,7 @@ for (const f of ['version.js', 'engine.js', 'lcformat.js']) {
   console.log('  ' + ('pb_hooks/vendor/' + f).padEnd(32) + ' (vendored for goja validation)');
 }
 /* ---- 4c · /files — downloads + human site map (S14.1) ------------------- */
-const CHAPTER_TABLES = { cc: CC_CHAPTERS, hk: HK_CHAPTERS };
+const CHAPTER_TABLES = { cc: CC_CHAPTERS, hk: HK_CHAPTERS, aps: APS_CHAPTERS };
 const wsMeta = (key) => {
   try {
     const obj = JSON.parse(LIB[key].text);
@@ -359,8 +364,9 @@ const filesSection = (label, keys) =>
 const ALL_KEYS = Object.keys(LIB).sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
 const CC_KEYS = pick(CC_CHAPTERS.map(([p2]) => p2));
 const HK_KEYS = pick(HK_CHAPTERS.map(([p2]) => p2));
+const APS_KEYS = pick(APS_CHAPTERS.map(([p2]) => p2));
 const PAPER_KEYS = pick(PAPERS_PREFIXES);
-const OTHER_KEYS = ALL_KEYS.filter((k) => !CC_KEYS.includes(k) && !HK_KEYS.includes(k) && !PAPER_KEYS.includes(k));
+const OTHER_KEYS = ALL_KEYS.filter((k) => !CC_KEYS.includes(k) && !HK_KEYS.includes(k) && !APS_KEYS.includes(k) && !PAPER_KEYS.includes(k));
 
 const filesPage = `<!DOCTYPE html>
 <html lang="en" data-theme="parchment">
@@ -409,17 +415,19 @@ use it as the template for your own set. The format is documented in
 <table class="files-table"><thead><tr><th>File</th><th>Contents</th></tr></thead><tbody>
 <tr><td><a href="/files/coppock-champollion.compose-bundle.json" download>coppock-champollion.compose-bundle.json</a></td><td>All Coppock &amp; Champollion worksheets (§6–§12) in one bundle</td></tr>
 <tr><td><a href="/files/heim-kratzer.compose-bundle.json" download>heim-kratzer.compose-bundle.json</a></td><td>All Heim &amp; Kratzer worksheets in one bundle</td></tr>
+<tr><td><a href="/files/altshuler-parsons-schwarzschild.compose-bundle.json" download>altshuler-parsons-schwarzschild.compose-bundle.json</a></td><td>All Altshuler, Parsons &amp; Schwarzschild worksheets (chapters 3–5) in one bundle</td></tr>
 </tbody></table>
 
 ${filesSection('Coppock &amp; Champollion — <em>Invitation to Formal Semantics</em>', CC_KEYS)}
 ${filesSection('Heim &amp; Kratzer — <em>Semantics in Generative Grammar</em>', HK_KEYS)}
+${filesSection('Altshuler, Parsons &amp; Schwarzschild — <em>A Course in Semantics</em>', APS_KEYS)}
 ${filesSection('Classic papers', PAPER_KEYS)}
 ${OTHER_KEYS.length ? filesSection('Other worksheets', OTHER_KEYS) : ''}
 
 <h2>Site map</h2>
 <ul>
 <li><a href="/">/</a> — the app: sample worksheet, unlock codes, the whole library on demand</li>
-<li><a href="/?code=${CODE_BY_KEY.cc}">Coppock &amp; Champollion in the app</a> (code <code>${CODE_BY_KEY.cc}</code>) · <a href="/?code=${CODE_BY_KEY.hk}">Heim &amp; Kratzer</a> (code <code>${CODE_BY_KEY.hk}</code>) · <a href="/?code=${CODE_BY_KEY.papers}">Classic papers</a> (code <code>${CODE_BY_KEY.papers}</code>)</li>
+<li><a href="/?code=${CODE_BY_KEY.cc}">Coppock &amp; Champollion in the app</a> (code <code>${CODE_BY_KEY.cc}</code>) · <a href="/?code=${CODE_BY_KEY.hk}">Heim &amp; Kratzer</a> (code <code>${CODE_BY_KEY.hk}</code>) · <a href="/?code=${CODE_BY_KEY.aps}">Altshuler, Parsons &amp; Schwarzschild</a> (code <code>${CODE_BY_KEY.aps}</code>) · <a href="/?code=${CODE_BY_KEY.papers}">Classic papers</a> (code <code>${CODE_BY_KEY.papers}</code>)</li>
 <li><a href="/guide/">/guide</a> — instructor guide with screenshots: navigation, authoring, sharing codes, hosting</li>
 <li><a href="/help/">/help</a> — student reference: rules, symbols, grading · <a href="/help/guides/">/help/guides</a> — worked walkthroughs</li>
 <li><a href="/dash/">/dash</a> — instructor dashboard (invite-code registration): host your own versions</li>
@@ -427,7 +435,8 @@ ${OTHER_KEYS.length ? filesSection('Other worksheets', OTHER_KEYS) : ''}
 <li><a href="/files/">/files</a> — this page</li>
 </ul>
 <p>Old bookmarks to /cc, /hk, /papers, their chapter pages and /editor
-redirect into the app and open the same content there.</p>
+redirect into the app and open the same content there, as do /aps and its
+chapter pages.</p>
 
 <p class="about-foot">COMPOSE v${COMPOSE_VERSION} · <a href="/about/">how to cite</a> ·
 <a href="https://github.com/Vrier/compose">source on GitHub</a></p>
@@ -534,7 +543,7 @@ for (const img of fs.readdirSync(path.join('server', 'guide-assets')).filter((f)
 console.log('  pb_public/guide/                    (guide + screenshots)');
 write(path.join('pb_public', 'sitemap.xml'), sitemapXml);
 write(path.join('pb_public', 'robots.txt'), robotsTxt);
-for (const b of ['coppock-champollion', 'heim-kratzer']) {
+for (const b of ['coppock-champollion', 'heim-kratzer', 'altshuler-parsons-schwarzschild']) {
   fs.copyFileSync(path.join(SRC, 'bundles', b + '.compose-bundle.json'), path.join(OUT, 'pb_public', 'files', b + '.compose-bundle.json'));
   console.log('  ' + ('pb_public/files/' + b + '.compose-bundle.json').padEnd(32));
 }

@@ -2,7 +2,8 @@
    COMPOSE — the curated-library table, shared (S43).
 
    Single source of truth for which curated entry points exist (/cc, /hk,
-   /papers + their chapter pages) and which worksheet keys each one carries.
+   /aps, /papers + their chapter pages) and which worksheet keys each one
+   carries.
    Consumed by:
      build/server.mjs             — builds the actual static pages
      scripts/gen-curated-codes.mjs — derives compose/curated-codes.json
@@ -27,6 +28,13 @@ export const HK_CHAPTERS = [
   ['hk9', 'ch. 9 Pronouns'], ['hk12', 'ch. 12 Intensions'],
 ];
 
+/* S86: Altshuler, Parsons & Schwarzschild, A Course in Semantics (2019),
+   chapters 3 to 5, in the book's own idiom (compose/FORMAT.md, "Idioms"). */
+export const APS_CHAPTERS = [
+  ['aps3', 'ch. 3 Sentences and Determiner Phrases'], ['aps4', 'ch. 4 Events and States'],
+  ['aps5', 'ch. 5 Tense and Aspect'],
+];
+
 export const PAPERS_PREFIXES = ['partee', 'montague', 'krifka', 'davidson', 'barwise-cooper', 'link-plurals'];
 
 export const PAPER_PAGES = [
@@ -42,6 +50,7 @@ export const PAPER_PAGES = [
 export const FAMILY_TITLES = {
   cc: 'Coppock & Champollion: Invitation to Formal Semantics',
   hk: 'Heim & Kratzer: Semantics in Generative Grammar',
+  aps: 'Altshuler, Parsons & Schwarzschild: A Course in Semantics',
   papers: 'Classic Papers',
 };
 
@@ -62,6 +71,8 @@ export function curatedTable(allKeys) {
     ...CC_CHAPTERS.map(([pfx, label]) => ({ path: 'cc/' + pfx, island: 'lib-cc', title: 'C&C ' + label, keys: pick([pfx]), prefix: pfx })),
     { path: 'hk', island: 'lib-hk', title: FAMILY_TITLES.hk, keys: pick(HK_CHAPTERS.map(([p]) => p)) },
     ...HK_CHAPTERS.map(([pfx, label]) => ({ path: 'hk/' + pfx.replace('hk', 'ch'), island: 'lib-hk', title: 'H&K ' + label, keys: pick([pfx]), prefix: pfx })),
+    { path: 'aps', island: 'lib-aps', title: FAMILY_TITLES.aps, keys: pick(APS_CHAPTERS.map(([p]) => p)) },
+    ...APS_CHAPTERS.map(([pfx, label]) => ({ path: 'aps/' + pfx.replace('aps', 'ch'), island: 'lib-aps', title: 'Altshuler et al. ' + label, keys: pick([pfx]), prefix: pfx })),
     { path: 'papers', island: 'lib-papers', title: FAMILY_TITLES.papers, keys: pick(PAPERS_PREFIXES) },
     ...PAPER_PAGES.map(([p, title, prefixes]) => ({ path: p, island: 'lib-papers', title, keys: pick(prefixes) })),
   ];

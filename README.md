@@ -25,12 +25,13 @@ class codes; an invite code makes an account an instructor account.
 | [compose.tstephen.com](https://compose.tstephen.com) | the app: demo worksheet, unlock codes, the editor (sidebar → Author), the whole library on demand |
 | [`/?code=KT6WF4`](https://compose.tstephen.com/?code=KT6WF4) | Coppock & Champollion, *Invitation to Formal Semantics* — all worksheets (per-chapter codes in the guide) |
 | [`/?code=CETGZ4`](https://compose.tstephen.com/?code=CETGZ4) | Heim & Kratzer, *Semantics in Generative Grammar* — all worksheets |
+| [`/?code=JEF75G`](https://compose.tstephen.com/?code=JEF75G) | Altshuler, Parsons & Schwarzschild, *A Course in Semantics* — chapters 3–5, in the book's own system of translation into its symbolic logic |
 | [`/?code=QIPYVM`](https://compose.tstephen.com/?code=QIPYVM) | classic papers — Partee 1986, Partee & Rooth 1983, Montague's PTQ (two parts), Davidson 1967, Krifka 1998, Barwise & Cooper 1981, Link 1983 |
 | [/files](https://compose.tstephen.com/files/) | every worksheet + bundle as downloadable .compose.json, plus the site map |
 | [/guide](https://compose.tstephen.com/guide/) | the instructor guide, with screenshots, all the codes, and the notes input reference |
 | [/help](https://compose.tstephen.com/help/) | student help: rules, symbols, grading — plus [/help/guides](https://compose.tstephen.com/help/guides/), worked walkthroughs with videos |
 
-Old-style URLs (`/cc`, `/cc/ch7`, `/hk`, `/papers/...`, `/editor`) survive as
+Old-style URLs (`/cc`, `/cc/ch7`, `/hk`, `/aps`, `/papers/...`, `/editor`) survive as
 redirects into the app. The full catalogue is listed on
 [compose.tstephen.com/about](https://compose.tstephen.com/about/).
 
@@ -73,7 +74,7 @@ built-in library) that run from a double-click with no server at all.
     compose/            the app: engine.js (λ-calculus core), lcformat.js
                         (format/solver), *.jsx UI, lingdown.js (notes renderer:
                         Markdown + LaTeX input — internal filename only),
-                        exercises/ (46 built-in worksheets), reading/, bundles/
+                        exercises/ (50 built-in worksheets), reading/, bundles/
     build/              page assembler + server-artifact builder
     server/             PocketBase: migrations, hooks (serving, validation), pin script
     deploy/             Caddyfile, systemd unit, provision/deploy/backup scripts

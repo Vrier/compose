@@ -99,7 +99,7 @@ export function buildParts(srcDir) {
     const LM = libraryMap(srcDir);
     const allKeys = Object.keys(LM).sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
     const curated = curatedTable(allKeys);
-    const families = ['cc', 'hk', 'papers'].map((fk) => ({
+    const families = ['cc', 'hk', 'aps', 'papers'].map((fk) => ({
       key: fk,
       title: FAMILY_TITLES[fk],
       chapters: curated.filter((e) => e.path.startsWith(fk + '/')).map((e) => {

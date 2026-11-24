@@ -198,15 +198,14 @@ chapter 5 leaves it off, and the event phrase is translated by IndexedDaughter
 and raised.
 
 **The textbook bundle.** `compose/bundles/altshuler-parsons-schwarzschild.compose-bundle.json`
-holds the `aps*` worksheets under the book's chapters 3 to 5. It is generated
+holds the `aps*` worksheets of `compose/exercises/` under the book's chapters
+3 to 5, and is published on the `/files/` page with the other two. It is generated
 by `npm run bundle:aps` (`scripts/make-aps-bundle.mjs`), and `test/idiom.mjs`
 fails when it differs from its sources.
 
-The views do not yet play this idiom (S86 is the engine and the format). The
-bundle loads in the app and every derivation opens, and no step can be taken
-yet: the only rule on offer is Non-branching Node. Until the views follow, the sheets live in
-`test/fixtures/idiom/`, where `test/idiom.mjs` solves them, and the bundle is
-left out of the `/files/` page.
+The views do not yet play this idiom (S86 is the engine and the format). An
+aps worksheet loads in the app and every derivation opens, and no step can be
+taken yet: the only rule on offer is Non-branching Node.
 
 ---
 

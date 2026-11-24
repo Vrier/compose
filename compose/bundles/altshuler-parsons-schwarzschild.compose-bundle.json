@@ -21,11 +21,11 @@
   ],
   "exercises": [
     {
-      "key": "aps3-quantifiers",
+      "key": "aps3.2-quantifiers",
       "title": "Translation and Quantificational Determiner Phrases (§3.2–3.3)",
       "content": {
         "compose": 1,
-        "id": "aps3-quantifiers",
+        "id": "aps3.2-quantifiers",
         "idiom": "aps",
         "title": "Translation and Quantificational Determiner Phrases (§3.2–3.3)",
         "subtitle": "Altshuler, Parsons & Schwarzschild: Lexicon, Merge, IndexedDaughter and the Wellformedness Filter, with each LF given",
@@ -379,11 +379,11 @@
       }
     },
     {
-      "key": "aps3-modifiers",
+      "key": "aps3.4-modifiers",
       "title": "Modifiers, Relative Clauses, Coordination and Pronouns (§3.4–3.7)",
       "content": {
         "compose": 1,
-        "id": "aps3-modifiers",
+        "id": "aps3.4-modifiers",
         "idiom": "aps",
         "title": "Modifiers, Relative Clauses, Coordination and Pronouns (§3.4–3.7)",
         "subtitle": "Altshuler, Parsons & Schwarzschild: PredCon, RelPro, Conjunction and Pronoun, with each structure given",
@@ -684,11 +684,11 @@
       }
     },
     {
-      "key": "aps4-events",
+      "key": "aps4.1-events",
       "title": "Events and Thematic Roles (§4.1–4.2, §4.6)",
       "content": {
         "compose": 1,
-        "id": "aps4-events",
+        "id": "aps4.1-events",
         "idiom": "aps",
         "title": "Events and Thematic Roles (§4.1–4.2, §4.6)",
         "subtitle": "Altshuler, Parsons & Schwarzschild: thematic roles, the event phrase and EvExist, with each structure given",
@@ -868,11 +868,11 @@
       }
     },
     {
-      "key": "aps5-tense",
+      "key": "aps5.1-tense",
       "title": "Tense and Aspect (§5.1–5.3)",
       "content": {
         "compose": 1,
-        "id": "aps5-tense",
+        "id": "aps5.1-tense",
         "idiom": "aps",
         "title": "Tense and Aspect (§5.1–5.3)",
         "subtitle": "Altshuler, Parsons & Schwarzschild: tense, the progressive and the perfect, with each structure given",

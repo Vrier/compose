@@ -26,6 +26,9 @@
     { prefix: 'hk7',  label: '§7',  title: 'Quantification', family: 'hk' },
     { prefix: 'hk9',  label: '§9',  title: 'Pronouns', family: 'hk' },
     { prefix: 'hk12', label: '§12', title: 'Intensions', family: 'hk' },
+    { prefix: 'aps3', label: '§3', title: 'Sentences and Determiner Phrases', family: 'aps' },
+    { prefix: 'aps4', label: '§4', title: 'Events and States', family: 'aps' },
+    { prefix: 'aps5', label: '§5', title: 'Tense and Aspect', family: 'aps' },
   ];
   // Hosted versions (W3): the serving route can append picker chapters for
   // instructor worksheets whose keys match no built-in prefix — without this

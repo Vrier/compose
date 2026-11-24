@@ -1201,7 +1201,7 @@ function App() {
   const [recents, setRecents] = useState(() => load('lc2-recents', []));
   const [navQuery, setNavQuery] = useState('');
   const [openColl, setOpenColl] = useState(null);
-  const [openFam, setOpenFam] = useState(null); // S53: which textbook family (cc|hk) is expanded
+  const [openFam, setOpenFam] = useState(null); // S53: which textbook family (cc|hk|aps) is expanded
   const searchRef = useRef(null);
   useEffect(() => { save('lc2-rail', railCollapsed); }, [railCollapsed]);
   useEffect(() => { save('lc2-nav-section', navSection); }, [navSection]);
@@ -2440,10 +2440,10 @@ function App() {
                         </div>
                       );
                     };
-                    // S53: chapter collections in a textbook family (cc, hk) nest
+                    // S53: chapter collections in a textbook family (cc, hk, aps) nest
                     // under one family dropdown; the loose demo, Classic papers,
                     // bundles and My worksheets stay top-level.
-                    const FAMS = { cc: 'Coppock & Champollion', hk: 'Heim & Kratzer' };
+                    const FAMS = { cc: 'Coppock & Champollion', hk: 'Heim & Kratzer', aps: 'Altshuler, Parsons & Schwarzschild' };
                     const activeFam = activeCol ? activeCol.family : null;
                     const out = []; const seenFam = {};
                     cols.forEach((c) => {
@@ -2575,7 +2575,7 @@ function App() {
                           IN-APP (adding it to Unlocked) — the /cc /hk /papers
                           pages are redirect stubs now */}
                       <div className="sb-kicker">Full library</div>
-                      {[['cc', 'Coppock & Champollion'], ['hk', 'Heim & Kratzer'], ['papers', 'Classic papers']].map(([fk, label]) => {
+                      {[['cc', 'Coppock & Champollion'], ['hk', 'Heim & Kratzer'], ['aps', 'Altshuler, Parsons & Schwarzschild'], ['papers', 'Classic papers']].map(([fk, label]) => {
                         const fe = composeCuratedByKey(fk);
                         return (
                           <div className="sb-row-split" key={fk}>
@@ -3568,7 +3568,7 @@ function App() {
               {/* S59: instructor Full-library rows — same gating and glyphs
                   as the desktop sidebar block (tap = load in-app, ⌗ = code) */}
               {mbKicker('📖', 'Full library')}
-              {[['cc', 'Coppock & Champollion'], ['hk', 'Heim & Kratzer'], ['papers', 'Classic papers']].map(([fk, label]) => {
+              {[['cc', 'Coppock & Champollion'], ['hk', 'Heim & Kratzer'], ['aps', 'Altshuler, Parsons & Schwarzschild'], ['papers', 'Classic papers']].map(([fk, label]) => {
                 const fe = composeCuratedByKey(fk);
                 return (
                   <div className="mb-row-split" key={'lib:' + fk}>
@@ -3782,7 +3782,7 @@ function App() {
     const cols = mbCollections();
     const activeCol = cols.find((c) => c.items.some((l) => !custom && l.key === fileKey));
     const openId = openColl != null ? openColl : (activeCol ? activeCol.id : (cols[0] && cols[0].id));
-    const FAMS = { cc: 'Coppock & Champollion', hk: 'Heim & Kratzer' };
+    const FAMS = { cc: 'Coppock & Champollion', hk: 'Heim & Kratzer', aps: 'Altshuler, Parsons & Schwarzschild' };
     const activeFam = activeCol ? activeCol.family : null;
     const renderColl = (c) => (
       <div key={c.id}>

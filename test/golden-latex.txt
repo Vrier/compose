@@ -1,3 +1,124 @@
+aps3.2-quantifiers | i-d1 | \mathit{Sang}(\mathit{Bruce})
+aps3.2-quantifiers | i-d1 | F | % ============================================================
+aps3.2-quantifiers | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com
+aps3.2-quantifiers | i-d1 | F | % Requires in your document preamble:
+aps3.2-quantifiers | i-d1 | F | %   \usepackage{forest}
+aps3.2-quantifiers | i-d1 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+aps3.2-quantifiers | i-d1 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+aps3.2-quantifiers | i-d1 | F | % ============================================================
+aps3.2-quantifiers | i-d1 | F | % "Bruce sang."
+aps3.2-quantifiers | i-d1 | F | \begin{forest}
+aps3.2-quantifiers | i-d1 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+aps3.2-quantifiers | i-d1 | F |   [{\cnode{VP} \\ {$\mathit{Sang}(\mathit{Bruce})$} \\ {\footnotesize $t$} \\ \crule{Merge}}
+aps3.2-quantifiers | i-d1 | F |     [{\textit{Bruce} \\ {$\mathit{Bruce}$} \\ {\footnotesize $e$}}]
+aps3.2-quantifiers | i-d1 | F |     [{\textit{sang} \\ {$\mathit{Sang}$} \\ {\footnotesize $\langle e,t\rangle$}}]
+aps3.2-quantifiers | i-d1 | F |   ]
+aps3.2-quantifiers | i-d1 | F | \end{forest}
+aps3.2-quantifiers | i-d1 | F | 
+aps3.2-quantifiers | i-d2 | \mathit{Visited}(\mathit{Jill})(\mathit{Jack})
+aps3.2-quantifiers | i-d3 | \mathit{Visited}(\mathit{Jack})(\mathit{Jill})
+aps3.2-quantifiers | i-d1 | [\mathrm{No}\,x\colon \mathit{Computer}(x)](\mathit{Crashed}(x))
+aps3.2-quantifiers | i-d2 | [\exists x\colon \mathit{Bottle}(x)](\mathit{Fell}(x))
+aps3.2-quantifiers | i-d3 | [\forall x\colon \mathit{Dish}(x)](\mathit{Liked}(x)(\mathit{Jack}))
+aps3.2-quantifiers | i-d4 | [\mathrm{The}\,x\colon \mathit{Bottle}(x)](\mathit{Opened}(x)(\mathit{Henry}))
+aps3.2-quantifiers | i-d1 | [\exists y\colon \mathit{Person}(y)]([\forall x\colon \mathit{Dish}(x)](\mathit{Liked}(x)(y)))
+aps3.2-quantifiers | i-d2 | [\forall x\colon \mathit{Dish}(x)]([\exists y\colon \mathit{Person}(y)](\mathit{Liked}(x)(y)))
+aps3.2-quantifiers | i-d1 | \lnot (\mathit{Sing}(\mathit{Jack}))
+aps3.2-quantifiers | i-d2 | \lnot ([\forall x\colon \mathit{Character}(x)](\mathit{Survived}(x)))
+aps3.2-quantifiers | i-d3 | [\forall x\colon \mathit{Character}(x)](\lnot (\mathit{Survived}(x)))
+aps3.2-quantifiers | i-d1 | UNSOLVED
+aps3.4-modifiers | i-d1 | (\mathit{Sang} \sqcap \mathit{Quiet})(\mathit{Jack})
+aps3.4-modifiers | i-d1 | F | % ============================================================
+aps3.4-modifiers | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com
+aps3.4-modifiers | i-d1 | F | % Requires in your document preamble:
+aps3.4-modifiers | i-d1 | F | %   \usepackage{forest}
+aps3.4-modifiers | i-d1 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+aps3.4-modifiers | i-d1 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+aps3.4-modifiers | i-d1 | F | % ============================================================
+aps3.4-modifiers | i-d1 | F | % "Jack sang quietly."
+aps3.4-modifiers | i-d1 | F | \begin{forest}
+aps3.4-modifiers | i-d1 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+aps3.4-modifiers | i-d1 | F |   [{\cnode{VP} \\ {$(\mathit{Sang} \sqcap \mathit{Quiet})(\mathit{Jack})$} \\ {\footnotesize $t$} \\ \crule{Merge}}
+aps3.4-modifiers | i-d1 | F |     [{\textit{Jack} \\ {$\mathit{Jack}$} \\ {\footnotesize $e$}}]
+aps3.4-modifiers | i-d1 | F |     [{\cnode{V\ensuremath{'}} \\ {$(\mathit{Sang} \sqcap \mathit{Quiet})$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PredCon}}
+aps3.4-modifiers | i-d1 | F |       [{\textit{sang} \\ {$\mathit{Sang}$} \\ {\footnotesize $\langle e,t\rangle$}}]
+aps3.4-modifiers | i-d1 | F |       [{\textit{quietly} \\ {$\mathit{Quiet}$} \\ {\footnotesize $\langle e,t\rangle$}}]
+aps3.4-modifiers | i-d1 | F |     ]
+aps3.4-modifiers | i-d1 | F |   ]
+aps3.4-modifiers | i-d1 | F | \end{forest}
+aps3.4-modifiers | i-d1 | F | 
+aps3.4-modifiers | i-d2 | [\exists x\colon (\mathit{Wedding} \sqcap \mathit{In}(\mathit{Boston}))(x)](\mathit{Discussed}(x)(\mathit{Jack}))
+aps3.4-modifiers | i-d1 | [\forall z\colon (\mathit{Actor} \sqcap \lambda x.\mathit{Likes}(x)(\mathit{Sue}))(z)](\mathit{Met}(z)(\mathit{Jack}))
+aps3.4-modifiers | i-d1 | (\mathit{Sings}(\mathit{Maria}) \mathbin{\&} \mathit{Dances}(\mathit{Fred}))
+aps3.4-modifiers | i-d1 | [\mathrm{No}\,x\colon \mathit{Girl}(x)]([\exists y\colon (\mathit{Story} \sqcap \mathit{About}(x))(y)](\mathit{Submitted}(y)(x)))
+aps3.4-modifiers | i-d2 | \mathit{Smiled}(y)
+aps3.4-modifiers | i-d1 | UNSOLVED
+aps4.1-events | i-d1 | [\exists e\colon \mathit{Event}(e)]((\mathit{Agent}(\mathit{Jill}) \sqcap (\mathit{Called} \sqcap \mathit{Patient}(\mathit{Jack})))(e))
+aps4.1-events | i-d1 | F | % ============================================================
+aps4.1-events | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com
+aps4.1-events | i-d1 | F | % Requires in your document preamble:
+aps4.1-events | i-d1 | F | %   \usepackage{forest}
+aps4.1-events | i-d1 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+aps4.1-events | i-d1 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+aps4.1-events | i-d1 | F | % ============================================================
+aps4.1-events | i-d1 | F | % "Jill called Jack."
+aps4.1-events | i-d1 | F | \begin{forest}
+aps4.1-events | i-d1 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+aps4.1-events | i-d1 | F |   [{\cnode{EP} \\ {$[\exists e\colon \mathit{Event}(e)]((\mathit{Agent}(\mathit{Jill}) \sqcap (\mathit{Called} \sqcap \mathit{Patient}(\mathit{Jack})))(e))$} \\ {\footnotesize $t$} \\ \crule{EvExist}}
+aps4.1-events | i-d1 | F |     [{\textit{\ensuremath{\exists}\_e} \\ {$\exists$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle$}}]
+aps4.1-events | i-d1 | F |     [{\cnode{VP} \\ {$(\mathit{Agent}(\mathit{Jill}) \sqcap (\mathit{Called} \sqcap \mathit{Patient}(\mathit{Jack})))$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PredCon}}
+aps4.1-events | i-d1 | F |       [{\cnode{\ensuremath{\theta}P} \\ {$\mathit{Agent}(\mathit{Jill})$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{Merge}}
+aps4.1-events | i-d1 | F |         [{\textit{Agent} \\ {$\mathit{Agent}$} \\ {\footnotesize $\langle e,\langle e,t\rangle\rangle$}}]
+aps4.1-events | i-d1 | F |         [{\textit{Jill} \\ {$\mathit{Jill}$} \\ {\footnotesize $e$}}]
+aps4.1-events | i-d1 | F |       ]
+aps4.1-events | i-d1 | F |       [{\cnode{V\ensuremath{'}} \\ {$(\mathit{Called} \sqcap \mathit{Patient}(\mathit{Jack}))$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PredCon}}
+aps4.1-events | i-d1 | F |         [{\textit{called} \\ {$\mathit{Called}$} \\ {\footnotesize $\langle e,t\rangle$}}]
+aps4.1-events | i-d1 | F |         [{\cnode{\ensuremath{\theta}P} \\ {$\mathit{Patient}(\mathit{Jack})$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{Merge}}
+aps4.1-events | i-d1 | F |           [{\textit{Patient} \\ {$\mathit{Patient}$} \\ {\footnotesize $\langle e,\langle e,t\rangle\rangle$}}]
+aps4.1-events | i-d1 | F |           [{\textit{Jack} \\ {$\mathit{Jack}$} \\ {\footnotesize $e$}}]
+aps4.1-events | i-d1 | F |         ]
+aps4.1-events | i-d1 | F |       ]
+aps4.1-events | i-d1 | F |     ]
+aps4.1-events | i-d1 | F |   ]
+aps4.1-events | i-d1 | F | \end{forest}
+aps4.1-events | i-d1 | F | 
+aps4.1-events | i-d1 | [\exists x\colon \mathit{Wedding}(x)]([\exists e\colon \mathit{Event}(e)]((\mathit{Agent}(\mathit{Jack}) \sqcap ((\mathit{Discussed} \sqcap \mathit{Patient}(x)) \sqcap \mathit{In}(\mathit{Boston})))(e)))
+aps4.1-events | i-d1 | [\forall x\colon \mathit{Tourist}(x)]([\exists e\colon \mathit{Event}(e)]((\mathit{Agent}(x) \sqcap \mathit{Smiled})(e)))
+aps4.1-events | i-d2 | UNSOLVED
+aps5.1-tense | i-d1 | UNSOLVED
+aps5.1-tense | i-d2 | [\exists e\colon (\mathit{Patient}(\mathit{Jack}) \sqcap \mathit{Fall})(e)](\mathit{Past}(e))
+aps5.1-tense | i-d2 | F | % ============================================================
+aps5.1-tense | i-d2 | F | % COMPOSE derivation export — compose.tstephen.com
+aps5.1-tense | i-d2 | F | % Requires in your document preamble:
+aps5.1-tense | i-d2 | F | %   \usepackage{forest}
+aps5.1-tense | i-d2 | F | %   \newcommand{\cnode}[1]{{\sffamily #1}}          % category label
+aps5.1-tense | i-d2 | F | %   \newcommand{\crule}[1]{{\tiny\sffamily [#1]}}  % composition rule tag
+aps5.1-tense | i-d2 | F | % ============================================================
+aps5.1-tense | i-d2 | F | % "Jack fell."
+aps5.1-tense | i-d2 | F | \begin{forest}
+aps5.1-tense | i-d2 | F |   for tree={align=center, l sep=26pt, s sep=22pt, inner sep=2pt}
+aps5.1-tense | i-d2 | F |   [{\cnode{TP} \\ {$[\exists e\colon (\mathit{Patient}(\mathit{Jack}) \sqcap \mathit{Fall})(e)](\mathit{Past}(e))$} \\ {\footnotesize $t$} \\ \crule{Merge}}
+aps5.1-tense | i-d2 | F |     [{\cnode{EP} \\ {$[\exists e\colon (\mathit{Patient}(\mathit{Jack}) \sqcap \mathit{Fall})(e)]$} \\ {\footnotesize $\langle \langle e,t\rangle,t\rangle$} \\ \crule{IndexedDaughter}}
+aps5.1-tense | i-d2 | F |       [{\textit{\ensuremath{\exists}\_e} \\ {$\exists$} \\ {\footnotesize $\langle \langle e,t\rangle,\langle \langle e,t\rangle,t\rangle\rangle$}}]
+aps5.1-tense | i-d2 | F |       [{\cnode{VP} \\ {$(\mathit{Patient}(\mathit{Jack}) \sqcap \mathit{Fall})$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{PredCon}}
+aps5.1-tense | i-d2 | F |         [{\cnode{\ensuremath{\theta}P} \\ {$\mathit{Patient}(\mathit{Jack})$} \\ {\footnotesize $\langle e,t\rangle$} \\ \crule{Merge}}
+aps5.1-tense | i-d2 | F |           [{\textit{Patient} \\ {$\mathit{Patient}$} \\ {\footnotesize $\langle e,\langle e,t\rangle\rangle$}}]
+aps5.1-tense | i-d2 | F |           [{\textit{Jack} \\ {$\mathit{Jack}$} \\ {\footnotesize $e$}}]
+aps5.1-tense | i-d2 | F |         ]
+aps5.1-tense | i-d2 | F |         [{\textit{fell} \\ {$\mathit{Fall}$} \\ {\footnotesize $\langle e,t\rangle$}}]
+aps5.1-tense | i-d2 | F |       ]
+aps5.1-tense | i-d2 | F |     ]
+aps5.1-tense | i-d2 | F |     [{\cnode{TP} \\ {$\mathit{Past}(e)$} \\ {\footnotesize $t$} \\ \crule{Merge}}
+aps5.1-tense | i-d2 | F |       [{\textit{Past} \\ {$\mathit{Past}$} \\ {\footnotesize $\langle e,t\rangle$}}]
+aps5.1-tense | i-d2 | F |       [{\textit{e} \\ {$e$} \\ {\footnotesize $e$}}]
+aps5.1-tense | i-d2 | F |     ]
+aps5.1-tense | i-d2 | F |   ]
+aps5.1-tense | i-d2 | F | \end{forest}
+aps5.1-tense | i-d2 | F | 
+aps5.1-tense | i-d1 | [\exists e\colon (\mathit{Patient}(\mathit{Jack}) \sqcap \mathit{Fall})(e)]([\exists s\colon \mathit{InProgress}(e)(s)](\mathit{Past}(s)))
+aps5.1-tense | i-d1 | [\exists e\colon (\mathit{Agent}(\mathit{Jack}) \sqcap \mathit{Speak})(e)]([\exists s\colon \mathit{Completed}(e)(s)](\mathit{Pres}(s)))
+aps5.1-tense | i-d1 | UNSOLVED
+aps5.1-tense | i-d2 | [\mathrm{No}\,e\colon (\mathit{Patient}(\mathit{Jack}) \sqcap \mathit{Fall})(e)](\mathit{Past}(e))
 barwise-cooper | i-d1 | \forall x.\mathit{man}(x) \rightarrow \mathit{walk}(x)
 barwise-cooper | i-d1 | F | % ============================================================
 barwise-cooper | i-d1 | F | % COMPOSE derivation export — compose.tstephen.com

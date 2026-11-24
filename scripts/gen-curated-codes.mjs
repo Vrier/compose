@@ -13,8 +13,8 @@
    byte-for-byte — test/server.mjs asserts exactly that.
 
    Keys: every compose/exercises/*.compose.json worksheet, every curated
-   chapter page (from build/curated-map.mjs, e.g. cc/ch6), and the three
-   families cc / hk / papers.
+   chapter page (from build/curated-map.mjs, e.g. cc/ch6), and the four
+   families cc / hk / aps / papers (aps since S86).
 
    The app embeds the registry at build time (window.COMPOSE_CURATED,
    build/assemble.mjs) and checks it BEFORE the server redeem API — curated

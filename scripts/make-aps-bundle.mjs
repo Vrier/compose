@@ -5,10 +5,8 @@
 
    Companion to make-cc-bundle.mjs and make-hk-bundle.mjs; same bundle format
    (inline `content`). Added S86. The sheets are written in the aps idiom
-   (compose/FORMAT.md, "Idioms"). Until the views play that idiom they live in
-   test/fixtures/idiom/, where test/idiom.mjs solves them, and stay out of
-   compose/exercises/ and of the built-in library; when they move, change SRCDIR.
-   test/idiom.mjs fails when this bundle and its sources differ.
+   (compose/FORMAT.md, "Idioms") and live in compose/exercises/ with the rest
+   of the library. test/idiom.mjs fails when this bundle and its sources differ.
 
      node scripts/make-aps-bundle.mjs --check    exit 1 if the bundle is stale */
 import fs from 'node:fs';
@@ -16,7 +14,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
-const SRCDIR = path.join(ROOT, 'test', 'fixtures', 'idiom');
+const SRCDIR = path.join(ROOT, 'compose', 'exercises');
 const OUTDIR = path.join(ROOT, 'compose', 'bundles');
 const NAME = 'altshuler-parsons-schwarzschild.compose-bundle.json';
 const OUT = path.join(OUTDIR, NAME);
@@ -31,7 +29,7 @@ const CHAPTERS = [
 
 /* Book order. Every aps* sheet in SRCDIR has to be listed here and fall under
    exactly one chapter, so a new sheet cannot be left out without an error. */
-const ORDER = ['aps3-quantifiers', 'aps3-modifiers', 'aps4-events', 'aps5-tense'];
+const ORDER = ['aps3.2-quantifiers', 'aps3.4-modifiers', 'aps4.1-events', 'aps5.1-tense'];
 
 const inChapter = (key, c) => key === c.prefix || key.startsWith(c.prefix + '.') || key.startsWith(c.prefix + '-');
 const onDisk = fs.readdirSync(SRCDIR).filter((f) => /^aps.*\.compose\.json$/.test(f)).map((f) => f.replace('.compose.json', '')).sort();

@@ -2,8 +2,8 @@
    COMPOSE — idiom suite (S86)
    The "aps" idiom composes LF trees by the rules of translation of Altshuler,
    Parsons & Schwarzschild, A Course in Semantics (2019), into the symbolic
-   logic SL. This suite loads the real engine and checks, over the worksheets
-   in test/fixtures/idiom/:
+   logic SL. This suite loads the real engine and checks, over every worksheet
+   in compose/exercises/ that declares "idiom": "aps":
 
      A. SOLVE — every derivation with a target reaches it, and prints it in the
         book's notation character for character; a derivation without a target
@@ -26,7 +26,9 @@ import { fileURLToPath } from 'node:url';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const SRC = path.join(HERE, '..', 'compose');
-const DIR = path.join(HERE, 'fixtures', 'idiom');
+const DIR = path.join(SRC, 'exercises');
+// Every library worksheet in the aps idiom, and only those.
+const isAps = (file) => { try { return JSON.parse(fs.readFileSync(path.join(DIR, file), 'utf8')).idiom === 'aps'; } catch (e) { return false; } };
 const GOLDEN = path.join(HERE, 'golden-idiom.txt');
 const UPDATE = process.argv.includes('--update');
 
@@ -86,11 +88,11 @@ function toDefaultIdiom(root, sol, set) {
   return { tree, root: dsol[droot.id] || null, rename };
 }
 
-/* ---- A–C: the fixture worksheets ------------------------------------------ */
+/* ---- A–C: the aps worksheets ---------------------------------------------- */
 const lines = [];
 let solved = 0, blocked = 0, typedSteps = 0, plainSteps = 0;
 const sets = {};
-for (const file of fs.readdirSync(DIR).filter((f) => f.endsWith('.compose.json')).sort()) {
+for (const file of fs.readdirSync(DIR).filter((f) => f.endsWith('.compose.json') && isAps(f)).sort()) {
   const key = file.replace('.compose.json', '');
   const { set, diagnostics } = F.parseFile(fs.readFileSync(path.join(DIR, file), 'utf8'), key, { collect: true });
   const errs = (diagnostics || []).filter((x) => x.level === 'error');
@@ -151,7 +153,7 @@ for (const file of fs.readdirSync(DIR).filter((f) => f.endsWith('.compose.json')
     }
   }
 }
-ok(solved >= 25 && blocked >= 5, 'fixture coverage: ' + solved + ' solved, ' + blocked + ' blocked');
+ok(solved >= 25 && blocked >= 5, 'coverage: ' + solved + ' solved, ' + blocked + ' blocked');
 
 /* ---- D. matching across notations ----------------------------------------- */
 const same = (a, b) => E.equivACη(readSL(a), readSL(b));
@@ -188,7 +190,7 @@ ok(F.splitTarget('every > some (inverse): ∀x.P(x)', 'cc').formula === '∀x.P(
 
 /* ---- D. Quantifier Raising in the book's form ------------------------------- */
 {
-  const set = sets['aps3-quantifiers'];
+  const set = sets['aps3.2-quantifiers'];
   const base = F.parseTree('[.VP [.DP some_y person ] [.V′ liked [.DP every_x dish ] ] ]');
   const find = (t, w) => { let hit = null; (function f(n) { if ((n.children || []).some((c) => c.word === w)) hit = n; (n.children || []).forEach(f); })(t); return hit; };
   const subj = find(base, 'some_y'), obj = find(base, 'every_x'), vbar = find(base, 'liked');
@@ -228,7 +230,7 @@ ok(F.splitTarget('every > some (inverse): ∀x.P(x)', 'cc').formula === '∀x.P(
 {
   const cfg = F.rulesToConfig({ composition: { predicateModification: true } }, '');
   ok(cfg.idiom === undefined && cfg.merge === undefined && cfg.fa === true && cfg.pm === true, 'a default-idiom config has no idiom keys');
-  const aps = sets['aps3-quantifiers'].config;
+  const aps = sets['aps3.2-quantifiers'].config;
   ok(aps.idiom === 'aps' && aps.fa === false && aps.pm === false && aps.pa === false && aps.merge === true && aps.idx === true && aps.predcon === false && aps.evex === false, 'the aps config switches the default rules off');
   // candidateRulesFor delegates to candidateRules for every node of an existing worksheet
   let same2 = true, nodes = 0;
@@ -255,7 +257,7 @@ ok(F.splitTarget('every > some (inverse): ∀x.P(x)', 'cc').formula === '∀x.P(
 
 /* ---- E. the textbook bundle --------------------------------------------------- */
 // compose/bundles/altshuler-parsons-schwarzschild.compose-bundle.json is generated
-// from the fixtures by scripts/make-aps-bundle.mjs. It has to hold every fixture,
+// from the aps worksheets by scripts/make-aps-bundle.mjs. It has to hold every one,
 // byte for byte, in book order, each under one chapter, and each has to load from
 // the bundle as it loads from its own file.
 {
@@ -265,7 +267,7 @@ ok(F.splitTarget('every > some (inverse): ∀x.P(x)', 'cc').formula === '∀x.P(
     const b = JSON.parse(fs.readFileSync(BUNDLE, 'utf8'));
     const list = b.worksheets || b.exercises || [];
     ok(b.compose_bundle === 1 && /Altshuler/.test(b.title) && Array.isArray(b.chapters) && b.chapters.length === 3, 'bundle header');
-    ok(list.map((w) => w.key).slice().sort().join(' ') === Object.keys(sets).sort().join(' '), 'the bundle holds every fixture and nothing else: ' + list.map((w) => w.key).join(' '));
+    ok(list.map((w) => w.key).slice().sort().join(' ') === Object.keys(sets).sort().join(' '), 'the bundle holds every aps worksheet and nothing else: ' + list.map((w) => w.key).join(' '));
     const chapterOf = (k) => b.chapters.findIndex((c) => k === c.prefix || k.startsWith(c.prefix + '.') || k.startsWith(c.prefix + '-'));
     ok(list.every((w) => b.chapters.filter((c) => w.key === c.prefix || w.key.startsWith(c.prefix + '.') || w.key.startsWith(c.prefix + '-')).length === 1), 'each worksheet falls under exactly one chapter');
     ok(list.every((w, i) => i === 0 || chapterOf(w.key) >= chapterOf(list[i - 1].key)), 'the worksheets follow the order of the chapters');

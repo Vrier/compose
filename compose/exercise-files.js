@@ -51,7 +51,11 @@
     'hk9-pronouns',
     'hk12-intensions',
     'hk5-relatives',
-    'hk4-definites'
+    'hk4-definites',
+    'aps3.2-quantifiers',
+    'aps3.4-modifiers',
+    'aps4.1-events',
+    'aps5.1-tense'
   ];
   window.LC_ORDER = ORDER;
 
