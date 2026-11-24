@@ -34,7 +34,7 @@ function RulesContent({ allowed, setAllowed, toggleRule, toggleShift, readOnly }
         ))}
         <div className="rsv-rule-card">
           <div className="rsv-rule-hdr"><span className="rsv-name">Wellformedness Filter</span></div>
-          <div className="rsv-rule-desc">A translation that is not an expression of SL is discarded. A rule the filter refuses is marked in red with the reason.</div>
+          <div className="rsv-rule-desc">A potential translation is a translation only if it is a well-formed expression of SL (3). A rule the filter refuses is marked in red with the reason.</div>
         </div>
       </div>
     );

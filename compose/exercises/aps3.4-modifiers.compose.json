@@ -11,8 +11,8 @@
     "multiLetterNames": true,
     "constants": {
       "e": "Jack Sue Maria Fred Boston",
-      "<e,t>": "Wedding Sang Quiet Actor Sings Dances Girl Story Smiled",
-      "<e,<e,t>>": "Discussed In Likes Met About Submitted"
+      "<e,t>": "Wedding Sang Quiet Actor Sings Dances Musician Smiled",
+      "<e,<e,t>>": "Discussed In Likes Met Nominated"
     },
     "variables": {
       "e": "x y z"
@@ -87,15 +87,9 @@
     },
     {
       "words": [
-        "girl"
+        "musician"
       ],
-      "denotation": "Girl"
-    },
-    {
-      "words": [
-        "story"
-      ],
-      "denotation": "Story"
+      "denotation": "Musician"
     },
     {
       "words": [
@@ -129,15 +123,9 @@
     },
     {
       "words": [
-        "about"
+        "nominated"
       ],
-      "denotation": "About"
-    },
-    {
-      "words": [
-        "submitted"
-      ],
-      "denotation": "Submitted"
+      "denotation": "Nominated"
     },
     {
       "words": [
@@ -151,12 +139,6 @@
         "a"
       ],
       "denotation": "∃"
-    },
-    {
-      "words": [
-        "no"
-      ],
-      "denotation": "No"
     },
     {
       "words": [
@@ -256,14 +238,14 @@
     {
       "id": "D",
       "title": "D. Pronouns (§3.7)",
-      "instructions": "Pronoun translates a pronoun indexed u as u. In the first tree herself has the index of the raised phrase no girl, and the quantifier binds it. In the second tree no quantifier binds y. The variable stays free in the translation, and the context lexicon gives its value (§3.7.2).",
+      "instructions": "Pronoun translates a pronoun indexed u as u (71). In the first tree herself has the index of the raised phrase every musician, and the quantifier binds it (figure 3.44). In the second tree no quantifier binds y (figure 3.45). The variable stays free in the translation, and the context lexicon gives its value (§3.7.2).",
       "derivations": [
         {
           "id": "d1",
-          "sentence": "No girl submitted a story about herself.",
-          "tree": "[.VP [.DP no_x girl ] [.VP [.DP a_y [.NP story [.PP about herself_x ] ] ] [.VP x [.V′ submitted y ] ] ] ]",
+          "sentence": "Every musician nominated herself.",
+          "tree": "[.VP [.DP every_y musician ] [.VP y [.V′ nominated herself_y ] ] ]",
           "targets": [
-            "[No x: Girl(x)]([∃y: (Story ⊓ About(x))(y)](Submitted(y)(x)))"
+            "[∀y: Musician(y)](Nominated(y)(y))"
           ],
           "reading": {
             "section": "3.7"
