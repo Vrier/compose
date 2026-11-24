@@ -346,6 +346,8 @@ Suites: regression 3730+331, schema 46+2, latex 1657, notes 124, server 219; che
 
 - **2026-11-24 — S84 (Caddy: the personal site's 404 page; one commit).** OWNER ASK, from a review of www.tstephen.com: missing pages there came back as an empty 404. Vrier/Vrier.github.io now has a `404.html` (its 7fccda5), and `deploy/Caddyfile`'s `www.tstephen.com` block gains `handle_errors` (`rewrite * /404.html`, `file_server`, which keeps the 404 status). No other block changed. `npm test` green before and after (the server suite skips without `server/pocketbase`). Like every Caddyfile change it takes effect only once `deploy/apply-caddyfile.sh` is run from the console (DEPLOY.md, Caddy caveat); the owner runs it.
 
+- **2026-11-24 — S85 (Caddy: headers for www and slides, and the slides 404 page; one commit).** OWNER ASK, from a second review of www.tstephen.com. `deploy/Caddyfile`: `www.tstephen.com` gains the S47 header set (HSTS ~6 months without includeSubDomains, nosniff, X-Frame-Options SAMEORIGIN; its only frame is its own `compose/demo.html`); `slides.tstephen.com` gains HSTS and nosniff, deliberately without X-Frame-Options in case slides are embedded elsewhere (e.g. Blackboard), and `handle_errors` serving that repo's new `404.html`. No other block changed. `npm test` green before and after (server suite skipped, no `server/pocketbase`). Takes effect, with S84, when the owner runs `deploy/apply-caddyfile.sh`.
+
 ## 9. Decisions that must be made by the project owner (not by agents)
 
 1. **Domain name** — **DECIDED (2026-07-09): `tstephen.com`, registered at Porkbun; COMPOSE at `compose.tstephen.com`; Hetzner VPS 167.233.233.109 (Ubuntu 24.04); both A records verified resolving.** Deploy artifacts written in S7 use these values.

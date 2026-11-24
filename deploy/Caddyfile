@@ -17,6 +17,12 @@ tstephen.com {
 }
 
 www.tstephen.com {
+	# Security headers as for compose.tstephen.com below (S85).
+	header {
+		Strict-Transport-Security "max-age=15768000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+	}
 	root * /srv/www
 	file_server {
 		hide .git .github
@@ -33,11 +39,22 @@ www.tstephen.com {
 # Teaching slides — static clone of github.com/Vrier/slides at /srv/slides
 # (that repo's Actions workflow resets it to main on every green push).
 slides.tstephen.com {
+	# HSTS and nosniff (S85). No X-Frame-Options: the pages may be embedded
+	# elsewhere (e.g. in Blackboard), which SAMEORIGIN would block.
+	header {
+		Strict-Transport-Security "max-age=15768000"
+		X-Content-Type-Options "nosniff"
+	}
 	root * /srv/slides
 	file_server {
 		hide .git .github
 	}
 	encode gzip
+	# Missing pages get that repo's 404.html (S85); file_server keeps the 404 status.
+	handle_errors {
+		rewrite * /404.html
+		file_server
+	}
 }
 
 # DACE — static: only the committed site/ of the clone at /srv/dace is served.
