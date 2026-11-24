@@ -176,13 +176,37 @@ of SL.
 | Grading | By meaning, as everywhere. The quantifier symbols and `⊓` are unfolded into the default notation inside the comparison only, so `[No x: φ](ψ)` matches `¬[∃x: φ](ψ)` and `(π ⊓ π′)(α)` matches `(π(α) & π′(α))`. What is shown is never unfolded. |
 | A derivation with no target | A structure the book gives no translation. The solver must find none. |
 
-Three steps are ones a student writes out: IndexedDaughter, EvExist, and the
-Merge that puts a quantifier in front of its scope. Every other step is
-concatenation and resolves on choosing the rule. The chooser marks the three
-with `typed: true`.
+**Written-out steps.** A student writes out the steps whose rule does more than
+set the translations of the daughters side by side. In the book's rule table
+(§3.10, table 4.1) those are the three rules that put the index of a daughter
+into the translation: IndexedDaughter `[α′u: β′(u)]`, RelPro `λu.α′` and EvExist
+`[∃u: Event(u)](α′(u))`. The Merge that writes a quantifier in front of its
+scope is written out as well, since it fixes the scope. Merge elsewhere, PredCon
+and Conjunction resolve on choosing the rule. The chooser marks a written-out
+step with `typed: true`.
 
-The views do not yet play this idiom (S86 is the engine and the format).
-`test/idiom.mjs` runs the fixtures in `test/fixtures/idiom/`.
+**The filter and the quantifier.** The book's text gives `[Q u: φ]` no category:
+exercise (3.9) says IndexedDaughter "creates a string that is not an expression
+of SL". The same exercise and table 3.4 offer the revision in which it is a
+quantifier, and a quantifier with a formula is a formula. The Wellformedness
+Filter here works with that revision, so that a determiner phrase is judged at
+its own node.
+
+**EvExist.** The book calls it a temporary rule: chapter 4 introduces it and
+§5.4 eliminates it. A sheet on chapter 4 sets `evExist: true`. A sheet on
+chapter 5 leaves it off, and the event phrase is translated by IndexedDaughter
+and raised.
+
+**The textbook bundle.** `compose/bundles/altshuler-parsons-schwarzschild.compose-bundle.json`
+holds the `aps*` worksheets under the book's chapters 3 to 5. It is generated
+by `npm run bundle:aps` (`scripts/make-aps-bundle.mjs`), and `test/idiom.mjs`
+fails when it differs from its sources.
+
+The views do not yet play this idiom (S86 is the engine and the format). The
+bundle loads in the app and every derivation opens, and no step can be taken
+yet: the only rule on offer is Non-branching Node. Until the views follow, the sheets live in
+`test/fixtures/idiom/`, where `test/idiom.mjs` solves them, and the bundle is
+left out of the `/files/` page.
 
 ---
 

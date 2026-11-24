@@ -1,6 +1,6 @@
 {
   "compose": 1,
-  "id": "aps3-pilot",
+  "id": "aps3-quantifiers",
   "idiom": "aps",
   "title": "Translation and Quantificational Determiner Phrases (§3.2–3.3)",
   "subtitle": "Altshuler, Parsons & Schwarzschild: Lexicon, Merge, IndexedDaughter and the Wellformedness Filter, with each LF given",
@@ -13,9 +13,9 @@
   "domain": {
     "multiLetterNames": true,
     "constants": {
-      "e": "Bruce Jack Jill",
+      "e": "Bruce Jack Jill Henry",
       "<e,t>": "Sang Sing Computer Crashed Bottle Fell Dish Person Character Survived",
-      "<e,<e,t>>": "Visited Liked"
+      "<e,<e,t>>": "Visited Liked Opened"
     },
     "variables": {
       "e": "x y z"
@@ -42,6 +42,12 @@
     },
     {
       "words": [
+        "Henry"
+      ],
+      "denotation": "Henry"
+    },
+    {
+      "words": [
         "sang"
       ],
       "denotation": "Sang"
@@ -63,6 +69,12 @@
         "liked"
       ],
       "denotation": "Liked"
+    },
+    {
+      "words": [
+        "opened"
+      ],
+      "denotation": "Opened"
     },
     {
       "words": [
@@ -132,6 +144,12 @@
         "no"
       ],
       "denotation": "No"
+    },
+    {
+      "words": [
+        "the"
+      ],
+      "denotation": "The"
     },
     {
       "words": [
@@ -230,6 +248,17 @@
           "tree": "[.VP [.DP every_x dish ] [.VP Jack [.V′ liked x ] ] ]",
           "targets": [
             "[∀x: Dish(x)](Liked(x)(Jack))"
+          ],
+          "reading": {
+            "section": "3.3"
+          }
+        },
+        {
+          "id": "d4",
+          "sentence": "Henry opened the bottle.",
+          "tree": "[.VP [.DP the_x bottle ] [.VP Henry [.V′ opened x ] ] ]",
+          "targets": [
+            "[The x: Bottle(x)](Opened(x)(Henry))"
           ],
           "reading": {
             "section": "3.3"

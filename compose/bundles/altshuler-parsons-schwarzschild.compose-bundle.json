@@ -1,0 +1,1070 @@
+{
+  "compose_bundle": 1,
+  "title": "Altshuler, Parsons & Schwarzschild: A Course in Semantics",
+  "authors": "Daniel Altshuler, Terence Parsons & Roger Schwarzschild (2019)",
+  "chapters": [
+    {
+      "prefix": "aps3",
+      "label": "§3",
+      "title": "Sentences and Determiner Phrases"
+    },
+    {
+      "prefix": "aps4",
+      "label": "§4",
+      "title": "Events and States"
+    },
+    {
+      "prefix": "aps5",
+      "label": "§5",
+      "title": "Tense and Aspect"
+    }
+  ],
+  "exercises": [
+    {
+      "key": "aps3-quantifiers",
+      "title": "Translation and Quantificational Determiner Phrases (§3.2–3.3)",
+      "content": {
+        "compose": 1,
+        "id": "aps3-quantifiers",
+        "idiom": "aps",
+        "title": "Translation and Quantificational Determiner Phrases (§3.2–3.3)",
+        "subtitle": "Altshuler, Parsons & Schwarzschild: Lexicon, Merge, IndexedDaughter and the Wellformedness Filter, with each LF given",
+        "meta": {
+          "source": "after Altshuler, Parsons & Schwarzschild, A Course in Semantics (MIT Press, 2019)",
+          "tags": [
+            "pilot"
+          ]
+        },
+        "domain": {
+          "multiLetterNames": true,
+          "constants": {
+            "e": "Bruce Jack Jill Henry",
+            "<e,t>": "Sang Sing Computer Crashed Bottle Fell Dish Person Character Survived",
+            "<e,<e,t>>": "Visited Liked Opened"
+          },
+          "variables": {
+            "e": "x y z"
+          }
+        },
+        "lexicon": [
+          {
+            "words": [
+              "Bruce"
+            ],
+            "denotation": "Bruce"
+          },
+          {
+            "words": [
+              "Jack"
+            ],
+            "denotation": "Jack"
+          },
+          {
+            "words": [
+              "Jill"
+            ],
+            "denotation": "Jill"
+          },
+          {
+            "words": [
+              "Henry"
+            ],
+            "denotation": "Henry"
+          },
+          {
+            "words": [
+              "sang"
+            ],
+            "denotation": "Sang"
+          },
+          {
+            "words": [
+              "sing"
+            ],
+            "denotation": "Sing"
+          },
+          {
+            "words": [
+              "visited"
+            ],
+            "denotation": "Visited"
+          },
+          {
+            "words": [
+              "liked"
+            ],
+            "denotation": "Liked"
+          },
+          {
+            "words": [
+              "opened"
+            ],
+            "denotation": "Opened"
+          },
+          {
+            "words": [
+              "computer"
+            ],
+            "denotation": "Computer"
+          },
+          {
+            "words": [
+              "crashed"
+            ],
+            "denotation": "Crashed"
+          },
+          {
+            "words": [
+              "bottle"
+            ],
+            "denotation": "Bottle"
+          },
+          {
+            "words": [
+              "fell"
+            ],
+            "denotation": "Fell"
+          },
+          {
+            "words": [
+              "dish"
+            ],
+            "denotation": "Dish"
+          },
+          {
+            "words": [
+              "person"
+            ],
+            "denotation": "Person"
+          },
+          {
+            "words": [
+              "character"
+            ],
+            "denotation": "Character"
+          },
+          {
+            "words": [
+              "survived",
+              "survive"
+            ],
+            "denotation": "Survived"
+          },
+          {
+            "words": [
+              "every",
+              "all"
+            ],
+            "denotation": "∀"
+          },
+          {
+            "words": [
+              "some",
+              "a"
+            ],
+            "denotation": "∃"
+          },
+          {
+            "words": [
+              "no"
+            ],
+            "denotation": "No"
+          },
+          {
+            "words": [
+              "the"
+            ],
+            "denotation": "The"
+          },
+          {
+            "words": [
+              "not"
+            ],
+            "denotation": "¬"
+          }
+        ],
+        "rules": {
+          "composition": {
+            "merge": true,
+            "indexedDaughter": true,
+            "predCon": false,
+            "conjunction": false
+          }
+        },
+        "exercises": [
+          {
+            "id": "A",
+            "title": "A. Lexicon and Merge (§3.2)",
+            "instructions": "Lexicon translates a word as the symbol of SL with the same extension. Merge writes the translation of one daughter in front of the other’s, in parentheses. The Wellformedness Filter keeps the order that is an expression of SL.",
+            "derivations": [
+              {
+                "id": "d1",
+                "sentence": "Bruce sang.",
+                "tree": "[.VP Bruce sang ]",
+                "targets": [
+                  "Sang(Bruce)"
+                ],
+                "reading": {
+                  "section": "3.2"
+                }
+              },
+              {
+                "id": "d2",
+                "sentence": "Jack visited Jill.",
+                "tree": "[.VP Jack [.V′ visited Jill ] ]",
+                "targets": [
+                  "Visited(Jill)(Jack)"
+                ],
+                "reading": {
+                  "section": "3.2"
+                },
+                "hints": [
+                  "Merge at V′ gives two potential translations, Visited(Jill) and Jill(Visited). One is an expression of SL.",
+                  "Visited(Jill) is a one-place predicate. Merge at VP writes it in front of Jack."
+                ]
+              },
+              {
+                "id": "d3",
+                "sentence": "Jill visited Jack.",
+                "tree": "[.VP Jill [.V′ visited Jack ] ]",
+                "targets": [
+                  "Visited(Jack)(Jill)"
+                ],
+                "reading": {
+                  "section": "3.2"
+                }
+              }
+            ]
+          },
+          {
+            "id": "B",
+            "title": "B. Quantifiers after raising (§3.3)",
+            "instructions": "Each tree is an LF. The raised phrase has left a copy of its index in its old position. IndexedDaughter forms a quantifier from an indexed determiner and its sister. Merge writes the quantifier in front of its scope.",
+            "derivations": [
+              {
+                "id": "d1",
+                "sentence": "No computer crashed.",
+                "tree": "[.VP [.DP no_x computer ] [.VP x crashed ] ]",
+                "targets": [
+                  "[No x: Computer(x)](Crashed(x))"
+                ],
+                "reading": {
+                  "section": "3.3"
+                },
+                "hints": [
+                  "IndexedDaughter at DP: the determiner is indexed x and its sister translates as Computer, so the quantifier is [No x: Computer(x)].",
+                  "The lower VP translates as Crashed(x), a formula. Merge writes the quantifier in front of it."
+                ]
+              },
+              {
+                "id": "d2",
+                "sentence": "Some bottle fell.",
+                "tree": "[.VP [.DP some_x bottle ] [.VP x fell ] ]",
+                "targets": [
+                  "[∃x: Bottle(x)](Fell(x))"
+                ],
+                "reading": {
+                  "section": "3.3"
+                }
+              },
+              {
+                "id": "d3",
+                "sentence": "Jack liked every dish.",
+                "tree": "[.VP [.DP every_x dish ] [.VP Jack [.V′ liked x ] ] ]",
+                "targets": [
+                  "[∀x: Dish(x)](Liked(x)(Jack))"
+                ],
+                "reading": {
+                  "section": "3.3"
+                }
+              },
+              {
+                "id": "d4",
+                "sentence": "Henry opened the bottle.",
+                "tree": "[.VP [.DP the_x bottle ] [.VP Henry [.V′ opened x ] ] ]",
+                "targets": [
+                  "[The x: Bottle(x)](Opened(x)(Henry))"
+                ],
+                "reading": {
+                  "section": "3.3"
+                }
+              }
+            ]
+          },
+          {
+            "id": "C",
+            "title": "C. Two LFs of one sentence (§3.3)",
+            "instructions": "Some person liked every dish has one base structure and two LFs. The quantifier adjoined higher has the other in its scope.",
+            "derivations": [
+              {
+                "id": "d1",
+                "sentence": "Some person liked every dish.",
+                "tree": "[.VP [.DP some_y person ] [.VP [.DP every_x dish ] [.VP y [.V′ liked x ] ] ] ]",
+                "targets": [
+                  "some > every: [∃y: Person(y)]([∀x: Dish(x)](Liked(x)(y)))"
+                ],
+                "reading": {
+                  "section": "3.3"
+                }
+              },
+              {
+                "id": "d2",
+                "sentence": "Some person liked every dish.",
+                "tree": "[.VP [.DP every_x dish ] [.VP [.DP some_y person ] [.VP y [.V′ liked x ] ] ] ]",
+                "targets": [
+                  "every > some: [∀x: Dish(x)]([∃y: Person(y)](Liked(x)(y)))"
+                ],
+                "reading": {
+                  "section": "3.3"
+                }
+              }
+            ]
+          },
+          {
+            "id": "D",
+            "title": "D. Negation and scope (§3.3.2)",
+            "instructions": "SpecificVocab translates not as ¬. Merge writes ¬ in front of a formula. Every character didn’t survive has two LFs, one for each height of the raised phrase.",
+            "derivations": [
+              {
+                "id": "d1",
+                "sentence": "Jack didn’t sing.",
+                "tree": "[.NegP not [.VP Jack sing ] ]",
+                "targets": [
+                  "¬(Sing(Jack))"
+                ],
+                "reading": {
+                  "section": "3.3.2"
+                }
+              },
+              {
+                "id": "d2",
+                "sentence": "Every character didn’t survive.",
+                "tree": "[.NegP not [.VP [.DP every_x character ] [.VP x survived ] ] ]",
+                "targets": [
+                  "not > every: ¬([∀x: Character(x)](Survived(x)))"
+                ],
+                "reading": {
+                  "section": "3.3.2"
+                }
+              },
+              {
+                "id": "d3",
+                "sentence": "Every character didn’t survive.",
+                "tree": "[.NegP [.DP every_x character ] [.NegP not [.VP x survived ] ] ]",
+                "targets": [
+                  "every > not: [∀x: Character(x)](¬(Survived(x)))"
+                ],
+                "reading": {
+                  "section": "3.3.2"
+                }
+              }
+            ]
+          },
+          {
+            "id": "E",
+            "title": "E. A structure with no translation (§3.3)",
+            "instructions": "This tree is the base structure of Some bottle fell, with the determiner phrase left in place. At the top node every rule is refused. Read the reason given for each.",
+            "derivations": [
+              {
+                "id": "d1",
+                "sentence": "Some bottle fell.",
+                "tree": "[.VP [.DP some_x bottle ] fell ]",
+                "reading": {
+                  "section": "3.3"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "aps3-modifiers",
+      "title": "Modifiers, Relative Clauses, Coordination and Pronouns (§3.4–3.7)",
+      "content": {
+        "compose": 1,
+        "id": "aps3-modifiers",
+        "idiom": "aps",
+        "title": "Modifiers, Relative Clauses, Coordination and Pronouns (§3.4–3.7)",
+        "subtitle": "Altshuler, Parsons & Schwarzschild: PredCon, RelPro, Conjunction and Pronoun, with each structure given",
+        "meta": {
+          "source": "after Altshuler, Parsons & Schwarzschild, A Course in Semantics (MIT Press, 2019)"
+        },
+        "domain": {
+          "multiLetterNames": true,
+          "constants": {
+            "e": "Jack Sue Maria Fred Boston",
+            "<e,t>": "Wedding Sang Quiet Actor Sings Dances Girl Story Smiled",
+            "<e,<e,t>>": "Discussed In Likes Met About Submitted"
+          },
+          "variables": {
+            "e": "x y z"
+          }
+        },
+        "lexicon": [
+          {
+            "words": [
+              "Jack"
+            ],
+            "denotation": "Jack"
+          },
+          {
+            "words": [
+              "Sue"
+            ],
+            "denotation": "Sue"
+          },
+          {
+            "words": [
+              "Maria"
+            ],
+            "denotation": "Maria"
+          },
+          {
+            "words": [
+              "Fred"
+            ],
+            "denotation": "Fred"
+          },
+          {
+            "words": [
+              "Boston"
+            ],
+            "denotation": "Boston"
+          },
+          {
+            "words": [
+              "wedding"
+            ],
+            "denotation": "Wedding"
+          },
+          {
+            "words": [
+              "sang"
+            ],
+            "denotation": "Sang"
+          },
+          {
+            "words": [
+              "quietly"
+            ],
+            "denotation": "Quiet"
+          },
+          {
+            "words": [
+              "actor"
+            ],
+            "denotation": "Actor"
+          },
+          {
+            "words": [
+              "sings"
+            ],
+            "denotation": "Sings"
+          },
+          {
+            "words": [
+              "dances"
+            ],
+            "denotation": "Dances"
+          },
+          {
+            "words": [
+              "girl"
+            ],
+            "denotation": "Girl"
+          },
+          {
+            "words": [
+              "story"
+            ],
+            "denotation": "Story"
+          },
+          {
+            "words": [
+              "smiled"
+            ],
+            "denotation": "Smiled"
+          },
+          {
+            "words": [
+              "discussed"
+            ],
+            "denotation": "Discussed"
+          },
+          {
+            "words": [
+              "in"
+            ],
+            "denotation": "In"
+          },
+          {
+            "words": [
+              "likes"
+            ],
+            "denotation": "Likes"
+          },
+          {
+            "words": [
+              "met"
+            ],
+            "denotation": "Met"
+          },
+          {
+            "words": [
+              "about"
+            ],
+            "denotation": "About"
+          },
+          {
+            "words": [
+              "submitted"
+            ],
+            "denotation": "Submitted"
+          },
+          {
+            "words": [
+              "every"
+            ],
+            "denotation": "∀"
+          },
+          {
+            "words": [
+              "some",
+              "a"
+            ],
+            "denotation": "∃"
+          },
+          {
+            "words": [
+              "no"
+            ],
+            "denotation": "No"
+          },
+          {
+            "words": [
+              "she",
+              "herself"
+            ],
+            "kind": "pronoun"
+          },
+          {
+            "words": [
+              "who"
+            ],
+            "kind": "relative"
+          },
+          {
+            "words": [
+              "and"
+            ],
+            "kind": "conjunction"
+          }
+        ],
+        "rules": {
+          "composition": {
+            "merge": true,
+            "predCon": true,
+            "indexedDaughter": true,
+            "conjunction": true,
+            "relPro": true
+          }
+        },
+        "exercises": [
+          {
+            "id": "A",
+            "title": "A. Adverbs and prepositional phrases (§3.4)",
+            "instructions": "PredCon conjoins the translations of two one-place predicates: {α, β} ⇝ (α′ ⊓ β′). The adverb quietly translates as a one-place predicate (figure 3.33). A preposition translates as a two-place predicate, and Merge with its object gives a one-place predicate.",
+            "derivations": [
+              {
+                "id": "d1",
+                "sentence": "Jack sang quietly.",
+                "tree": "[.VP Jack [.V′ sang quietly ] ]",
+                "targets": [
+                  "(Sang ⊓ Quiet)(Jack)"
+                ],
+                "reading": {
+                  "section": "3.4"
+                }
+              },
+              {
+                "id": "d2",
+                "sentence": "Jack discussed a wedding in Boston.",
+                "tree": "[.VP [.DP a_x [.NP wedding [.PP in Boston ] ] ] [.VP Jack [.V′ discussed x ] ] ]",
+                "targets": [
+                  "[∃x: (Wedding ⊓ In(Boston))(x)](Discussed(x)(Jack))"
+                ],
+                "reading": {
+                  "section": "3.4"
+                }
+              }
+            ]
+          },
+          {
+            "id": "B",
+            "title": "B. Relative clauses (§3.5)",
+            "instructions": "RelPro forms a one-place predicate from a formula: {who_u, α} ⇝ λu.α′ (59). In the tree who carries the index x, and x stands in object position (figure 3.37). PredCon conjoins the result with the translation of the noun.",
+            "derivations": [
+              {
+                "id": "d1",
+                "sentence": "Jack met every actor who Sue likes.",
+                "tree": "[.VP [.DP every_z [.NP actor [.CP who_x [.VP Sue [.V′ likes x ] ] ] ] ] [.VP Jack [.V′ met z ] ] ]",
+                "targets": [
+                  "[∀z: (Actor ⊓ λx.Likes(x)(Sue))(z)](Met(z)(Jack))"
+                ],
+                "reading": {
+                  "section": "3.5"
+                }
+              }
+            ]
+          },
+          {
+            "id": "C",
+            "title": "C. Coordination (§3.6)",
+            "instructions": "Conjunction translates a node with the three daughters and, α, β as (α′ & β′).",
+            "derivations": [
+              {
+                "id": "d1",
+                "sentence": "Maria sings and Fred dances.",
+                "tree": "[.VP [.VP Maria sings ] and [.VP Fred dances ] ]",
+                "targets": [
+                  "(Sings(Maria) & Dances(Fred))"
+                ],
+                "reading": {
+                  "section": "3.6"
+                }
+              }
+            ]
+          },
+          {
+            "id": "D",
+            "title": "D. Pronouns (§3.7)",
+            "instructions": "Pronoun translates a pronoun indexed u as u. In the first tree herself has the index of the raised phrase no girl, and the quantifier binds it. In the second tree no quantifier binds y. The variable stays free in the translation, and the context lexicon gives its value (§3.7.2).",
+            "derivations": [
+              {
+                "id": "d1",
+                "sentence": "No girl submitted a story about herself.",
+                "tree": "[.VP [.DP no_x girl ] [.VP [.DP a_y [.NP story [.PP about herself_x ] ] ] [.VP x [.V′ submitted y ] ] ] ]",
+                "targets": [
+                  "[No x: Girl(x)]([∃y: (Story ⊓ About(x))(y)](Submitted(y)(x)))"
+                ],
+                "reading": {
+                  "section": "3.7"
+                }
+              },
+              {
+                "id": "d2",
+                "sentence": "She smiled.",
+                "tree": "[.VP she_y smiled ]",
+                "targets": [
+                  "Smiled(y)"
+                ],
+                "reading": {
+                  "section": "3.7"
+                }
+              }
+            ]
+          },
+          {
+            "id": "E",
+            "title": "E. An object determiner phrase left in place (§3.3)",
+            "instructions": "This tree is the base structure of Jack met every actor who Sue likes, with the determiner phrase in object position. Every rule is refused at the node above met. Read the reason given for each.",
+            "derivations": [
+              {
+                "id": "d1",
+                "sentence": "Jack met every actor who Sue likes.",
+                "tree": "[.VP Jack [.V′ met [.DP every_z [.NP actor [.CP who_x [.VP Sue [.V′ likes x ] ] ] ] ] ] ]",
+                "reading": {
+                  "section": "3.3"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "aps4-events",
+      "title": "Events and Thematic Roles (§4.1–4.2, §4.6)",
+      "content": {
+        "compose": 1,
+        "id": "aps4-events",
+        "idiom": "aps",
+        "title": "Events and Thematic Roles (§4.1–4.2, §4.6)",
+        "subtitle": "Altshuler, Parsons & Schwarzschild: thematic roles, the event phrase and EvExist, with each structure given",
+        "meta": {
+          "source": "after Altshuler, Parsons & Schwarzschild, A Course in Semantics (MIT Press, 2019)"
+        },
+        "domain": {
+          "multiLetterNames": true,
+          "constants": {
+            "e": "Jack Jill Boston",
+            "<e,t>": "Wedding Called Discussed Tourist Smiled Event",
+            "<e,<e,t>>": "Agent Patient In"
+          },
+          "variables": {
+            "e": "x y z e s"
+          }
+        },
+        "lexicon": [
+          {
+            "words": [
+              "Jack"
+            ],
+            "denotation": "Jack"
+          },
+          {
+            "words": [
+              "Jill"
+            ],
+            "denotation": "Jill"
+          },
+          {
+            "words": [
+              "Boston"
+            ],
+            "denotation": "Boston"
+          },
+          {
+            "words": [
+              "wedding"
+            ],
+            "denotation": "Wedding"
+          },
+          {
+            "words": [
+              "called"
+            ],
+            "denotation": "Called"
+          },
+          {
+            "words": [
+              "discussed"
+            ],
+            "denotation": "Discussed"
+          },
+          {
+            "words": [
+              "tourist"
+            ],
+            "denotation": "Tourist"
+          },
+          {
+            "words": [
+              "smiled"
+            ],
+            "denotation": "Smiled"
+          },
+          {
+            "words": [
+              "Agent"
+            ],
+            "denotation": "Agent"
+          },
+          {
+            "words": [
+              "Patient"
+            ],
+            "denotation": "Patient"
+          },
+          {
+            "words": [
+              "in"
+            ],
+            "denotation": "In"
+          },
+          {
+            "words": [
+              "every"
+            ],
+            "denotation": "∀"
+          },
+          {
+            "words": [
+              "a"
+            ],
+            "denotation": "∃"
+          },
+          {
+            "words": [
+              "∃"
+            ],
+            "denotation": "∃"
+          }
+        ],
+        "rules": {
+          "composition": {
+            "merge": true,
+            "predCon": true,
+            "indexedDaughter": true,
+            "conjunction": false,
+            "evExist": true
+          }
+        },
+        "exercises": [
+          {
+            "id": "A",
+            "title": "A. The event phrase (§4.1–4.2)",
+            "instructions": "A verb translates as a one-place predicate of events. Agent and Patient translate as two-place predicates, and Merge with a name gives a one-place predicate of events. PredCon conjoins these predicates. EvExist translates the event phrase as a formula: {∃_u, α} ⇝ [∃u: Event(u)](α′(u)) (24).",
+            "derivations": [
+              {
+                "id": "d1",
+                "sentence": "Jill called Jack.",
+                "tree": "[.EP ∃_e [.VP [.θP Agent Jill ] [.V′ called [.θP Patient Jack ] ] ] ]",
+                "targets": [
+                  "[∃e: Event(e)]((Agent(Jill) ⊓ (Called ⊓ Patient(Jack)))(e))"
+                ],
+                "reading": {
+                  "section": "4.2"
+                }
+              }
+            ]
+          },
+          {
+            "id": "B",
+            "title": "B. Adverbial modifiers (§4.6)",
+            "instructions": "Inside the verb phrase in Boston translates as a one-place predicate of events, and PredCon conjoins it with the verb and its thematic phrases. The determiner phrase a wedding is raised and adjoined to the event phrase (figure 4.17).",
+            "derivations": [
+              {
+                "id": "d1",
+                "sentence": "Jack discussed a wedding in Boston.",
+                "tree": "[.EP [.DP a_x wedding ] [.EP ∃_e [.VP [.θP Agent Jack ] [.V′ [.V′ discussed [.θP Patient x ] ] [.PP in Boston ] ] ] ] ]",
+                "targets": [
+                  "[∃x: Wedding(x)]([∃e: Event(e)]((Agent(Jack) ⊓ ((Discussed ⊓ Patient(x)) ⊓ In(Boston)))(e)))"
+                ],
+                "reading": {
+                  "section": "4.6"
+                }
+              }
+            ]
+          },
+          {
+            "id": "C",
+            "title": "C. A quantifier and the event phrase (exercise (4.5))",
+            "instructions": "Every tourist smiled has the base structure of figure 4.8. Quantifier Raising adjoins the determiner phrase to EP in the first tree and to VP in the second. One of the two structures has a translation. Find the node that stops the other.",
+            "derivations": [
+              {
+                "id": "d1",
+                "sentence": "Every tourist smiled.",
+                "tree": "[.EP [.DP every_x tourist ] [.EP ∃_e [.VP [.θP Agent x ] smiled ] ] ]",
+                "targets": [
+                  "[∀x: Tourist(x)]([∃e: Event(e)]((Agent(x) ⊓ Smiled)(e)))"
+                ],
+                "reading": {
+                  "section": "4.2"
+                }
+              },
+              {
+                "id": "d2",
+                "sentence": "Every tourist smiled.",
+                "tree": "[.EP ∃_e [.VP [.DP every_x tourist ] [.VP [.θP Agent x ] smiled ] ] ]",
+                "reading": {
+                  "section": "4.2"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "aps5-tense",
+      "title": "Tense and Aspect (§5.1–5.3)",
+      "content": {
+        "compose": 1,
+        "id": "aps5-tense",
+        "idiom": "aps",
+        "title": "Tense and Aspect (§5.1–5.3)",
+        "subtitle": "Altshuler, Parsons & Schwarzschild: tense, the progressive and the perfect, with each structure given",
+        "meta": {
+          "source": "after Altshuler, Parsons & Schwarzschild, A Course in Semantics (MIT Press, 2019)"
+        },
+        "domain": {
+          "multiLetterNames": true,
+          "constants": {
+            "e": "Jack",
+            "<e,t>": "Fall Speak Past Pres",
+            "<e,<e,t>>": "Agent Patient InProgress Completed"
+          },
+          "variables": {
+            "e": "x y z e s"
+          }
+        },
+        "lexicon": [
+          {
+            "words": [
+              "Jack"
+            ],
+            "denotation": "Jack"
+          },
+          {
+            "words": [
+              "fell",
+              "fall",
+              "falling"
+            ],
+            "denotation": "Fall"
+          },
+          {
+            "words": [
+              "spoken"
+            ],
+            "denotation": "Speak"
+          },
+          {
+            "words": [
+              "Past"
+            ],
+            "denotation": "Past"
+          },
+          {
+            "words": [
+              "Pres"
+            ],
+            "denotation": "Pres"
+          },
+          {
+            "words": [
+              "Agent"
+            ],
+            "denotation": "Agent"
+          },
+          {
+            "words": [
+              "Patient"
+            ],
+            "denotation": "Patient"
+          },
+          {
+            "words": [
+              "be"
+            ],
+            "denotation": "InProgress"
+          },
+          {
+            "words": [
+              "have"
+            ],
+            "denotation": "Completed"
+          },
+          {
+            "words": [
+              "∃"
+            ],
+            "denotation": "∃"
+          },
+          {
+            "words": [
+              "not"
+            ],
+            "denotation": "¬"
+          },
+          {
+            "words": [
+              "NOT"
+            ],
+            "denotation": "No"
+          }
+        ],
+        "rules": {
+          "composition": {
+            "merge": true,
+            "predCon": true,
+            "indexedDaughter": true,
+            "conjunction": false
+          }
+        },
+        "exercises": [
+          {
+            "id": "A",
+            "title": "A. Tense (§5.1.3)",
+            "instructions": "A tense translates as a one-place predicate of events and states. EvExist is eliminated in this chapter (§5.4). The event phrase has an indexed daughter, so IndexedDaughter translates it as a quantifier and Quantifier Raising can adjoin it to TP. The first tree is the base structure of Jack fell (figure 5.4) and has no translation. The second is its LF (figure 5.5).",
+            "derivations": [
+              {
+                "id": "d1",
+                "sentence": "Jack fell.",
+                "tree": "[.TP Past [.EP ∃_e [.VP [.θP Patient Jack ] fell ] ] ]",
+                "reading": {
+                  "section": "5.1.3"
+                }
+              },
+              {
+                "id": "d2",
+                "sentence": "Jack fell.",
+                "tree": "[.TP [.EP ∃_e [.VP [.θP Patient Jack ] fell ] ] [.TP Past e ] ]",
+                "targets": [
+                  "[∃e: (Patient(Jack) ⊓ Fall)(e)](Past(e))"
+                ],
+                "reading": {
+                  "section": "5.1.3"
+                }
+              }
+            ]
+          },
+          {
+            "id": "B",
+            "title": "B. The progressive (§5.2.2)",
+            "instructions": "Progressive be translates as the two-place predicate InProgress. InProgress(e)(s) holds when s is a state of e being in progress (§5.4). Be heads a second event phrase, indexed s, and both event phrases are raised (figure 5.14).",
+            "derivations": [
+              {
+                "id": "d1",
+                "sentence": "Jack was falling.",
+                "tree": "[.TP [.EP ∃_e [.VP [.θP Patient Jack ] falling ] ] [.TP [.EP ∃_s [.VP be e ] ] [.TP Past s ] ] ]",
+                "targets": [
+                  "[∃e: (Patient(Jack) ⊓ Fall)(e)]([∃s: InProgress(e)(s)](Past(s)))"
+                ],
+                "reading": {
+                  "section": "5.2.2"
+                }
+              }
+            ]
+          },
+          {
+            "id": "C",
+            "title": "C. The perfect (§5.3.1)",
+            "instructions": "Perfect have translates as the two-place predicate Completed. Completed(e)(s) holds when s is a state that e is in once it is completed (§5.4). The structure is that of the progressive, with Pres as the tense (figure 5.16).",
+            "derivations": [
+              {
+                "id": "d1",
+                "sentence": "Jack has spoken.",
+                "tree": "[.TP [.EP ∃_e [.VP [.θP Agent Jack ] spoken ] ] [.TP [.EP ∃_s [.VP have e ] ] [.TP Pres s ] ] ]",
+                "targets": [
+                  "[∃e: (Agent(Jack) ⊓ Speak)(e)]([∃s: Completed(e)(s)](Pres(s)))"
+                ],
+                "reading": {
+                  "section": "5.3.1"
+                }
+              }
+            ]
+          },
+          {
+            "id": "D",
+            "title": "D. Negation and tense (exercise (5.9))",
+            "instructions": "In the base structure of Jack didn’t fall, Past is higher than not (figure 5.7). The first tree applies Quantifier Raising to the event phrase, as part [A] asks. Find the node that has no translation. Part [B] treats not as a negative quantifier that takes the place of the event phrase, with the SpecificVocab rule not ⇝ No (figure 5.8). The second tree is an LF of that structure. Engine note: this sheet keeps both rules for not, so the quantifier is written NOT in the tree.",
+            "derivations": [
+              {
+                "id": "d1",
+                "sentence": "Jack didn’t fall.",
+                "tree": "[.TP [.EP ∃_e [.VP [.θP Patient Jack ] fall ] ] [.TP Past [.NegP not e ] ] ]",
+                "reading": {
+                  "section": "5.1.3"
+                }
+              },
+              {
+                "id": "d2",
+                "sentence": "Jack didn’t fall.",
+                "tree": "[.TP [.NegP NOT_e [.VP [.θP Patient Jack ] fall ] ] [.TP Past e ] ]",
+                "targets": [
+                  "[No e: (Patient(Jack) ⊓ Fall)(e)](Past(e))"
+                ],
+                "reading": {
+                  "section": "5.1.3"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

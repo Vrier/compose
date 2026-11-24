@@ -112,8 +112,8 @@ for (const file of fs.readdirSync(DIR).filter((f) => f.endsWith('.compose.json')
           [x.abbr, x.ok ? (x.typed ? 'typed' : 'ok') : 'no', x.ok ? sl(x.result.term) + ' :: ' + tstr(x.result.type) : x.reason])));
         const s = sol[node.id];
         if (s) {
-          const quantifierStep = s.rule === 'IndexedDaughter' || s.rule === 'EvExist' || (s.rule === 'Merge' && !!s.binds);
-          ok(!!s.typed === quantifierStep, id + ' n' + npath + ': a student writes out IndexedDaughter, EvExist and the binding Merge, and no other step');
+          const writtenOut = s.rule === 'IndexedDaughter' || s.rule === 'RelPro' || s.rule === 'EvExist' || (s.rule === 'Merge' && !!s.binds);
+          ok(!!s.typed === writtenOut, id + ' n' + npath + ': a student writes out IndexedDaughter, RelPro, EvExist and the binding Merge, and no other step');
           if (s.typed) typedSteps++; else plainSteps++;
         } else if (kids.every((c) => sol[c.id] || (F.slLeaf(c, set) || {}).marker)) {
           ok(rules.every((x) => !x.ok && x.reason), id + ' n' + npath + ': every rule refused with a reason at the node that stops the derivation');
@@ -188,7 +188,7 @@ ok(F.splitTarget('every > some (inverse): ∀x.P(x)', 'cc').formula === '∀x.P(
 
 /* ---- D. Quantifier Raising in the book's form ------------------------------- */
 {
-  const set = sets['aps3-pilot'];
+  const set = sets['aps3-quantifiers'];
   const base = F.parseTree('[.VP [.DP some_y person ] [.V′ liked [.DP every_x dish ] ] ]');
   const find = (t, w) => { let hit = null; (function f(n) { if ((n.children || []).some((c) => c.word === w)) hit = n; (n.children || []).forEach(f); })(t); return hit; };
   const subj = find(base, 'some_y'), obj = find(base, 'every_x'), vbar = find(base, 'liked');
@@ -228,7 +228,7 @@ ok(F.splitTarget('every > some (inverse): ∀x.P(x)', 'cc').formula === '∀x.P(
 {
   const cfg = F.rulesToConfig({ composition: { predicateModification: true } }, '');
   ok(cfg.idiom === undefined && cfg.merge === undefined && cfg.fa === true && cfg.pm === true, 'a default-idiom config has no idiom keys');
-  const aps = sets['aps3-pilot'].config;
+  const aps = sets['aps3-quantifiers'].config;
   ok(aps.idiom === 'aps' && aps.fa === false && aps.pm === false && aps.pa === false && aps.merge === true && aps.idx === true && aps.predcon === false && aps.evex === false, 'the aps config switches the default rules off');
   // candidateRulesFor delegates to candidateRules for every node of an existing worksheet
   let same2 = true, nodes = 0;
@@ -251,6 +251,43 @@ ok(F.splitTarget('every > some (inverse): ∀x.P(x)', 'cc').formula === '∀x.P(
     }
   }
   ok(same2 && nodes > 100, 'candidateRulesFor agrees with candidateRules on ' + nodes + ' nodes of three library worksheets');
+}
+
+/* ---- E. the textbook bundle --------------------------------------------------- */
+// compose/bundles/altshuler-parsons-schwarzschild.compose-bundle.json is generated
+// from the fixtures by scripts/make-aps-bundle.mjs. It has to hold every fixture,
+// byte for byte, in book order, each under one chapter, and each has to load from
+// the bundle as it loads from its own file.
+{
+  const BUNDLE = path.join(SRC, 'bundles', 'altshuler-parsons-schwarzschild.compose-bundle.json');
+  ok(fs.existsSync(BUNDLE), 'the bundle exists — run `npm run bundle:aps`');
+  if (fs.existsSync(BUNDLE)) {
+    const b = JSON.parse(fs.readFileSync(BUNDLE, 'utf8'));
+    const list = b.worksheets || b.exercises || [];
+    ok(b.compose_bundle === 1 && /Altshuler/.test(b.title) && Array.isArray(b.chapters) && b.chapters.length === 3, 'bundle header');
+    ok(list.map((w) => w.key).slice().sort().join(' ') === Object.keys(sets).sort().join(' '), 'the bundle holds every fixture and nothing else: ' + list.map((w) => w.key).join(' '));
+    const chapterOf = (k) => b.chapters.findIndex((c) => k === c.prefix || k.startsWith(c.prefix + '.') || k.startsWith(c.prefix + '-'));
+    ok(list.every((w) => b.chapters.filter((c) => w.key === c.prefix || w.key.startsWith(c.prefix + '.') || w.key.startsWith(c.prefix + '-')).length === 1), 'each worksheet falls under exactly one chapter');
+    ok(list.every((w, i) => i === 0 || chapterOf(w.key) >= chapterOf(list[i - 1].key)), 'the worksheets follow the order of the chapters');
+    for (const w of list) {
+      const file = path.join(DIR, w.key + '.compose.json');
+      const src = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : null;
+      ok(!!src && JSON.stringify(src) === JSON.stringify(w.content), w.key + ': the bundle is stale — run `npm run bundle:aps`');
+      ok(w.title === (src && src.title) && w.content.idiom === 'aps', w.key + ': bundle title and idiom');
+      const { set, diagnostics } = F.parseFile(JSON.stringify(w.content), 'bundle-' + w.key, { collect: true });
+      ok(!!set && !(diagnostics || []).some((x) => x.level === 'error') && set.idiom === 'aps', w.key + ': loads from the bundle');
+      if (set) {
+        let n = 0, agree = true;
+        for (const g of set.groups) for (const p of g.problems) {
+          const root = F.parseTree(p.tree), r = F.solveTree(root, set)[root.id];
+          const r0 = (() => { const s0 = sets[w.key], g0 = s0 && s0.groups.find((x) => x.id === g.id), p0 = g0 && g0.problems.find((x) => x.id === p.id); if (!p0) return undefined; const t0 = F.parseTree(p0.tree); return F.solveTree(t0, s0)[t0.id]; })();
+          if ((r ? sl(r.term) : null) !== (r0 ? sl(r0.term) : null)) agree = false;
+          n++;
+        }
+        ok(agree && n > 0, w.key + ': every derivation solves from the bundle as from its file');
+      }
+    }
+  }
 }
 
 /* ---- report ------------------------------------------------------------------ */
