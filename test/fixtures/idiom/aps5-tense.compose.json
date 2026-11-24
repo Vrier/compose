@@ -2,13 +2,10 @@
   "compose": 1,
   "id": "aps5-tense",
   "idiom": "aps",
-  "title": "Tense and aspect (chapter 5)",
-  "subtitle": "Test data for tense, the progressive and the perfect",
+  "title": "Tense and Aspect (§5.1–5.3)",
+  "subtitle": "Altshuler, Parsons & Schwarzschild: tense, the progressive and the perfect, with each structure given",
   "meta": {
-    "source": "after Altshuler, Parsons & Schwarzschild, A Course in Semantics (MIT Press, 2019)",
-    "tags": [
-      "test-fixture"
-    ]
+    "source": "after Altshuler, Parsons & Schwarzschild, A Course in Semantics (MIT Press, 2019)"
   },
   "domain": {
     "multiLetterNames": true,
@@ -108,49 +105,89 @@
   "exercises": [
     {
       "id": "A",
-      "title": "A. Rules of chapter 5",
+      "title": "A. Tense (§5.1.3)",
+      "instructions": "A tense translates as a one-place predicate of events and states. EvExist is eliminated in this chapter (§5.4). The event phrase has an indexed daughter, so IndexedDaughter translates it as a quantifier and Quantifier Raising can adjoin it to TP. The first tree is the base structure of Jack fell (figure 5.4) and has no translation. The second is its LF (figure 5.5).",
       "derivations": [
         {
-          "id": "tense",
+          "id": "d1",
+          "sentence": "Jack fell.",
+          "tree": "[.TP Past [.EP ∃_e [.VP [.θP Patient Jack ] fell ] ] ]",
+          "reading": {
+            "section": "5.1.3"
+          }
+        },
+        {
+          "id": "d2",
           "sentence": "Jack fell.",
           "tree": "[.TP [.EP ∃_e [.VP [.θP Patient Jack ] fell ] ] [.TP Past e ] ]",
           "targets": [
             "[∃e: (Patient(Jack) ⊓ Fall)(e)](Past(e))"
-          ]
-        },
+          ],
+          "reading": {
+            "section": "5.1.3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "title": "B. The progressive (§5.2.2)",
+      "instructions": "Progressive be translates as the two-place predicate InProgress. InProgress(e)(s) holds when s is a state of e being in progress (§5.4). Be heads a second event phrase, indexed s, and both event phrases are raised (figure 5.14).",
+      "derivations": [
         {
-          "id": "prog",
+          "id": "d1",
           "sentence": "Jack was falling.",
           "tree": "[.TP [.EP ∃_e [.VP [.θP Patient Jack ] falling ] ] [.TP [.EP ∃_s [.VP be e ] ] [.TP Past s ] ] ]",
           "targets": [
             "[∃e: (Patient(Jack) ⊓ Fall)(e)]([∃s: InProgress(e)(s)](Past(s)))"
-          ]
-        },
+          ],
+          "reading": {
+            "section": "5.2.2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "title": "C. The perfect (§5.3.1)",
+      "instructions": "Perfect have translates as the two-place predicate Completed. Completed(e)(s) holds when s is a state that e is in once it is completed (§5.4). The structure is that of the progressive, with Pres as the tense (figure 5.16).",
+      "derivations": [
         {
-          "id": "perf",
+          "id": "d1",
           "sentence": "Jack has spoken.",
           "tree": "[.TP [.EP ∃_e [.VP [.θP Agent Jack ] spoken ] ] [.TP [.EP ∃_s [.VP have e ] ] [.TP Pres s ] ] ]",
           "targets": [
             "[∃e: (Agent(Jack) ⊓ Speak)(e)]([∃s: Completed(e)(s)](Pres(s)))"
-          ]
+          ],
+          "reading": {
+            "section": "5.3.1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "D",
+      "title": "D. Negation and tense (exercise (5.9))",
+      "instructions": "In the base structure of Jack didn’t fall, Past is higher than not (figure 5.7). The first tree applies Quantifier Raising to the event phrase, as part [A] asks. Find the node that has no translation. Part [B] treats not as a negative quantifier that takes the place of the event phrase, with the SpecificVocab rule not ⇝ No (figure 5.8). The second tree is an LF of that structure. Engine note: this sheet keeps both rules for not, so the quantifier is written NOT in the tree.",
+      "derivations": [
+        {
+          "id": "d1",
+          "sentence": "Jack didn’t fall.",
+          "tree": "[.TP [.EP ∃_e [.VP [.θP Patient Jack ] fall ] ] [.TP Past [.NegP not e ] ] ]",
+          "reading": {
+            "section": "5.1.3"
+          }
         },
         {
-          "id": "neg-q",
+          "id": "d2",
           "sentence": "Jack didn’t fall.",
-          "tree": "[.TP [.EP NOT_e [.VP [.θP Patient Jack ] fall ] ] [.TP Past e ] ]",
+          "tree": "[.TP [.NegP NOT_e [.VP [.θP Patient Jack ] fall ] ] [.TP Past e ] ]",
           "targets": [
             "[No e: (Patient(Jack) ⊓ Fall)(e)](Past(e))"
-          ]
-        },
-        {
-          "id": "ep-low",
-          "sentence": "Jack fell.",
-          "tree": "[.TP Past [.EP ∃_e [.VP [.θP Patient Jack ] fell ] ] ]"
-        },
-        {
-          "id": "neg-t",
-          "sentence": "Jack didn’t fall.",
-          "tree": "[.TP [.EP ∃_e [.VP [.θP Patient Jack ] fall ] ] [.TP Past [.NegP not e ] ] ]"
+          ],
+          "reading": {
+            "section": "5.1.3"
+          }
         }
       ]
     }

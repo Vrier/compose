@@ -170,12 +170,16 @@ in the Claude project as `claude/aps-idiom-design.md`.
   inside `equivACη` only. Never unfold for display.
 - `lcformat.js`, "the aps idiom": `solveTree` dispatches on `set.idiom`;
   `candidateRulesFor(set, node, meaningOf)` is the chooser for any idiom.
-- `test/idiom.mjs` (in `npm test`) solves the fixtures in `test/fixtures/idiom/`
+- `test/idiom.mjs` (in `npm test`) solves the worksheets in `test/fixtures/idiom/`
   by the book's rules, converts each tree to the default idiom and requires
   `solveTree` to agree, and snapshots the chooser in `test/golden-idiom.txt`.
   Regenerate with `node test/idiom.mjs --update`, for intended changes only.
+- The textbook bundle is `compose/bundles/altshuler-parsons-schwarzschild.compose-bundle.json`,
+  generated from those worksheets: run `npm run bundle:aps` after editing one.
+  `test/idiom.mjs` fails on a stale bundle.
 - The views do not play the idiom yet. Until they do, keep `aps*` worksheets
-  out of `compose/exercises/`.
+  out of `compose/exercises/` and the bundle out of the `/files/` page
+  (`build/server.mjs`).
 
 ## Linglib cross-check
 

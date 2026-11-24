@@ -2,13 +2,10 @@
   "compose": 1,
   "id": "aps4-events",
   "idiom": "aps",
-  "title": "Events (chapter 4)",
-  "subtitle": "Test data for thematic role heads, the event phrase and EvExist",
+  "title": "Events and Thematic Roles (§4.1–4.2, §4.6)",
+  "subtitle": "Altshuler, Parsons & Schwarzschild: thematic roles, the event phrase and EvExist, with each structure given",
   "meta": {
-    "source": "after Altshuler, Parsons & Schwarzschild, A Course in Semantics (MIT Press, 2019)",
-    "tags": [
-      "test-fixture"
-    ]
+    "source": "after Altshuler, Parsons & Schwarzschild, A Course in Semantics (MIT Press, 2019)"
   },
   "domain": {
     "multiLetterNames": true,
@@ -119,36 +116,63 @@
   "exercises": [
     {
       "id": "A",
-      "title": "A. Rules of chapter 4",
+      "title": "A. The event phrase (§4.1–4.2)",
+      "instructions": "A verb translates as a one-place predicate of events. Agent and Patient translate as two-place predicates, and Merge with a name gives a one-place predicate of events. PredCon conjoins these predicates. EvExist translates the event phrase as a formula: {∃_u, α} ⇝ [∃u: Event(u)](α′(u)) (24).",
       "derivations": [
         {
-          "id": "ep",
+          "id": "d1",
           "sentence": "Jill called Jack.",
           "tree": "[.EP ∃_e [.VP [.θP Agent Jill ] [.V′ called [.θP Patient Jack ] ] ] ]",
           "targets": [
             "[∃e: Event(e)]((Agent(Jill) ⊓ (Called ⊓ Patient(Jack)))(e))"
-          ]
-        },
+          ],
+          "reading": {
+            "section": "4.2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "title": "B. Adverbial modifiers (§4.6)",
+      "instructions": "Inside the verb phrase in Boston translates as a one-place predicate of events, and PredCon conjoins it with the verb and its thematic phrases. The determiner phrase a wedding is raised and adjoined to the event phrase (figure 4.17).",
+      "derivations": [
         {
-          "id": "pp-vp",
+          "id": "d1",
           "sentence": "Jack discussed a wedding in Boston.",
           "tree": "[.EP [.DP a_x wedding ] [.EP ∃_e [.VP [.θP Agent Jack ] [.V′ [.V′ discussed [.θP Patient x ] ] [.PP in Boston ] ] ] ] ]",
           "targets": [
             "[∃x: Wedding(x)]([∃e: Event(e)]((Agent(Jack) ⊓ ((Discussed ⊓ Patient(x)) ⊓ In(Boston)))(e)))"
-          ]
-        },
+          ],
+          "reading": {
+            "section": "4.6"
+          }
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "title": "C. A quantifier and the event phrase (exercise (4.5))",
+      "instructions": "Every tourist smiled has the base structure of figure 4.8. Quantifier Raising adjoins the determiner phrase to EP in the first tree and to VP in the second. One of the two structures has a translation. Find the node that stops the other.",
+      "derivations": [
         {
-          "id": "dp-ep",
+          "id": "d1",
           "sentence": "Every tourist smiled.",
           "tree": "[.EP [.DP every_x tourist ] [.EP ∃_e [.VP [.θP Agent x ] smiled ] ] ]",
           "targets": [
             "[∀x: Tourist(x)]([∃e: Event(e)]((Agent(x) ⊓ Smiled)(e)))"
-          ]
+          ],
+          "reading": {
+            "section": "4.2"
+          }
         },
         {
-          "id": "dp-vp",
+          "id": "d2",
           "sentence": "Every tourist smiled.",
-          "tree": "[.EP ∃_e [.VP [.DP every_x tourist ] [.VP [.θP Agent x ] smiled ] ] ]"
+          "tree": "[.EP ∃_e [.VP [.DP every_x tourist ] [.VP [.θP Agent x ] smiled ] ] ]",
+          "reading": {
+            "section": "4.2"
+          }
         }
       ]
     }

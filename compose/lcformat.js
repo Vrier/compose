@@ -543,7 +543,10 @@
   //   individual constant or variable  σ          one-place predicate  ⟨σ,t⟩
   //   two-place predicate  ⟨σ,⟨σ′,t⟩⟩              formula              t
   //   quantifier awaiting its scope  ⟨⟨σ,t⟩,t⟩, with the shape [Q u: φ]
-  // A quantifier is a category of its own here, as in the book's exercise (3.9).
+  // A quantifier is a category of its own here. The book's text gives [Q u: φ]
+  // no category; exercise (3.9) and table 3.4 offer the revision that does, and
+  // the filter needs it to judge a determiner phrase at its own node (S86, owner
+  // decision).
   //
   // Tree conventions: `every_x` is a leaf indexed x; `x` alone is the copy of an
   // index that Quantifier Raising leaves behind; `she_x` is an indexed pronoun.
@@ -570,15 +573,20 @@
   const slShow = (m) => E.slToStr(m.term);
   const slIsA = (m) => SL_CAT_NAME[slCategory(m)] || 'not an expression of SL';
 
-  // `typed` marks the steps a student writes out (S86, owner decision): the two
-  // that build or discharge a quantifier. Every other step is plain concatenation.
+  // `typed` marks the steps a student writes out (S86, owner decision: the
+  // non-trivial steps only, read off the book's rule table, §3.10 and table 4.1).
+  // Merge, PredCon and Conjunction write the translations of the daughters side
+  // by side, so they resolve on choosing the rule. IndexedDaughter, RelPro (59)
+  // and EvExist (24) each put the index of a daughter into the translation, so
+  // they are written out. So is the Merge that writes a quantifier in front of
+  // its scope: the step that fixes the scope.
   const SL_RULES = {
     merge:   { key: 'merge',   name: 'Merge',           abbr: 'Merge',           desc: 'Write the translation of one daughter in front of the other’s, in parentheses: α′(β′). The Wellformedness Filter keeps the order that is an expression of SL.' },
     predcon: { key: 'predcon', name: 'PredCon',         abbr: 'PredCon',         desc: 'Conjoin the translations of two one-place predicates: (α′ ⊓ β′).' },
     idx:     { key: 'idx',     name: 'IndexedDaughter', abbr: 'IndexedDaughter', desc: 'A daughter indexed u and its sister, a one-place predicate, form a quantifier: [α′u: β′(u)].' },
     conj:    { key: 'conj',    name: 'Conjunction',     abbr: 'Conjunction',     desc: 'A node with the daughters and, α, β translates as (α′ & β′).' },
     relpro:  { key: 'relpro',  name: 'RelPro',          abbr: 'RelPro',          desc: 'A relative pronoun indexed u and its sister, a formula, form a one-place predicate: λu.α′.' },
-    evex:    { key: 'evex',    name: 'EvExist',         abbr: 'EvExist',         desc: 'An ∃ indexed u and its sister, a one-place predicate of events, form a formula: [∃u: Event(u)](α′(u)). Chapter 4 only.' },
+    evex:    { key: 'evex',    name: 'EvExist',         abbr: 'EvExist',         desc: 'An ∃ indexed u and its sister, a one-place predicate of events, form a formula: [∃u: Event(u)](α′(u)). A temporary rule of chapter 4, eliminated in chapter 5.' },
   };
   const SL_RULE_ORDER = ['merge', 'predcon', 'idx', 'conj', 'relpro', 'evex'];
 
@@ -676,22 +684,25 @@
       ? Object.assign({}, SL_RULES[key], { ok: true, typed: !!res.typed, binds: res.binds, raw: res.raw, result: { term: res.term, type: cleanType(res.type), raw: res.raw } })
       : Object.assign({}, SL_RULES[key], { ok: false, reason: res.reason }));
     const count = (n) => 'this node has ' + n + (hasAnd ? ', with and' : rel ? ', with a relative pronoun' : '') + '.';
+    // A daughter with no translation stops every rule, whatever the shape of the node.
+    const pending = { ok: false, reason: 'Every rule works on the translations of the daughters, and a daughter of this node has none.' };
     for (const [key, fn] of [['merge', slMerge], ['predcon', slPredCon], ['idx', slIndexedDaughter]]) {
-      put(key, two ? fn(real[0], real[1]) : { ok: false, reason: SL_RULES[key].name + ' combines the translations of exactly two daughters; ' + count(real.length) });
+      put(key, !ready ? pending : two ? fn(real[0], real[1]) : { ok: false, reason: SL_RULES[key].name + ' combines the translations of exactly two daughters; ' + count(real.length) });
     }
-    put('conj', (hasAnd && real.length === 2 && ready)
+    put('conj', !ready ? pending : (hasAnd && real.length === 2)
       ? ((slCategory(real[0]) === 'formula' && slCategory(real[1]) === 'formula')
         ? { ok: true, term: E.Bin('∧', real[0].term, real[1].term), raw: E.Bin('∧', real[0].term, real[1].term), type: 't' }
         : { ok: false, reason: 'Conjunction joins two formulas, and the daughters are ' + slIsA(real[0]) + ' and ' + slIsA(real[1]) + '.' })
       : { ok: false, reason: 'Conjunction applies to a node with three daughters, one of them the word and.' });
-    put('relpro', (rel && real.length === 1 && ready)
+    put('relpro', !ready ? pending : (rel && real.length === 1)
       ? (slCategory(real[0]) === 'formula'
-        ? { ok: true, term: E.Lam(rel.index, real[0].term), raw: E.Lam(rel.index, real[0].term), type: { from: set.typeEnv[rel.index] || 'e', to: 't' } }
+        ? { ok: true, term: E.Lam(rel.index, real[0].term), raw: E.Lam(rel.index, real[0].term), type: { from: set.typeEnv[rel.index] || 'e', to: 't' }, typed: true }
         : { ok: false, reason: 'RelPro abstracts over a formula, and the sister of the relative pronoun is ' + slIsA(real[0]) + '.' })
       : { ok: false, reason: 'RelPro applies to a node whose daughters are an indexed relative pronoun and one other.' });
-    put('evex', two ? slEvExist(real[0], real[1]) : { ok: false, reason: 'EvExist combines exactly two daughters; ' + count(real.length) });
+    put('evex', !ready ? pending : two ? slEvExist(real[0], real[1]) : { ok: false, reason: 'EvExist combines exactly two daughters; ' + count(real.length) });
     const NN = { key: 'nn', name: 'Non-branching Node', abbr: 'NN', desc: 'A node with one daughter has that daughter’s translation.' };
     if (kids.length === 1 && ready && real.length === 1) out.push(Object.assign({}, NN, { ok: true, result: { term: real[0].term, type: real[0].type } }));
+    else if (!ready) out.push(Object.assign({}, NN, pending));
     else out.push(Object.assign({}, NN, { ok: false, reason: 'Non-branching Node applies only to a node with exactly one daughter; this node has ' + kids.length + '.' }));
     return out;
   }

@@ -2,20 +2,17 @@
   "compose": 1,
   "id": "aps3-modifiers",
   "idiom": "aps",
-  "title": "Modifiers, relative clauses, conjunction and pronouns (§3.4–3.7)",
-  "subtitle": "Test data for PredCon, RelPro, Conjunction and Pronoun",
+  "title": "Modifiers, Relative Clauses, Coordination and Pronouns (§3.4–3.7)",
+  "subtitle": "Altshuler, Parsons & Schwarzschild: PredCon, RelPro, Conjunction and Pronoun, with each structure given",
   "meta": {
-    "source": "after Altshuler, Parsons & Schwarzschild, A Course in Semantics (MIT Press, 2019)",
-    "tags": [
-      "test-fixture"
-    ]
+    "source": "after Altshuler, Parsons & Schwarzschild, A Course in Semantics (MIT Press, 2019)"
   },
   "domain": {
     "multiLetterNames": true,
     "constants": {
-      "e": "Jack Sue Maria Fred Henry Boston",
-      "<e,t>": "Wedding Sang Quiet Actor Sings Dances Girl Story Bottle Smiled",
-      "<e,<e,t>>": "Discussed In Likes Met About Submitted Opened"
+      "e": "Jack Sue Maria Fred Boston",
+      "<e,t>": "Wedding Sang Quiet Actor Sings Dances Girl Story Smiled",
+      "<e,<e,t>>": "Discussed In Likes Met About Submitted"
     },
     "variables": {
       "e": "x y z"
@@ -45,12 +42,6 @@
         "Fred"
       ],
       "denotation": "Fred"
-    },
-    {
-      "words": [
-        "Henry"
-      ],
-      "denotation": "Henry"
     },
     {
       "words": [
@@ -108,12 +99,6 @@
     },
     {
       "words": [
-        "bottle"
-      ],
-      "denotation": "Bottle"
-    },
-    {
-      "words": [
         "smiled"
       ],
       "denotation": "Smiled"
@@ -156,12 +141,6 @@
     },
     {
       "words": [
-        "opened"
-      ],
-      "denotation": "Opened"
-    },
-    {
-      "words": [
         "every"
       ],
       "denotation": "∀"
@@ -178,12 +157,6 @@
         "no"
       ],
       "denotation": "No"
-    },
-    {
-      "words": [
-        "the"
-      ],
-      "denotation": "The"
     },
     {
       "words": [
@@ -217,68 +190,110 @@
   "exercises": [
     {
       "id": "A",
-      "title": "A. Rules of §3.4–3.7",
+      "title": "A. Adverbs and prepositional phrases (§3.4)",
+      "instructions": "PredCon conjoins the translations of two one-place predicates: {α, β} ⇝ (α′ ⊓ β′). The adverb quietly translates as a one-place predicate (figure 3.33). A preposition translates as a two-place predicate, and Merge with its object gives a one-place predicate.",
       "derivations": [
         {
-          "id": "pp-np",
-          "sentence": "Jack discussed a wedding in Boston.",
-          "tree": "[.VP [.DP a_x [.NP wedding [.PP in Boston ] ] ] [.VP Jack [.V′ discussed x ] ] ]",
-          "targets": [
-            "[∃x: (Wedding ⊓ In(Boston))(x)](Discussed(x)(Jack))"
-          ]
-        },
-        {
-          "id": "adverb",
+          "id": "d1",
           "sentence": "Jack sang quietly.",
           "tree": "[.VP Jack [.V′ sang quietly ] ]",
           "targets": [
             "(Sang ⊓ Quiet)(Jack)"
-          ]
+          ],
+          "reading": {
+            "section": "3.4"
+          }
         },
         {
-          "id": "relcl",
+          "id": "d2",
+          "sentence": "Jack discussed a wedding in Boston.",
+          "tree": "[.VP [.DP a_x [.NP wedding [.PP in Boston ] ] ] [.VP Jack [.V′ discussed x ] ] ]",
+          "targets": [
+            "[∃x: (Wedding ⊓ In(Boston))(x)](Discussed(x)(Jack))"
+          ],
+          "reading": {
+            "section": "3.4"
+          }
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "title": "B. Relative clauses (§3.5)",
+      "instructions": "RelPro forms a one-place predicate from a formula: {who_u, α} ⇝ λu.α′ (59). In the tree who carries the index x, and x stands in object position (figure 3.37). PredCon conjoins the result with the translation of the noun.",
+      "derivations": [
+        {
+          "id": "d1",
           "sentence": "Jack met every actor who Sue likes.",
           "tree": "[.VP [.DP every_z [.NP actor [.CP who_x [.VP Sue [.V′ likes x ] ] ] ] ] [.VP Jack [.V′ met z ] ] ]",
           "targets": [
             "[∀z: (Actor ⊓ λx.Likes(x)(Sue))(z)](Met(z)(Jack))"
-          ]
-        },
+          ],
+          "reading": {
+            "section": "3.5"
+          }
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "title": "C. Coordination (§3.6)",
+      "instructions": "Conjunction translates a node with the three daughters and, α, β as (α′ & β′).",
+      "derivations": [
         {
-          "id": "conj",
+          "id": "d1",
           "sentence": "Maria sings and Fred dances.",
           "tree": "[.VP [.VP Maria sings ] and [.VP Fred dances ] ]",
           "targets": [
             "(Sings(Maria) & Dances(Fred))"
-          ]
-        },
+          ],
+          "reading": {
+            "section": "3.6"
+          }
+        }
+      ]
+    },
+    {
+      "id": "D",
+      "title": "D. Pronouns (§3.7)",
+      "instructions": "Pronoun translates a pronoun indexed u as u. In the first tree herself has the index of the raised phrase no girl, and the quantifier binds it. In the second tree no quantifier binds y. The variable stays free in the translation, and the context lexicon gives its value (§3.7.2).",
+      "derivations": [
         {
-          "id": "bound",
+          "id": "d1",
           "sentence": "No girl submitted a story about herself.",
           "tree": "[.VP [.DP no_x girl ] [.VP [.DP a_y [.NP story [.PP about herself_x ] ] ] [.VP x [.V′ submitted y ] ] ] ]",
           "targets": [
             "[No x: Girl(x)]([∃y: (Story ⊓ About(x))(y)](Submitted(y)(x)))"
-          ]
+          ],
+          "reading": {
+            "section": "3.7"
+          }
         },
         {
-          "id": "free",
+          "id": "d2",
           "sentence": "She smiled.",
           "tree": "[.VP she_y smiled ]",
           "targets": [
             "Smiled(y)"
-          ]
-        },
+          ],
+          "reading": {
+            "section": "3.7"
+          }
+        }
+      ]
+    },
+    {
+      "id": "E",
+      "title": "E. An object determiner phrase left in place (§3.3)",
+      "instructions": "This tree is the base structure of Jack met every actor who Sue likes, with the determiner phrase in object position. Every rule is refused at the node above met. Read the reason given for each.",
+      "derivations": [
         {
-          "id": "the",
-          "sentence": "Henry opened the bottle.",
-          "tree": "[.VP [.DP the_x bottle ] [.VP Henry [.V′ opened x ] ] ]",
-          "targets": [
-            "[The x: Bottle(x)](Opened(x)(Henry))"
-          ]
-        },
-        {
-          "id": "in-situ",
-          "sentence": "Every actor sang.",
-          "tree": "[.VP [.DP every_x actor ] sang ]"
+          "id": "d1",
+          "sentence": "Jack met every actor who Sue likes.",
+          "tree": "[.VP Jack [.V′ met [.DP every_z [.NP actor [.CP who_x [.VP Sue [.V′ likes x ] ] ] ] ] ] ]",
+          "reading": {
+            "section": "3.3"
+          }
         }
       ]
     }

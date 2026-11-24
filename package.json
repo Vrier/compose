@@ -12,7 +12,8 @@
     "test": "node test/regression.mjs && node test/schema-check.mjs && node test/latex.mjs && node test/notes.mjs && node test/a11y.mjs && node test/linglib-rules.mjs && node test/idiom.mjs && node test/server.mjs",
     "test:update": "node test/regression.mjs --update && node test/latex.mjs --update",
     "bundle:cc": "node scripts/make-cc-bundle.mjs",
-    "bundle:hk": "node scripts/make-hk-bundle.mjs"
+    "bundle:hk": "node scripts/make-hk-bundle.mjs",
+    "bundle:aps": "node scripts/make-aps-bundle.mjs"
   },
   "devDependencies": {
     "esbuild": "0.23.0",
