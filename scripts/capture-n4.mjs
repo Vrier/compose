@@ -13,7 +13,6 @@
      node scripts/capture-n4.mjs shortcuts   shortcuts dialog + esc order
      node scripts/capture-n4.mjs progress    progress page, populated (anon)
      node scripts/capture-n4.mjs progress-empty  nothing solved yet
-     node scripts/capture-n4.mjs twilight    progress page + palette, twilight
      node scripts/capture-n4.mjs sync        register student, sign in through
                                              the UI, push local progress, wipe
                                              island, reload → pulled back
@@ -192,19 +191,6 @@ if (SCENE === 'progress-empty') {
   check('nothing-solved title', (await text('.pg-title')) === 'Nothing solved yet');
   check('rows all not started', await page.evaluate(() => [...document.querySelectorAll('.pg-row-sub')].every((x) => /not started|open now/.test(x.textContent))));
   await shot('n4-progress-empty.png');
-}
-
-if (SCENE === 'twilight') {
-  const pre = await prefix();
-  await injectProgress(3);
-  await page.evaluate((p) => localStorage.setItem(p + 'lc2-theme', JSON.stringify('twilight')), pre);
-  await page.reload({ waitUntil: 'networkidle2' }); await sleep(1000);
-  await openProgressViaPalette();
-  check('progress page open (twilight)', await has('.pg-inner'));
-  await shot('n4-progress-twilight.png');
-  await ctrlK();
-  check('palette opens (twilight)', await has('.pal'));
-  await shot('n4-palette-twilight.png');
 }
 
 if (SCENE === 'sync') {

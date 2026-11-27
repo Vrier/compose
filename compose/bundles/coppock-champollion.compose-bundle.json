@@ -841,6 +841,12 @@
           },
           {
             "words": [
+              "Not"
+            ],
+            "denotation": "Lp.~p"
+          },
+          {
+            "words": [
               "everything",
               "everyone"
             ],
@@ -977,7 +983,7 @@
               {
                 "sentence": "Not every hobbit loves Gandalf.",
                 "instructions": "Surface-scope reading only: negation takes wide scope.",
-                "tree": "[.S [.NegP [.Neg not ] [.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.V loves ] [.DP Gandalf ] ] ] ] ]",
+                "tree": "[.S [.NegP [.Neg Not ] [.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.V loves ] [.DP Gandalf ] ] ] ] ]",
                 "targets": [
                   "wide scope: ¬∀x[hobbit(x) → love(x, g)]"
                 ],
@@ -986,33 +992,45 @@
                 }
               },
               {
-                "sentence": "Every hobbit doesn't love Gandalf.",
-                "instructions": "Two scope readings are possible. Derive each on the tree provided for it.",
+                "sentence": "Every hobbit doesn't love Gandalf (surface scope).",
+                "instructions": "Surface scope: negation inside the VP, under the quantifier. The inverse reading has its own tree at the end of this group.",
                 "tree": "[.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.Neg doesnt ] [.VP [.V love ] [.DP Gandalf ] ] ] ]",
                 "targets": [
-                  "surface scope (∀ > ¬): ∀x[hobbit(x) → ¬love(x, g)]",
-                  "inverse scope (¬ > ∀): ¬∀x[hobbit(x) → love(x, g)]"
+                  "surface scope (∀ > ¬): ∀x[hobbit(x) → ¬love(x, g)]"
                 ],
-                "scopeTrees": {
-                  "0": "[.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.Neg doesnt ] [.VP [.V love ] [.DP Gandalf ] ] ] ]",
-                  "1": "[.S [.NegP [.Neg not ] [.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.V loves ] [.DP Gandalf ] ] ] ] ]"
-                },
                 "reading": {
                   "section": "6.6"
                 }
               },
               {
-                "sentence": "Some elf doesn't trust Sauron.",
-                "instructions": "Two scope readings are possible.",
+                "sentence": "Some elf doesn't trust Sauron (surface scope).",
+                "instructions": "Surface scope: negation inside the VP, under the quantifier. The inverse reading has its own tree at the end of this group.",
                 "tree": "[.S [.DP [.D some ] [.NP elf ] ] [.VP [.Neg doesnt ] [.VP [.V trust ] [.DP Sauron ] ] ] ]",
                 "targets": [
-                  "surface scope (∃ > ¬): ∃x[elf(x) ∧ ¬trust(x, n)]",
+                  "surface scope (∃ > ¬): ∃x[elf(x) ∧ ¬trust(x, n)]"
+                ],
+                "reading": {
+                  "section": "6.6"
+                }
+              },
+              {
+                "sentence": "Every hobbit doesn't love Gandalf (inverse scope).",
+                "instructions": "Inverse scope: the logical form puts sentential negation above the quantified clause.",
+                "tree": "[.S [.NegP [.Neg Not ] [.S [.DP [.D every ] [.NP hobbit ] ] [.VP [.V loves ] [.DP Gandalf ] ] ] ] ]",
+                "targets": [
+                  "inverse scope (¬ > ∀): ¬∀x[hobbit(x) → love(x, g)]"
+                ],
+                "reading": {
+                  "section": "6.6"
+                }
+              },
+              {
+                "sentence": "Some elf doesn't trust Sauron (inverse scope).",
+                "instructions": "Inverse scope: the logical form puts sentential negation above the quantified clause.",
+                "tree": "[.S [.NegP [.Neg Not ] [.S [.DP [.D some ] [.NP elf ] ] [.VP [.V trusts ] [.DP Sauron ] ] ] ] ]",
+                "targets": [
                   "inverse scope (¬ > ∃): ¬∃x[elf(x) ∧ trust(x, n)]"
                 ],
-                "scopeTrees": {
-                  "0": "[.S [.DP [.D some ] [.NP elf ] ] [.VP [.Neg doesnt ] [.VP [.V trust ] [.DP Sauron ] ] ] ]",
-                  "1": "[.S [.NegP [.Neg not ] [.S [.DP [.D some ] [.NP elf ] ] [.VP [.V trusts ] [.DP Sauron ] ] ] ] ]"
-                },
                 "reading": {
                   "section": "6.6"
                 }
@@ -4111,11 +4129,11 @@
     },
     {
       "key": "ch10-coord",
-      "title": "10.1 Coordination",
+      "title": "9.1 Coordination",
       "content": {
         "compose": 1,
         "id": "ch10-coord",
-        "title": "10.1 Coordination",
+        "title": "9.1 Coordination",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -4569,11 +4587,11 @@
     },
     {
       "key": "ch10-lift",
-      "title": "10.1 DP Coordination & Montague Lift",
+      "title": "9.1 DP Coordination & Montague Lift",
       "content": {
         "compose": 1,
         "id": "ch10-lift",
-        "title": "10.1 DP Coordination & Montague Lift",
+        "title": "9.1 DP Coordination & Montague Lift",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -4960,11 +4978,11 @@
     },
     {
       "key": "ch10-mereology",
-      "title": "10.2 Mereology: Sums and Parthood",
+      "title": "9.2 Mereology: Sums and Parthood",
       "content": {
         "compose": 1,
         "id": "ch10-mereology",
-        "title": "10.2 Mereology: Sums and Parthood",
+        "title": "9.2 Mereology: Sums and Parthood",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -5421,11 +5439,11 @@
     },
     {
       "key": "ch10-plural",
-      "title": "10.3 Plurals & the Star Operator",
+      "title": "9.3 Plurals & the Star Operator",
       "content": {
         "compose": 1,
         "id": "ch10-plural",
-        "title": "10.3 Plurals & the Star Operator",
+        "title": "9.3 Plurals & the Star Operator",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -5937,11 +5955,11 @@
     },
     {
       "key": "ch10-cumulative",
-      "title": "10.4 Cumulative Readings",
+      "title": "9.4 Cumulative Readings",
       "content": {
         "compose": 1,
         "id": "ch10-cumulative",
-        "title": "10.4 Cumulative Readings",
+        "title": "9.4 Cumulative Readings",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -6346,12 +6364,12 @@
     },
     {
       "key": "ch10.5-fragment",
-      "title": "10.5 The Full Fragment (L∗ with starred verbs)",
+      "title": "9.5 The Full Fragment (L∗ with starred verbs)",
       "content": {
         "compose": 1,
         "id": "ch10-fragment",
-        "title": "10.5 The Full Fragment (L∗ with starred verbs)",
-        "subtitle": "The book's §10.5.4 translations: once the domain has sums, every verb is starred and holds distributively of sums. Capstone, including cumulative readings via the relational star.",
+        "title": "9.5 The Full Fragment (L∗ with starred verbs)",
+        "subtitle": "The book's §9.5.4 translations: once the domain has sums, every verb is starred and holds distributively of sums. Capstone, including cumulative readings via the relational star.",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -6556,7 +6574,7 @@
         "exercises": [
           {
             "title": "A. Starred verbs and distributivity over sums",
-            "instructions": "Once plural individuals live in the domain, a verb like smoke holds of a sum whenever it holds of each atom, so the fragment stars every verb: smokes ↝ λx.∗smoke(x) (§10.5.4). Form the plural subject with andE (λyλz.z⊕y), which sums two entities, and apply the starred verb. ∗smoke(mx⊕l) is true just in case Maxine and LaVerne both smoke, so the star delivers the distributive reading with no separate distributivity operator.",
+            "instructions": "Once plural individuals live in the domain, a verb like smoke holds of a sum whenever it holds of each atom, so the fragment stars every verb: smokes ↝ λx.∗smoke(x) (§9.5.4). Form the plural subject with andE (λyλz.z⊕y), which sums two entities, and apply the starred verb. ∗smoke(mx⊕l) is true just in case Maxine and LaVerne both smoke, so the star delivers the distributive reading with no separate distributivity operator.",
             "items": [
               {
                 "sentence": "Maxine and LaVerne smoke.",
@@ -6576,7 +6594,7 @@
           },
           {
             "title": "B. Starred transitive verbs",
-            "instructions": "Transitive verbs are starred too: caught ↝ λyλx.∗catch(x,y), own ↝ λyλx.∗own(x,y) (§10.5.4). The object is taken first, then the subject, giving a flat ∗catch(subject, object). With singular arguments the star is vacuous, and the entry is uniform across singular and plural.",
+            "instructions": "Transitive verbs are starred too: caught ↝ λyλx.∗catch(x,y), own ↝ λyλx.∗own(x,y) (§9.5.4). The object is taken first, then the subject, giving a flat ∗catch(subject, object). With singular arguments the star is vacuous, and the entry is uniform across singular and plural.",
             "items": [
               {
                 "sentence": "Maxine caught Sue.",
@@ -6625,11 +6643,11 @@
     },
     {
       "key": "ch11.1-dav",
-      "title": "Davidsonian Event Semantics (§11.1–11.2)",
+      "title": "Davidsonian Event Semantics (§10.1)",
       "content": {
         "compose": 1,
         "id": "ch11-dav",
-        "title": "Davidsonian Event Semantics (§11.1–11.2)",
+        "title": "Davidsonian Event Semantics (§10.1)",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -7032,11 +7050,11 @@
     },
     {
       "key": "ch11.3-neodav",
-      "title": "Neo-Davidsonian Event Semantics (§11.3)",
+      "title": "Neo-Davidsonian Event Semantics (§10.1.1–10.2)",
       "content": {
         "compose": 1,
         "id": "ch11-neodav",
-        "title": "Neo-Davidsonian Event Semantics (§11.3)",
+        "title": "Neo-Davidsonian Event Semantics (§10.1.1–10.2)",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -7489,11 +7507,11 @@
     },
     {
       "key": "ch11.4-continuation",
-      "title": "Event Quantifiers: the Continuation Approach (§11.4–11.6)",
+      "title": "Event Quantifiers: the Continuation Approach (§10.3–10.5)",
       "content": {
         "compose": 1,
         "id": "ch11-cont",
-        "title": "Event Quantifiers: the Continuation Approach (§11.4–11.6)",
+        "title": "Event Quantifiers: the Continuation Approach (§10.3–10.5)",
         "subtitle": "Champollion's verbs-as-event-quantifiers fragment: Quantifier Closure, in-situ quantifiers, conjunction and negation",
         "domain": {
           "multiLetterNames": true,
@@ -7908,7 +7926,7 @@
             ]
           },
           {
-            "title": "E. Conjunction (§11.5)",
+            "title": "E. Conjunction (§10.4)",
             "instructions": "VP-and on the continuation approach is andVP ↝ λW.λV.λk.[V(k) ∧ W(k)]: each conjunct is handed its own copy of the continuation, so each gets its own event quantifier. \"Frodo smoked and drank\" then describes two events, so the contradictory modifiers in the second item attach to different events and no contradiction arises (textbook Exercise 3).",
             "items": [
               {
@@ -7928,8 +7946,8 @@
             ]
           },
           {
-            "title": "F. Negation (§11.6)",
-            "instructions": "Sentential negation is not ↝ λV.λk.¬V(k): it negates the whole event quantifier, so the existential stays trapped inside the negation and the result says there is no such event, the only attested reading. Aux did ↝ λV.λk.V(k) is the identity. The event-predicate approach of §11.3 yields only the much weaker \"there is an event that isn't a barking\".",
+            "title": "F. Negation (§10.3)",
+            "instructions": "Sentential negation is not ↝ λV.λk.¬V(k): it negates the whole event quantifier, so the existential stays trapped inside the negation and the result says there is no such event, the only attested reading. Aux did ↝ λV.λk.V(k) is the identity. The event-predicate approach of §10.5.1 yields only the much weaker \"there is an event that isn't a barking\".",
             "items": [
               {
                 "sentence": "Sam didn't sleep.",
@@ -7959,12 +7977,12 @@
     },
     {
       "key": "ch11.5-conjneg",
-      "title": "Conjunction & Negation in Event Semantics (§11.5–11.6)",
+      "title": "Conjunction & Negation in Event Semantics (§10.3–10.4)",
       "content": {
         "compose": 1,
         "id": "ch11-conjneg",
-        "title": "Conjunction & Negation in Event Semantics (§11.5–11.6)",
-        "subtitle": "The event-predicate fragment of §11.3, applied to VP coordination and sentential negation, with the diagnostics that motivate the continuation approach.",
+        "title": "Conjunction & Negation in Event Semantics (§10.3–10.4)",
+        "subtitle": "The event-predicate fragment of §10.5.1, applied to VP coordination and sentential negation, with the diagnostics that motivate the continuation approach.",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -8139,7 +8157,7 @@
         "exercises": [
           {
             "title": "A. VP conjunction with one shared event",
-            "instructions": "On the event-predicate approach (§11.3) a VP is a set of events ⟨v,t⟩. Conjunction follows the Partee & Rooth schema at that type: andVP ↝ λQ.λP.λe.[P(e) ∧ Q(e)], type ⟨⟨v,t⟩,⟨⟨v,t⟩,⟨v,t⟩⟩⟩. The Coord head applies to the right conjunct by FA, then to the left conjunct by FA, giving one event predicate. The Agent head joins by Predicate Modification and Existential Closure binds the single event. The prediction is one event that is both a smoking and a drinking.",
+            "instructions": "On the event-predicate approach (§10.5.1) a VP is a set of events ⟨v,t⟩. Conjunction follows the Partee & Rooth schema at that type: andVP ↝ λQ.λP.λe.[P(e) ∧ Q(e)], type ⟨⟨v,t⟩,⟨⟨v,t⟩,⟨v,t⟩⟩⟩. The Coord head applies to the right conjunct by FA, then to the left conjunct by FA, giving one event predicate. The Agent head joins by Predicate Modification and Existential Closure binds the single event. The prediction is one event that is both a smoking and a drinking.",
             "items": [
               {
                 "sentence": "Frodo smoked and drank.",
@@ -8166,7 +8184,7 @@
           },
           {
             "title": "B. The single-event prediction",
-            "instructions": "Add a manner adverb to each conjunct. The single-event entry forces both predicates onto the same event, so the derivation makes one event both slow and quick. This is the textbook's argument (Exercise 3) that VP-and cannot denote a single shared event; the continuation fragment of §11.4 hands each conjunct its own event quantifier.",
+            "instructions": "Add a manner adverb to each conjunct. The single-event entry forces both predicates onto the same event, so the derivation makes one event both slow and quick. This is the textbook's argument (Exercise 3) that VP-and cannot denote a single shared event; the continuation fragment of §10.5.2 hands each conjunct its own event quantifier.",
             "items": [
               {
                 "sentence": "Frodo smoked slowly and drank quickly.",
@@ -8174,7 +8192,7 @@
                 "targets": [
                   "∃e[agent(e,f) ∧ slow(e) ∧ smoke(e) ∧ quick(e) ∧ drink(e)]"
                 ],
-                "note": "One event e is forced to be both slow and quick. The continuation approach derives a two-event reading instead (§11.4, group E)."
+                "note": "One event e is forced to be both slow and quick. The continuation approach derives a two-event reading instead (§10.5.2, group E)."
               }
             ]
           },
@@ -8232,11 +8250,11 @@
     },
     {
       "key": "ch12.1-times",
-      "title": "Tense (§12.2.2.4)",
+      "title": "Tense (§11.2.5)",
       "content": {
         "compose": 1,
         "id": "ch12-tense",
-        "title": "Tense (§12.2.2.4)",
+        "title": "Tense (§11.2.5)",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -8608,11 +8626,11 @@
     },
     {
       "key": "ch12.2-aspects",
-      "title": "The Perfect (§12.2.2.5)",
+      "title": "The Perfect (§11.2.4)",
       "content": {
         "compose": 1,
         "id": "ch12-perfect",
-        "title": "The Perfect (§12.2.2.5)",
+        "title": "The Perfect (§11.2.4)",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -8936,11 +8954,11 @@
     },
     {
       "key": "ch12.3-future",
-      "title": "The Future: WOLL, will & would (§12.2.2.4)",
+      "title": "The Future: WOLL, will & would (§11.2.5)",
       "content": {
         "compose": 1,
         "id": "ch12-future",
-        "title": "The Future: WOLL, will & would (§12.2.2.4)",
+        "title": "The Future: WOLL, will & would (§11.2.5)",
         "subtitle": "The future is a modal operator: will = PRES + WOLL, would = PAST + WOLL",
         "domain": {
           "multiLetterNames": true,
@@ -9215,11 +9233,11 @@
     },
     {
       "key": "ch13.1-worlds",
-      "title": "World-Indexed Predicates (§13.4)",
+      "title": "World-Indexed Predicates (§12.3.2)",
       "content": {
         "compose": 1,
         "id": "ch13-worlds",
-        "title": "World-Indexed Predicates (§13.4)",
+        "title": "World-Indexed Predicates (§12.3.2)",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -9606,11 +9624,11 @@
     },
     {
       "key": "ch13.2-modals",
-      "title": "Modals: Necessity & Possibility (§13.4.4)",
+      "title": "Modals: Necessity & Possibility (§12.4.4)",
       "content": {
         "compose": 1,
         "id": "ch13-modals",
-        "title": "Modals: Necessity & Possibility (§13.4.4)",
+        "title": "Modals: Necessity & Possibility (§12.4.4)",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -9990,11 +10008,11 @@
     },
     {
       "key": "ch13.3-intensional",
-      "title": "Intensional Transitive Verbs (§13.4.4)",
+      "title": "Intensional Transitive Verbs (§12.4.4)",
       "content": {
         "compose": 1,
         "id": "ch13-intensional",
-        "title": "Intensional Transitive Verbs (§13.4.4)",
+        "title": "Intensional Transitive Verbs (§12.4.4)",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -10360,11 +10378,11 @@
     },
     {
       "key": "ch13.4-attitudes",
-      "title": "Propositional Attitudes (§13.5.2)",
+      "title": "Propositional Attitudes (§12.5.2)",
       "content": {
         "compose": 1,
         "id": "ch13-attitudes",
-        "title": "Propositional Attitudes (§13.5.2)",
+        "title": "Propositional Attitudes (§12.5.2)",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -10737,11 +10755,11 @@
     },
     {
       "key": "ch13.5-dere",
-      "title": "De dicto and de re (§13.6)",
+      "title": "De dicto and de re (§12.6)",
       "content": {
         "compose": 1,
         "id": "ch13-dere",
-        "title": "De dicto and de re (§13.6)",
+        "title": "De dicto and de re (§12.6)",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -11128,11 +11146,11 @@
     },
     {
       "key": "ch13.6-worlds-times",
-      "title": "Worlds & Times Combined (§12–13)",
+      "title": "Worlds & Times Combined (§11–12)",
       "content": {
         "compose": 1,
         "id": "ch13-worlds-times",
-        "title": "Worlds & Times Combined (§12–13)",
+        "title": "Worlds & Times Combined (§11–12)",
         "domain": {
           "multiLetterNames": true,
           "constants": {
@@ -11439,11 +11457,11 @@
     },
     {
       "key": "ch13.7-haveto",
-      "title": "Contextual Modal Base & Presupposition: have to (§13.5.1)",
+      "title": "Contextual Modal Base & Presupposition: have to (§12.5.1)",
       "content": {
         "compose": 1,
         "id": "ch13-haveto",
-        "title": "Contextual Modal Base & Presupposition: have to (§13.5.1)",
+        "title": "Contextual Modal Base & Presupposition: have to (§12.5.1)",
         "subtitle": "A context-supplied accessibility relation R, with a ∂-presupposition that R is deontic (the book's eq. 55 and the ∂ extension it suggests)",
         "domain": {
           "multiLetterNames": true,

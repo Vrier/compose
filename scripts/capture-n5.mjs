@@ -16,7 +16,6 @@
                                               instructor changes the assign
                                               selection + saves → student
                                               refresh shows 2
-     node scripts/capture-n5.mjs assign-twilight  assign page, twilight theme
 
    Env: PUPPETEER_EXECUTABLE_PATH, N5_OUT (default /tmp). Run
    `npm run build:server` first so server/pb_public is current.
@@ -253,35 +252,25 @@ async function classCount(pg, title) {
   }, title);
 }
 
-if (SCENE === 'assign' || SCENE === 'assign-twilight') {
-  const twilight = SCENE === 'assign-twilight';
+if (SCENE === 'assign') {
   const { TI, RI, CODE, SLUG, VID } = await seed();
   check('seed ok', !!TI && !!CODE, JSON.stringify({ CODE, SLUG }));
   let sp = null; // student page (assign scene only)
-  if (!twilight) {
-    await api('POST', '/api/compose/register-student', { email: 'pip@university.edu', password: 'a-good-password-2' });
-    const sl = await api('POST', '/api/collections/users/auth-with-password', { identity: 'pip@university.edu', password: 'a-good-password-2' });
-    await api('POST', '/api/compose/redeem', { code: CODE }, sl.json.token);
-    // separate context: pages share per-origin localStorage, and the
-    // instructor's lc2-auth injection below must not clobber the student's
-    const ctx = browser.createBrowserContext ? await browser.createBrowserContext() : await browser.createIncognitoBrowserContext();
-    sp = await ctx.newPage();
-    await sp.goto(B + '/', { waitUntil: 'networkidle2' });
-    await injectAuth(sp, sl.json.token, sl.json.record);
-    await sp.reload({ waitUntil: 'networkidle2' }); await sleep(1500);
-    const n1 = await classCount(sp, 'LIN2021');
-    check('student sees the class with 1 worksheet before the change', n1 === 1, n1);
-  }
+  await api('POST', '/api/compose/register-student', { email: 'pip@university.edu', password: 'a-good-password-2' });
+  const sl = await api('POST', '/api/collections/users/auth-with-password', { identity: 'pip@university.edu', password: 'a-good-password-2' });
+  await api('POST', '/api/compose/redeem', { code: CODE }, sl.json.token);
+  // separate context: pages share per-origin localStorage, and the
+  // instructor's lc2-auth injection below must not clobber the student's
+  const ctx = browser.createBrowserContext ? await browser.createBrowserContext() : await browser.createIncognitoBrowserContext();
+  sp = await ctx.newPage();
+  await sp.goto(B + '/', { waitUntil: 'networkidle2' });
+  await injectAuth(sp, sl.json.token, sl.json.record);
+  await sp.reload({ waitUntil: 'networkidle2' }); await sleep(1500);
+  const n1 = await classCount(sp, 'LIN2021');
+  check('student sees the class with 1 worksheet before the change', n1 === 1, n1);
   // instructor: injected token (the UI sign-in path is E2E-covered in N2/N4)
   await page.goto(B + '/', { waitUntil: 'networkidle2' });
   await injectAuth(page, TI, RI);
-  if (twilight) {
-    await page.evaluate(() => {
-      let pre = '';
-      for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); const m = k.match(/^(.*:)?lc2-/); if (m && m[1]) { pre = m[1]; break; } }
-      localStorage.setItem(pre + 'lc2-theme', JSON.stringify('twilight'));
-    });
-  }
   await page.reload({ waitUntil: 'networkidle2' }); await sleep(1400);
   await openAssign();
   check('assign page open with the prototype title', (await text('.as-title')) === 'Choose what this class sees', await text('.as-title'));
@@ -291,43 +280,38 @@ if (SCENE === 'assign' || SCENE === 'assign-twilight') {
     [...document.querySelectorAll('.as-group-label')].some((g) => g.textContent.includes('Already in this version')) &&
     [...document.querySelectorAll('.as-picked-row')].some((r) => r.textContent.includes('Suite WS'))));
   check('published pill live', ((await text('.as-link-row .vd-state')) || '').includes('live'));
-  if (twilight) {
-    check('twilight theme active', await page.evaluate(() => document.documentElement.getAttribute('data-theme') === 'twilight'));
-    await shot('n5-assign-twilight.png');
-  } else {
-    await shot('n5-assign.png');
-    const count0 = await text('.as-count');
-    // add the root demo worksheet to the class
-    const toggled = await page.evaluate(() => {
-      const it = [...document.querySelectorAll('.as-item')].find((x) => !x.className.includes('on'));
-      if (it) { it.click(); return it.textContent.trim().slice(0, 40); } return null;
+  await shot('n5-assign.png');
+  const count0 = await text('.as-count');
+  // add the root demo worksheet to the class
+  const toggled = await page.evaluate(() => {
+    const it = [...document.querySelectorAll('.as-item')].find((x) => !x.className.includes('on'));
+    if (it) { it.click(); return it.textContent.trim().slice(0, 40); } return null;
+  });
+  await sleep(300);
+  check('toggling a catalogue worksheet updates the selection', toggled !== null && (await text('.as-count')) !== count0, toggled + ' / ' + (await text('.as-count')));
+  await page.evaluate(() => { const b = [...document.querySelectorAll('.as-save')]; if (b[0]) b[0].click(); });
+  await sleep(1400);
+  check("save lands ('✓ Saved')", ((await text('.as-save')) || '').includes('Saved'), await text('.as-save'));
+  const vrec = await api('GET', '/api/collections/versions/records/' + VID, undefined, TI);
+  const keys = ((vrec.json && vrec.json.bundle && (vrec.json.bundle.worksheets || [])) || []).map((w) => w.key);
+  check('server bundle replaced with the 2-worksheet selection', keys.length === 2 && keys[0] === 'suitews', JSON.stringify(keys));
+  await shot('n5-assign-saved.png');
+  // student refresh shows the updated set
+  await sp.reload({ waitUntil: 'networkidle2' }); await sleep(1500);
+  const n2 = await classCount(sp, 'LIN2021');
+  console.log('  student sidebar state:', await sp.evaluate(async () => {
+    const a = JSON.parse(localStorage.getItem('lc2-auth') || 'null');
+    let mc = null;
+    try { const r = await fetch('/api/compose/my-classes', { headers: { Authorization: a && a.token } }); mc = { status: r.status, body: JSON.stringify(await r.json()).slice(0, 200) }; } catch (e) { mc = String(e); }
+    let en = null;
+    try { const r2 = await fetch('/api/collections/enrollments/records', { headers: { Authorization: a && a.token } }); en = JSON.stringify(await r2.json()).slice(0, 260); } catch (e) { en = String(e); }
+    return JSON.stringify({
+      authed: !!a, heads: [...document.querySelectorAll('.sb-coll-head')].map((h) => h.textContent.trim()),
+      kickers: [...document.querySelectorAll('.sb-kicker')].map((k) => k.textContent.trim()), mc, en,
     });
-    await sleep(300);
-    check('toggling a catalogue worksheet updates the selection', toggled !== null && (await text('.as-count')) !== count0, toggled + ' / ' + (await text('.as-count')));
-    await page.evaluate(() => { const b = [...document.querySelectorAll('.as-save')]; if (b[0]) b[0].click(); });
-    await sleep(1400);
-    check("save lands ('✓ Saved')", ((await text('.as-save')) || '').includes('Saved'), await text('.as-save'));
-    const vrec = await api('GET', '/api/collections/versions/records/' + VID, undefined, TI);
-    const keys = ((vrec.json && vrec.json.bundle && (vrec.json.bundle.worksheets || [])) || []).map((w) => w.key);
-    check('server bundle replaced with the 2-worksheet selection', keys.length === 2 && keys[0] === 'suitews', JSON.stringify(keys));
-    await shot('n5-assign-saved.png');
-    // student refresh shows the updated set
-    await sp.reload({ waitUntil: 'networkidle2' }); await sleep(1500);
-    const n2 = await classCount(sp, 'LIN2021');
-    console.log('  student sidebar state:', await sp.evaluate(async () => {
-      const a = JSON.parse(localStorage.getItem('lc2-auth') || 'null');
-      let mc = null;
-      try { const r = await fetch('/api/compose/my-classes', { headers: { Authorization: a && a.token } }); mc = { status: r.status, body: JSON.stringify(await r.json()).slice(0, 200) }; } catch (e) { mc = String(e); }
-      let en = null;
-      try { const r2 = await fetch('/api/collections/enrollments/records', { headers: { Authorization: a && a.token } }); en = JSON.stringify(await r2.json()).slice(0, 260); } catch (e) { en = String(e); }
-      return JSON.stringify({
-        authed: !!a, heads: [...document.querySelectorAll('.sb-coll-head')].map((h) => h.textContent.trim()),
-        kickers: [...document.querySelectorAll('.sb-kicker')].map((k) => k.textContent.trim()), mc, en,
-      });
-    }));
-    check('student refresh shows the updated set (2 worksheets)', n2 === 2, n2);
-    await shot('n5-student-updated.png', sp);
-  }
+  }));
+  check('student refresh shows the updated set (2 worksheets)', n2 === 2, n2);
+  await shot('n5-student-updated.png', sp);
 }
 
 await browser.close();

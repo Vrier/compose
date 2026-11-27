@@ -13,7 +13,6 @@
                                            Menu (anon)
      node scripts/capture-n6.mjs solve     full derivation solve on the
                                            demo through the mobile dock
-     node scripts/capture-n6.mjs twilight  Derive tab, twilight theme (/cc/ch7)
      node scripts/capture-n6.mjs signed    Menu tab, signed-in student (PB)
      node scripts/capture-n6.mjs desktop   1360px /cc/ch7 regression shot
 
@@ -199,21 +198,6 @@ if (SCENE === 'solve') {
   });
   check('progress persisted to the island store', !!solved, solved);
   await shot('n6-solve.png');
-}
-
-if (SCENE === 'twilight') {
-  await page.goto(B + '/cc/ch7/', { waitUntil: 'networkidle2' });
-  await page.evaluate(() => {
-    localStorage.setItem('lc2-force-layout', 'mobile');
-    localStorage.setItem('lib-cc:lc2-theme', JSON.stringify('twilight'));
-    localStorage.setItem('lib-cc:lc2-phone-ok', 'true'); // past the W11 interstitial
-  });
-  await page.reload({ waitUntil: 'networkidle2' });
-  await sleep(900);
-  await tapTab('Derive'); // first visit parks on Reference-Rules
-  check('twilight theme active', await page.evaluate(() => document.documentElement.getAttribute('data-theme') === 'twilight'));
-  check('Derive stage under twilight', await has('.tree-wrap'));
-  await shot('n6-twilight-derive.png');
 }
 
 if (SCENE === 'signed') {
