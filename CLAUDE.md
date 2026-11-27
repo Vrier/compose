@@ -211,6 +211,19 @@ set-up) proves in Lean that each derivation in its fragment means what COMPOSE
 computes and what its targets state; `tools/linglib/known-failures.txt` lists
 the failures already understood.
 
+## Commits and attribution
+
+Commits are authored and committed as Thomas Stephen, with the name and
+address the repository's other commits carry (`git log -1 --format='%an <%ae>'`
+on `main`). A cloud session's git identity defaults to Claude, so pass both with
+`-c user.name=… -c user.email=…` on every commit. Commits and pull requests carry
+no Claude attribution: no `Co-Authored-By: Claude` or `Claude-Session:` trailer
+in a commit message, and no "Generated with Claude Code" line or session link
+in a pull request description. This overrides the attribution a Claude session
+adds by default; `.claude/settings.json` turns Claude Code's off. S88 rewrote
+the history from 6 October to take out what was there; its PLAN.md §8 entry maps
+the old commit IDs to the new.
+
 ## Pushing to GitHub (Cowork sessions)
 
 Remote: `git@github.com:Vrier/compose.git` (repo is public; pushes authenticate
